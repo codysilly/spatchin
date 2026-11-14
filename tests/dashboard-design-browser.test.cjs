@@ -16,7 +16,7 @@ async function localPage(width){const context=await browser.newContext({viewport
 for(const width of [1440,390])test(`actual app synthetic visual review and branding at ${width}px`,async()=>{
  const {context,page,external,errors}=await localPage(width),now=new Date().toISOString();
  const notice={number:'11/207',id:'SYNTHETIC-ONLY',source:'Synthetic test fixture, not a provider record',text:'SYNTHETIC RWY 18R/36L lighting report\r\nSCANDEMO — illustrative text only. No operational interpretation.'};
- await context.route('**/data/notams.json',r=>r.fulfill({json:{retrieved_utc:now,airports:Object.fromEntries(['KMEM','KLAX','KJFK'].map(c=>[c,{completeness:'UNKNOWN',warning:'SYNTHETIC DEMONSTRATION — coverage UNKNOWN; no real provider data.',notices:c==='KMEM'?longNotices():[{...notice,text:c==='KLAX'?'SYNTHETIC RWY 06L/24R demonstration only.':'SYNTHETIC RWY 04L/22R demonstration only.'}]}]))}}));
+ await context.route('**/data/notams.json',r=>r.fulfill({json:{retrieved_utc:now,airports:Object.fromEntries(['KMEM','KLAX','KJFK'].map(c=>[c,{completeness:'UNKNOWN',warning:'SYNTHETIC DEMONSTRATION — coverage UNKNOWN; no real provider data.',notices:c==='KMEM'?longNotices():[{...notice,text:c==='KLAX'?'SYNTHETIC RWY 06L/24R demonstration only.':'SYNTHETIC RWY 04L/22R demonstration only.',formatted_texts:[{type:'LOCAL_FORMAT',text:'SYNTHETIC LOCAL_FORMAT demonstration only.'}]}]}]))}}));
  await context.route('**/data/metars.json?*',r=>r.fulfill({json:{updated_utc:now,metars:['KMEM','KLAX','KJFK'].map(icaoId=>({icaoId,obsTime:now,wdir:250,wspd:12,wgst:18,rawOb:'SYNTHETIC observation — test fixture only'}))}}));
  await context.route('**/data/atis.json?*',r=>r.fulfill({json:{retrieved_utc:now,airports:Object.fromEntries(['KMEM','KLAX','KJFK'].map(c=>[c,[{type:'combined',code:'S',time:'1200',updatedAt:now,datis:`SYNTHETIC ONLY. LANDING RWY ${c==='KMEM'?'18R':c==='KLAX'?'06L':'04L'}. DEP EXP RWYS ${c==='KMEM'?'36L':c==='KLAX'?'24R':'22R'}. Demonstration; not an airport configuration.`}]]))}}));
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","LAX","JFK"]'));
@@ -41,16 +41,20 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
-test('unchanged public historical MEM snapshot retains all 100 records and 131 representations',async()=>{
+test('public MEM keeps 100 records and all 48 LOCAL_FORMAT / 83 ICAO representations in data only',async()=>{
  const {context,page,external,errors}=await localPage(1440),data=JSON.parse(readFileSync('data/notams.json','utf8'));
  try{
   await page.goto(base);await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const records=await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).map(n=>({key:n.key,text:n.text,formatted_texts:n.formatted_texts})));
   assert.equal(records.length,100);assert.equal(records.reduce((n,r)=>n+(r.formatted_texts||[]).length,0),131);
   for(const record of records){const original=data.airports.KMEM.notices[Number(record.key.split('-')[1])];assert.equal(record.text,original.text);assert.deepEqual(record.formatted_texts,original.formatted_texts);}
-  await page.locator('#reader-KMEM-all > summary').click();assert.equal(await page.locator('#reader-KMEM-all .reader-notice').count(),100);
-  for(const record of records){const source=page.locator(`#reader-KMEM-all [data-reader-key="${record.key}"] .reader-raw`);assert.deepEqual(await source.allTextContents(),[record.text||'Original text unavailable',...(record.formatted_texts||[]).map(t=>t.text)]);}
-  await page.locator('#reader-KMEM-all > summary').click();
+  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='LOCAL_FORMAT').length,48);
+  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='ICAO').length,83);
+  for(const id of await page.evaluate(()=>ends('MEM'))){
+   const associated=await page.evaluate(id=>NotamReader.records('KMEM',ends('MEM')).filter(n=>n.references.some(r=>r.id===id)).map(n=>({key:n.key,texts:NotamReader.localTexts(n)})),id);
+   for(const n of associated)assert.deepEqual(await page.locator(`#reader-KMEM-${id} [data-reader-key="${n.key}"] .reader-raw`).allTextContents(),n.texts);
+  }
+  assert.equal(await page.locator('.notam-reader,.notice-table,.notice-provenance,.inline-reader pre,.inline-reader details,[data-expand]').count(),0);
   assert.match(await page.locator('.notam-summary').innerText(),/2026-11-13T02:52:31\.040326\+00:00/);
   assert.match(await page.locator('.notam-summary').innerText(),/UNKNOWN/);assert.match(await page.locator('.notam-summary').innerText(),/no automatic updates/i);
   assert.equal(await page.locator('.collection-warning').textContent(),data.airports.KMEM.warning);

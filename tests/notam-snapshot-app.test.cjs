@@ -17,7 +17,7 @@ const valid=()=>({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{notices:[
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 test('dashboard startup requests one local NOTAM snapshot; ordinary rerenders never refetch',async()=>{
  const app=load({notams:{ok:true,json:async()=>valid()}});await tick();
- assert.equal(app.run('notamTransport.error'),null);assert.match(app.elements.get('cards').innerHTML,/retained report/);
+ assert.equal(app.run('notamTransport.error'),null);assert.doesNotMatch(app.elements.get('cards').innerHTML,/retained report/);assert.equal(app.run("NotamReader.records('KMEM',[])[0].text"),'SYNTHETIC RWY 18L retained report');
  app.run('render();render();render()');assert.equal(app.calls.filter(u=>u.includes('notams.json')).length,1);
  assert.ok(app.calls.every(u=>new URL(u,'http://local.test').hostname==='local.test'));
  assert.match(app.elements.get('cards').innerHTML,/Reading only; no applicability or closure assessment/);
@@ -57,12 +57,12 @@ test('published MEM NASR inventory preserves every source bearing and provenance
  }
  const html=app.elements.get('cards').innerHTML;
  assert.equal((html.match(/<td class="unknown">—<\/td>/g)||[]).length,16);
- assert.ok(html.includes(`FAA NASR effective ${runways.effective_date}`));
- assert.ok(html.includes(`href="${runways.source_url}"`));
+ assert.equal(app.run('runwayData.effective_date'),runways.effective_date);
+ assert.equal(app.run('runwayData.source_url'),runways.source_url);
  assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/00253AD.PDF/);
  assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
- assert.ok(!app.run('runwaySourceBlock("ORD")').includes('airport diagram'));
+ assert.equal(app.run('diagramHeader("ORD")'),'');
  assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
 });
 
@@ -72,9 +72,9 @@ test('synthetic legacy chart metadata is labelled approximate and a later NASR s
  const app=load({runways});await tick();
  assert.equal(app.run('runwayBearingLabel("MEM")'),'Chart-derived approximate true bearing');
  const html=app.elements.get('cards').innerHTML;
- assert.match(html,/Chart-derived approximate true bearings/);
+ assert.match(html,/Chart effective/);
  assert.match(html,/SYNTHETIC-diagram\.pdf/);
- assert.match(html,/Diagram effective 2020-01-01 through 2020-01-29/);
+ assert.match(html,/Chart effective 2020-01-01 through 2020-01-29/);
  app.run('delete runwayData.airport_metadata;render()');
  assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
  assert.ok(!app.elements.get('cards').innerHTML.includes('Chart-derived'));

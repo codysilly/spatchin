@@ -16,7 +16,7 @@ test('supplied literal examples, separators, boundaries and repeated references'
  assert.deepEqual(match('rwys 18r, 36l AND 18L'),['18R','36L','18L']);
  for(const t of ['RWY 018R','RWY 36LX','RWY 36L_foo','XRWY 36L','RWY 99','118R RWY END'])assert.deepEqual(match(t),[],t);
  reader.set({airports:{KMEM:{notices:[{number:'11/9',text:'RWY 18R; RWY 18R'},{number:'11/9',text:'RWY 18R'}]}}});
- assert.match(reader.cell('KMEM','18R',ends),/Read NOTAMs \(2\)/);
+ assert.match(reader.cell('KMEM','18R',ends),/NOTAMs \(2\)/);
  assert.match(reader.cell('KMEM','36L',ends),/No literal matches/);
  assert.equal(reader.records('KMEM',ends).length,2);
 });
@@ -36,11 +36,12 @@ test('zero verification requires explicit evidence; empty/missing/unknown are di
  entry.zero_verified=true;entry.completeness='VERIFIED';assert.match(reader.availability('KMEM'),/UNKNOWN/);
  entry.verification_reference='SYNTHETIC review evidence';assert.match(reader.availability('KMEM'),/Explicitly verified zero/);
  assert.match(reader.cell('KMEM','18R',['18R']),/Verified zero/);
- assert.doesNotMatch(reader.block('KMEM',[]),/Completeness unknown|coverage has not been established/);
+ assert.doesNotMatch(reader.summary('KMEM',[]),/Completeness unknown|coverage has not been established/);
  entry.notices.push({text:'record'});assert.match(reader.availability('KMEM'),/UNKNOWN/);
 });
-test('empty original string is preserved, and never replaced with provider representation',()=>{
- reader.set({airports:{KMEM:{notices:[{text:'',formatted_texts:[{text:'SYNTHETIC translation'}]}]}}});
- assert.match(reader.block('KMEM',[]),/<p class="reader-raw"><\/p>/);
- assert.doesNotMatch(reader.block('KMEM',[]),/Original text unavailable/);
+test('empty supplied LOCAL_FORMAT string remains empty without fallback',()=>{
+ reader.set({airports:{KMEM:{notices:[{text:'RWY 18R HIDDEN_CONDITION',formatted_texts:[{type:'LOCAL_FORMAT',text:''},{type:'ICAO',text:'HIDDEN_ICAO'}]}]}}});
+ assert.deepEqual(reader.localTexts(reader.records('KMEM',['18R'])[0]),['']);
+ assert.match(reader.row('KMEM','18R',['18R']),/<p class="reader-raw"><\/p>/);
+ assert.doesNotMatch(reader.row('KMEM','18R',['18R']),/unavailable|HIDDEN_CONDITION|HIDDEN_ICAO/);
 });

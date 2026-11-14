@@ -7,4 +7,4 @@ const SPATCHIN_SYNTHETIC_PREVIEW={runways:{airports:{MEM:['09','27','18L','36R',
 {id:'SYN-5',text:'SYNTHETIC unrecognized RWY 99 and general notice.',source:'Synthetic test fixture'},
 {id:'SYN-1',text:'SYNTHETIC RWY 18C report with source-reported relationship.',reported_relationships:{type:'CANCEL',reference:'SYN-MISSING'},source:'Synthetic test fixture'},
 {id:'SYN-7',text:'SYNTHETIC RWY 18R AND 36L text <b>is not markup</b>.',effectiveEnd:'UNKNOWN FORMAT',source:'Synthetic test fixture'}
-]}}}};
+].map(n=>({...n,formatted_texts:[{type:'LOCAL_FORMAT',field:'simpleText',text:n.text}]}))}}}};

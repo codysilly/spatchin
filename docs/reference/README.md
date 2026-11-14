@@ -32,15 +32,18 @@ The reference's three columns, prominent identifiers, navy cards, compact header
 ATIS boxes, blue controls and thin borders are implemented. Deliberate differences:
 
 - Required WIP and coverage warnings, full dates and gust components add height.
-  Long inline tables now have bounded keyboard-scrollable regions; complete raw
-  text remains accessible without truncation or growth to the entire notice length.
+  Inline LOCAL_FORMAT lists have bounded keyboard-scrollable regions; complete
+  supplied LOCAL_FORMAT text remains accessible without truncation.
 - The UTC dropdown shows the supported observation only. TAF/forecast are clearly
   unavailable. No sample configurations, frequencies or weather were copied.
 - Airport names/diagram links are limited to verified existing metadata and links.
   MEM's fixed chart URL/dates were recovered from repository history and restored
   in the header; others are omitted. No diagram URL or ICAO is invented.
-- Each matching source representation remains distinct and complete; provenance
-  details are disclosed separately. Expanded notices may require vertical scrolling.
+- Only LOCAL_FORMAT strings are displayed, in single-column lists without technical
+  disclosures or an airport-wide reader. All records/representations remain in
+  accepted data; matching and source-record counts are unchanged. Expanded notices
+  may require vertical scrolling. The green METAR badge is the sole card METAR link,
+  with removal in the card footer and no Show details disclosure.
 - Synthetic multi-airport screenshots are explicitly labelled test fixtures. The
   separately reviewed public MEM snapshot remains historical with UNKNOWN coverage.
 
