@@ -15,7 +15,8 @@ from urllib.parse import parse_qs, urlsplit
 SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'
 sys.path.insert(0, str(SCRIPTS))
 from capture_storage import platform_storage
-from nms_refresh import Store, SCHEMA, collect, encode
+from nms_refresh import (Store, SCHEMA, collect, collect_classification_candidate,
+                         encode)
 from nms_refresh_contract import (RefreshError, DecodedInitial, auth_request,
                                   initial_request, delta_request, content_request)
 from nms_initial_decoder import assemble_synthetic, decode_initial, inspect_initial
@@ -143,6 +144,92 @@ class RefreshTests(unittest.TestCase):
         self.assert_code('DELTA_GAP', lambda:delta_request((NOW-timedelta(hours=24,seconds=1)).isoformat(), NOW))
         self.assert_code('CLOCK_ROLLBACK', lambda:delta_request((NOW+timedelta(seconds=1)).isoformat(), NOW))
         self.assert_code('INVALID_REQUEST', lambda:initial_request('ALL'))
+
+    def test_domestic_candidate_inline_is_private_inspected_and_never_accepted(self):
+        source = feature('DOMESTIC-CANDIDATE')
+        source['properties']['coreNOTAMData']['notamTranslation'] = [
+            {'type':'LOCAL_FORMAT','simpleText':'!MEM PRIVATE'},
+            {'type':'ICAO','formattedText':'ICAO PRIVATE'}]
+        transport = Transport(self.store, envelope([source]), lambda:self.now)
+        before = self.store.snapshot()
+        result = collect_classification_candidate(self.store, classification='DOMESTIC',
+            credentials=CREDENTIALS, transport=transport, clock=lambda:self.now)
+        self.assertEqual([request.stage for request in transport.requests],
+                         ['auth', 'initial-classification-geojson'])
+        self.assertEqual(result['status'], 'CAPTURED_PRIVATE_CANDIDATE')
+        self.assertEqual(result['inspection']['record_count'], 1)
+        self.assertEqual((result['inspection']['local_format_count'],
+                          result['inspection']['icao_count']), (1, 1))
+        self.assertFalse(result['baseline_established'])
+        self.assertIsNone(result['watermark'])
+        self.assertFalse(result['publication_performed'])
+        self.assertEqual(self.store.snapshot(), before)
+        state = self.state()
+        self.assertFalse(state['baseline']); self.assertIsNone(state['watermark'])
+        self.assertEqual(state['catalog'], {})
+        with self.store.connect() as db:
+            self.assertEqual(db.execute('SELECT status FROM attempts').fetchone()[0],
+                             'CAPTURED_CANDIDATE')
+            retained = db.execute('SELECT body FROM responses WHERE stage=?',
+                                  ('initial-classification-geojson',)).fetchone()[0]
+        self.assertEqual(json.loads(retained), envelope([source]))
+
+    def test_domestic_candidate_follows_one_same_host_content_pointer(self):
+        raw = encode(envelope([feature('CONTINUED')]))
+        requests = []
+        def transport(request, limit):
+            requests.append(request)
+            if request.stage == 'auth':
+                return 200, {}, encode({'access_token': TOKEN})
+            if request.stage == 'initial-classification-geojson':
+                return 200, {}, encode({'status':'Success','data':{
+                    'url':'/nmsapi/v1/content/SYNTHETIC'}})
+            if request.stage == 'content':
+                return 200, {}, raw
+            self.fail('unexpected stage')
+        result = collect_classification_candidate(self.store, classification='DOMESTIC',
+            credentials=CREDENTIALS, transport=transport, clock=lambda:self.now)
+        self.assertTrue(result['content_continuation_used'])
+        self.assertEqual([request.stage for request in requests],
+            ['auth','initial-classification-geojson','content'])
+        with self.store.connect() as db:
+            self.assertEqual(db.execute('SELECT body FROM responses WHERE stage=?',
+                                       ('content',)).fetchone()[0], raw)
+
+    def test_domestic_candidate_reports_compression_without_guessing(self):
+        compressed = b'PK\x03\x04PRIVATE-CANDIDATE'
+        def transport(request, limit):
+            if request.stage == 'auth': return 200, {}, encode({'access_token': TOKEN})
+            if request.stage == 'initial-classification-geojson':
+                return 200, {}, encode({'status':'Success','data':{
+                    'url':'/v1/content/SYNTHETIC'}})
+            return 200, {}, compressed
+        result = collect_classification_candidate(self.store, classification='DOMESTIC',
+            credentials=CREDENTIALS, transport=transport, clock=lambda:self.now)
+        self.assertEqual(result['inspection']['signature'], 'zip')
+        self.assertEqual(result['inspection_diagnostic'], 'UNSUPPORTED_CONTENT')
+        self.assertNotIn('PRIVATE-CANDIDATE', json.dumps(result))
+
+    def test_domestic_candidate_budget_review_is_read_only_and_rechecks_reservation(self):
+        before = {path.name:path.read_bytes() for path in self.store.root.iterdir()}
+        report = self.store.budget_review(self.now)
+        self.assertTrue(report['ledger_time_eligible'])
+        self.assertTrue(report['external_activity_attestation_required'])
+        self.assertFalse(report['reservation_created'])
+        self.assertEqual(before, {path.name:path.read_bytes() for path in self.store.root.iterdir()})
+        collect_classification_candidate(self.store, classification='DOMESTIC',
+            credentials=CREDENTIALS,
+            transport=Transport(self.store, envelope([]), lambda:self.now),
+            clock=lambda:self.now)
+        self.now += timedelta(hours=23)
+        self.assert_code('BUDGET_WAIT', lambda:collect_classification_candidate(
+            self.store, classification='DOMESTIC', credentials=CREDENTIALS,
+            transport=lambda *_:self.fail('network must not run'), clock=lambda:self.now))
+
+    def test_candidate_only_supports_single_domestic_classification(self):
+        self.assert_code('INVALID_REQUEST', lambda:collect_classification_candidate(
+            self.store, classification='FDC', credentials=CREDENTIALS,
+            transport=lambda *_:self.fail('network must not run'), clock=lambda:self.now))
 
     def test_raw_fields_representations_and_acl_preserved_no_record_cap(self):
         features = [feature('SYNTHETIC-'+str(i)) for i in range(151)]

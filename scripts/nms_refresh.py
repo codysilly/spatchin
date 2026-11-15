@@ -18,6 +18,7 @@ from normalize_notam_snapshot import normalize
 from nms_refresh_contract import (RefreshError, Request, DecodedInitial, auth_request,
                                   initial_request, delta_request, content_request,
                                   instant, stamp)
+from nms_geojson_baseline import CandidateError, inspect_bytes, signature_report
 
 SCHEMA = '''
 CREATE TABLE state (singleton INTEGER PRIMARY KEY CHECK(singleton=1), document TEXT NOT NULL);
@@ -35,6 +36,10 @@ PRAGMA user_version=1;
 
 def encode(value):
     return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode()
+
+
+def reject_json_constant(_value):
+    raise ValueError()
 
 
 class Store:
@@ -176,6 +181,33 @@ class Store:
         # Commit completed before auth/data I/O. A restart now finds a durable
         # unresolved reservation; it never interprets a crashed attempt as unused.
         return attempt, state
+
+    def budget_review(self, now):
+        """Read-only ledger eligibility; external-account activity is a separate gate."""
+        now = instant(stamp(now))
+        with self.connect() as db:
+            state = self.load(db)
+            if state['active'] is not None or state['recovery'] is not None:
+                raise RefreshError('RECOVERY_REQUIRED')
+            rows = db.execute('SELECT kind,reserved,last_io FROM attempts').fetchall()
+            latest = max((max(instant(reserved), instant(last_io))
+                          for _, reserved, last_io in rows), default=None)
+            latest_bulk = max((max(instant(reserved), instant(last_io))
+                               for kind, reserved, last_io in rows if kind == 'bulk'),
+                              default=None)
+            primary_not_before = latest + timedelta(minutes=3) if latest else now
+            bulk_not_before = max(primary_not_before,
+                                  latest_bulk + timedelta(hours=24) if latest_bulk else now)
+            return {'ledger_history_verified': True,
+                    'history_complete_through_utc': state['history_complete_through'],
+                    'attempt_count': state['attempt_count'],
+                    'call_count': state['call_count'],
+                    'response_count': state['response_count'],
+                    'minimum_primary_not_before_utc': stamp(primary_not_before),
+                    'minimum_bulk_not_before_utc': stamp(bulk_not_before),
+                    'ledger_time_eligible': now >= bulk_not_before,
+                    'external_activity_attestation_required': True,
+                    'reservation_created': False}
 
     def call_reserved(self, db, attempt, stage, now):
         with self.transaction(db):
@@ -403,5 +435,101 @@ def collect(store, *, mode, credentials, transport, clock, decode_initial=None,
                 except Exception:
                     # A crash/ambiguous commit is not treated as an unused allowance.
                     # No public-file promotion exists in this engine.
+                    raise RefreshError('PERSISTENCE_UNCERTAIN') from None
+            raise RefreshError(code) from None
+
+
+def collect_classification_candidate(store, *, classification, credentials, transport,
+                                     clock, max_bytes=64*1024*1024):
+    """Capture one classification candidate; never establish continuity or publish.
+
+    A bulk reservation is durably committed before auth. The exact initial response
+    and, when supplied, its one documented same-host content continuation are kept
+    in the private response ledger. There is no retry or format guessing.
+    """
+    if classification != 'DOMESTIC' or not callable(transport) or max_bytes < 1:
+        raise RefreshError('INVALID_REQUEST')
+    auth = auth_request(credentials)
+    attempt = None
+    with store.connect() as db:
+        try:
+            attempt, _ = store.reserve(db, 'bulk', clock())
+
+            def send(request, token=None):
+                store.call_reserved(db, attempt, request.stage, clock())
+                headers = dict(request.headers)
+                if token is not None:
+                    headers['Authorization'] = 'Bearer ' + token
+                prepared = Request(request.stage, request.url, headers,
+                                   request.body, request.method)
+                limit = 65536 if request.stage == 'auth' else max_bytes
+                try:
+                    status, _, body = transport(prepared, limit)
+                except Exception:
+                    raise RefreshError('TRANSPORT_FAILED') from None
+                if not isinstance(body, bytes) or len(body) > limit:
+                    raise RefreshError('RESPONSE_TOO_LARGE')
+                if status != 200:
+                    raise RefreshError('AUTH_FAILED' if request.stage == 'auth' else 'HTTP_FAILED')
+                if request.stage != 'auth':
+                    store.received(db, attempt, request.stage, body, clock())
+                return body
+
+            try:
+                token = json.loads(send(auth))['access_token']
+                if not isinstance(token, str) or not token or any(
+                        ord(character) < 33 or ord(character) > 126 for character in token):
+                    raise ValueError()
+            except RefreshError:
+                raise
+            except Exception:
+                raise RefreshError('AUTH_FAILED') from None
+
+            started = clock()
+            request = initial_request(classification)
+            body = send(request, token)
+            continuation_used = False
+            try:
+                envelope = json.loads(body, parse_constant=reject_json_constant)
+            except (UnicodeDecodeError, json.JSONDecodeError, ValueError, RecursionError):
+                envelope = None
+            if (isinstance(envelope, dict) and envelope.get('status') == 'Success'
+                    and envelope.get('errors') in (None, [])
+                    and isinstance(envelope.get('data'), dict)
+                    and isinstance(envelope['data'].get('url'), str)
+                    and 'geojson' not in envelope['data']):
+                body = send(content_request(envelope['data']['url'], stamp(started), clock()), token)
+                continuation_used = True
+
+            report = signature_report(body, classification)
+            diagnostic = None
+            try:
+                report = inspect_bytes(body, classification,
+                    provenance={'source': 'private production candidate',
+                                'content_continuation': continuation_used}).report
+            except CandidateError as error:
+                diagnostic = str(error)
+            with store.transaction(db):
+                state = store.load(db)
+                if state['active'] != attempt:
+                    raise RefreshError('RECOVERY_REQUIRED')
+                state['active'] = None
+                store.save(db, state)
+                db.execute('UPDATE attempts SET status=? WHERE id=?',
+                           ('CAPTURED_CANDIDATE', attempt))
+            return {'attempt': attempt, 'status': 'CAPTURED_PRIVATE_CANDIDATE',
+                    'classification': classification, 'http_status': 200,
+                    'content_continuation_used': continuation_used,
+                    'inspection_diagnostic': diagnostic, 'inspection': report,
+                    'baseline_established': False, 'watermark': None,
+                    'publication_performed': False, 'coverage': 'UNKNOWN'}
+        except Exception as error:
+            code = (str(error) if isinstance(error, RefreshError) else
+                    'BUSY' if (getattr(error, 'sqlite_errorcode', 0) & 255) in (5, 6)
+                    else 'LOCAL_FAILURE')
+            if attempt is not None:
+                try:
+                    store.failed(db, attempt, code, clock())
+                except Exception:
                     raise RefreshError('PERSISTENCE_UNCERTAIN') from None
             raise RefreshError(code) from None
