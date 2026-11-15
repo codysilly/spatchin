@@ -12,9 +12,11 @@ test('published KMEM snapshot retains real display data without private capture 
  assert.equal(notices.reduce((n,x)=>n+x.formatted_texts.filter(t=>t.type==='ICAO').length,0),21);
  for(const notice of notices){
   for(const field of ['id','number','text','issued','effectiveStart','effectiveEnd','lastUpdated'])assert.equal(typeof notice[field],'string',field);
-  for(const field of ['original_feature','source_index','attempt','accountId','contentUrl'])assert.equal(field in notice,false,field);
+  for(const field of ['original_feature','source_index','attempt','accountId','contentUrl','source'])assert.equal(field in notice,false,field);
  }
  assert.equal(data.publication.source_reference,'https://notams.aim.faa.gov/notamSearch/');
+ assert.equal('source' in data.publication,false);
+ assert.equal('warning' in data.airports.KMEM,false);
  const serialized=JSON.stringify(data);
  for(const value of ['nms-shared-ledger','notam-geojson-baseline','d876acdd1a814b73bf57fc4a7170c78b','FAA_NMS_CLIENT'])assert.equal(serialized.includes(value),false,value);
 
@@ -25,5 +27,8 @@ test('published KMEM snapshot retains real display data without private capture 
  assert.equal(records.filter(notice=>notice.references.length).length,16);
  assert.deepEqual(Object.fromEntries(inventory.map(id=>[id,records.filter(notice=>notice.references.some(ref=>ref.id===id)).length])),
   {'09':1,'18C':1,'18L':1,'18R':3,'27':1,'36C':1,'36L':3,'36R':5});
- assert.match(reader.summary('KMEM'),/All airport snapshot notices \(38\)/);
+ const summary=reader.summary('KMEM');
+ assert.match(summary,/NOTAM snapshot/);assert.match(summary,/Retrieved: 2026-11-15 10:39 UTC/);
+ assert.doesNotMatch(summary,/Completeness:|Historical snapshot|no automatic|FAA NMS/);
+ assert.match(summary,/All airport snapshot notices \(38\)/);
 });
