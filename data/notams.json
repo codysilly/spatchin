@@ -3,13 +3,11 @@
   "publication": {
     "mode": "fixed snapshot",
     "automatic_updates": false,
-    "source": "FAA NMS DOMESTIC classification snapshot",
     "source_reference": "https://notams.aim.faa.gov/notamSearch/"
   },
   "airports": {
     "KMEM": {
       "completeness": "UNKNOWN",
-      "warning": "Fixed FAA DOMESTIC classification snapshot; no automatic updates. Complete airport coverage is UNKNOWN. Reported times do not establish current operational validity. Runway references are literal text matches only; availability and closures are not assessed.",
       "notices": [
         {
           "id": "NMS_ID_4270399263031366",
@@ -21,7 +19,6 @@
           "effectiveEnd": "2027-01-12T09:28:00.000Z",
           "lastUpdated": "2026-10-14T08:30:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -40,7 +37,6 @@
           "effectiveEnd": "2026-11-25T07:13:00.000Z",
           "lastUpdated": "2026-08-27T06:16:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -59,7 +55,6 @@
           "effectiveEnd": "2026-12-21T23:59:00.000Z",
           "lastUpdated": "2026-09-21T11:42:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -78,7 +73,6 @@
           "effectiveEnd": "2027-02-26T23:59:00.000Z",
           "lastUpdated": "2026-08-02T08:37:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -97,7 +91,6 @@
           "effectiveEnd": "2026-12-22T09:50:00Z",
           "lastUpdated": "2026-09-23T08:52:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -121,7 +114,6 @@
           "effectiveEnd": "2026-11-18T03:00:00.000Z",
           "lastUpdated": "2026-11-10T03:36:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -140,7 +132,6 @@
           "effectiveEnd": "2026-11-18T03:00:00.000Z",
           "lastUpdated": "2026-11-10T03:40:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -159,7 +150,6 @@
           "effectiveEnd": "2026-11-18T03:00:00.000Z",
           "lastUpdated": "2026-11-10T03:46:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -178,7 +168,6 @@
           "effectiveEnd": "2026-12-08T22:06:00Z",
           "lastUpdated": "2026-09-09T21:08:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -202,7 +191,6 @@
           "effectiveEnd": "2027-04-01T20:00:00Z",
           "lastUpdated": "2026-10-02T11:10:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -226,7 +214,6 @@
           "effectiveEnd": "2026-11-16T23:30:00Z",
           "lastUpdated": "2026-11-10T22:09:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -250,7 +237,6 @@
           "effectiveEnd": "2026-11-16T23:30:00Z",
           "lastUpdated": "2026-11-10T22:10:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -274,7 +260,6 @@
           "effectiveEnd": "2026-11-17T21:00:00Z",
           "lastUpdated": "2026-11-10T22:14:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -298,7 +283,6 @@
           "effectiveEnd": "2026-11-17T21:00:00Z",
           "lastUpdated": "2026-11-10T22:14:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -322,7 +306,6 @@
           "effectiveEnd": "2027-03-13T23:30:00.000Z",
           "lastUpdated": "2026-11-10T22:40:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -341,7 +324,6 @@
           "effectiveEnd": "2027-03-13T23:30:00.000Z",
           "lastUpdated": "2026-11-10T22:42:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -360,7 +342,6 @@
           "effectiveEnd": "2026-11-18T22:00:00.000Z",
           "lastUpdated": "2026-11-11T14:04:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -379,7 +360,6 @@
           "effectiveEnd": "2026-11-18T21:00:00Z",
           "lastUpdated": "2026-11-11T14:05:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -403,7 +383,6 @@
           "effectiveEnd": "2026-11-18T21:00:00Z",
           "lastUpdated": "2026-11-11T14:06:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -427,7 +406,6 @@
           "effectiveEnd": "2027-02-10T16:59:00.000Z",
           "lastUpdated": "2026-11-12T17:01:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -446,7 +424,6 @@
           "effectiveEnd": "2027-02-10T17:46:00.000Z",
           "lastUpdated": "2026-11-12T17:54:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -465,7 +442,6 @@
           "effectiveEnd": "2026-11-18T23:00:00Z",
           "lastUpdated": "2026-11-12T20:27:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -489,7 +465,6 @@
           "effectiveEnd": "2026-11-18T23:00:00Z",
           "lastUpdated": "2026-11-12T20:27:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -513,7 +488,6 @@
           "effectiveEnd": "2026-11-17T23:00:00Z",
           "lastUpdated": "2026-11-12T19:41:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -537,7 +511,6 @@
           "effectiveEnd": "2026-11-17T23:00:00Z",
           "lastUpdated": "2026-11-12T19:42:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -561,7 +534,6 @@
           "effectiveEnd": "2026-11-16T23:00:00Z",
           "lastUpdated": "2026-11-13T13:51:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -585,7 +557,6 @@
           "effectiveEnd": "2026-11-16T23:00:00Z",
           "lastUpdated": "2026-11-13T13:54:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -609,7 +580,6 @@
           "effectiveEnd": "2027-01-01T18:00:00.000Z",
           "lastUpdated": "2026-10-23T17:46:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -628,7 +598,6 @@
           "effectiveEnd": "2026-12-31T23:59:00.000Z",
           "lastUpdated": "2026-11-13T18:10:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -647,7 +616,6 @@
           "effectiveEnd": "2027-01-23T08:04:00.000Z",
           "lastUpdated": "2026-10-25T07:07:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -666,7 +634,6 @@
           "effectiveEnd": "2026-11-17T23:00:00Z",
           "lastUpdated": "2026-11-13T22:22:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -690,7 +657,6 @@
           "effectiveEnd": "2026-11-16T17:00:00Z",
           "lastUpdated": "2026-11-13T22:42:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -709,7 +675,6 @@
           "effectiveEnd": "2026-11-16T23:00:00Z",
           "lastUpdated": "2026-11-14T12:48:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -733,7 +698,6 @@
           "effectiveEnd": "2026-11-16T21:00:00Z",
           "lastUpdated": "2026-11-14T12:55:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -757,7 +721,6 @@
           "effectiveEnd": "2026-11-17T21:00:00Z",
           "lastUpdated": "2026-11-14T13:31:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -781,7 +744,6 @@
           "effectiveEnd": "2026-12-11T15:39:00.000Z",
           "lastUpdated": "2026-10-27T09:39:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -805,7 +767,6 @@
           "effectiveEnd": "2026-11-18T21:00:00Z",
           "lastUpdated": "2026-11-14T16:03:00Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
@@ -829,7 +790,6 @@
           "effectiveEnd": "2026-11-30T23:59:00.000Z",
           "lastUpdated": "2026-10-30T15:01:00.000Z",
           "retrieved_utc": "2026-11-15T10:39:04.087408+00:00",
-          "source": "FAA NMS DOMESTIC classification snapshot",
           "formatted_texts": [
             {
               "type": "LOCAL_FORMAT",
