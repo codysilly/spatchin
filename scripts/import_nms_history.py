@@ -10,7 +10,7 @@ from datetime import datetime, timezone, timedelta
 
 from capture_storage import platform_storage
 from nms_refresh import Store, SCHEMA, encode
-from nms_refresh_contract import instant
+from nms_refresh_contract import instant, stamp
 
 
 class HistoryImportError(Exception):
@@ -19,7 +19,8 @@ class HistoryImportError(Exception):
     IMPORT_CONTRADICTION IMPORT_UNBOUNDED_UNCERTAINTY IMPORT_EVIDENCE_MISMATCH
     IMPORT_INVALID_SNAPSHOT IMPORT_TARGET_EXISTS IMPORT_INVALID_TARGET
     IMPORT_APPROVAL_MISMATCH IMPORT_STORAGE_FAILURE IMPORT_INTERRUPTED
-    IMPORT_FINALIZATION_UNCERTAIN'''.split())
+    IMPORT_FINALIZATION_UNCERTAIN IMPORT_RECOVERY_NOT_ELIGIBLE
+    IMPORT_RECOVERY_SCOPE_MISMATCH'''.split())
 
     def __init__(self, code):
         super().__init__(code if code in self.CODES else 'IMPORT_STORAGE_FAILURE')
@@ -312,12 +313,140 @@ def import_history(manifest_path, target, *, approve, clock=lambda:datetime.now(
             db.close()
 
 
+def review_uncertainty_release(target, declaration_path, *, clock=lambda:datetime.now(timezone.utc), storage=None):
+    """Read-only review of the one bounded historical timing hold."""
+    target=Path(target);storage=storage or platform_storage();now=clock()
+    try:
+        for path in (target,target/'import-status.json',target/'import-manifest.private.json',
+                     target/'account.sqlite3',target/'account.sqlite3-journal'):
+            storage.validate_location(path);storage.verify_private(path)
+        marker=strict_json(read_bounded(target/'import-status.json',8192))
+        if (marker.get('schema')!=1 or marker.get('state')!='HELD_UNCERTAINTY'
+                or not isinstance(marker.get('approval_digest'),str)):
+            raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        imported,manifest,_,_=review(target/'import-manifest.private.json',target,
+                                     clock=clock,_existing_target=True)
+        if marker['approval_digest']!=imported['approval_digest'] or not imported['activation_hold']:
+            raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        if (len(manifest['uncertainties'])!=1
+                or manifest['uncertainties'][0].get('code')!='TIMING_UNCERTAIN'):
+            raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        uncertain_id=manifest['uncertainties'][0]['attempt_id']
+        uncertain=[item for item in manifest['attempts'] if item['id']==uncertain_id]
+        if len(uncertain)!=1:
+            raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        attempt=uncertain[0]
+        if (attempt['outcome']!='uncertain' or attempt['last_io_is_upper_bound'] is not True
+                or attempt['known_call_count']<1 or any(call['at_utc'] is not None
+                or call['certainty']!='unknown-time' for call in attempt['calls'])):
+            raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        declaration_raw=read_bounded(declaration_path,64*1024)
+        declaration=strict_json(declaration_raw)
+        checked_object(declaration,['schema_version','account','inventory_complete',
+            'all_external_clients_stopped','confirmed_through_utc','statement',
+            'bound_import_approval_digest'])
+        confirmed=utc(declaration['confirmed_through_utc'])
+        if (declaration['schema_version']!=1 or declaration['account']!=manifest['account']['logical_id']
+                or declaration['inventory_complete'] is not True
+                or declaration['all_external_clients_stopped'] is not True
+                or not isinstance(declaration['statement'],str) or not declaration['statement'].strip()
+                or declaration['bound_import_approval_digest']!=marker['approval_digest']
+                or confirmed>now or now-confirmed>timedelta(minutes=5)):
+            raise HistoryImportError('IMPORT_RECOVERY_NOT_ELIGIBLE')
+        upper=utc(attempt['last_io_utc'])
+        existing=utc(imported['minimum_bulk_not_before_utc'])
+        release_not_before=max(upper+timedelta(hours=24),existing)
+        db=sqlite3.connect((target/'account.sqlite3').as_uri()+'?mode=ro',uri=True)
+        try:
+            state=json.loads(db.execute('SELECT document FROM state WHERE singleton=1').fetchone()[0])
+            row=db.execute('SELECT status,error,last_io FROM attempts WHERE id=?',(uncertain_id,)).fetchone()
+            if (state.get('import_digest')!=marker['approval_digest'] or state.get('active') is not None
+                    or state.get('recovery')!='IMPORTED_UNCERTAINTY' or state.get('history_verified') is not False
+                    or row!=('IMPORTED_UNCERTAIN','IMPORTED_UNCERTAINTY',attempt['last_io_utc'])
+                    or db.execute('SELECT count(*) FROM attempts').fetchone()[0]!=len(manifest['attempts'])):
+                raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH')
+        finally:db.close()
+        binding={'schema':1,'target':str(target.resolve()),'account':manifest['account']['logical_id'],
+            'account_reference_sha256':imported['account_reference_sha256'],
+            'import_approval_digest':marker['approval_digest'],
+            'manifest_sha256':imported['manifest_sha256'],
+            'prior_snapshot_sha256':imported['prior_snapshot_sha256'],
+            'receipt_sha256':attempt['receipt']['sha256'],'uncertain_attempt_id':uncertain_id,
+            'uncertainty_code':'TIMING_UNCERTAIN','unknown_call_count':attempt['known_call_count'],
+            'upper_bound_utc':attempt['last_io_utc'],'release_not_before_utc':release_not_before.isoformat(),
+            'inventory_confirmed_through_utc':declaration['confirmed_through_utc'],
+            'declaration_sha256':digest(declaration_raw)}
+        approval=digest(encode(binding))
+        return {'status':'HISTORICAL_RELEASE_REVIEW','release_approval_digest':approval,
+            'release_eligible':now>=release_not_before,'release_not_before_utc':release_not_before.isoformat(),
+            'reviewed_utc':stamp(now),'account':manifest['account']['logical_id'],
+            'attempt_id':uncertain_id,'known_call_count':attempt['known_call_count'],
+            'unknown_individual_timestamps':True,'upper_bound_utc':attempt['last_io_utc'],
+            'uncertainty_retained_after_release':True,'inventory_confirmed':True,
+            'external_clients_stopped':True,'writes_performed':False,'binding':binding}
+    except HistoryImportError:raise
+    except Exception:raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH') from None
+
+
+def release_uncertainty(target, declaration_path, *, approve, clock=lambda:datetime.now(timezone.utc), storage=None):
+    """Release only a reviewed, elapsed TIMING_UNCERTAIN import hold."""
+    storage=storage or platform_storage();target=Path(target)
+    report=review_uncertainty_release(target,declaration_path,clock=clock,storage=storage)
+    if not report['release_eligible']:
+        raise HistoryImportError('IMPORT_RECOVERY_NOT_ELIGIBLE')
+    if approve!=report['release_approval_digest']:
+        raise HistoryImportError('IMPORT_APPROVAL_MISMATCH')
+    raw=read_bounded(declaration_path,64*1024);db=None;finalizing=False
+    try:
+        storage.private_write(target/'uncertainty-release-declaration.private.json',raw)
+        db=sqlite3.connect((target/'account.sqlite3').as_uri()+'?mode=rw',uri=True,isolation_level=None)
+        if db.execute('PRAGMA journal_mode=PERSIST').fetchone()[0]!='persist':raise ValueError()
+        db.execute('PRAGMA synchronous=EXTRA');db.execute('BEGIN IMMEDIATE')
+        state=json.loads(db.execute('SELECT document FROM state WHERE singleton=1').fetchone()[0])
+        if state.get('recovery')!='IMPORTED_UNCERTAINTY' or state.get('active') is not None:raise ValueError()
+        state.update(history_verified=True,recovery=None,
+            history_complete_through=report['binding']['inventory_confirmed_through_utc'],
+            historical_uncertainty={
+            'status':'RELEASED_BOUNDED_TIMING_UNCERTAINTY','attempt_id':report['attempt_id'],
+            'unknown_individual_timestamps':True,'known_call_count':report['known_call_count'],
+            'upper_bound_utc':report['upper_bound_utc'],'release_not_before_utc':report['release_not_before_utc'],
+            'inventory_confirmed_through_utc':report['binding']['inventory_confirmed_through_utc'],
+            'release_approval_digest':approve,'released_utc':report['reviewed_utc'],
+            'uncertainty_retained':True})
+        db.execute('UPDATE state SET document=? WHERE singleton=1',(encode(state).decode(),));db.execute('COMMIT')
+        marker={'schema':1,'state':'READY','approval_digest':state['import_digest'],
+                'historical_release_approval_digest':approve}
+        storage.private_write(target/'import-status.next',encode(marker));finalizing=True
+        storage.replace(target/'import-status.next',target/'import-status.json')
+        return {**report,'status':'RELEASED_READY_NO_BASELINE','writes_performed':True}
+    except FileExistsError:raise HistoryImportError('IMPORT_RECOVERY_SCOPE_MISMATCH') from None
+    except HistoryImportError:raise
+    except Exception:raise HistoryImportError('IMPORT_FINALIZATION_UNCERTAIN' if finalizing else 'IMPORT_INTERRUPTED') from None
+    finally:
+        if db is not None:
+            if db.in_transaction:db.rollback()
+            db.close()
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--manifest',required=True);parser.add_argument('--target',required=True)
+    parser.add_argument('--manifest');parser.add_argument('--target',required=True)
     parser.add_argument('--write',action='store_true');parser.add_argument('--approve')
+    parser.add_argument('--release-declaration');parser.add_argument('--release-historical-hold',action='store_true')
+    parser.add_argument('--approve-release')
     args=parser.parse_args()
     try:
+        if args.release_declaration:
+            if args.manifest or args.write or args.approve:raise HistoryImportError('IMPORT_INVALID_MANIFEST')
+            report=review_uncertainty_release(args.target,args.release_declaration)
+            print(json.dumps(report,indent=2),flush=True)
+            if args.release_historical_hold:
+                result=release_uncertainty(args.target,args.release_declaration,approve=args.approve_release)
+                print(json.dumps({'status':result['status'],'release_approval_digest':result['release_approval_digest']}))
+            elif args.approve_release:raise HistoryImportError('IMPORT_INVALID_MANIFEST')
+            return
+        if not args.manifest or args.release_historical_hold or args.approve_release:
+            raise HistoryImportError('IMPORT_INVALID_MANIFEST')
         report,_,_,_=review(args.manifest,args.target)
         print(json.dumps(report,indent=2),flush=True)  # Review precedes the first write.
         if args.write:

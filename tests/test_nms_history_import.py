@@ -1,5 +1,6 @@
 """Explicit synthetic manifests/receipts/snapshots; no production store access."""
 import copy
+from datetime import timedelta
 import hashlib
 import json
 from pathlib import Path
@@ -13,7 +14,8 @@ from unittest.mock import patch
 SCRIPTS=Path(__file__).resolve().parents[1]/'scripts'
 sys.path.insert(0,str(SCRIPTS))
 from capture_storage import platform_storage
-from import_nms_history import review, import_history, HistoryImportError
+from import_nms_history import (review, import_history, review_uncertainty_release,
+                                release_uncertainty, HistoryImportError)
 from nms_refresh import Store, collect
 from nms_refresh_contract import RefreshError, DecodedInitial
 from test_nms_refresh import NOW, CREDENTIALS
@@ -51,6 +53,23 @@ class ImportTests(unittest.TestCase):
     def assert_code(self,code,call):
         with self.assertRaises(HistoryImportError) as e:call()
         self.assertEqual(str(e.exception),code);self.assertNotIn('SYNTHETIC',str(e.exception))
+
+    def held_timing_store(self):
+        attempt=self.manifest['attempts'][0]
+        attempt.update(outcome='uncertain',last_io_is_upper_bound=True,
+            calls=[{'stage':'auth','at_utc':None,'certainty':'unknown-time'},
+                   {'stage':'other-data','at_utc':None,'certainty':'unknown-time'}])
+        self.manifest['uncertainties']=[{'attempt_id':attempt['id'],'code':'TIMING_UNCERTAIN'}]
+        self.save();approval=self.report()['approval_digest'];self.execute()
+        return approval
+
+    def release_declaration(self,approval,now,**changes):
+        value={'schema_version':1,'account':'SYNTHETIC-ACCOUNT','inventory_complete':True,
+               'all_external_clients_stopped':True,'confirmed_through_utc':now.isoformat(),
+               'statement':'SYNTHETIC complete inventory and all clients stopped',
+               'bound_import_approval_digest':approval}
+        value.update(changes);path=self.base/'release-declaration.json'
+        path.write_text(json.dumps(value),encoding='utf-8');return path
 
     def test_dry_run_has_no_writes_or_sqlite_connection_and_redacts_source_text(self):
         before={p.name:p.read_bytes() for p in self.base.iterdir()}
@@ -151,6 +170,60 @@ class ImportTests(unittest.TestCase):
             state=json.loads(db.execute('SELECT document FROM state').fetchone()[0])
             self.assertEqual(state['call_count'],2);self.assertFalse(state['history_verified'])
         finally:db.close()
+
+    def test_bounded_timing_hold_review_and_release_preserve_uncertainty(self):
+        approval=self.held_timing_store();now=NOW+timedelta(hours=25)
+        declaration=self.release_declaration(approval,now)
+        report=review_uncertainty_release(self.target,declaration,clock=lambda:now)
+        self.assertTrue(report['release_eligible']);self.assertFalse(report['writes_performed'])
+        self.assertTrue(report['unknown_individual_timestamps'])
+        result=release_uncertainty(self.target,declaration,
+            approve=report['release_approval_digest'],clock=lambda:now)
+        self.assertEqual(result['status'],'RELEASED_READY_NO_BASELINE')
+        with Store(self.target,account='SYNTHETIC-ACCOUNT').connect() as db:
+            state=Store(self.target,account='SYNTHETIC-ACCOUNT').load(db)
+            self.assertTrue(state['historical_uncertainty']['uncertainty_retained'])
+            self.assertTrue(state['historical_uncertainty']['unknown_individual_timestamps'])
+            self.assertEqual(state['history_complete_through'],now.isoformat())
+            self.assertEqual(db.execute('SELECT status,error,last_io FROM attempts').fetchone(),
+                ('IMPORTED_UNCERTAIN','IMPORTED_UNCERTAINTY','2026-01-02T11:01:00Z'))
+            self.assertEqual(db.execute('SELECT at FROM calls').fetchall(),
+                             [('UNVERIFIED_TIME',),('UNVERIFIED_TIME',)])
+
+    def test_bounded_release_requires_elapsed_twenty_four_hours(self):
+        approval=self.held_timing_store();declaration=self.release_declaration(approval,NOW)
+        report=review_uncertainty_release(self.target,declaration,clock=lambda:NOW)
+        self.assertFalse(report['release_eligible'])
+        self.assert_code('IMPORT_RECOVERY_NOT_ELIGIBLE',lambda:release_uncertainty(
+            self.target,declaration,approve=report['release_approval_digest'],clock=lambda:NOW))
+
+    def test_bounded_release_rejects_mismatched_evidence_or_approval(self):
+        approval=self.held_timing_store();now=NOW+timedelta(hours=25)
+        wrong=self.release_declaration('0'*64,now)
+        self.assert_code('IMPORT_RECOVERY_NOT_ELIGIBLE',lambda:review_uncertainty_release(
+            self.target,wrong,clock=lambda:now))
+        declaration=self.release_declaration(approval,now)
+        report=review_uncertainty_release(self.target,declaration,clock=lambda:now)
+        self.assert_code('IMPORT_APPROVAL_MISMATCH',lambda:release_uncertainty(
+            self.target,declaration,approve='0'*64,clock=lambda:now))
+
+    def test_bounded_release_requires_complete_inventory_and_stopped_clients(self):
+        approval=self.held_timing_store();now=NOW+timedelta(hours=25)
+        for changes in ({'inventory_complete':False},{'all_external_clients_stopped':False},
+                        {'confirmed_through_utc':(now-timedelta(minutes=6)).isoformat()}):
+            declaration=self.release_declaration(approval,now,**changes)
+            with self.subTest(changes=changes):
+                self.assert_code('IMPORT_RECOVERY_NOT_ELIGIBLE',lambda:review_uncertainty_release(
+                    self.target,declaration,clock=lambda:now))
+
+    def test_bounded_release_refuses_unrelated_unresolved_holds(self):
+        attempt=self.manifest['attempts'][0]
+        attempt.update(outcome='uncertain',last_io_is_upper_bound=True)
+        self.manifest['uncertainties']=[{'attempt_id':attempt['id'],'code':'OUTCOME_UNKNOWN'}]
+        self.save();approval=self.report()['approval_digest'];self.execute();now=NOW+timedelta(hours=25)
+        declaration=self.release_declaration(approval,now)
+        self.assert_code('IMPORT_RECOVERY_SCOPE_MISMATCH',lambda:review_uncertainty_release(
+            self.target,declaration,clock=lambda:now))
 
     def test_interruption_at_every_pre_ready_checkpoint_blocks_engine_and_reimport(self):
         for point in ['pending','history-written','validated']:
