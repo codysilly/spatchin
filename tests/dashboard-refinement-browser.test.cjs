@@ -18,7 +18,11 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
   const link=page.locator('[data-airport="MEM"] .airport-head a');
   assert.equal(await link.getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
   assert.equal(await link.getAttribute('target'),'_blank');assert.equal(await link.getAttribute('rel'),'noopener');
-  assert.match(await link.textContent(),/Airport diagram.*↗/);assert.match(await page.locator('.airport-diagram small').innerText(),/2026-10-29 through 2026-11-26/);
+  assert.match(await link.textContent(),/Airport diagram.*↗/);assert.match(await link.getAttribute('title'),/2026-10-29 through 2026-11-26/);assert.equal(await page.locator('.airport-diagram small').count(),0);
+  const card=page.locator('[data-airport="MEM"]'),layout=await card.evaluate(el=>{const box=s=>el.querySelector(s).getBoundingClientRect(),code=box('.icao'),name=box('.name'),diagram=box('.airport-diagram'),badge=box('.weather-badge'),status=box('.metar-status'),raw=box('.metar-raw'),tafBadge=box('.taf strong'),tafText=box('.taf span'),atis=box('.atis'),boxes=[...el.querySelectorAll('.atis-box')].map(x=>x.getBoundingClientRect());return {code,name,diagram,badge,status,raw,tafBadge,tafText,atis,boxes,codeSize:parseFloat(getComputedStyle(el.querySelector('.icao')).fontSize),nameSize:parseFloat(getComputedStyle(el.querySelector('.name')).fontSize)};});
+  assert.ok(layout.codeSize>=42&&layout.nameSize>=17);assert.ok(layout.name.top>=layout.code.bottom-1);assert.ok(layout.diagram.left>=layout.code.right||layout.diagram.top>=layout.name.bottom);
+  assert.ok(Math.abs(layout.status.left-layout.raw.left)<1);assert.ok(layout.raw.left>layout.badge.right);assert.ok(Math.abs(layout.tafText.left-layout.status.left)<1);assert.ok(layout.tafText.left>layout.tafBadge.right);
+  assert.ok(Math.abs(layout.boxes[0].width-layout.boxes[1].width)<1);assert.ok(layout.atis.top>layout.tafText.bottom);assert.equal(await card.locator('.wind,.weather-line,.reading,.wind .sub').count(),0);
   assert.equal(await page.locator('[data-airport="LAX"] .airport-head a').count(),0);
   assert.deepEqual(await page.evaluate(()=>['ORD','LAX','JFK','IND'].map(c=>diagramHeader(c))),['','','','']);
   assert.equal(await page.evaluate(()=>{runwayData.airport_metadata={LAX:{heading_method:'chart-derived-approximate',source_url:runwayData.source_url}};const html=diagramHeader('LAX');delete runwayData.airport_metadata;return html;}),'');

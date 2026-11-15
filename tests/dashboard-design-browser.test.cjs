@@ -13,6 +13,7 @@ test('version-controlled originals match owner-approved fingerprints',()=>{
 });
 async function localPage(width){const context=await browser.newContext({viewport:{width,height:1200}}),page=await context.newPage(),external=[],errors=[];
  await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
+async function upperCardScreenshot(page,path){await page.evaluate(()=>scrollTo(0,0));const clip=await page.locator('[data-airport="MEM"]').evaluate(el=>{const card=el.getBoundingClientRect(),atis=el.querySelector('.atis').getBoundingClientRect();return {x:card.x,y:card.y,width:card.width,height:atis.bottom-card.y};});await page.screenshot({path,clip});}
 for(const width of [1440,390])test(`actual app synthetic visual review and branding at ${width}px`,async()=>{
  const {context,page,external,errors}=await localPage(width),now=new Date().toISOString();
  const notice={number:'11/207',id:'SYNTHETIC-ONLY',source:'Synthetic test fixture, not a provider record',text:'SYNTHETIC RWY 18R/36L lighting report\r\nSCANDEMO — illustrative text only. No operational interpretation.'};
@@ -32,12 +33,18 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
   assert.equal(await page.locator('.airport').count(),3);assert.equal(await page.locator('[data-observed-time]').count(),3);
   await page.locator('[data-reader-open="KMEM-36L"]').click();
   await page.screenshot({path:join(screenshots,`synthetic-${width}.png`),fullPage:true});
+  await upperCardScreenshot(page,join(screenshots,`synthetic-current-populated-upper-${width}.png`));
   await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('LOWER_MATCH_A, LOWER_MATCH_B');await page.waitForFunction(()=>document.querySelector('#cards mark'));await page.locator('#scan-next').click();await page.locator('#scan-next').click();
   assert.equal(await page.locator('.scan-current').textContent(),'LOWER_MATCH_B');
   assert.ok(await page.locator('.scan-current').evaluate(el=>{const r=el.getBoundingClientRect(),panel=el.closest('[data-reader-scroll]'),p=panel.getBoundingClientRect();return r.top>=Math.max(0,p.top)&&r.bottom<=Math.min(innerHeight,p.bottom)&&panel.scrollTop>(panel.scrollHeight-panel.clientHeight)*.8;}));
   assert.equal(await page.locator('mark mark').count(),0);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:join(screenshots,`synthetic-scan-${width}.png`),fullPage:true});
+  if(width===1440){
+   await page.evaluate(()=>{metars.MEM={observed:new Date(Date.now()-2*60*60*1000).toISOString(),raw:'SYNTHETIC STALE METAR — LAYOUT EVIDENCE ONLY',wind:{direction:80,speed:9,gust:null},error:null};atisData=null;atisRetrieved=null;render();const label=document.querySelector('.synthetic-banner');label.textContent='SYNTHETIC STALE METAR / UNAVAILABLE ATIS — NOT LIVE AVIATION DATA';});
+   assert.equal(await page.locator('[data-airport="MEM"] .metar-status').textContent(),'METAR STALE · 65+ MIN');assert.match(await page.locator('[data-airport="MEM"] .atis-full').textContent(),/ATIS not available/);
+   await upperCardScreenshot(page,join(screenshots,'synthetic-stale-metar-unavailable-atis-upper-1440.png'));
+  }
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
@@ -58,8 +65,8 @@ test('public MEM keeps 100 records and all 48 LOCAL_FORMAT / 83 ICAO representat
   assert.match(await page.locator('.notam-summary').innerText(),/2026-11-13T02:52:31\.040326\+00:00/);
   assert.match(await page.locator('.notam-summary').innerText(),/UNKNOWN/);assert.match(await page.locator('.notam-summary').innerText(),/no automatic updates/i);
   assert.equal(await page.locator('.collection-warning').textContent(),data.airports.KMEM.warning);
-  await page.locator('[data-reader-open="KMEM-36L"]').click();await page.screenshot({path:join(screenshots,'public-historical-mem-desktop.png'),fullPage:true});
-  await page.setViewportSize({width:390,height:1200});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(screenshots,'public-historical-mem-mobile.png'),fullPage:true});
+  await page.locator('[data-reader-open="KMEM-36L"]').click();await page.screenshot({path:join(screenshots,'public-historical-mem-desktop.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-desktop.png'));
+  await page.setViewportSize({width:390,height:1200});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(screenshots,'public-historical-mem-mobile.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-mobile.png'));
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });

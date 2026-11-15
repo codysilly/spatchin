@@ -1,5 +1,40 @@
 # Dashboard presentation cleanup validation
 
+## Final upper-card correction
+
+The final focused PR #24 follow-up applies the owner-supplied MEM close-up to the
+airport card's upper presentation only. The tested source tree is the commit that
+contains this section; its non-self-referential SHA is recorded in the PR update.
+Changed source/test files are `app.js`, `dashboard.css`,
+`docs/reference/VALIDATION.md`,
+`tests/dashboard-design-browser.test.cjs`,
+`tests/dashboard-refinement-browser.test.cjs` and `tests/scan.test.cjs`.
+
+On November 14, 2026, the complete established native Windows JavaScript/browser
+suite passed **77 tests, 0 failed, 0 skipped** in **29.574 seconds**. A corrected
+focused visual rerun passed **4 tests, 0 failed, 0 skipped** in **4.263 seconds**
+after normalizing the screenshot crop's scroll position. Tests remained serial,
+used installed Chrome/Python and blocked external page/provider navigation. No
+Python suite, package download or live aviation request was run.
+
+The upper header now uses the requested airport-code/name hierarchy and keeps
+verified chart dates only in the link title/accessibility description. METAR and
+TAF use matching two-column grids; METAR freshness and exact raw observation
+share one text edge without a visible wind-summary or observation-time row.
+Parsed wind, observation time, gusts and runway calculations remain available to
+lower controls and calculations. ATIS now has a roomier heading/provider/metadata
+header, equal runway boxes and separated disclosure. Current, stale, unavailable
+and retained-refresh states remain data-driven.
+
+Actual-app visual evidence is outside tracked source at
+`C:\Users\codys\Projects\niltsi\.test-output\dashboard-presentation-cleanup-2026-11-14-final-upper-card`.
+Its 11 PNGs include 1440px/390px synthetic dashboards, 1440px/390px historical
+MEM dashboards, historical and current/populated upper-card close-ups at both
+widths, and a clearly labelled synthetic stale-METAR/unavailable-ATIS close-up.
+Direct comparison with the supplied target found no material remaining layout
+discrepancy; narrower production cards naturally wrap the airport name and raw
+observation without overlap or page-level overflow.
+
 ## Base and scope
 
 Worktree: `dashboard-presentation-cleanup`, branch
