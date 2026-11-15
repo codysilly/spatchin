@@ -41,3 +41,28 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;border-ra
  .time-control select,.notam-transport button,.expand,.toolbar input,.toolbar button,.scan-navigation button,#scan-toggle,[data-remove]{min-height:44px;font-size:13px}
  .notam-summary{line-height:1.5;padding:10px}.notam-summary p{margin-top:7px}
 }
+
+
+/* SPA-53 — Approved typography. Keep data values monospace and UI text readable. */
+:root{
+  --font-ui:"Overpass","Segoe UI",Arial,sans-serif;
+  --font-data:"Inconsolata",Consolas,"Courier New",monospace;
+}
+body{font-family:var(--font-ui)}
+.brand-wordmark{font-family:var(--font-data);font-weight:700;letter-spacing:.08em}
+.clock,.icao,.wind .reading,.gust,.metar-raw,.metar-retained,
+.taf span,.atis-meta,.atis-value,.atis-raw,
+.time-control select,.rw-table>tbody>tr>td,
+.reader-raw,.reader-notice pre,.reader-notice dd,
+.notice-table>tbody>tr>td,.notice-table>tbody>tr>th,
+#scan-count,.notam-summary time{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+}
+.metar-raw{font-size:13px}
+.reader-raw{font-size:12px}
+.rw-table>tbody>tr>td{font-size:15px}
+@media(max-width:760px){
+  .reader-raw{font-size:14px}
+  .metar-raw{font-size:13px}
+}
