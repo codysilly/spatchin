@@ -123,13 +123,74 @@ the greatest source timestamp, response completion time or publication time.
 Failed attempts do not advance it. If the replay lower bound falls outside 24
 hours, stop with `DELTA_GAP`; do not query a shorter interval or claim recovery.
 
+## SPA-52 bounded initial-content inspection (not a production decoder)
+
+`scripts/nms_initial_decoder.py` adds independently useful, offline inspection
+without activating collection or claiming production wire compatibility. Its
+evidence-to-implementation mapping is deliberately narrow:
+
+| Evidence class | Evidence | Implemented consequence |
+| --- | --- | --- |
+| Supplied OpenAPI 1.0.18 | The all-classification initial load is a compressed file containing AIXM in a SOAP envelope. | Compression/container magic is explicitly rejected because the documents do not identify an algorithm or archive/member layout. Raw XML inspection is a separately testable subset, not a claim about the actual compressed wire container. |
+| Supplied OpenAPI 1.0.18 | Ordinary responses are JSON envelopes and `data.aixm` contains XML strings. | This corroborates AIXM 5.1, but is not treated as evidence that the initial-load binary is JSON or that its SOAP/member layout matches filtered responses. |
+| Standards-derived synthetic profile | SOAP 1.1/1.2 envelope namespaces and AIXM 5.1/message `AIXMBasicMessage`/`hasMember` are exercised by labelled synthetic fixtures. No supplied WSDD/WSRD, XSD or approved initial-load sample is available. | Namespaces are checked exactly. Only one SOAP body, one `AIXMBasicMessage` and ordered, single-child AIXM `hasMember` elements are inspectable. This validates safety/inspection behavior, not provider-format compatibility. Unrecognized namespaces/structures are refused instead of searched by local tag name. |
+| Supplied OpenAPI example, not an initial-load XML sample | The GeoJSON example defines source identifiers, timestamps and `notamTranslation` representations. | Those fields remain the existing GeoJSON normalizer contract. They are **not** projected onto opaque AIXM XML without an approved XML mapping. In particular, condition text is never relabelled `LOCAL_FORMAT`. |
+| Explicit evidence gap | No document defines initial-load cutover continuity. | Production `decode_initial(body, stage)` safely inspects supported raw XML and then returns the fixed `BASELINE_CUTOVER_REQUIRED` failure. Retrieval time, clocks and notice timestamps are not substituted. |
+
+The inspector accepts at most 64 MiB input and parses in 64 KiB chunks. It
+bounds elements (250,000), depth (64), text (64 MiB), attributes (1,000,000) and
+attribute characters (64 MiB). DTD/entity declarations are refused before parse;
+external schemas/references are never loaded. ZIP, gzip, bzip2 and xz signatures,
+non-XML, malformed/truncated XML, ambiguous SOAP bodies and unsupported namespaces
+have fixed diagnostics that contain no source bytes, URL, token or parser text.
+There is no archive extraction or filesystem path handling because no archive
+format is justified or supported. Import and construction perform no I/O.
+
+`InspectedInitial` exposes source order, duplicate member evidence, namespaces
+and bounded XML serialization for offline review. The collector still retains the
+complete original content bytes in its private response ledger. XML 1.0 parsing
+normalizes entity references and line endings, so member serialization is not
+described as byte-identical extraction. Unknown elements/attributes stay in the
+opaque member serialization; no lifecycle or operational meaning is assigned.
+
+`assemble_synthetic(...)` is an explicit test seam. Synthetic tests supply both
+a labelled GeoJSON mapping and synthetic continuity timestamp to exercise mock
+transport → existing collector → existing normalizer → private outbox. That seam
+does not derive either value from XML and is not a production policy. A minimal
+collector exception change preserves only the trusted fixed
+`BASELINE_CUTOVER_REQUIRED` code; every other decoder exception remains
+`INVALID_RESPONSE`. Failed inspection/cutover keeps the accepted outbox, baseline
+and cursor unchanged while preserving attempt, call and received-response evidence.
+
+Native Windows focused command:
+
+```powershell
+python -m unittest -v tests.test_nms_initial_decoder tests.test_nms_refresh
+```
+
+Native Windows 11 (build 26200), PowerShell 7.7.0 and Python 3.13.6 validation
+on November 14, 2026: focused decoder/collector suite **31 passed, 0 failed,
+0 skipped** in 4.197 seconds; complete Python suite **123 run, 121 passed,
+0 failed, 2 POSIX-only skips** in 8.730 seconds with parent socket/DNS audit
+blocking (network-relevant child tests install the same block); relevant Node
+snapshot/schema suite **25 passed, 0 failed, 0 skipped** in 0.332 seconds.
+All transport, content, credentials, cutover and XML fixtures were synthetic.
+
+Remaining production gates are exact: the compression/container algorithm and
+member layout; an approved initial-load example; authoritative SOAP/AIXM WSDD,
+WSRD or XSD; mappings for record identity, source timestamps, source information,
+unknown fields and separately identifiable provider text representations; an
+XML-defined `LOCAL_FORMAT` source; and continuity/cutover evidence. Until those
+are supplied and reviewed, the production seam intentionally does not assemble a
+`DecodedInitial`, establish a baseline or advance a delta cursor.
+
 ## Contract details not implemented by guessing
 
-1. The documents describe compressed content but do not specify a complete archive
-   packaging/member schema or AIXM/SOAP-to-reader mapping. `decode_initial` is a
-   required injected adapter, with no default decompressor or invented field map.
-   Synthetic tests feed labeled JSON bytes to a mock; that is not claimed as a
-   verified initial-load wire format.
+1. The documents describe compressed content but do not specify a compression
+   algorithm, archive/member schema or AIXM/SOAP-to-reader mapping. The bounded
+   inspector above rejects unknown containers and preserves opaque raw-XML evidence;
+   it is not presented as a complete production decoder. Synthetic tests provide
+   their mapping explicitly and are not verified initial-load wire evidence.
 2. No documented response field establishes the IL file's exact snapshot cutover
    relative to delta history. A reviewed decoder must return `DecodedInitial`
    with a justified `coverage_since` lower bound, within the delta lookback. Local
