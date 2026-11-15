@@ -349,6 +349,10 @@ def collect(store, *, mode, credentials, transport, clock, decode_initial=None,
                 body = send(content_request(path, stamp(started), clock()), token)
                 try:
                     decoded = decode_initial(body, request.stage)
+                except RefreshError as error:
+                    if str(error) == 'BASELINE_CUTOVER_REQUIRED':
+                        raise
+                    raise RefreshError('INVALID_RESPONSE') from None
                 except Exception:
                     raise RefreshError('INVALID_RESPONSE') from None
                 if not isinstance(decoded, DecodedInitial):

@@ -18,6 +18,7 @@ from capture_storage import platform_storage
 from nms_refresh import Store, SCHEMA, collect, encode
 from nms_refresh_contract import (RefreshError, DecodedInitial, auth_request,
                                   initial_request, delta_request, content_request)
+from nms_initial_decoder import assemble_synthetic, decode_initial, inspect_initial
 
 NOW = datetime(2026, 1, 2, 12, tzinfo=timezone.utc)
 CREDENTIALS = {'client_id': 'SYNTHETIC-CLIENT', 'client_secret': 'SYNTHETIC-SECRET'}
@@ -38,6 +39,10 @@ def feature(identifier='SYNTHETIC-ID', updated='2026-01-02T11:59:00Z', text='SYN
 
 def envelope(features):
     return {'status': 'Success', 'data': {'geojson': features}, 'unrecognized_envelope': 'retained privately'}
+
+
+def synthetic_soap():
+    return b'''<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:aixm="http://www.aixm.aero/schema/5.1/message" xmlns:aixm5="http://www.aixm.aero/schema/5.1"><soap:Body><aixm:AIXMBasicMessage><aixm:hasMember><aixm5:Event><aixm5:unknown>SYNTHETIC OPAQUE</aixm5:unknown></aixm5:Event></aixm:hasMember></aixm:AIXMBasicMessage></soap:Body></soap:Envelope>'''
 
 
 def synthetic_store(parent):
@@ -259,6 +264,38 @@ class RefreshTests(unittest.TestCase):
             self.now+=timedelta(days=1)
             self.assert_code('DELTA_GAP',lambda:self.run_pull('delta'))
             self.assertEqual(self.store.snapshot(),old)
+
+    def test_initial_decoder_preserves_response_and_baseline_when_cutover_missing(self):
+        old=self.store.snapshot(); requests=[]
+        def transport(request, limit):
+            requests.append(request.stage)
+            if request.stage=='auth':return 200,{},encode({'access_token':TOKEN})
+            if request.stage=='initial-aixm-soap':return 200,{},encode({'status':'Success','data':{'url':'/v1/content/SYNTHETIC'}})
+            return 200,{},synthetic_soap()
+        self.assert_code('BASELINE_CUTOVER_REQUIRED',lambda:self.run_pull(transport=transport,decode_initial=decode_initial))
+        self.assertEqual(requests,['auth','initial-aixm-soap','content'])
+        self.assertEqual(self.store.snapshot(),old);self.assertFalse(self.state()['baseline']);self.assertIsNone(self.state()['watermark'])
+        with self.store.connect() as db:
+            self.assertEqual(db.execute('SELECT body FROM responses WHERE stage="content"').fetchone()[0],synthetic_soap())
+            self.assertEqual(db.execute('SELECT status,error FROM attempts').fetchone(),('FAILED_ACCOUNTED','BASELINE_CUTOVER_REQUIRED'))
+
+    def test_synthetic_mapping_exercises_collector_normalizer_and_private_outbox(self):
+        payload=envelope([feature('SYNTHETIC-XML-MAPPED')]); requests=[]
+        def transport(request, limit):
+            requests.append(request.stage)
+            if request.stage=='auth':return 200,{},encode({'access_token':TOKEN})
+            if request.stage=='initial-aixm-soap':return 200,{},encode({'status':'Success','data':{'url':'/v1/content/SYNTHETIC'}})
+            return 200,{},synthetic_soap()
+        def synthetic_decoder(body,stage):
+            return assemble_synthetic(inspect_initial(body,stage),payload=payload,
+                                      coverage_since='2026-01-02T11:59:00Z')
+        result=collect(self.store,mode='bulk',credentials=CREDENTIALS,transport=transport,
+                       clock=lambda:self.now,decode_initial=synthetic_decoder)
+        self.assertEqual(result['status'],'ACCEPTED_PRIVATE_OUTBOX')
+        notice=json.loads(self.store.snapshot())['airports']['KMEM']['notices'][0]
+        self.assertEqual(notice['id'],'SYNTHETIC-XML-MAPPED')
+        self.assertEqual(notice['original_feature'],payload['data']['geojson'][0])
+        self.assertEqual(requests,['auth','initial-aixm-soap','content'])
 
     def test_publication_preflight_failure_is_atomic_and_does_not_advance_success(self):
         self.seed_baseline();old=self.store.snapshot();watermark=self.state()['watermark']
