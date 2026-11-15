@@ -30,6 +30,7 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;border-ra
 .inline-reader:focus-visible{outline:3px solid #b7e7ff;outline-offset:-3px}
 .reader-scroll-title{position:sticky;top:-7px;z-index:1;background:#0b2031;border-bottom:1px solid #54758b;padding:8px 3px;font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px}
 .notam-summary .collection-warning{color:var(--amber)}
+.airport-notam-list{margin-top:8px}.airport-notam-list>summary{color:var(--blue);cursor:pointer;font-weight:600}.airport-notam-list .notice-list{max-height:28rem;overflow:auto;margin-top:7px;padding-right:4px}.airport-notam-list .reader-notice{padding:10px 3px;border-top:1px solid #54758b}.airport-notam-list .reader-notice:first-child{border-top:0}
 @media(max-width:760px){
  .airport-head{padding:14px 10px 13px;min-height:100px}.airport-head>div:first-child{min-width:125px}.icao{font-size:42px}.name{font-size:17px}.airport-diagram{flex-basis:145px;font-size:13px;padding-top:3px}.airport-diagram a{min-height:44px;display:inline-flex;align-items:center;justify-content:flex-end;gap:4px}
  .weather-row{padding-inline:10px}.taf{margin-inline:10px}.atis{margin-inline:0;padding:12px}.atis-top{flex-wrap:wrap}.atis-meta{margin-left:auto}.atis-runways{gap:10px}.atis-box{padding:12px 10px}.brand h1 .version,.clock,.reader-note,.gust,.metar-status,.metar-retained,.atis-provider,.atis-meta,.taf,.time-control label,.time-control select,.notam-summary,.notam-transport p,.scan-help,.scan-chip,.details{font-size:12px}

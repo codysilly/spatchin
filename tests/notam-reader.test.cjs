@@ -14,9 +14,10 @@ test('explicit text references retain exact offsets and never infer reciprocals'
 test('duplicates, raw times, missing text, explicit scope and unmatched notices are retained',()=>{
  reader.set({retrieved_utc:'old raw retrieval',airports:{KMEM:{notices:[{id:'same',text:'RWY 18L',effectiveEnd:'PERM'},{id:'same',text:'General report'},{id:'wide',text:'Airport report',scope:'airport-wide'},{id:'missing'}]}}});
  const records=reader.records('KMEM',['18L','36R']);assert.equal(records.length,4);assert.notEqual(records[0].key,records[1].key);
+ assert.equal(reader.airportRecords('KMEM').length,4);
  const html=render('KMEM',['18L','36R']);
- assert.equal(records.find(n=>n.effectiveEnd).effectiveEnd,'PERM');assert.match(html,/LOCAL_FORMAT text unavailable/);assert.match(html,/Completeness: UNKNOWN/);
- assert.equal(records.filter(n=>!n.references.length&&n.scope!=='airport-wide').length,2);assert.equal(records.filter(n=>n.scope==='airport-wide').length,1);assert.doesNotMatch(html,/Unmatched \/ scope|airport-wide/);
+ assert.equal(records.find(n=>n.effectiveEnd).effectiveEnd,'PERM');assert.match(html,/LOCAL_FORMAT text unavailable/);assert.match(html,/NOTAM snapshot/);assert.match(html,/Retrieved: Unavailable/);assert.doesNotMatch(html,/Completeness:|Historical snapshot/);
+ assert.equal(records.filter(n=>!n.references.length&&n.scope!=='airport-wide').length,2);assert.equal(records.filter(n=>n.scope==='airport-wide').length,1);assert.doesNotMatch(html,/Unmatched \/ scope|airport-wide/);assert.match(html,/All airport snapshot notices \(4\)/);
  assert.match(reader.cell('KMEM','36R',['18L','36R']),/NOTAMs \(0\)/);
 });
 test('source strings are escaped; unavailable and retained-error states are explicit',()=>{
@@ -45,11 +46,11 @@ test('formatted representations are escaped, indexed distinctly and never replac
  assert.match(reader.cell('KCLT','27',['09','27']),/NOTAMs \(1\)/);
 });
 
-test('retained snapshot keeps escaped collection warning alongside reload failure',()=>{
+test('collection warning metadata is not displayed; reload failures remain visible',()=>{
  const warning='Fixed snapshot <unsafe>; complete airport coverage unknown; no automatic updates.';
  reader.set({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text:'RWY 18L SYNTHETIC'}]}}},'Reload <failed>');
  const html=render('KMEM',['18L']);
- assert.match(html,/Fixed snapshot &lt;unsafe&gt;; complete airport coverage unknown; no automatic updates\./);
+ assert.doesNotMatch(html,/Fixed snapshot|complete airport coverage unknown|no automatic updates/);
  assert.match(html,/Reload &lt;failed&gt;/);
  assert.ok(!html.includes('<unsafe>')&&!html.includes('<failed>'));
  assert.match(html,/Showing retained snapshot after reader error/);
@@ -70,10 +71,10 @@ test('loader failure and recovery preserve collection warning and original snaps
  const loaded=states.filter(s=>s.state.snapshot);
  for(const {state,html} of loaded){
   assert.equal(state.snapshot,data);
-  assert.ok(html.includes(warning));
+  assert.ok(!html.includes(warning));
   assert.equal(state.snapshot.airports.KMEM.notices[0].text,'SYNTHETIC RWY 18L\r\nunchanged');
  }
- assert.ok(loaded.some(({html})=>html.includes(warning)&&html.includes('HTTP 503')&&html.includes('Showing retained snapshot')));
+ assert.ok(loaded.some(({html})=>!html.includes(warning)&&html.includes('HTTP 503')&&html.includes('Showing retained snapshot')));
  assert.ok(!states.at(-1).html.includes('HTTP 503'));
  assert.ok(!states.at(-1).html.includes('Showing retained snapshot'));
 });
