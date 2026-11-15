@@ -191,6 +191,84 @@ XML-defined `LOCAL_FORMAT` source; and continuity/cutover evidence. Until those
 are supplied and reviewed, the production seam intentionally does not assemble a
 `DecodedInitial`, establish a baseline or advance a delta cursor.
 
+## SPA-52 classification-wide GeoJSON candidate (offline only)
+
+`scripts/nms_geojson_baseline.py` implements a second, independent evidence path
+for five saved classification-only responses. The supplied OpenAPI 1.0.18 defines
+`GET /nmsapi/v1/notams`, header `nmsResponseFormat: GEOJSON`, and request labels
+`INTERNATIONAL`, `MILITARY`, `LOCAL_MILITARY`, `DOMESTIC`, and `FDC`. It also says
+classification-only retrieval can lead to temporary compressed content, but the
+supplied material does not define that packaging. Consequently this code accepts
+only already-saved, direct UTF-8 JSON bytes. ZIP, gzip, bzip2, xz and unknown
+signatures are reported without extraction or format guessing.
+
+This is not an acquisition client. It contains no URL opener, credentials,
+environment reads, HTTP, retry, redirect, scheduler, live-capture path, provider
+rate gate, public-file writer, or collector-state write. Five full classification
+pulls would consume provider/account allowance whose exact treatment remains
+unknown; offline combination never authorizes or performs those pulls.
+
+Each input is bounded before JSON decoding (64 MiB by default), and the decoded
+tree is bounded by feature count, depth, and aggregate value count. Validation
+requires `status=Success`, no errors, and an inline `data.geojson` array. The
+inspector retains the exact original bytes privately in its returned dataset and
+reports only classification, SHA-256, byte size, content signature, parseability,
+structure/counts, duplicate/missing-ID counts, timestamp range, explicit
+`LOCAL_FORMAT`/`ICAO`/no-local counts, cancellation-field count, unexpected field
+names and same-time conflict count. Reports contain no raw records or source IDs.
+The CLI reads only explicit local paths and is inspection-only.
+
+A candidate requires exactly one validated dataset for every request label.
+Classification provenance is the request label; a payload value matching a
+different documented request label is a conflict. An undocumented abbreviation
+such as `DOM` is preserved verbatim and is never silently translated to
+`DOMESTIC`. Original features, unknown fields, Unicode, escaped text, duplicate
+translations and unknown translation types remain in private source evidence.
+
+Candidate identity is exact `notam.id`. Exact duplicate features are idempotent;
+changed records use parsed UTC `lastUpdated`, with the newest retained and
+older evidence accounted. Different content with the same ID and timestamp is an
+explicit conflict. Output order is deterministic by ID. Aggregate candidate JSON
+serialization is charged incrementally, including envelope punctuation and each
+feature's UTF-8 representation, before the combined payload is retained; the
+default limit is 256 MiB and tests use reduced limits.
+
+`CandidateBaseline.normalize_partition(...)` is the narrow integration seam to
+the existing normalizer/private snapshot schema. A caller must provide a reviewed
+airport/location partition and retrieval provenance; a classification-wide set is
+never described as location-scoped automatically. Only an explicit
+`LOCAL_FORMAT.simpleText` is a local display representation. ICAO translations
+remain separately typed; `LOCAL_FORMAT.formattedText`, unknown types, and absent
+local text do not become a fallback, while their original source data remains in
+`original_feature` and the retained datasets.
+
+The result is deliberately named and marked a **candidate**. It has no
+`coverage_since`, never constructs `DecodedInitial`, never changes SQLite,
+baseline, watermark, catalog, accepted outbox, public snapshot or UI, and carries
+`baseline_established=false`, `watermark=null`, and the fixed diagnostic
+`BASELINE_CUTOVER_REQUIRED`. The existing `DELTA_GAP`, accounting, v0.9, SOAP
+inspector and collection behavior are unchanged. Completeness, lifecycle,
+cancellation meaning, and a cutover-to-delta continuity point remain unresolved.
+
+Offline focused validation command:
+
+```powershell
+python -m unittest -v tests.test_nms_geojson_baseline tests.test_nms_initial_decoder tests.test_nms_refresh
+```
+
+The next authorized action is review of this parser against separately approved,
+sanitized saved response evidence and authoritative cutover semantics. It is not a
+live pull. Only after that review could a separate change propose an accounted
+acquisition/acceptance policy.
+
+Native Windows validation on November 15, 2026 used Python 3.13 with a parent
+audit hook refusing all `socket.*` events: focused GeoJSON/SOAP/collector suite
+**52 passed**; complete Python suite **144 run, 142 passed, 2 platform skips**.
+The relevant Node reader/snapshot/schema suite ran with network permission
+ungranted and **20 passed**. All candidate inputs were documented synthetic test
+examples; no provider networking, saved production record, credential, baseline,
+publication, deployment, or v0.9 change was used.
+
 ## Contract details not implemented by guessing
 
 1. The documents describe compressed content but do not specify a compression
