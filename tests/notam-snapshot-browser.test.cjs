@@ -11,7 +11,7 @@ before(async()=>{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true});
 });
 after(async()=>{await browser?.close();server?.kill();});
-const fixture=()=>({retrieved_utc:'2026-11-11T12:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',notices:[{id:'SYNTHETIC',text:'SYNTHETIC RWY 18L lighting report',source:'Local test fixture',effectiveEnd:'PERM'}]}}});
+const fixture=()=>({retrieved_utc:'2026-11-11T12:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',notices:[{id:'SYNTHETIC',text:'SYNTHETIC RWY 18L lighting report',source:'Local test fixture',effectiveEnd:'PERM',formatted_texts:[{type:'LOCAL_FORMAT',text:'SYNTHETIC RWY 18L lighting report'}]}]}}});
 const inventory=['09','27','18L','36R','18C','36C','18R','36L'];
 for(const width of [1440,390])test(`same-origin snapshot flow, retained failures, SCAN and MEM inventory at ${width}px`,async()=>{
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];let mode='good',requests=0;
@@ -31,10 +31,10 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
   assert.equal(requests,1);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
   await page.locator('[data-reader-open="KMEM-18L"]').click();
   const panel=page.locator('#reader-KMEM-18L');assert.match(await panel.innerText(),/lighting report/);
-  await panel.locator('details:not(.notice-provenance) > summary').first().focus();
+  await panel.locator('[data-reader-scroll]').focus();
   const prefs=await page.evaluate(()=>[localStorage.getItem('spatchin-airports'),localStorage.getItem('spatchin-scan-v1')]);
   mode='error';await page.evaluate(()=>notamSnapshots.refresh());
-  assert.equal(await panel.getAttribute('hidden'),null);assert.equal(await page.evaluate(()=>document.activeElement.textContent),'Preserved source metadata');
+  assert.equal(await panel.getAttribute('hidden'),null);assert.equal(await page.evaluate(()=>document.activeElement.id),'scroll-KMEM-18L');
   assert.match(await page.locator('.notam-summary').innerText(),/retained snapshot/);assert.match(await panel.innerText(),/lighting report/);
   assert.deepEqual(await page.evaluate(()=>[localStorage.getItem('spatchin-airports'),localStorage.getItem('spatchin-scan-v1')]),prefs);
   await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('lighting report');await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length>0);
@@ -71,12 +71,9 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
    assert.equal(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').filter({hasText:new RegExp(`^${end.id}$`)}).getAttribute('title'),`FAA NASR true alignment: ${end.true_heading}°`);
   }
   assert.equal(await page.locator('.runways .sub').count(),0);
-  await page.locator('[data-expand="MEM"]').click();
-  const details=await page.locator('#detail-MEM').innerText();
-  assert.ok(details.includes('Wind components: FAA NASR true alignment'));
-  assert.ok(details.includes(`Runways: FAA NASR effective ${runways.effective_date}`));
-  assert.ok(!details.includes('Chart-derived'));
-  assert.equal(await page.locator('#detail-MEM').getByRole('link',{name:'Source archive'}).getAttribute('href'),runways.source_url);
+  assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);
+  assert.equal(await page.evaluate(()=>runwayData.source_url),runways.source_url);
+  assert.equal(await page.locator('.airport-footer [data-remove="MEM"]').count(),1);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   mkdirSync('/tmp/spatchin-mem-review',{recursive:true});await page.screenshot({path:`/tmp/spatchin-mem-review/${width}.png`,fullPage:true});

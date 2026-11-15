@@ -2,6 +2,7 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const reader=require('../notam-reader.js');
 const snapshots=require('../notam-snapshots.js');
+const render=(code,inventory)=>reader.summary(code)+reader.row(code,inventory[0]||'09',inventory);
 test('explicit text references retain exact offsets and never infer reciprocals',()=>{
  const text='🙂 RWY 18L and 36R; TWY A near RWY 9.';
  const refs=reader.references(text,['18L','36R','09','27']);
@@ -13,15 +14,15 @@ test('explicit text references retain exact offsets and never infer reciprocals'
 test('duplicates, raw times, missing text, explicit scope and unmatched notices are retained',()=>{
  reader.set({retrieved_utc:'old raw retrieval',airports:{KMEM:{notices:[{id:'same',text:'RWY 18L',effectiveEnd:'PERM'},{id:'same',text:'General report'},{id:'wide',text:'Airport report',scope:'airport-wide'},{id:'missing'}]}}});
  const records=reader.records('KMEM',['18L','36R']);assert.equal(records.length,4);assert.notEqual(records[0].key,records[1].key);
- const html=reader.block('KMEM',['18L','36R']);
- assert.match(html,/PERM/);assert.match(html,/Original text unavailable/);assert.match(html,/Completeness: UNKNOWN/);
- assert.match(html,/Unmatched \/ scope unknown \(2\)/);assert.match(html,/source-declared airport-wide \(1\)/);
- assert.match(reader.cell('KMEM','36R',['18L','36R']),/Read NOTAMs \(0\)/);
+ const html=render('KMEM',['18L','36R']);
+ assert.equal(records.find(n=>n.effectiveEnd).effectiveEnd,'PERM');assert.match(html,/LOCAL_FORMAT text unavailable/);assert.match(html,/Completeness: UNKNOWN/);
+ assert.equal(records.filter(n=>!n.references.length&&n.scope!=='airport-wide').length,2);assert.equal(records.filter(n=>n.scope==='airport-wide').length,1);assert.doesNotMatch(html,/Unmatched \/ scope|airport-wide/);
+ assert.match(reader.cell('KMEM','36R',['18L','36R']),/NOTAMs \(0\)/);
 });
 test('source strings are escaped; unavailable and retained-error states are explicit',()=>{
- reader.set({airports:{KMEM:{notices:[{text:'RWY 18L <img src=x onerror=alert(1)>',source:'<script>'}]}}},'Refresh failed');
- const html=reader.block('KMEM',['18L']);assert.ok(!html.includes('<img'));assert.match(html,/&lt;img/);assert.match(html,/retained snapshot/);
- reader.set(null);assert.match(reader.block('KMEM',[]),/NOTAM data unavailable/);
+ reader.set({airports:{KMEM:{notices:[{text:'RWY 18L <img src=x onerror=alert(1)>',source:'<script>',formatted_texts:[{type:'LOCAL_FORMAT',text:'RWY 18L <img src=x onerror=alert(1)>'}]}]}}},'Refresh failed');
+ const html=render('KMEM',['18L']);assert.ok(!html.includes('<img'));assert.match(html,/&lt;img/);assert.match(html,/retained snapshot/);
+ reader.set(null);assert.match(render('KMEM',[]),/NOTAM data unavailable/);
 });
 
 // Documentation-derived grammar; not a captured live NOTAM.
@@ -38,22 +39,22 @@ test('formatted representations are escaped, indexed distinctly and never replac
  const n=reader.records('KCLT',['09','27'])[0];
  assert.equal(n.references[0].representation,'formatted_texts[0].text');
  assert.equal(n.formatted_texts[0].text.slice(n.references[0].start,n.references[0].end),'27');
- const html=reader.block('KCLT',['09','27']);
- assert.match(html,/Original text unavailable/);assert.match(html,/LOCAL_FORMAT/);assert.match(html,/Condition text missing/);
+ const html=render('KCLT',['27','09']);
+ assert.match(html,/RWY 27 &lt;script&gt;/);assert.doesNotMatch(html,/Original text unavailable|Condition text missing|reference evidence/);assert.deepEqual(n.warnings,['Condition text missing']);
  assert.ok(!html.includes('<script>'));assert.match(html,/&lt;script&gt;/);
- assert.match(reader.cell('KCLT','27',['09','27']),/Read NOTAMs \(1\)/);
+ assert.match(reader.cell('KCLT','27',['09','27']),/NOTAMs \(1\)/);
 });
 
 test('retained snapshot keeps escaped collection warning alongside reload failure',()=>{
  const warning='Fixed snapshot <unsafe>; complete airport coverage unknown; no automatic updates.';
  reader.set({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text:'RWY 18L SYNTHETIC'}]}}},'Reload <failed>');
- const html=reader.block('KMEM',['18L']);
+ const html=render('KMEM',['18L']);
  assert.match(html,/Fixed snapshot &lt;unsafe&gt;; complete airport coverage unknown; no automatic updates\./);
  assert.match(html,/Reload &lt;failed&gt;/);
  assert.ok(!html.includes('<unsafe>')&&!html.includes('<failed>'));
  assert.match(html,/Showing retained snapshot after reader error/);
  reader.set(null,'Reload failed');
- const missing=reader.block('KMEM',[]);
+ const missing=render('KMEM',[]);
  assert.match(missing,/NOTAM data unavailable/);
  assert.match(missing,/Reload failed/);
 });
@@ -63,7 +64,7 @@ test('loader failure and recovery preserve collection warning and original snaps
  const data={retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text:'SYNTHETIC RWY 18L\r\nunchanged'}]}}};
  let failed=false;const states=[];
  const loader=snapshots.create({baseURL:'https://snapshot.invalid/',fetchFn:async()=>({ok:!failed,status:failed?503:200,json:async()=>data}),onChange:state=>{
-  reader.set(state.snapshot,state.error);states.push({state,html:reader.block('KMEM',['18L'])});
+  reader.set(state.snapshot,state.error);states.push({state,html:render('KMEM',['18L'])});
  }});
  await loader.refresh();failed=true;await loader.refresh();failed=false;await loader.refresh();
  const loaded=states.filter(s=>s.state.snapshot);

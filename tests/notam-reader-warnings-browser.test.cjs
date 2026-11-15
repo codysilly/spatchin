@@ -17,13 +17,13 @@ for(const width of [1440,390])test(`collection warning survives loader failure a
   const result=await page.evaluate(async()=>{
    const warning='Fixed snapshot <unsafe>. Airport coverage UNKNOWN. No automatic updates.';
    const text='SYNTHETIC RWY 18L\r\ntext retained\rverbatim';
-   const snapshot={retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text,source:'NMS-API snapshot'}]}}};
+   const snapshot={retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{warning,completeness:'UNKNOWN',notices:[{text,source:'NMS-API snapshot',formatted_texts:[{type:'LOCAL_FORMAT',text}]}]}}};
    let failed=false;
    const loader=NotamSnapshots.create({baseURL:'https://snapshot.invalid/',fetchFn:async()=>({ok:!failed,status:failed?503:200,json:async()=>snapshot}),onChange:state=>{
     NotamReader.set(state.snapshot,state.error);
-    document.getElementById('reader').innerHTML=NotamReader.block('KMEM',['18L','36R']);
+    document.getElementById('reader').innerHTML=NotamReader.summary('KMEM')+'<table><tbody>'+NotamReader.row('KMEM','18L',['18L','36R'])+'</tbody></table>';
    }});
-   const inspect=()=>({visible:document.getElementById('reader').innerText,text:document.querySelector('#reader-KMEM-all .reader-raw')?.textContent,injected:document.querySelectorAll('unsafe').length});
+   const inspect=()=>({visible:document.getElementById('reader').innerText,text:document.querySelector('.reader-raw')?.textContent,injected:document.querySelectorAll('unsafe').length});
    await loader.refresh();const loaded=inspect();
    failed=true;await loader.refresh();const retained=inspect();
    failed=false;await loader.refresh();const recovered=inspect();

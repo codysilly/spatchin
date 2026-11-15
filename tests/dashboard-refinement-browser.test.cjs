@@ -10,7 +10,7 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
  await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","LAX"]'));
  page.on('pageerror',e=>errors.push(e.message));
- const warning='SYNTHETIC supplied collection/legal warning <unsafe>. Preserve verbatim.',notices=longNotices(),expected=notices.flatMap(n=>[n.text,...n.formatted_texts.map(t=>t.text)]);
+ const warning='SYNTHETIC supplied collection/legal warning <unsafe>. Preserve verbatim.',notices=longNotices(),expected=notices.flatMap(n=>n.formatted_texts.filter(t=>t.type==='LOCAL_FORMAT').map(t=>t.text));
  let failed=false;
  await context.route('**/data/notams.json',r=>failed?r.fulfill({status:503,body:'suppressed upstream body'}):r.fulfill({json:{retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',warning,notices:[...notices,{number:'12/1',text:'SYNTHETIC RWY 18R independent disclosure'}]},KLAX:{completeness:'UNKNOWN',notices:[]}}}}));
  try{
@@ -18,11 +18,15 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
   const link=page.locator('[data-airport="MEM"] .airport-head a');
   assert.equal(await link.getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
   assert.equal(await link.getAttribute('target'),'_blank');assert.equal(await link.getAttribute('rel'),'noopener');
-  assert.match(await link.textContent(),/Airport diagram.*↗/);assert.match(await page.locator('.airport-diagram small').innerText(),/2026-10-29 through 2026-11-26/);
+  assert.match(await link.textContent(),/Airport diagram.*↗/);assert.match(await link.getAttribute('title'),/2026-10-29 through 2026-11-26/);assert.equal(await page.locator('.airport-diagram small').count(),0);
+  const card=page.locator('[data-airport="MEM"]'),layout=await card.evaluate(el=>{const box=s=>el.querySelector(s).getBoundingClientRect(),code=box('.icao'),name=box('.name'),diagram=box('.airport-diagram'),badge=box('.weather-badge'),status=box('.metar-status'),raw=box('.metar-raw'),tafBadge=box('.taf strong'),tafText=box('.taf span'),atis=box('.atis'),boxes=[...el.querySelectorAll('.atis-box')].map(x=>x.getBoundingClientRect());return {code,name,diagram,badge,status,raw,tafBadge,tafText,atis,boxes,codeSize:parseFloat(getComputedStyle(el.querySelector('.icao')).fontSize),nameSize:parseFloat(getComputedStyle(el.querySelector('.name')).fontSize)};});
+  assert.ok(layout.codeSize>=42&&layout.nameSize>=17);assert.ok(layout.name.top>=layout.code.bottom-1);assert.ok(layout.diagram.left>=layout.code.right||layout.diagram.top>=layout.name.bottom);
+  assert.ok(Math.abs(layout.status.left-layout.raw.left)<1);assert.ok(layout.raw.left>layout.badge.right);assert.ok(Math.abs(layout.tafText.left-layout.status.left)<1);assert.ok(layout.tafText.left>layout.tafBadge.right);
+  assert.ok(Math.abs(layout.boxes[0].width-layout.boxes[1].width)<1);assert.ok(layout.atis.top>layout.tafText.bottom);assert.equal(await card.locator('.wind,.weather-line,.reading,.wind .sub').count(),0);
   assert.equal(await page.locator('[data-airport="LAX"] .airport-head a').count(),0);
   assert.deepEqual(await page.evaluate(()=>['ORD','LAX','JFK','IND'].map(c=>diagramHeader(c))),['','','','']);
   assert.equal(await page.evaluate(()=>{runwayData.airport_metadata={LAX:{heading_method:'chart-derived-approximate',source_url:runwayData.source_url}};const html=diagramHeader('LAX');delete runwayData.airport_metadata;return html;}),'');
-  assert.equal(await page.locator('.notam-summary').count(),2);assert.equal(await page.locator('.notam-reader .notam-summary').count(),0);
+  assert.equal(await page.locator('.notam-summary').count(),2);assert.equal(await page.locator('.notam-reader').count(),0);
   const summary=page.locator('#coverage-KMEM');assert.match(await summary.innerText(),/Completeness: UNKNOWN/);assert.match(await summary.innerText(),/Historical snapshot; no automatic reader updates/);
   assert.equal(await summary.locator('.collection-warning').textContent(),warning);assert.equal(await page.locator('unsafe').count(),0);
   assert.equal(await page.locator('.reader-note').filter({hasText:'UNKNOWN'}).count(),0);
@@ -62,8 +66,8 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
   assert.equal(await summary.locator('.collection-warning').textContent(),warning);assert.deepEqual(await region.locator('.reader-raw').allTextContents(),expected);
   failed=false;await page.evaluate(()=>notamSnapshots.refresh());assert.doesNotMatch(await summary.innerText(),/HTTP 503|Showing retained snapshot/);assert.equal(await summary.locator('.collection-warning').textContent(),warning);
   if(width===390){
-   for(const selector of ['.reader-note','.reader-raw','.notice-provenance summary','.notam-summary','.time-control label','.atis-provider'])assert.ok(await page.locator(selector).first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=12),selector);
-   for(const selector of ['[data-reader-open]','#time-MEM','#scan-toggle','#scan-next','#add-form button','[data-expand]'])assert.ok((await page.locator(selector).first().boundingBox()).height>=44,selector);
+   for(const selector of ['.reader-note','.reader-raw','.reader-scroll-title','.notam-summary','.time-control label','.atis-provider'])assert.ok(await page.locator(selector).first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=12),selector);
+   for(const selector of ['[data-reader-open]','#time-MEM','#scan-toggle','#scan-next','#add-form button','[data-remove]'])assert.ok((await page.locator(selector).first().boundingBox()).height>=44,selector);
   }
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
   // Explicit local verification is distinct from missing, empty-unknown and historical data.

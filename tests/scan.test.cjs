@@ -27,7 +27,7 @@ beforeEach(async () => {
   // Exercise existing aviation fixtures as a saved selection, independent of defaults.
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
   await page.reload();
-  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 && document.querySelector('.reading').textContent!=='—');
+  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 && Object.values(metars).some(m=>m?.wind));
 });
 afterEach(async()=>{await context.close();assert.deepEqual(errors,[]);assert.deepEqual(external,[],'No external requests');});
 async function search(value) {
@@ -55,10 +55,10 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
-  assert.match(await page.locator('#cards').textContent(),/Wind components: FAA NASR true alignment/);
+  assert.equal(await page.evaluate(()=>runwayBearingLabel('MEM')),'FAA NASR true alignment');
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
   assert.equal(await page.locator('.rw-table > tbody > tr.runway-row > td.unknown:not(:has(button))').count(),16);
-  assert.equal(await page.locator('#detail-MEM').getByRole('link',{name:'Source archive',includeHidden:true}).getAttribute('href'),await page.evaluate(()=>runwayData.source_url));
+  assert.equal(await page.locator('[data-airport="MEM"] .airport-diagram a').getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1')),scan);
@@ -67,10 +67,11 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
 test('KMEM observation loads through refresh and renders on the MEM card',async()=>{
   const observed = Math.floor(Date.now()/1000);
   const raw = 'KMEM OFFLINE TEST OBSERVATION';
-  let requests = 0;
+  let requests = 0, fail = false;
   // Test-only response: never written to published data or obtained from a provider.
   await page.route('**/data/metars.json?*',route=>{
     requests++;
+    if(fail)return route.fulfill({status:503,body:'offline refresh failure'});
     return route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[
       {icaoId:'KMEM',obsTime:observed,wdir:180,wspd:12,wgst:20,rawOb:raw},
       {icaoId:'KORD',obsTime:observed,wdir:90,wspd:3,rawOb:'ORD TEST'},
@@ -82,15 +83,16 @@ test('KMEM observation loads through refresh and renders on the MEM card',async(
   });
   await page.reload();
   const card=page.locator('.airport');
-  await page.waitForFunction(()=>document.querySelector('.reading')?.textContent==='180° / 12G20KT');
+  await page.waitForFunction(()=>windLabel(metars.MEM?.wind)==='180° / 12G20KT');
   assert.ok(requests>0,'Startup refresh fetched same-origin METAR JSON');
   assert.equal(await card.count(),1);
   assert.equal(await card.locator('.icao').textContent(),'MEM');
   assert.equal(await card.locator('.name').textContent(),'Memphis International Airport');
   assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');
-  assert.match(await card.locator('.details').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
-  assert.equal(await card.locator('.details a').first().getAttribute('href'),
-    'https://aviationweather.gov/api/data/metar?ids=KMEM&format=raw');
+  assert.match(await card.locator('.metar-raw').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
+  assert.equal(await card.locator('a.weather-badge').getAttribute('href'),
+    'https://aviationweather.gov/data/metar/?ids=KMEM');
+  fail=true;await page.evaluate(()=>refresh());assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');assert.equal(await card.locator('.metar-raw').textContent(),raw);assert.match(await card.locator('.metar-retained').textContent(),/refresh failed.*retained/i);
   await page.evaluate(()=>refreshAtis());
   assert.equal(await card.locator('.atis-provider').textContent(),'atis.info · STALE / UNVERIFIED');
   assert.match(await card.locator('.atis-full').textContent(),/ATIS not available\./);
@@ -149,20 +151,21 @@ test('airport, METAR, ATIS and runway behavior survives highlights and data refr
   const baseline = await dashboard();
   await search('ORD, METAR, ATIS, 04L');await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length>10);
   assert.deepEqual(await dashboard(),baseline,'Highlighting preserves dashboard text and runway values');
-  await page.locator('[data-expand="ORD"]').click();assert.equal(await page.locator('#detail-ORD').isVisible(),true);
+  await page.locator('[data-airport="ORD"] .atis-full > summary').click();assert.equal(await page.locator('[data-airport="ORD"] .atis-full').getAttribute('open'),'');
   await page.locator('#iata').fill('ATL');await page.locator('#add-form button').click();await page.waitForFunction(()=>document.querySelectorAll('.airport').length===4);
-  await page.locator('[data-expand="ATL"]').click();await page.locator('[data-remove="ATL"]').click();
+  await page.locator('[data-remove="ATL"]').click();
   await page.evaluate(()=>Promise.all([refresh(),refreshAtis(),refreshRunways()]));
   await page.waitForFunction(()=>document.querySelectorAll('.airport').length===3 && document.querySelectorAll('#cards mark').length>10);
-  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),32);assert.match(await page.locator('.reading').first().textContent(),/KT/);
+  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),32);assert.match(await page.evaluate(()=>windLabel(Object.values(metars).find(m=>m?.wind)?.wind)),/KT/);
   await page.locator('#scan-enabled').uncheck();assert.equal(await page.locator('#cards mark').count(),0);
   assert.deepEqual(await dashboard(),baseline,'Airport changes and local refreshes preserve original aviation data');
 });
-test('navigation expands the existing airport details control',async()=>{
-  await search('Last successful retrieval');await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length===3);
-  await page.locator('#scan-next').click();assert.equal(await page.locator('#detail-ORD').isVisible(),true);assert.equal(await page.locator('[data-expand="ORD"]').getAttribute('aria-expanded'),'true');
-  await page.locator('[data-expand="ORD"]').click();assert.equal(await page.locator('#detail-ORD').isVisible(),false);
+test('removed airport details and technical metadata are absent from SCAN',async()=>{
+  await search('Last successful retrieval, Preserved source metadata, reported times and reference evidence');
+  assert.equal(await page.locator('#scan-count').textContent(),'0 / 0 matches');
+  assert.equal(await page.locator('[data-expand],.details,.notam-reader,.notice-provenance').count(),0);
 });
+
 test('corrupt or denied storage does not prevent operation',async()=>{
   await page.evaluate(()=>localStorage.setItem('spatchin-scan-v1','{broken'));await page.reload();await search('METAR');assert.ok(await page.locator('mark').count()>0);
   await page.addInitScript(()=>{Storage.prototype.getItem=()=>{throw Error('denied')};Storage.prototype.setItem=()=>{throw Error('denied')};});
@@ -207,7 +210,7 @@ test('collapse preserves highlights, selected match, preferences and dashboard c
   await page.locator('#scan-toggle').click();
   assert.equal(await page.locator('#fixture mark').count(),2);
   assert.equal(await page.locator('#fixture mark.scan-current').evaluate(el=>el===window.selectedScanMark),true);
-  await page.locator('[data-expand="ORD"]').click();assert.equal(await page.locator('#detail-ORD').isVisible(),true);
+  await page.locator('[data-airport="ORD"] .atis-full > summary').click();assert.equal(await page.locator('[data-airport="ORD"] .atis-full').getAttribute('open'),'');
   await page.locator('#scan-toggle').click();
   assert.equal(await page.locator('#scan-count').textContent(),'1 / 2 matches');
   await page.locator('#scan-next').click();assert.equal(await page.locator('#scan-count').textContent(),'2 / 2 matches');

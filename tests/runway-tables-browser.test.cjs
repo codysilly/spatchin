@@ -17,7 +17,7 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
   await page.evaluate(()=>{airports=AirportCatalog.slice(0,30);render();});
   await page.fill('#iata','MEM');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/Maximum 30/);
   assert.equal(await page.locator('.airport').count(),30);
-  await page.evaluate(()=>{airports=['MEM'];render();});await page.locator('[data-expand="MEM"]').click();await page.locator('[data-remove="MEM"]').click();
+  await page.evaluate(()=>{airports=['MEM'];render();});await page.locator('[data-remove="MEM"]').click();
   assert.equal(await page.locator('.airport').count(),0);await page.reload();assert.equal(await page.locator('.airport').count(),0);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'[]');
  }finally{await context.close();}
@@ -26,7 +26,7 @@ const text='SYNTHETIC RWY 18R/36L\r\nUNICODE 🙂 <unsafe> &\rCR\nLF SCANINLINE'
 for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, independent observed UTC state at ${width}`,async()=>{
  const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];
  await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});
- const entry={completeness:'UNKNOWN',warning:'SYNTHETIC fixture — not real FAA data',notices:[{number:'11/207',text},{number:'11/9',text:'SYNTHETIC RWY 18R'},{number:'11/9',text:'SYNTHETIC unmatched source record'}]};
+ const entry={completeness:'UNKNOWN',warning:'SYNTHETIC fixture — not real FAA data',notices:[{number:'11/207',text,formatted_texts:[{type:'LOCAL_FORMAT',text}]},{number:'11/9',text:'SYNTHETIC RWY 18R',formatted_texts:[{type:'LOCAL_FORMAT',text:'SYNTHETIC short LOCAL_FORMAT'}]},{number:'11/9',text:'SYNTHETIC unmatched source record'}]};
  await context.route('**/data/notams.json',r=>r.fulfill({json:{retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:entry}}}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
@@ -36,7 +36,7 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await b.getAttribute('aria-expanded'),'true');
   assert.equal(await page.locator('#reader-KMEM-18R').evaluate(el=>el.previousElementSibling.querySelector('td').textContent),'18R');
   assert.equal(await page.locator('#reader-KMEM-18R > td').getAttribute('colspan'),'4');
-  assert.deepEqual(await page.locator('#reader-KMEM-18R .notice-table > tbody > tr > th').allTextContents(),['11/9','11/207']);
+  assert.deepEqual(await page.locator('#reader-KMEM-18R .reader-notice').evaluateAll(els=>els.map(el=>el.dataset.readerKey)),['KMEM-1','KMEM-0']);
   assert.equal(await page.locator('#reader-KMEM-36L .reader-raw').textContent(),text);
   await page.evaluate(()=>render());assert.equal(await page.evaluate(()=>document.activeElement.dataset.readerOpen),'KMEM-36L');
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await b.getAttribute('aria-expanded'),'true');
@@ -48,8 +48,10 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   await page.locator('#scan-terms').fill('');await page.waitForFunction(()=>!document.querySelector('mark[data-scan-match]'));
   assert.equal(await page.locator('#reader-KMEM-18R .reader-raw').last().textContent(),text);
   assert.equal(await page.locator('unsafe').count(),0);
-  await page.locator('#reader-KMEM-all > summary').click();assert.equal(await page.locator('#reader-KMEM-all .reader-notice').count(),3);
-  assert.match(await page.locator('#reader-KMEM-all').innerText(),/unmatched source record/);
+  assert.equal(await page.locator('.notam-reader,[id$="-all"]').count(),0);
+  assert.equal(await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).length),3);
+  assert.equal(await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).some(n=>n.text==='SYNTHETIC unmatched source record')),true);
+  assert.doesNotMatch(await page.locator('#cards').textContent(),/unmatched source record/);
   await page.evaluate(()=>{metars.MEM={observed:'2026-11-12T23:59:00Z',wind:{direction:100,speed:5}};airports.push('LAX');metars.LAX={observed:'2026-11-13T00:01:00Z',wind:{direction:200,speed:8}};render();});
   await page.selectOption('#time-MEM','2026-11-12T23:59:00Z');await page.focus('#time-MEM');await page.evaluate(()=>render());
   assert.equal(await page.locator('#time-MEM').inputValue(),'2026-11-12T23:59:00Z');assert.equal(await page.locator('#time-LAX').inputValue(),'2026-11-13T00:01:00Z');
