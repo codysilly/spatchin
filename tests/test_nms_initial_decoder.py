@@ -29,6 +29,11 @@ def soap(records, *, soap=SOAP11, message=AIXM_MESSAGE):
             f'</aixm:AIXMBasicMessage></soap:Body></soap:Envelope>').encode()
 
 
+def soap_text(records, *, encoding="UTF-8"):
+    return soap(records).decode().replace('encoding="UTF-8"',
+                                           f'encoding="{encoding}"')
+
+
 class InitialDecoderTests(unittest.TestCase):
     def assert_code(self, code, call):
         with self.assertRaises(InitialDecodeError) as error:
@@ -62,6 +67,20 @@ print("OFFLINE IMPORT")
             self.assertIn("🙂 second", result.record_xml[1])
             self.assertIn('id="same"', result.record_xml[0])
             self.assertIn('id="same"', result.record_xml[1])
+
+    def test_utf8_policy_covers_bom_declaration_and_encoded_dtd_attacks(self):
+        ordinary = soap_text([("unicode", "🙂 &amp; &lt;safe&gt;")])
+        result = inspect_initial(b"\xef\xbb\xbf" + ordinary.encode("utf-8"),
+                                 "initial-aixm-soap")
+        self.assertIn("🙂 &amp; &lt;safe&gt;", result.record_xml[0])
+        for body in (ordinary.encode("utf-16"),
+                     soap_text([], encoding="ISO-8859-1").encode("ascii")):
+            self.assert_code("INITIAL_UNSUPPORTED_FORMAT",
+                             lambda body=body: inspect_initial(body, "initial-aixm-soap"))
+        utf16_attack = ('<!DOCTYPE x [<!ENTITY leak SYSTEM "file:///secret">]>'
+                        + soap_text([("one", "&leak;")]).split("?>", 1)[1]).encode("utf-16")
+        self.assert_code("INITIAL_UNSUPPORTED_FORMAT",
+                         lambda: inspect_initial(utf16_attack, "initial-aixm-soap"))
 
     def test_no_local_format_or_operational_field_mapping_is_invented(self):
         result = inspect_initial(soap([("one", "ICAO-like condition only")]),
@@ -121,6 +140,20 @@ print("OFFLINE IMPORT")
         with patch.object(decoder, "MAX_ATTRIBUTE_CHARS", 2):
             self.assert_code("INITIAL_XML_LIMIT",
                              lambda: inspect_initial(soap([("one", "text")]), "initial-aixm-soap"))
+
+    def test_aggregate_member_serialization_counts_repeated_namespaces(self):
+        one = inspect_initial(soap([("one", "🙂 &amp; &lt;literal&gt;")]),
+                              "initial-aixm-soap")
+        one_size = len(one.record_xml[0].encode("utf-8"))
+        self.assertIn("xmlns:", one.record_xml[0])
+        with patch.object(decoder, "MAX_SERIALIZED_MEMBER_BYTES", one_size):
+            accepted = inspect_initial(soap([("one", "🙂 &amp; &lt;literal&gt;")]),
+                                       "initial-aixm-soap")
+            self.assertEqual(accepted.record_xml, one.record_xml)
+        with patch.object(decoder, "MAX_SERIALIZED_MEMBER_BYTES", one_size * 2 - 1):
+            self.assert_code("INITIAL_XML_LIMIT", lambda: inspect_initial(
+                soap([("one", "🙂 &amp; &lt;literal&gt;"),
+                      ("two", "🙂 &amp; &lt;literal&gt;")]), "initial-aixm-soap"))
 
     def test_diagnostics_never_echo_body_or_parser_exception(self):
         secret = "SYNTHETIC-SECRET-NEVER-ECHO"

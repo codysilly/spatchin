@@ -137,9 +137,14 @@ evidence-to-implementation mapping is deliberately narrow:
 | Supplied OpenAPI example, not an initial-load XML sample | The GeoJSON example defines source identifiers, timestamps and `notamTranslation` representations. | Those fields remain the existing GeoJSON normalizer contract. They are **not** projected onto opaque AIXM XML without an approved XML mapping. In particular, condition text is never relabelled `LOCAL_FORMAT`. |
 | Explicit evidence gap | No document defines initial-load cutover continuity. | Production `decode_initial(body, stage)` safely inspects supported raw XML and then returns the fixed `BASELINE_CUTOVER_REQUIRED` failure. Retrieval time, clocks and notice timestamps are not substituted. |
 
-The inspector accepts at most 64 MiB input and parses in 64 KiB chunks. It
+The inspector accepts only UTF-8 XML (with an optional UTF-8 BOM and no
+contradictory encoding declaration), so the DTD/entity safety scan and XML parser
+operate on the same decoded character stream. Other encodings are rejected before
+parsing. It accepts at most 64 MiB input and parses in 64 KiB chunks. It
 bounds elements (250,000), depth (64), text (64 MiB), attributes (1,000,000) and
-attribute characters (64 MiB). DTD/entity declarations are refused before parse;
+attribute characters (64 MiB). Aggregate retained member serialization is bounded
+to 64 MiB during serialization, counting UTF-8 bytes including namespace
+declarations repeated on separately serialized members. DTD/entity declarations are refused before parse;
 external schemas/references are never loaded. ZIP, gzip, bzip2 and xz signatures,
 non-XML, malformed/truncated XML, ambiguous SOAP bodies and unsupported namespaces
 have fixed diagnostics that contain no source bytes, URL, token or parser text.
@@ -175,6 +180,8 @@ on November 14, 2026: focused decoder/collector suite **31 passed, 0 failed,
 blocking (network-relevant child tests install the same block); relevant Node
 snapshot/schema suite **25 passed, 0 failed, 0 skipped** in 0.332 seconds.
 All transport, content, credentials, cutover and XML fixtures were synthetic.
+Focused correction validation on November 15, 2026: **33 passed, 0 failed,
+0 skipped** in 4.261 seconds with parent socket/DNS audit blocking.
 
 Remaining production gates are exact: the compression/container algorithm and
 member layout; an approved initial-load example; authoritative SOAP/AIXM WSDD,

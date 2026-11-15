@@ -17,6 +17,7 @@ MAX_DEPTH = 64
 MAX_TEXT_CHARS = 64 * 1024 * 1024
 MAX_ATTRIBUTES = 1_000_000
 MAX_ATTRIBUTE_CHARS = 64 * 1024 * 1024
+MAX_SERIALIZED_MEMBER_BYTES = 64 * 1024 * 1024
 
 SOAP_NAMESPACES = {
     "http://schemas.xmlsoap.org/soap/envelope/",
@@ -61,6 +62,27 @@ def _split(tag):
     return match.group(1), match.group(2)
 
 
+def _validated_utf8(body):
+    """Accept only UTF-8 XML so the safety scan and parser see identical text."""
+    try:
+        text = body.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT") from None
+    if "\x00" in text:
+        raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
+    declaration = re.match(r"\s*<\?xml\s+([^?]*)\?>", text, re.IGNORECASE)
+    if declaration:
+        encoding = re.search(r"\bencoding\s*=\s*(['\"])([^'\"]+)\1",
+                             declaration.group(1), re.IGNORECASE)
+        if encoding and encoding.group(2).upper().replace("_", "-") not in {"UTF-8", "UTF8"}:
+            raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
+    if re.search(r"<!\s*(?:DOCTYPE|ENTITY)\b", text, re.IGNORECASE):
+        raise InitialDecodeError("INITIAL_UNSAFE_XML")
+    if not text.lstrip().startswith("<"):
+        raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
+    return text
+
+
 def _bounded_tree(body):
     if not isinstance(body, bytes):
         raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
@@ -69,17 +91,13 @@ def _bounded_tree(body):
     prefix = body[:4096].lstrip()
     if prefix.startswith((b"PK\x03\x04", b"\x1f\x8b", b"BZh", b"\xfd7zXZ\x00")):
         raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
-    lowered = body.lower()
-    if b"<!doctype" in lowered or b"<!entity" in lowered:
-        raise InitialDecodeError("INITIAL_UNSAFE_XML")
-    if not prefix.startswith(b"<"):
-        raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
+    text = _validated_utf8(body)
     try:
         parser = ET.XMLPullParser(events=("start", "end"))
         count = depth = text_chars = attributes = attribute_chars = 0
         root = None
-        for offset in range(0, len(body), 65536):
-            parser.feed(body[offset:offset + 65536])
+        for offset in range(0, len(text), 65536):
+            parser.feed(text[offset:offset + 65536])
             for event, element in parser.read_events():
                 if event == "start":
                     count += 1
@@ -110,6 +128,29 @@ def _bounded_tree(body):
         raise InitialDecodeError("INITIAL_MALFORMED_XML") from None
 
 
+class _BoundedUnicodeWriter:
+    def __init__(self, aggregate):
+        self.aggregate = aggregate
+        self.chunks = []
+
+    def write(self, value):
+        size = len(value.encode("utf-8"))
+        if self.aggregate[0] + size > MAX_SERIALIZED_MEMBER_BYTES:
+            raise InitialDecodeError("INITIAL_XML_LIMIT")
+        self.aggregate[0] += size
+        self.chunks.append(value)
+
+    def value(self):
+        return "".join(self.chunks)
+
+
+def _serialize_member(element, aggregate):
+    writer = _BoundedUnicodeWriter(aggregate)
+    ET.ElementTree(element).write(writer, encoding="unicode",
+                                  short_empty_elements=True)
+    return writer.value()
+
+
 def inspect_initial(body, stage):
     """Inspect evidenced raw SOAP/AIXM XML without declaring reader semantics."""
     if stage != "initial-aixm-soap":
@@ -135,6 +176,7 @@ def inspect_initial(body, stage):
     if message_ns not in AIXM_NAMESPACES or message_name != "AIXMBasicMessage":
         raise InitialDecodeError("INITIAL_UNSUPPORTED_NAMESPACE")
     members = []
+    serialized_bytes = [0]
     for child in message:
         namespace, local = _split(child.tag)
         if (namespace, local) == (message_ns, "hasMember"):
@@ -143,7 +185,7 @@ def inspect_initial(body, stage):
             feature_ns, _ = _split(child[0].tag)
             if feature_ns not in AIXM_NAMESPACES:
                 raise InitialDecodeError("INITIAL_UNSUPPORTED_NAMESPACE")
-            members.append(ET.tostring(child[0], encoding="unicode"))
+            members.append(_serialize_member(child[0], serialized_bytes))
         elif namespace in GML_NAMESPACES and local in {"boundedBy", "metaDataProperty"}:
             continue
         else:
