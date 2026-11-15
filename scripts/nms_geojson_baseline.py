@@ -73,6 +73,21 @@ def _encoded_size(value):
                           separators=(',', ':')).encode('utf-8'))
 
 
+def _airport_aliases(value):
+    """Return only the documented exact code and U.S. K-prefix equivalent."""
+    if not isinstance(value, str) or not re.fullmatch(r'[A-Z0-9]{3,4}', value):
+        return frozenset()
+    if len(value) == 3:
+        return frozenset((value, 'K' + value))
+    if value.startswith('K'):
+        return frozenset((value, value[1:]))
+    return frozenset((value,))
+
+
+def _reject_json_constant(_value):
+    raise json.JSONDecodeError('nonstandard numeric constant', '', 0)
+
+
 def _bounded_tree(value, max_depth, max_values):
     pending = [(value, 1)]
     count = 0
@@ -116,14 +131,49 @@ class CandidateBaseline:
     audit: dict
 
     def normalize_partition(self, *, airport, location, retrieved_utc):
-        """Reuse the existing mapper only for an explicitly reviewed partition."""
+        """Reuse the existing mapper only after explicit airport partitioning."""
         try:
             from normalize_notam_snapshot import normalize
         except ModuleNotFoundError:
             from .normalize_notam_snapshot import normalize
-        mapped = normalize(copy.deepcopy(self.payload), airport=airport,
+        airport_codes = _airport_aliases(airport)
+        location_codes = _airport_aliases(location)
+        if not airport_codes or not location_codes or airport_codes.isdisjoint(location_codes):
+            raise ValueError('airport and location must match, with only a US K-prefix alias supported')
+        selected = []
+        excluded = {'missing_airport_evidence': 0, 'invalid_airport_evidence': 0,
+                    'conflicting_airport_evidence': 0, 'different_airport': 0}
+        for feature in self.payload['data']['geojson']:
+            record = _record(feature)
+            supplied = [record[name] for name in ('location', 'icaoLocation') if name in record]
+            if not supplied:
+                excluded['missing_airport_evidence'] += 1
+                continue
+            aliases = [_airport_aliases(value) for value in supplied]
+            if any(not values for values in aliases):
+                excluded['invalid_airport_evidence'] += 1
+                continue
+            if len(aliases) == 2 and aliases[0].isdisjoint(aliases[1]):
+                excluded['conflicting_airport_evidence'] += 1
+                continue
+            if any(values.isdisjoint(airport_codes) for values in aliases):
+                excluded['different_airport'] += 1
+                continue
+            selected.append(copy.deepcopy(feature))
+        partition = {'status': 'Success', 'data': {'geojson': selected}}
+        mapped = normalize(partition, airport=airport,
                            retrieved_utc=retrieved_utc,
                            query_context={'location': location})
+        mapped['partition'] = {
+            'view': 'FILTERED_AIRPORT_PARTITION',
+            'source': 'combined classification-wide candidate',
+            'normalizer_input': 'filtered view; not the unchanged provider response',
+            'airport_evidence_fields': ['location', 'icaoLocation'],
+            'coverage': 'UNKNOWN',
+            'candidate_record_count': len(self.payload['data']['geojson']),
+            'selected_record_count': len(selected),
+            'excluded_record_counts': excluded,
+        }
         for notice in mapped['airports'][airport]['notices']:
             notice['formatted_texts'] = [text for text in notice['formatted_texts']
                 if (text['type'] == 'LOCAL_FORMAT' and text['field'] == 'simpleText')
@@ -143,7 +193,7 @@ def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MA
     if signature != 'json':
         raise CandidateError('UNSUPPORTED_CONTENT')
     try:
-        payload = json.loads(body.decode('utf-8'))
+        payload = json.loads(body.decode('utf-8'), parse_constant=_reject_json_constant)
     except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
         raise CandidateError('INVALID_JSON') from None
     _bounded_tree(payload, max_depth, max_values)
@@ -176,7 +226,10 @@ def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MA
             ids[record['id']] = feature
         core = feature['properties']['coreNOTAMData']
         translations = core.get('notamTranslation', [])
-        kinds = {t.get('type') for t in translations if isinstance(t, dict)} if isinstance(translations, list) else set()
+        if not isinstance(translations, list) or any(not isinstance(t, dict) or
+                not isinstance(t.get('type'), str) for t in translations):
+            raise CandidateError('INVALID_RECORD')
+        kinds = {t['type'] for t in translations}
         local += 'LOCAL_FORMAT' in kinds
         icao += 'ICAO' in kinds
         no_local += 'LOCAL_FORMAT' not in kinds

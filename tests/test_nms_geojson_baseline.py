@@ -61,6 +61,13 @@ class GeoJsonBaselineTests(unittest.TestCase):
         self.code('INVALID_JSON', lambda: inspect_bytes(b'{"x":"\xff"}', 'FDC'))
         self.code('INVALID_JSON', lambda: inspect_bytes(b'{', 'FDC'))
 
+    def test_nonstandard_json_numbers_are_rejected_but_normal_numbers_work(self):
+        for token in (b'NaN', b'Infinity', b'-Infinity'):
+            raw = b'{"status":"Success","data":{"geojson":[],"number":' + token + b'}}'
+            self.code('INVALID_JSON', lambda raw=raw: inspect_bytes(raw, 'FDC'))
+        item = inspect_bytes(b'{"status":"Success","data":{"geojson":[],"number":1.25}}', 'FDC')
+        self.assertTrue(item.report['json_parseable'])
+
     def test_structural_limits_and_signature_only_report(self):
         nested = {'status':'Success','data':{'geojson':[]}}
         for _ in range(8): nested={'x':nested}
@@ -91,6 +98,16 @@ class GeoJsonBaselineTests(unittest.TestCase):
         self.assertEqual(report['cancellation_field_count'], 1)
         self.assertEqual(report['min_last_updated'], '2026-02-11T00:00:00Z')
 
+    def test_malformed_translation_types_have_fixed_non_leaking_failure(self):
+        for malformed in ([], {}, None, 7):
+            source = feature('PRIVATE-ID', translations=[{'type': malformed, 'simpleText': 'SECRET'}])
+            self.code('INVALID_RECORD', lambda source=source:
+                      inspect_bytes(body([source]), 'FDC'))
+        report = inspect_bytes(body([feature('ok', translations=[
+            {'type': 'LOCAL_FORMAT', 'simpleText': 'local'},
+            {'type': 'ICAO', 'simpleText': 'icao'}])]), 'FDC').report
+        self.assertEqual((report['local_format_count'], report['icao_count']), (1, 1))
+
     def test_missing_ids_are_reported_but_candidate_rejects_them(self):
         bad = feature('x'); del bad['properties']['coreNOTAMData']['notam']['id']
         item = inspect_bytes(body([bad]), 'FDC')
@@ -117,6 +134,42 @@ class GeoJsonBaselineTests(unittest.TestCase):
                      if n['id'] == 'display')['formatted_texts']
         self.assertEqual([(x['type'],x['field'],x['text']) for x in texts], [
             ('LOCAL_FORMAT','simpleText','LOCAL'), ('ICAO','simpleText','ICAO SIMPLE')])
+
+    def test_partition_uses_only_explicit_consistent_airport_evidence(self):
+        mem = feature('mem')
+        mem_alias = feature('mem-alias', extra={'location':'KMEM', 'icaoLocation':'MEM'})
+        ord_notice = feature('ord', extra={'location':'ORD', 'icaoLocation':'KORD'})
+        jfk_notice = feature('jfk', extra={'location':'JFK', 'icaoLocation':'KJFK'})
+        missing = feature('missing'); missing_record = missing['properties']['coreNOTAMData']['notam']
+        del missing_record['location']; del missing_record['icaoLocation']
+        conflict = feature('conflict-location', extra={'location':'MEM', 'icaoLocation':'KORD'})
+        one_identifier = feature('one-identifier'); del one_identifier['properties']['coreNOTAMData']['notam']['icaoLocation']
+        invalid = feature('invalid-location', extra={'location':'MEM!', 'icaoLocation':'KMEM'})
+        duplicate = feature('duplicate-mem')
+        overrides = {classification: [] for classification in ORDER}
+        overrides.update({'DOMESTIC': [mem, mem_alias, ord_notice, jfk_notice, missing,
+            conflict, one_identifier, invalid, duplicate], 'FDC': [duplicate]})
+        candidate = assemble_candidate(all_sets(overrides))
+        mapped = candidate.normalize_partition(airport='KMEM', location='MEM', retrieved_utc='offline')
+        self.assertEqual([notice['id'] for notice in mapped['airports']['KMEM']['notices']],
+                         ['duplicate-mem', 'mem', 'mem-alias', 'one-identifier'])
+        self.assertEqual(mapped['airports']['KMEM']['completeness'], 'UNKNOWN')
+        self.assertEqual(mapped['partition']['view'], 'FILTERED_AIRPORT_PARTITION')
+        self.assertIn('not the unchanged provider response', mapped['partition']['normalizer_input'])
+        self.assertEqual(mapped['partition']['excluded_record_counts'], {
+            'missing_airport_evidence': 1, 'invalid_airport_evidence': 1,
+            'conflicting_airport_evidence': 1, 'different_airport': 2})
+        self.assertGreater(len(candidate.payload['data']['geojson']), 3)
+        self.assertEqual(len(candidate.record_evidence['duplicate-mem']), 2)
+
+    def test_partition_can_be_empty_without_claiming_coverage(self):
+        overrides = {classification: [] for classification in ORDER}
+        overrides['DOMESTIC'] = [feature('ord-only', extra={
+            'location':'ORD', 'icaoLocation':'KORD'})]
+        candidate = assemble_candidate(all_sets(overrides))
+        mapped = candidate.normalize_partition(airport='KJFK', location='JFK', retrieved_utc='offline')
+        self.assertEqual(mapped['airports']['KJFK']['notices'], [])
+        self.assertEqual(mapped['partition']['coverage'], 'UNKNOWN')
 
     def test_exact_duplicates_are_deterministic(self):
         shared = feature('duplicate')
