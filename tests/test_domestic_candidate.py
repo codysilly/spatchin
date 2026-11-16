@@ -10,7 +10,8 @@ from unittest.mock import patch
 
 SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'
 sys.path.insert(0, str(SCRIPTS))
-from capture_domestic_candidate import OPERATION, operation_digest, review
+from capture_domestic_candidate import (OPERATION, default_store_path, operation_digest,
+                                        review)
 from test_nms_refresh import NOW, synthetic_store
 
 
@@ -36,6 +37,13 @@ class DomesticCandidateGateTests(unittest.TestCase):
                       OPERATION['data']['url'])
         self.assertEqual(OPERATION['data']['nmsResponseFormat'], 'GEOJSON')
         self.assertFalse(OPERATION['retry']); self.assertFalse(OPERATION['publication'])
+
+    def test_windows_default_store_is_the_migrated_private_ledger(self):
+        with patch.dict('os.environ', {'LOCALAPPDATA': r'C:\Users\synthetic\AppData\Local'}, clear=True):
+            self.assertEqual(default_store_path(),
+                             r'C:\Users\synthetic\AppData\Local\Spatchin\private-faa\ledger')
+        with patch.dict('os.environ', {}, clear=True):
+            self.assertIsNone(default_store_path())
 
     def test_cli_wrong_approval_stops_before_credentials_or_network(self):
         child = subprocess.run([sys.executable, '-B', str(SCRIPTS/'capture_domestic_candidate.py'),

@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
+from pathlib import Path
 
 from nms_http import HTTPAdapter
 from nms_refresh import Store, collect_classification_candidate, encode
@@ -29,6 +30,13 @@ OPERATION = {
 }
 
 
+def default_store_path():
+    """Use the migrated Windows private ledger unless an operator overrides it."""
+    local_app_data = os.environ.get('LOCALAPPDATA')
+    return (str(Path(local_app_data) / 'Spatchin' / 'private-faa' / 'ledger')
+            if local_app_data else None)
+
+
 def operation_digest():
     return hashlib.sha256(encode(OPERATION)).hexdigest()
 
@@ -43,7 +51,9 @@ def review(store, now):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--store', required=True, help='existing private shared-ledger directory')
+    default_store = default_store_path()
+    parser.add_argument('--store', default=default_store, required=default_store is None,
+                        help='private shared-ledger directory (defaults to the migrated Spatchin ledger)')
     parser.add_argument('--account', required=True, help='logical account ID already bound to the ledger')
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--approve-operation')
