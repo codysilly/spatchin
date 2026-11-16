@@ -30,10 +30,16 @@ def c070_codes(path=None):
 def load_registry(value, *, codes=None):
     """Validate an explicit mapping; never infer ICAO from an IATA code."""
     codes = tuple(codes or c070_codes())
-    records = value.get('airports') if isinstance(value, dict) else value
+    records = value.get('airports') if isinstance(value, dict) and set(value) == {'airports'} else value
+    if isinstance(records, dict):
+        # A pre-indexed dictionary is only a convenience representation; it
+        # receives the same complete validation as an input list.
+        if any(key != item.get('iata') for key, item in records.items() if isinstance(item, dict)):
+            raise ValueError('registry dictionary key does not match IATA code')
+        records = list(records.values())
     if not isinstance(records, list) or len(records) != len(codes):
         raise ValueError('registry must contain exactly the C070 airports')
-    result = {}
+    result, icaos = {}, set()
     for item in records:
         if not isinstance(item, dict):
             raise ValueError('invalid registry airport')
@@ -45,7 +51,12 @@ def load_registry(value, *, codes=None):
             raise ValueError('registry airport identifier is invalid')
         if iata in result:
             raise ValueError('duplicate registry IATA code')
+        if icao in icaos:
+            raise ValueError('duplicate registry ICAO code')
+        if not coverage:
+            raise ValueError('registry source coverage metadata is required')
         result[iata] = copy.deepcopy(item)
+        icaos.add(icao)
     if set(result) != set(codes):
         raise ValueError('registry does not match C070 Sheet1 column A')
     return result
@@ -76,7 +87,9 @@ def features_from_capture(payload):
 def partition(payload, registry, *, retrieved_utc, max_input_bytes=DEFAULT_MAX_INPUT_BYTES,
               max_output_bytes=DEFAULT_MAX_OUTPUT_BYTES):
     """Keep a feature only when both source identifiers match one registry airport."""
-    registry = load_registry(registry) if not isinstance(registry, dict) or not all(isinstance(v, dict) and 'icao' in v for v in registry.values()) else registry
+    # Always validate, including dictionaries returned by a previous validation
+    # call: callers cannot bypass C070 coverage or uniqueness checks.
+    registry = load_registry(registry)
     if not isinstance(retrieved_utc, str) or not retrieved_utc.strip():
         raise ValueError('capture retrieval timestamp is required')
     if not isinstance(max_input_bytes, int) or not isinstance(max_output_bytes, int) or min(max_input_bytes, max_output_bytes) < 1:
@@ -106,11 +119,16 @@ def partition(payload, registry, *, retrieved_utc, max_input_bytes=DEFAULT_MAX_I
                            airport=icao, retrieved_utc=retrieved_utc,
                            query_context={'location': icao})
         airport = mapped['airports'][icao]
+        airport['warning'] = ('Filtered from a classification-wide DOMESTIC GeoJSON capture; '
+                              'not an FAA airport-specific location query. Completeness unknown.')
         airport['source_coverage'] = copy.deepcopy(entry['source_coverage'])
         airports[icao] = airport
     result = {'retrieved_utc': retrieved_utc, 'airports': airports,
             'partition': {'coverage': 'UNKNOWN', 'excluded_record_counts': excluded,
-                          'input_record_count': len(features)}}
+                          'input_record_count': len(features),
+                          'view': 'FILTERED_AIRPORT_PARTITION',
+                          'source': 'classification-wide DOMESTIC GeoJSON capture',
+                          'normalizer_input': 'filtered view; not an FAA airport-specific location query'}}
     if _encoded_size(result) > max_output_bytes:
         raise ValueError('partition exceeds output byte limit')
     return result
