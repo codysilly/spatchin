@@ -222,13 +222,20 @@ class Store:
             primary_not_before = latest + timedelta(minutes=3) if latest else now
             bulk_not_before = max(primary_not_before,
                                   latest_bulk + timedelta(hours=24) if latest_bulk else now)
+            latest_bulk_row = max((row for row in rows if row[0] == 'bulk'),
+                                  key=lambda row: max(instant(row[1]), instant(row[2])), default=None)
+            calls = db.execute('SELECT stage,at FROM calls ORDER BY at').fetchall()
             return {'ledger_history_verified': True,
                     'history_complete_through_utc': state['history_complete_through'],
+                    'active_attempt': state['active'], 'recovery_state': state['recovery'],
                     'attempt_count': state['attempt_count'],
                     'call_count': state['call_count'],
                     'response_count': state['response_count'],
                     'minimum_primary_not_before_utc': stamp(primary_not_before),
                     'minimum_bulk_not_before_utc': stamp(bulk_not_before),
+                    'latest_bulk_reserved_utc': latest_bulk_row[1] if latest_bulk_row else None,
+                    'latest_bulk_last_io_utc': latest_bulk_row[2] if latest_bulk_row else None,
+                    'known_call_stage_timestamps_utc': [{'stage': stage, 'at_utc': at} for stage, at in calls],
                     'ledger_time_eligible': now >= bulk_not_before,
                     'external_activity_attestation_required': True,
                     'reservation_created': False}

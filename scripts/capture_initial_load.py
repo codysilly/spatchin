@@ -56,10 +56,15 @@ def _content_path(body, started, now):
     try:
         value = json.loads(body, parse_constant=lambda _: (_ for _ in ()).throw(ValueError()))
         if not (isinstance(value, dict) and value.get('status') == 'Success' and value.get('errors') in (None, [])
-                and isinstance(value.get('data'), dict) and isinstance(value['data'].get('url'), str)): return None
+                and isinstance(value.get('data'), dict) and isinstance(value['data'].get('url'), str)):
+            raise ValueError()
         return content_request(value['data']['url'], started, now)
     except RefreshError: raise
     except Exception: raise RefreshError('INVALID_RESPONSE') from None
+
+def _direct_initial(body):
+    """Only explicitly recognizable non-JSON initial bodies can bypass control JSON."""
+    return body.startswith((b'\x1f\x8b', b'PK\x03\x04', b'BZh', b'\xfd7zXZ\x00', b'<?xml'))
 
 def execute(store, *, credentials, transport, clock):
     """Perform the exact capped 1 POST + 1 IL GET + optional 1 content GET."""
@@ -67,14 +72,21 @@ def execute(store, *, credentials, transport, clock):
     attempt = None
     with store.connect() as db:
         try:
+            # Recheck immediately before admission. A prior dry-run is never a
+            # reservation, and insufficient disk must not consume one.
+            store.storage.verify_private(store.root)
+            if shutil.disk_usage(store.root).free < MAX_CONTENT_BYTES:
+                raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
             attempt, _ = store.reserve(db, 'bulk', clock())
             evidence_parent = store.root/'initial-load-evidence'
             if not evidence_parent.exists(): store.storage.create_attempt(evidence_parent)
             store.storage.verify_private(evidence_parent)
             evidence = evidence_parent/attempt
             store.storage.create_attempt(evidence)
+            stages = []
             def call(request, token=None, limit=MAX_CONTROL_BYTES):
-                store.call_reserved(db, attempt, request.stage, clock())
+                at = clock(); store.call_reserved(db, attempt, request.stage, at)
+                stages.append({'stage': request.stage, 'reserved_utc': stamp(at)})
                 headers = dict(request.headers)
                 if token is not None: headers['Authorization'] = 'Bearer '+token
                 request = Request(request.stage, request.url, headers, request.body, request.method)
@@ -86,7 +98,9 @@ def execute(store, *, credentials, transport, clock):
                 return body
             token = _token(call(auth_request(credentials), limit=65536))
             started = stamp(clock()); control = call(initial_request(), token)
-            next_request = _content_path(control, started, clock())
+            next_request = _content_path(control, started, clock()) if control[:1] in (b'{', b'[') else None
+            if next_request is None and not _direct_initial(control):
+                raise RefreshError('INVALID_RESPONSE')
             artifact = evidence/('content.partial' if next_request else 'initial-load.bin')
             if next_request:
                 store.storage.private_write(artifact, b'')
@@ -97,23 +111,24 @@ def execute(store, *, credentials, transport, clock):
                         total += len(chunk)
                         if total > MAX_CONTENT_BYTES: raise OSError()
                         stream.write(chunk); digest.update(chunk)
-                    store.call_reserved(db, attempt, next_request.stage, clock())
+                    at = clock(); store.call_reserved(db, attempt, next_request.stage, at)
+                    stages.append({'stage': next_request.stage, 'reserved_utc': stamp(at)})
                     try: status, detail = transport.stream(Request(next_request.stage, next_request.url,
                         {'Authorization': 'Bearer '+token}), MAX_CONTENT_BYTES, sink)
                     except Exception: raise RefreshError('TRANSPORT_FAILED') from None
                     stream.flush(); os.fsync(stream.fileno())
                 if status != 200: raise RefreshError('HTTP_FAILED')
-                # A valid path is usable for under five minutes total, not merely
-                # at content-request construction time.
-                content_request('/v1/content/SYNTHETIC', started, clock())
                 if detail != {'bytes': total, 'sha256': digest.hexdigest()}: raise RefreshError('INVALID_RESPONSE')
                 completed = evidence/'initial-load.bin'; store.storage.replace(artifact, completed); artifact = completed
             else:
                 store.storage.private_write(artifact, control)
             store.storage.verify_private(artifact)
-            raw = artifact.read_bytes(); manifest = {'schema': 1, 'attempt': attempt, 'captured_utc': stamp(clock()),
+            artifact_bytes = total if next_request else len(control)
+            artifact_sha256 = digest.hexdigest() if next_request else hashlib.sha256(control).hexdigest()
+            manifest = {'schema': 1, 'attempt': attempt, 'capture_started_utc': started, 'capture_completed_utc': stamp(clock()),
                 'initial_control_bytes': len(control), 'initial_control_sha256': hashlib.sha256(control).hexdigest(),
-                'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest(), 'content_continuation_used': bool(next_request),
+                'bytes': artifact_bytes, 'sha256': artifact_sha256, 'content_continuation_used': bool(next_request),
+                'stage_receipts': stages,
                 'baseline_established': False, 'watermark': None, 'decoded': False, 'published': False}
             receipt = encode(manifest); store.storage.private_write(evidence/'receipt.json', receipt)
             store.received(db, attempt, 'initial-load-receipt', receipt, clock())

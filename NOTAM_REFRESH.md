@@ -24,8 +24,11 @@ at least 1 GiB free in the existing private-ledger volume before approval. Conte
 is written first as a protected `content.partial`; success flushes and atomically
 renames it to `initial-load.bin`, while partial data remains private evidence on
 failure and the ledger's failed reservation is retained. A protected receipt holds
-UTC capture time, byte count and SHA-256 but never URLs, tokens, headers or raw
-notices. Initial control bytes remain in the existing private response history;
+UTC capture start/completion, per-stage reservation times, byte count and SHA-256
+but never URLs, tokens, headers or raw notices. The five-minute content-path bound
+is checked before starting that one GET; provider material does not establish a
+requirement that a hash-valid transfer must finish before temporary-path expiry.
+Initial control bytes remain in the existing private response history;
 the large opaque artifact remains under its existing private ledger directory,
 not a new account store.
 
