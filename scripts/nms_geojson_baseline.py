@@ -1,14 +1,19 @@
 """Bounded offline inspection and candidate assembly for saved NMS GeoJSON.
 
-No network, decompression, baseline acceptance, cursor, or publication behavior is
-present here.  Callers retain the supplied bytes in private storage.
+This is offline evidence inspection only.  A gzip-wrapped bare GeoJSON array is
+accepted for the saved DOMESTIC specimen, but callers retain the supplied bytes
+unchanged.  No baseline acceptance, cursor, publication, or network behavior is
+present here.
 """
 import argparse
 import copy
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+import gzip
 import hashlib
+import io
 import json
+import math
 from pathlib import Path
 import re
 
@@ -19,6 +24,7 @@ except ModuleNotFoundError:  # Package-style import used by the offline test sui
 
 ORDER = ('INTERNATIONAL', 'MILITARY', 'LOCAL_MILITARY', 'DOMESTIC', 'FDC')
 DEFAULT_MAX_BYTES = 64 * 1024 * 1024
+DEFAULT_MAX_DECOMPRESSED_BYTES = 64 * 1024 * 1024
 DEFAULT_MAX_FEATURES = 1_000_000
 DEFAULT_MAX_OUTPUT_BYTES = 256 * 1024 * 1024
 DEFAULT_MAX_DEPTH = 64
@@ -29,7 +35,8 @@ COMPRESSED = ((b'PK\x03\x04', 'zip'), (b'\x1f\x8b', 'gzip'),
 
 class CandidateError(Exception):
     CODES = frozenset(('INVALID_CLASSIFICATION', 'INPUT_TOO_LARGE', 'UNSUPPORTED_CONTENT',
-                       'INVALID_JSON', 'INVALID_RESPONSE', 'INVALID_RECORD',
+                       'INVALID_GZIP', 'DECOMPRESSED_TOO_LARGE', 'INVALID_JSON',
+                       'INVALID_RESPONSE', 'INVALID_RECORD',
                        'INCOMPLETE_BASELINE', 'CLASSIFICATION_CONFLICT',
                        'IDENTITY_CONFLICT', 'OUTPUT_TOO_LARGE'))
 
@@ -95,6 +102,8 @@ def _bounded_tree(value, max_depth, max_values):
         item, depth = pending.pop()
         count += 1
         if count > max_values or depth > max_depth:
+            raise CandidateError('INVALID_JSON')
+        if isinstance(item, float) and not math.isfinite(item):
             raise CandidateError('INVALID_JSON')
         if isinstance(item, dict):
             pending.extend((key, depth + 1) for key in item)
@@ -181,7 +190,25 @@ class CandidateBaseline:
         return mapped
 
 
+def _decode_saved_bytes(body, signature, max_decompressed_bytes):
+    if signature == 'json':
+        return body, 'none'
+    if signature != 'gzip':
+        raise CandidateError('UNSUPPORTED_CONTENT')
+    if not isinstance(max_decompressed_bytes, int) or max_decompressed_bytes < 0:
+        raise CandidateError('DECOMPRESSED_TOO_LARGE')
+    try:
+        with gzip.GzipFile(fileobj=io.BytesIO(body), mode='rb') as stream:
+            decoded = stream.read(max_decompressed_bytes + 1)
+    except (EOFError, OSError):
+        raise CandidateError('INVALID_GZIP') from None
+    if len(decoded) > max_decompressed_bytes:
+        raise CandidateError('DECOMPRESSED_TOO_LARGE')
+    return decoded, 'gzip'
+
+
 def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MAX_BYTES,
+                  max_decompressed_bytes=DEFAULT_MAX_DECOMPRESSED_BYTES,
                   max_features=DEFAULT_MAX_FEATURES, max_depth=DEFAULT_MAX_DEPTH,
                   max_values=DEFAULT_MAX_VALUES):
     if classification not in CLASSIFICATIONS:
@@ -190,14 +217,16 @@ def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MA
         raise CandidateError('INPUT_TOO_LARGE')
     basic = signature_report(body, classification)
     signature = basic['signature']
-    if signature != 'json':
-        raise CandidateError('UNSUPPORTED_CONTENT')
+    decoded, compression = _decode_saved_bytes(body, signature, max_decompressed_bytes)
     try:
-        payload = json.loads(body.decode('utf-8'), parse_constant=_reject_json_constant)
+        payload = json.loads(decoded.decode('utf-8'), parse_constant=_reject_json_constant)
     except (UnicodeDecodeError, json.JSONDecodeError, RecursionError):
         raise CandidateError('INVALID_JSON') from None
     _bounded_tree(payload, max_depth, max_values)
     basic['json_parseable'] = True
+    source_shape = 'bare_geojson_array' if isinstance(payload, list) else 'success_geojson_envelope'
+    if isinstance(payload, list):
+        payload = {'status': 'Success', 'data': {'geojson': payload}}
     if (not isinstance(payload, dict) or payload.get('status') != 'Success'
             or payload.get('errors') not in (None, []) or not isinstance(payload.get('data'), dict)
             or not isinstance(payload['data'].get('geojson'), list)):
@@ -242,7 +271,11 @@ def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MA
         for name in set(record) - expected:
             unexpected_fields.add(name if isinstance(name, str) and
                 re.fullmatch(r'[A-Za-z][A-Za-z0-9_.-]{0,63}', name) else '<nonstandard-name>')
-    basic.update({'geojson_array': True, 'record_count': len(features),
+    basic.update({'json_parseable': True, 'compression': compression,
+                  'source_shape': source_shape,
+                  'original_input_sha256': basic['sha256'], 'original_input_bytes': basic['bytes'],
+                  'decoded_sha256': hashlib.sha256(decoded).hexdigest(), 'decoded_bytes': len(decoded),
+                  'geojson_array': True, 'record_count': len(features),
                   'distinct_id_count': len(ids), 'duplicate_id_count': duplicate,
                   'missing_or_invalid_id_count': missing,
                   'min_last_updated': min(times)[1] if times else None,
@@ -251,7 +284,9 @@ def inspect_bytes(body, classification, *, provenance=None, max_bytes=DEFAULT_MA
                   'no_local_format_count': no_local, 'cancellation_field_count': cancelled,
                   'same_time_conflict_count': conflicts,
                   'missing_record_fields': dict(sorted(missing_fields.items())),
-                  'unexpected_record_fields': sorted(unexpected_fields)[:100]})
+                  'unexpected_record_fields': sorted(unexpected_fields)[:100],
+                  'baseline_established': False, 'watermark': None, 'coverage': 'UNKNOWN',
+                  'diagnostic': 'BASELINE_CUTOVER_REQUIRED'})
     if not isinstance(provenance or {}, dict) or any(not isinstance(k, str) or
             not isinstance(v, (str, int, bool, type(None))) for k, v in (provenance or {}).items()):
         raise CandidateError('INVALID_RESPONSE')
@@ -311,7 +346,7 @@ def assemble_candidate(datasets, *, max_output_bytes=DEFAULT_MAX_OUTPUT_BYTES):
              'exact_duplicate_count': exact, 'older_duplicate_count': older,
              'newer_replacement_count': newer, 'serialized_bytes': _encoded_size(payload),
              'source_reports': [copy.deepcopy(by_class[c].report) for c in ORDER],
-             'baseline_established': False, 'watermark': None,
+             'baseline_established': False, 'watermark': None, 'coverage': 'UNKNOWN',
              'diagnostic': 'BASELINE_CUTOVER_REQUIRED'}
     retained_evidence = {identity: tuple(markers) for identity, markers in evidence.items()}
     return CandidateBaseline(payload, tuple(by_class[c] for c in ORDER), retained_evidence, audit)
@@ -330,6 +365,8 @@ def main():
     parser.add_argument('--dataset', action='append', required=True,
                         help='CLASSIFICATION=local-path (repeat; never a URL)')
     parser.add_argument('--max-bytes', type=int, default=DEFAULT_MAX_BYTES)
+    parser.add_argument('--max-decompressed-bytes', type=int,
+                        default=DEFAULT_MAX_DECOMPRESSED_BYTES)
     args = parser.parse_args()
     reports = []
     try:
@@ -338,16 +375,15 @@ def main():
             if not separator:
                 raise CandidateError('INVALID_CLASSIFICATION')
             saved = read_bounded(path, args.max_bytes)
-            if _signature(saved) != 'json':
+            try:
+                reports.append(inspect_bytes(saved, classification,
+                    provenance={'source': 'saved-local-bytes'},
+                    max_bytes=args.max_bytes,
+                    max_decompressed_bytes=args.max_decompressed_bytes).report)
+            except CandidateError as error:
+                if str(error) != 'INVALID_JSON':
+                    raise
                 reports.append(signature_report(saved, classification))
-            else:
-                try:
-                    reports.append(inspect_bytes(saved, classification,
-                        provenance={'source': 'saved-local-bytes'}).report)
-                except CandidateError as error:
-                    if str(error) != 'INVALID_JSON':
-                        raise
-                    reports.append(signature_report(saved, classification))
     except (CandidateError, OSError) as error:
         parser.error(str(error) if isinstance(error, CandidateError) else 'LOCAL_READ_FAILED')
     print(json.dumps({'inspection_only': True, 'reports': reports}, separators=(',', ':')))

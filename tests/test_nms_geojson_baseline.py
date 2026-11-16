@@ -1,4 +1,5 @@
 """Synthetic, offline tests for classification-wide candidate inspection."""
+import gzip
 import json
 import socket
 import tempfile
@@ -52,10 +53,40 @@ class GeoJsonBaselineTests(unittest.TestCase):
         self.code('INCOMPLETE_BASELINE', lambda: assemble_candidate(all_sets()[:-1]))
         self.code('INVALID_CLASSIFICATION', lambda: inspect_bytes(body([]), 'DOM'))
 
-    def test_bounds_input_and_rejects_non_json_or_compression_without_guessing(self):
+    def test_bounds_input_and_rejects_unsupported_compression_without_guessing(self):
         self.code('INPUT_TOO_LARGE', lambda: inspect_bytes(body([]), 'FDC', max_bytes=2))
-        for value in (b'PK\x03\x04x', b'\x1f\x8bx', b'<xml/>'):
+        for value in (b'PK\x03\x04x', b'<xml/>'):
             self.code('UNSUPPORTED_CONTENT', lambda value=value: inspect_bytes(value, 'FDC'))
+
+    def test_gzip_bare_array_preserves_source_bytes_and_dom_classification(self):
+        source = feature('DOM-PRIVATE-ID', classification='DOM')
+        raw = gzip.compress(json.dumps([source], ensure_ascii=False).encode())
+        item = inspect_bytes(raw, 'DOMESTIC', provenance={'retrieved_utc':'offline'})
+        self.assertEqual(item.original_bytes, raw)
+        self.assertEqual(item.provenance, {'retrieved_utc':'offline'})
+        self.assertEqual(item.report['signature'], 'gzip')
+        self.assertEqual(item.report['compression'], 'gzip')
+        self.assertEqual(item.report['source_shape'], 'bare_geojson_array')
+        self.assertEqual(item.report['record_count'], 1)
+        self.assertFalse(item.report['baseline_established'])
+        self.assertIsNone(item.report['watermark'])
+        self.assertEqual(item.report['coverage'], 'UNKNOWN')
+        record = item.payload['data']['geojson'][0]['properties']['coreNOTAMData']['notam']
+        self.assertEqual((record['id'], record['classification']), ('DOM-PRIVATE-ID', 'DOM'))
+
+    def test_uncompressed_success_envelope_remains_supported(self):
+        raw = body([feature('legacy-envelope', classification='DOM')])
+        item = inspect_bytes(raw, 'DOMESTIC')
+        self.assertEqual((item.report['signature'], item.report['compression'],
+                          item.report['source_shape']),
+                         ('json', 'none', 'success_geojson_envelope'))
+        self.assertEqual(item.report['decoded_sha256'], item.report['original_input_sha256'])
+
+    def test_truncated_gzip_and_expansion_limit_fail_safely(self):
+        raw = gzip.compress(json.dumps([feature('gzip')]).encode())
+        self.code('INVALID_GZIP', lambda: inspect_bytes(raw[:-4], 'DOMESTIC'))
+        self.code('DECOMPRESSED_TOO_LARGE', lambda: inspect_bytes(
+            raw, 'DOMESTIC', max_decompressed_bytes=8))
 
     def test_utf8_only_json_and_malformed_json_are_fixed_failures(self):
         self.code('INVALID_JSON', lambda: inspect_bytes(b'{"x":"\xff"}', 'FDC'))
@@ -67,6 +98,8 @@ class GeoJsonBaselineTests(unittest.TestCase):
             self.code('INVALID_JSON', lambda raw=raw: inspect_bytes(raw, 'FDC'))
         item = inspect_bytes(b'{"status":"Success","data":{"geojson":[],"number":1.25}}', 'FDC')
         self.assertTrue(item.report['json_parseable'])
+        self.code('INVALID_JSON', lambda: inspect_bytes(
+            b'{"status":"Success","data":{"geojson":[],"number":1e999}}', 'FDC'))
 
     def test_structural_limits_and_signature_only_report(self):
         nested = {'status':'Success','data':{'geojson':[]}}
