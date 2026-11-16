@@ -4,6 +4,7 @@ import re
 import socket
 import ssl
 import time
+import hashlib
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from nms_refresh_contract import AUTH, CLASSIFICATIONS, Request, instant
@@ -88,7 +89,7 @@ class HTTPAdapter:
     """
     def __init__(self, *, timeout=30, max_bytes=64*1024*1024,
                  connection_factory=None, monotonic=time.monotonic):
-        if type(timeout) not in (int,float) or not 0 < timeout <= 30 or type(max_bytes) is not int or not 0 < max_bytes <= 1024**3:
+        if type(timeout) not in (int,float) or not 0 < timeout <= 300 or type(max_bytes) is not int or not 0 < max_bytes <= 1024**3:
             raise HTTPAdapterError('HTTP_INVALID_REQUEST')
         self.timeout, self.max_bytes = timeout, max_bytes
         self.factory = connection_factory or http.client.HTTPSConnection
@@ -165,3 +166,78 @@ class HTTPAdapter:
                         resource.close()
                     except Exception:
                         pass  # Cleanup details may contain headers/tokens; never log them.
+
+    def stream(self, request, limit, sink):
+        """Make one validated HTTPS call and write a bounded 200 body to ``sink``.
+
+        This is deliberately separate from ``__call__`` so existing collectors keep
+        their bounded in-memory contract.  ``sink`` receives only body chunks; it
+        is never called for redirects or non-200 responses.
+        """
+        target = validate_request(request)
+        if type(limit) is not int or limit < 1 or not callable(sink):
+            raise HTTPAdapterError('HTTP_INVALID_REQUEST')
+        bound = min(limit, self.max_bytes)
+        connection = response = active_socket = None
+        deadline = self.clock()+self.timeout
+        total = 0; digest = hashlib.sha256()
+        def remaining():
+            value = deadline-self.clock()
+            if value <= 0:
+                raise TimeoutError()
+            if active_socket is not None:
+                active_socket.settimeout(value)
+            return value
+        try:
+            context = ssl.create_default_context()
+            connection = self.factory('api-nms.aim.faa.gov', port=443,
+                                      timeout=remaining(), context=context)
+            connection.debuglevel = 0
+            connection.request(request.method, target, body=request.body, headers=dict(request.headers))
+            active_socket = connection.sock; remaining()
+            response = connection.getresponse(); remaining()
+            status = response.status
+            if type(status) is not int or not 100 <= status <= 599:
+                raise HTTPAdapterError('HTTP_PROTOCOL_FAILURE')
+            if 300 <= status <= 399:
+                raise HTTPAdapterError('HTTP_REDIRECT_REFUSED')
+            if status != 200:
+                return status, {}
+            length = response.getheader('Content-Length')
+            if length is not None:
+                if not re.fullmatch(r'\d+', length):
+                    raise HTTPAdapterError('HTTP_PROTOCOL_FAILURE')
+                if int(length) > bound:
+                    raise HTTPAdapterError('HTTP_RESPONSE_TOO_LARGE')
+            while True:
+                remaining()
+                chunk = response.read1(min(65536, bound+1-total))
+                remaining()
+                if not isinstance(chunk, bytes):
+                    raise HTTPAdapterError('HTTP_PROTOCOL_FAILURE')
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > bound:
+                    raise HTTPAdapterError('HTTP_RESPONSE_TOO_LARGE')
+                sink(chunk); digest.update(chunk)
+            if length is not None and total != int(length):
+                raise HTTPAdapterError('HTTP_PROTOCOL_FAILURE')
+            return status, {'bytes': total, 'sha256': digest.hexdigest()}
+        except HTTPAdapterError:
+            raise
+        except (TimeoutError, socket.timeout):
+            raise HTTPAdapterError('HTTP_TIMEOUT') from None
+        except ssl.SSLError:
+            raise HTTPAdapterError('HTTP_TLS_FAILURE') from None
+        except OSError:
+            raise HTTPAdapterError('HTTP_NETWORK_FAILURE') from None
+        except Exception:
+            raise HTTPAdapterError('HTTP_PROTOCOL_FAILURE') from None
+        finally:
+            for resource in (response, connection):
+                if resource is not None:
+                    try:
+                        resource.close()
+                    except Exception:
+                        pass

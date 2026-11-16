@@ -105,6 +105,30 @@ class Store:
                 db.close()
 
     @contextmanager
+    def review_connect(self):
+        """Open the existing ledger read-only; review must not touch its journal."""
+        db = None
+        try:
+            for path in (self.root, self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+                self.storage.validate_location(path)
+                self.storage.verify_private(path)
+            self.import_marker()
+            db = sqlite3.connect((self.root/'account.sqlite3').as_uri()+'?mode=ro',
+                                 uri=True, timeout=2, isolation_level=None)
+            if db.execute('PRAGMA user_version').fetchone()[0] != 1:
+                raise ValueError()
+            if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+                raise ValueError()
+            yield db
+        except RefreshError:
+            raise
+        except Exception:
+            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE') from None
+        finally:
+            if db is not None:
+                db.close()
+
+    @contextmanager
     def transaction(self, db):
         for path in (self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
             self.storage.verify_private(path)
@@ -147,7 +171,7 @@ class Store:
 
     def snapshot(self):
         """The last accepted private publication handoff, not a live web writer."""
-        with self.connect() as db:
+        with self.review_connect() as db:
             return base64.b64decode(self.load(db)['published_b64'], validate=True)
 
     def reserve(self, db, mode, now):
@@ -185,7 +209,7 @@ class Store:
     def budget_review(self, now):
         """Read-only ledger eligibility; external-account activity is a separate gate."""
         now = instant(stamp(now))
-        with self.connect() as db:
+        with self.review_connect() as db:
             state = self.load(db)
             if state['active'] is not None or state['recovery'] is not None:
                 raise RefreshError('RECOVERY_REQUIRED')

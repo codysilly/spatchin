@@ -1,5 +1,34 @@
 # SPA-10: one-PC, offline-tested refresh engine (not activated)
 
+## SPA-56 supervised opaque Initial Load capture (not authorized to run)
+
+`scripts/capture_initial_load.py` is a separate, capture-only procedure for the
+documented all-classification `GET /nmsapi/v1/notams/il?allowRedirect=false`.
+Its default invocation is a read-only review: it opens the existing migrated
+Spatchin private ledger read-only, reports the account-wide bulk gate and a
+distinct operation-approval digest, checks local disk headroom, and reads neither
+credentials nor network.  It never reserves an allowance or creates evidence.
+
+Only a future, separately owner-approved `--execute` invocation can use the
+existing account-bound Store. It permits exactly one OAuth POST, one IL GET and,
+only if the validated JSON control envelope supplies it, one same-host
+authenticated content GET. Every call is durably reserved before I/O. Redirects,
+non-200 responses, malformed/expired/cross-host content paths, timeout, TLS and
+network failure stop without retry. The path does not call the decoder, accept an
+outbox, establish a baseline, set a watermark, or write public data.
+
+The legacy 64 MiB/30-second in-memory adapter remains the collector default.
+This capture path uses its new bounded streaming mode: 1 GiB maximum opaque
+content, 64 KiB chunks, and a five-minute per-call elapsed deadline. It requires
+at least 1 GiB free in the existing private-ledger volume before approval. Content
+is written first as a protected `content.partial`; success flushes and atomically
+renames it to `initial-load.bin`, while partial data remains private evidence on
+failure and the ledger's failed reservation is retained. A protected receipt holds
+UTC capture time, byte count and SHA-256 but never URLs, tokens, headers or raw
+notices. Initial control bytes remain in the existing private response history;
+the large opaque artifact remains under its existing private ledger directory,
+not a new account store.
+
 The engine uses explicit injected dependencies. The separate `nms_http.py` adapter
 now implements one bounded HTTPS call when invoked; import/construction do not
 connect. `import_nms_history.py` defaults to a read-only review and writes only
