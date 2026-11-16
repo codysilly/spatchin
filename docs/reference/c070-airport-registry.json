@@ -1,0 +1,1434 @@
+{
+  "airports": [
+    {
+      "iata": "ABE",
+      "icao": "KABE",
+      "name": "LEHIGH VALLEY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ABQ",
+      "icao": "KABQ",
+      "name": "ALBUQUERQUE INTL SUNPORT",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "AFW",
+      "icao": "KAFW",
+      "name": "PEROT FLD/FORT WORTH ALLIANCE",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ALB",
+      "icao": "KALB",
+      "name": "ALBANY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ATL",
+      "icao": "KATL",
+      "name": "HARTSFIELD/JACKSON ATLANTA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ATW",
+      "icao": "KATW",
+      "name": "APPLETON INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "AUS",
+      "icao": "KAUS",
+      "name": "AUSTIN-BERGSTROM INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BDL",
+      "icao": "KBDL",
+      "name": "BRADLEY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BFI",
+      "icao": "KBFI",
+      "name": "BOEING FLD/KING COUNTY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BFM",
+      "icao": "KBFM",
+      "name": "MOBILE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BGR",
+      "icao": "KBGR",
+      "name": "BANGOR INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BHM",
+      "icao": "KBHM",
+      "name": "BIRMINGHAM-SHUTTLESWORTH INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BIL",
+      "icao": "KBIL",
+      "name": "BILLINGS LOGAN INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BMI",
+      "icao": "KBMI",
+      "name": "CENTRAL IL RGNL/BLOOMINGTON-NORMAL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BNA",
+      "icao": "KBNA",
+      "name": "NASHVILLE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BOI",
+      "icao": "KBOI",
+      "name": "BOISE AIR TRML/GOWEN FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BOS",
+      "icao": "KBOS",
+      "name": "GENERAL EDWARD LAWRENCE LOGAN INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BTV",
+      "icao": "KBTV",
+      "name": "PATRICK LEAHY BURLINGTON INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BUF",
+      "icao": "KBUF",
+      "name": "BUFFALO NIAGARA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BUR",
+      "icao": "KBUR",
+      "name": "HOLLYWOOD BURBANK",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "BWI",
+      "icao": "KBWI",
+      "name": "BALTIMORE/WASHINGTON INTL THURGOOD MARSHALL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CAE",
+      "icao": "KCAE",
+      "name": "COLUMBIA METRO",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CHA",
+      "icao": "KCHA",
+      "name": "LOVELL FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CHS",
+      "icao": "KCHS",
+      "name": "CHARLESTON AFB/INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CID",
+      "icao": "KCID",
+      "name": "THE EASTERN IOWA",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CLE",
+      "icao": "KCLE",
+      "name": "CLEVELAND-HOPKINS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CLT",
+      "icao": "KCLT",
+      "name": "CHARLOTTE/DOUGLAS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "COS",
+      "icao": "KCOS",
+      "name": "CITY OF COLORADO SPRINGS MUNI",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CPR",
+      "icao": "KCPR",
+      "name": "CASPER/NATRONA COUNTY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CRP",
+      "icao": "KCRP",
+      "name": "CORPUS CHRISTI INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "CVG",
+      "icao": "KCVG",
+      "name": "CINCINNATI/NORTHERN KENTUCKY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DAY",
+      "icao": "KDAY",
+      "name": "JAMES M COX DAYTON INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DEN",
+      "icao": "KDEN",
+      "name": "DENVER INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DFW",
+      "icao": "KDFW",
+      "name": "DALLAS-FORT WORTH INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DJT",
+      "icao": "KDJT",
+      "name": "PRESIDENT DONALD J TRUMP INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DLH",
+      "icao": "KDLH",
+      "name": "DULUTH INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DSM",
+      "icao": "KDSM",
+      "name": "DES MOINES INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "DTW",
+      "icao": "KDTW",
+      "name": "DETROIT METRO WAYNE COUNTY",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ELP",
+      "icao": "KELP",
+      "name": "EL PASO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "EWR",
+      "icao": "KEWR",
+      "name": "NEWARK LIBERTY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FAR",
+      "icao": "KFAR",
+      "name": "HECTOR INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FAT",
+      "icao": "KFAT",
+      "name": "FRESNO YOSEMITE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FLL",
+      "icao": "KFLL",
+      "name": "FORT LAUDERDALE/HOLLYWOOD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FNT",
+      "icao": "KFNT",
+      "name": "BISHOP INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FSD",
+      "icao": "KFSD",
+      "name": "JOE FOSS FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "FWA",
+      "icao": "KFWA",
+      "name": "FORT WAYNE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GEG",
+      "icao": "KGEG",
+      "name": "SPOKANE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GFK",
+      "icao": "KGFK",
+      "name": "GRAND FORKS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GJT",
+      "icao": "KGJT",
+      "name": "GRAND JUNCTION RGNL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GRR",
+      "icao": "KGRR",
+      "name": "GERALD R FORD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GSO",
+      "icao": "KGSO",
+      "name": "PIEDMONT TRIAD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GSP",
+      "icao": "KGSP",
+      "name": "GREENVILLE SPARTANBURG INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "GTF",
+      "icao": "KGTF",
+      "name": "GREAT FALLS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "HLN",
+      "icao": "KHLN",
+      "name": "HELENA RGNL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "HRL",
+      "icao": "KHRL",
+      "name": "VALLEY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "HTS",
+      "icao": "KHTS",
+      "name": "TRI-STATE/MILTON J FERGUSON FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "IAD",
+      "icao": "KIAD",
+      "name": "WASHINGTON DULLES INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "IAH",
+      "icao": "KIAH",
+      "name": "GEORGE BUSH INTCNTL/HOUSTON",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ICT",
+      "icao": "KICT",
+      "name": "WICHITA DWIGHT D EISENHOWER NTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "IDA",
+      "icao": "KIDA",
+      "name": "IDAHO FALLS RGNL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "IND",
+      "icao": "KIND",
+      "name": "INDIANAPOLIS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "IWA",
+      "icao": "KIWA",
+      "name": "MESA GATEWAY",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "JAX",
+      "icao": "KJAX",
+      "name": "JACKSONVILLE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "JFK",
+      "icao": "KJFK",
+      "name": "JOHN F KENNEDY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LAS",
+      "icao": "KLAS",
+      "name": "HARRY REID INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LAX",
+      "icao": "KLAX",
+      "name": "LOS ANGELES INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LBB",
+      "icao": "KLBB",
+      "name": "LUBBOCK PRESTON SMITH INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LCK",
+      "icao": "KLCK",
+      "name": "RICKENBACKER INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LFT",
+      "icao": "KLFT",
+      "name": "LAFAYETTE RGNL/PAUL FOURNET FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LGB",
+      "icao": "KLGB",
+      "name": "LONG BEACH (DAUGHERTY FLD)",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LIT",
+      "icao": "KLIT",
+      "name": "BILL AND HILLARY CLINTON NTL/ADAMS FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LRD",
+      "icao": "KLRD",
+      "name": "LAREDO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "LSV",
+      "icao": "KLSV",
+      "name": "NELLIS AFB",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MCI",
+      "icao": "KMCI",
+      "name": "KANSAS CITY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MCO",
+      "icao": "KMCO",
+      "name": "ORLANDO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MDT",
+      "icao": "KMDT",
+      "name": "HARRISBURG INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MEM",
+      "icao": "KMEM",
+      "name": "FREDERICK W SMITH INTL/MEMPHIS",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MHT",
+      "icao": "KMHT",
+      "name": "MANCHESTER BOSTON RGNL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MIA",
+      "icao": "KMIA",
+      "name": "MIAMI INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MKE",
+      "icao": "KMKE",
+      "name": "GENERAL MITCHELL INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MSN",
+      "icao": "KMSN",
+      "name": "DANE COUNTY RGNL/TRUAX FLD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MSO",
+      "icao": "KMSO",
+      "name": "MISSOULA MONTANA",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MSP",
+      "icao": "KMSP",
+      "name": "MINNEAPOLIS-ST PAUL INTL/WOLD-CHAMBERLAIN",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "MSY",
+      "icao": "KMSY",
+      "name": "LOUIS ARMSTRONG NEW ORLEANS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "NQA",
+      "icao": "KNQA",
+      "name": "MILLINGTON/MEMPHIS",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "OAK",
+      "icao": "KOAK",
+      "name": "OAKLAND SAN FRANCISCO BAY",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "OKC",
+      "icao": "KOKC",
+      "name": "OKC WILL ROGERS INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "OMA",
+      "icao": "KOMA",
+      "name": "EPPLEY AIRFIELD",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ONT",
+      "icao": "KONT",
+      "name": "ONTARIO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ORD",
+      "icao": "KORD",
+      "name": "CHICAGO O'HARE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ORF",
+      "icao": "KORF",
+      "name": "NORFOLK INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PAE",
+      "icao": "KPAE",
+      "name": "SEATTLE PAINE FLD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PDX",
+      "icao": "KPDX",
+      "name": "PORTLAND INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PHL",
+      "icao": "KPHL",
+      "name": "PHILADELPHIA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PHX",
+      "icao": "KPHX",
+      "name": "PHOENIX SKY HARBOR INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PIT",
+      "icao": "KPIT",
+      "name": "PITTSBURGH INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PSM",
+      "icao": "KPSM",
+      "name": "PORTSMOUTH INTL AT PEASE",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PVD",
+      "icao": "KPVD",
+      "name": "RHODE ISLAND TF GREEN INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "PWM",
+      "icao": "KPWM",
+      "name": "PORTLAND INTL JETPORT",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RDU",
+      "icao": "KRDU",
+      "name": "RALEIGH-DURHAM INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RFD",
+      "icao": "KRFD",
+      "name": "CHICAGO/ROCKFORD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RIC",
+      "icao": "KRIC",
+      "name": "RICHMOND INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RNO",
+      "icao": "KRNO",
+      "name": "RENO/TAHOE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ROA",
+      "icao": "KROA",
+      "name": "ROANOKE/BLACKSBURG RGNL (WOODRUM FLD)",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "ROC",
+      "icao": "KROC",
+      "name": "FREDERICK DOUGLASS/GREATER ROCHESTER INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RST",
+      "icao": "KRST",
+      "name": "ROCHESTER INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "RSW",
+      "icao": "KRSW",
+      "name": "SOUTHWEST FLORIDA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SAN",
+      "icao": "KSAN",
+      "name": "SAN DIEGO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SAT",
+      "icao": "KSAT",
+      "name": "SAN ANTONIO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SAV",
+      "icao": "KSAV",
+      "name": "SAVANNAH/HILTON HEAD INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SBD",
+      "icao": "KSBD",
+      "name": "SAN BERNARDINO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SBN",
+      "icao": "KSBN",
+      "name": "SOUTH BEND INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SDF",
+      "icao": "KSDF",
+      "name": "LOUISVILLE MUHAMMAD ALI INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SEA",
+      "icao": "KSEA",
+      "name": "SEATTLE-TACOMA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SFO",
+      "icao": "KSFO",
+      "name": "SAN FRANCISCO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SGF",
+      "icao": "KSGF",
+      "name": "SPRINGFIELD-BRANSON NTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SHV",
+      "icao": "KSHV",
+      "name": "SHREVEPORT RGNL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SJC",
+      "icao": "KSJC",
+      "name": "MINETA SAN JOSE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SKA",
+      "icao": "KSKA",
+      "name": "FAIRCHILD AFB",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SLC",
+      "icao": "KSLC",
+      "name": "SALT LAKE CITY INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SMF",
+      "icao": "KSMF",
+      "name": "SACRAMENTO INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SNA",
+      "icao": "KSNA",
+      "name": "JOHN WAYNE/ORANGE COUNTY",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "STL",
+      "icao": "KSTL",
+      "name": "ST LOUIS LAMBERT INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SWF",
+      "icao": "KSWF",
+      "name": "NEW YORK STEWART INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "SYR",
+      "icao": "KSYR",
+      "name": "SYRACUSE HANCOCK INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "TLH",
+      "icao": "KTLH",
+      "name": "TALLAHASSEE INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "TPA",
+      "icao": "KTPA",
+      "name": "TAMPA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "TUL",
+      "icao": "KTUL",
+      "name": "TULSA INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "TUS",
+      "icao": "KTUS",
+      "name": "TUCSON INTL",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    },
+    {
+      "iata": "TYS",
+      "icao": "KTYS",
+      "name": "MC GHEE TYSON",
+      "source_coverage": {
+        "metar": "UNKNOWN",
+        "atis": "UNKNOWN",
+        "runways": "UNKNOWN",
+        "notams": "UNKNOWN"
+      }
+    }
+  ]
+}
