@@ -16,17 +16,27 @@ python -B scripts/reconcile_c070_domestic.py `
   --summary C:\private\spa19-summary.json `
   --report C:\private\spa19-report.txt `
   --candidate C:\private\spa19-candidate.json `
-  --evidence C:\private\spa19-evidence.json
+  --evidence C:\private\spa19-evidence.json `
+  --completion C:\private\spa19-complete.json
 ```
 
 The summary has all 130 ICAO airport counts, mutually exclusive excluded-record
 categories, duplicate-ID counts, missing field counts, normalization failures,
 zero-match airports, and input accounting. The candidate has only display fields
 and supplied text representations; its evidence file retains the original capture
-and source-index associations. Both remain private pending owner review.
+and source-index associations. Both remain private pending owner review. The
+completion marker is written only after all four artifacts land; without it, a
+bundle is incomplete and must not be reviewed as a reconciliation result.
 
 Association requires the two supplied identifiers to make one exact registry
 IATA/ICAO pair (in either source order). The tool never derives identifiers,
 interprets lifecycle/cancellations, filters by time, or invents runway links.
-Every airport remains `UNKNOWN`, including empty collections. A count difference
-from the earlier 3,084 candidate figure is reported rather than adjusted.
+Every airport remains `UNKNOWN`, including empty collections. Matched records
+are compared to the historical 3,084 C070 candidate matches; raw capture features
+are separately compared with the historical 21,024 feature count, without forcing
+either number.
+
+The candidate is explicitly `PRIVATE_REVIEW_ONLY`, is checked against the
+dashboard reader's display projection, and has no `publication` metadata. A
+separate explicit conversion validation is required before a human publication
+review; this tool neither creates nor approves a public snapshot.

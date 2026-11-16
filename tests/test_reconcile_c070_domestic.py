@@ -1,6 +1,7 @@
 import copy
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,7 +10,9 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from c070_notam_partition import c070_codes
-from reconcile_c070_domestic import main, reconcile
+import reconcile_c070_domestic as reconciler
+from reconcile_c070_domestic import (main, reconcile, validate_private_candidate,
+                                     validate_publication_conversion)
 
 
 class ReconcileDomesticTests(unittest.TestCase):
@@ -35,6 +38,8 @@ class ReconcileDomesticTests(unittest.TestCase):
         self.assertEqual(len(summary['per_airport_counts']), 130)
         self.assertEqual(summary['per_airport_counts']['KMEM'], 2)
         self.assertEqual(summary['assigned_record_count'], 2)
+        self.assertEqual(summary['comparison_to_historical_c070_matches'], 2 - 3084)
+        self.assertEqual(summary['comparison_to_historical_total_features'], 2 - 21024)
         self.assertTrue(summary['accounting_reconciled'])
         notice = candidate['airports']['KMEM']['notices'][1]
         self.assertEqual(notice['id'], 'source-2')
@@ -69,6 +74,23 @@ class ReconcileDomesticTests(unittest.TestCase):
         self.assertEqual(first[1]['partition']['coverage'], 'UNKNOWN')
         self.assertIn('not an FAA airport-specific', first[1]['airports']['KMEM']['warning'])
 
+    def test_private_candidate_validates_with_reader_and_separate_conversion_contract(self):
+        _summary, candidate, _evidence = reconcile([self.feature()], self.registry(), retrieved_utc='2026-11-16T12:00:00Z')
+        projection = validate_private_candidate(candidate)
+        self.assertNotIn('publication', candidate)
+        self.assertNotIn('source', projection['airports']['KMEM']['notices'][0])
+        conversion = validate_publication_conversion(candidate, {
+            'mode': 'fixed snapshot', 'automatic_updates': False,
+            'source_reference': 'https://notams.aim.faa.gov/notamSearch/'})
+        self.assertEqual(conversion['publication']['automatic_updates'], False)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'candidate.json'
+            path.write_text(json.dumps(projection), encoding='utf-8')
+            script = "const fs=require('fs');require('./notam-snapshots.js').validate(JSON.parse(fs.readFileSync(process.argv[1],'utf8')));"
+            result = subprocess.run(['node', '-e', script, str(path)], cwd=ROOT,
+                                    capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_invalid_and_oversized_inputs_fail_without_writes_or_network(self):
         with self.assertRaisesRegex(ValueError, 'input byte limit'):
             reconcile([self.feature()], self.registry(), retrieved_utc='2026-11-16T12:00:00Z', max_input_bytes=1)
@@ -81,7 +103,8 @@ class ReconcileDomesticTests(unittest.TestCase):
             args = ['--capture', str(source), '--retrieved-utc', '2026-11-16T12:00:00Z',
                     '--summary', str(output), '--report', str(Path(directory) / 'report.txt'),
                     '--candidate', str(Path(directory) / 'candidate.json'),
-                    '--evidence', str(Path(directory) / 'evidence.json'), '--max-input-bytes', '1']
+                    '--evidence', str(Path(directory) / 'evidence.json'),
+                    '--completion', str(Path(directory) / 'complete.json'), '--max-input-bytes', '1']
             with patch('socket.socket', side_effect=AssertionError('network forbidden')):
                 with self.assertRaises(SystemExit):
                     main(args)
@@ -94,10 +117,63 @@ class ReconcileDomesticTests(unittest.TestCase):
             public_snapshot = (ROOT / 'data' / 'notams.json').read_bytes()
             args = ['--capture', str(source), '--retrieved-utc', '2026-11-16T12:00:00Z',
                     '--summary', str(ROOT / 'private-summary.json'), '--report', str(Path(directory) / 'report.txt'),
-                    '--candidate', str(Path(directory) / 'candidate.json'), '--evidence', str(Path(directory) / 'evidence.json')]
+                    '--candidate', str(Path(directory) / 'candidate.json'), '--evidence', str(Path(directory) / 'evidence.json'),
+                    '--completion', str(Path(directory) / 'complete.json')]
             with self.assertRaises(SystemExit):
                 main(args)
             self.assertEqual((ROOT / 'data' / 'notams.json').read_bytes(), public_snapshot)
+
+    def test_cli_writes_plain_text_and_completion_only_after_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'capture.json'
+            source.write_text(json.dumps([self.feature()]), encoding='utf-8')
+            outputs = {name: Path(directory) / name for name in ('summary.json', 'report.txt', 'candidate.json', 'evidence.json', 'complete.json')}
+            args = ['--capture', str(source), '--retrieved-utc', '2026-11-16T12:00:00Z',
+                    '--summary', str(outputs['summary.json']), '--report', str(outputs['report.txt']),
+                    '--candidate', str(outputs['candidate.json']), '--evidence', str(outputs['evidence.json']),
+                    '--completion', str(outputs['complete.json'])]
+            self.assertEqual(main(args), 0)
+            report = outputs['report.txt'].read_text(encoding='utf-8')
+            self.assertTrue(report.startswith('Spatchin C070'))
+            self.assertIn('\nAssigned:', report)
+            self.assertFalse(report.startswith('"'))
+            completion = json.loads(outputs['complete.json'].read_text(encoding='utf-8'))
+            self.assertEqual(completion['state'], 'COMPLETE')
+
+    def test_nonfinite_and_oversized_outputs_fail_before_completion_marker(self):
+        with self.assertRaisesRegex(ValueError, 'nonfinite'):
+            reconcile([self.feature(unexpected=float('inf'))], self.registry(), retrieved_utc='2026-11-16T12:00:00Z')
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'capture.json'
+            source.write_text(json.dumps([self.feature()]), encoding='utf-8')
+            outputs = {name: Path(directory) / name for name in ('summary.json', 'report.txt', 'candidate.json', 'evidence.json', 'complete.json')}
+            args = ['--capture', str(source), '--retrieved-utc', '2026-11-16T12:00:00Z',
+                    '--summary', str(outputs['summary.json']), '--report', str(outputs['report.txt']),
+                    '--candidate', str(outputs['candidate.json']), '--evidence', str(outputs['evidence.json']),
+                    '--completion', str(outputs['complete.json']), '--max-output-bytes', '1']
+            with self.assertRaises(SystemExit): main(args)
+            self.assertFalse(any(path.exists() for path in outputs.values()))
+
+    def test_commit_failure_never_creates_completion_marker(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / 'capture.json'
+            source.write_text(json.dumps([self.feature()]), encoding='utf-8')
+            outputs = {name: Path(directory) / name for name in ('summary.json', 'report.txt', 'candidate.json', 'evidence.json', 'complete.json')}
+            args = ['--capture', str(source), '--retrieved-utc', '2026-11-16T12:00:00Z',
+                    '--summary', str(outputs['summary.json']), '--report', str(outputs['report.txt']),
+                    '--candidate', str(outputs['candidate.json']), '--evidence', str(outputs['evidence.json']),
+                    '--completion', str(outputs['complete.json'])]
+            actual_replace = reconciler.os.replace
+            calls = [0]
+            def fail_second_replace(source_path, destination_path):
+                calls[0] += 1
+                if calls[0] == 2:
+                    raise OSError('synthetic failure')
+                return actual_replace(source_path, destination_path)
+            with patch.object(reconciler.os, 'replace', side_effect=fail_second_replace):
+                with self.assertRaises(SystemExit): main(args)
+            self.assertTrue(outputs['summary.json'].exists())
+            self.assertFalse(outputs['complete.json'].exists())
 
 
 if __name__ == '__main__':
