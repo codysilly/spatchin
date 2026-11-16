@@ -12,6 +12,7 @@ from normalize_notam_snapshot import normalize
 
 DEFAULT_MAX_INPUT_BYTES = 64 * 1024 * 1024
 DEFAULT_MAX_OUTPUT_BYTES = 256 * 1024 * 1024
+VERSIONED_REGISTRY = Path(__file__).resolve().parents[1] / 'docs/reference/c070-airport-registry.json'
 
 
 def _encoded_size(value):
@@ -60,6 +61,11 @@ def load_registry(value, *, codes=None):
     if set(result) != set(codes):
         raise ValueError('registry does not match C070 Sheet1 column A')
     return result
+
+
+def load_versioned_registry(path=VERSIONED_REGISTRY):
+    """Load the reviewed, version-controlled C070 registry."""
+    return load_registry(json.loads(Path(path).read_text(encoding='utf-8')))
 
 
 def _feature_codes(feature):

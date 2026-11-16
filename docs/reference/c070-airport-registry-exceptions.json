@@ -1,0 +1,13 @@
+{
+  "exceptions": [
+    {
+      "iata": "IWA",
+      "kind": "SECONDARY_CONFLICT_OR_MISSING",
+      "ourairports_match_count": 1,
+      "ourairports_icao_codes": [
+        "UUBI"
+      ],
+      "nasr_icao": "KIWA"
+    }
+  ]
+}
