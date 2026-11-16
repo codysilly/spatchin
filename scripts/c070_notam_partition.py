@@ -7,6 +7,17 @@ import json
 from pathlib import Path
 import re
 
+from normalize_notam_snapshot import normalize
+
+
+DEFAULT_MAX_INPUT_BYTES = 64 * 1024 * 1024
+DEFAULT_MAX_OUTPUT_BYTES = 256 * 1024 * 1024
+
+
+def _encoded_size(value):
+    return len(json.dumps(value, ensure_ascii=False, allow_nan=False,
+                          separators=(',', ':')).encode('utf-8'))
+
 
 def c070_codes(path=None):
     path = path or Path(__file__).resolve().parents[1] / 'docs/reference/c070-airports.csv'
@@ -51,42 +62,58 @@ def _feature_codes(feature):
     return tuple(values)
 
 
-def partition(payload, registry, *, retrieved_utc):
+def features_from_capture(payload):
+    """Accept the saved DOMESTIC bare array or the documented response envelope."""
+    if isinstance(payload, list):
+        return payload
+    if (isinstance(payload, dict) and payload.get('status') == 'Success'
+            and payload.get('errors') in (None, []) and isinstance(payload.get('data'), dict)
+            and isinstance(payload['data'].get('geojson'), list)):
+        return payload['data']['geojson']
+    raise ValueError('bare feature array or successful inline GeoJSON response required')
+
+
+def partition(payload, registry, *, retrieved_utc, max_input_bytes=DEFAULT_MAX_INPUT_BYTES,
+              max_output_bytes=DEFAULT_MAX_OUTPUT_BYTES):
     """Keep a feature only when both source identifiers match one registry airport."""
     registry = load_registry(registry) if not isinstance(registry, dict) or not all(isinstance(v, dict) and 'icao' in v for v in registry.values()) else registry
     if not isinstance(retrieved_utc, str) or not retrieved_utc.strip():
         raise ValueError('capture retrieval timestamp is required')
-    try:
-        features = payload['data']['geojson']
-    except (KeyError, TypeError):
-        raise ValueError('inline GeoJSON capture required') from None
-    if not isinstance(features, list):
-        raise ValueError('inline GeoJSON capture required')
-    by_pair = {(entry['iata'], entry['icao']): entry for entry in registry.values()}
-    airports = {entry['icao']: {'notices': [], 'completeness': 'UNKNOWN',
-                'source_coverage': copy.deepcopy(entry['source_coverage'])} for entry in registry.values()}
+    if not isinstance(max_input_bytes, int) or not isinstance(max_output_bytes, int) or min(max_input_bytes, max_output_bytes) < 1:
+        raise ValueError('invalid partition byte limit')
+    if _encoded_size(payload) > max_input_bytes:
+        raise ValueError('capture exceeds input byte limit')
+    features = features_from_capture(payload)
+    # The saved DOMESTIC evidence has used both location/icaoLocation ordering
+    # conventions.  Both explicit identifiers must nevertheless form exactly
+    # one reviewed registry pair; one-field and mixed-airport records stay out.
+    by_pair = {frozenset((entry['iata'], entry['icao'])): entry for entry in registry.values()}
+    selected = {entry['icao']: [] for entry in registry.values()}
     excluded = {'missing_or_invalid_identifiers': 0, 'cross_airport_or_unregistered': 0}
     for index, feature in enumerate(features):
         pair = _feature_codes(feature)
-        entry = by_pair.get(pair) if pair else None
+        entry = by_pair.get(frozenset(pair)) if pair and pair[0] != pair[1] else None
         if entry is None:
             excluded['missing_or_invalid_identifiers' if pair is None else 'cross_airport_or_unregistered'] += 1
             continue
-        record = feature['properties']['coreNOTAMData']['notam']
-        notice = {'source_index': index, 'original_feature': copy.deepcopy(feature),
-                  'source': 'FAA NMS GeoJSON offline capture', 'retrieved_utc': retrieved_utc,
-                  'formatted_texts': []}
-        for name in ('id', 'number', 'text', 'issued', 'effectiveStart', 'effectiveEnd', 'lastUpdated'):
-            notice[name] = record.get(name) if isinstance(record.get(name), str) else None
-        for translation in feature.get('properties', {}).get('coreNOTAMData', {}).get('notamTranslation', []):
-            if isinstance(translation, dict):
-                for field in ('simpleText', 'formattedText'):
-                    if isinstance(translation.get(field), str):
-                        notice['formatted_texts'].append({'type': translation.get('type') if isinstance(translation.get('type'), str) else 'Not supplied', 'field': field, 'text': translation[field]})
-        airports[entry['icao']]['notices'].append(notice)
-    return {'retrieved_utc': retrieved_utc, 'airports': airports,
+        selected[entry['icao']].append(copy.deepcopy(feature))
+    airports = {}
+    for entry in registry.values():
+        icao = entry['icao']
+        # Reuse the established normalizer so source text, original features,
+        # IDs, dates and representations follow the same reader contract.
+        mapped = normalize({'status': 'Success', 'data': {'geojson': selected[icao]}},
+                           airport=icao, retrieved_utc=retrieved_utc,
+                           query_context={'location': icao})
+        airport = mapped['airports'][icao]
+        airport['source_coverage'] = copy.deepcopy(entry['source_coverage'])
+        airports[icao] = airport
+    result = {'retrieved_utc': retrieved_utc, 'airports': airports,
             'partition': {'coverage': 'UNKNOWN', 'excluded_record_counts': excluded,
                           'input_record_count': len(features)}}
+    if _encoded_size(result) > max_output_bytes:
+        raise ValueError('partition exceeds output byte limit')
+    return result
 
 
 def main():
@@ -97,7 +124,10 @@ def main():
     parser.add_argument('--retrieved-utc', required=True)
     args = parser.parse_args()
     registry = json.loads(Path(args.registry).read_text(encoding='utf-8'))
-    capture = json.loads(Path(args.capture).read_text(encoding='utf-8'))
+    raw = Path(args.capture).read_bytes()
+    if len(raw) > DEFAULT_MAX_INPUT_BYTES:
+        parser.error('capture exceeds input byte limit')
+    capture = json.loads(raw)
     print(json.dumps(partition(capture, registry, retrieved_utc=args.retrieved_utc), ensure_ascii=False))
 
 
