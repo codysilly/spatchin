@@ -65,13 +65,14 @@ def _registry_indexes(registry):
 
 def _initial_current(record):
     identifiers = _exact_strings(record.get("source_identifiers"))
-    source_id = _one(identifiers)
+    source_id = record.get("source_message_id")
     notam = record.get("notam")
     representations = record.get("representations")
     classifications = _exact_strings(record.get("classifications", []))
     last_updated = _exact_strings(record.get("source_last_updated", []))
     airports = record.get("accepted_airports")
-    if (not isinstance(notam, dict) or not isinstance(representations, list)
+    if (not isinstance(source_id, str) or not source_id
+            or not isinstance(notam, dict) or not isinstance(representations, list)
             or not isinstance(airports, list)
             or any(not isinstance(code, str) for code in airports)):
         raise CandidateError("INVALID_RECORD")
@@ -80,6 +81,8 @@ def _initial_current(record):
     return source_id, {
         "format": "AIXM_5_1_INITIAL_LOAD",
         "source_identity": source_id,
+        "source_message_id": source_id,
+        "source_identifiers": identifiers,
         "source_gml_ids": _exact_strings(record.get("source_gml_ids", [])),
         "source_aliases": _exact_strings(record.get("source_event_aliases", [])),
         "notam": copy.deepcopy(notam),
@@ -105,6 +108,7 @@ class InitialCandidateSink:
         self.max_bytes = max_bytes
         self.catalog = {}
         self.unresolved = []
+        self.seen_source_ids = set()
         self.counts = {"input_records": 0, "associated_records": 0,
                        "unresolved_records": 0, "duplicate_replays": 0,
                        "identity_conflicts": 0}
@@ -114,24 +118,20 @@ class InitialCandidateSink:
         if self.counts["input_records"] > self.max_records:
             raise CandidateError("RECORD_LIMIT")
         source_id, current = _initial_current(record)
+        if source_id in self.seen_source_ids:
+            self.counts["identity_conflicts"] += 1
+            raise CandidateError("IDENTITY_CONFLICT")
+        self.seen_source_ids.add(source_id)
         if any(code not in self.by_icao for code in current["airport_associations"]):
             raise CandidateError("INVALID_RECORD")
-        if source_id is None or current["association_status"] != "associated":
+        if current["association_status"] != "associated":
             self.unresolved.append(current)
             self.counts["unresolved_records"] += 1
             return
-        prior = self.catalog.get(source_id)
         entry = {"identity": source_id, "current": current,
                  "versions": [copy.deepcopy(current)], "lifecycle": "UNINTERPRETED"}
-        if prior is None:
-            self.catalog[source_id] = entry
-            self.counts["associated_records"] += 1
-        elif prior["current"] == current:
-            self.counts["duplicate_replays"] += 1
-        else:
-            self.counts["identity_conflicts"] += 1
-            self.unresolved.append(current)
-            self.counts["unresolved_records"] += 1
+        self.catalog[source_id] = entry
+        self.counts["associated_records"] += 1
 
     def finish(self):
         candidate = {
@@ -392,7 +392,7 @@ def dashboard_projection(candidate, selected_airports, *, generated_utc, registr
 def compatibility_matrix():
     """Field-level contract; actual equality counts are supplied by evidence probes."""
     return [
-        {"initial": "gml:identifier", "delta": "notam.id",
+        {"initial": "AIXMBasicMessage/@gml:id", "delta": "notam.id",
          "behavior": "exact equality only", "status": "REQUIRES_EVIDENCE_MATCH"},
         {"initial": "event:text", "delta": "notam.text",
          "behavior": "preserve exact value", "status": "STRUCTURALLY_COMPATIBLE"},
@@ -432,8 +432,12 @@ class CompatibilityProbe:
                 "classification": self._digest(record.get("classifications", [])),
                 "representations": self._digest(record.get("representations", [])),
             }
-        for identity in record.get("source_identifiers", []):
-            self.identifier_index[identity] = entry
+        message_id = record.get("source_message_id")
+        if not isinstance(message_id, str) or not message_id:
+            raise CandidateError("INVALID_RECORD")
+        if message_id in self.identifier_index:
+            raise CandidateError("IDENTITY_CONFLICT")
+        self.identifier_index[message_id] = entry
         for identity in record.get("source_gml_ids", []):
             self.gml_id_index[identity] = entry
         for identity in record.get("source_event_aliases", []):

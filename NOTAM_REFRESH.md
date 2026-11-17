@@ -338,6 +338,18 @@ python -m unittest -v tests.test_initial_load_airport_associations.PrivateSpecim
 
 ## SPA-55 private baseline candidate and offline delta reconciliation
 
+SPA-61 corrects the Initial Load identity used by this candidate. The bounded
+streaming association pass now preserves the enclosing
+`AIXMBasicMessage/@gml:id` as `source_message_id`; Event `gml:id` and
+`gml:identifier` values remain separate source evidence. Each WFS member must
+contain one uniquely identified Basic Message and exactly one NOTAM owned by one
+of either one or two Event features. Missing or repeated message IDs, missing or
+multiple NOTAMs, ambiguous ownership, and unsupported Event cardinality fail
+closed. The candidate catalog and compatibility probe use `source_message_id`
+for exact comparison with GeoJSON `notam.id`; delta reconciliation, replay,
+cancellation preservation, conflict handling, baseline state, and watermark
+behavior are unchanged.
+
 `scripts/nms_baseline_candidate.py` connects the SPA-58 streaming record sink to
 the existing `nms_refresh.Store` model without adding a collector, scheduler,
 cache, public writer or production decoder. `InitialCandidateSink` receives one
@@ -375,6 +387,7 @@ protected source evidence was unchanged.
 
 | Mapping | Result | Behavior |
 | --- | ---: | --- |
+| AIXM `AIXMBasicMessage/@gml:id` → GeoJSON `notam.id` | 19,824 exact matches | SPA-61 preserves this message identity and uses it as the candidate key. |
 | AIXM `gml:identifier` → GeoJSON `notam.id` | 0 exact matches | No translation or identity join is invented. |
 | AIXM `gml:id`/all Event aliases → GeoJSON `notam.id` | 0 exact matches | Aliases are preserved privately, not treated as delta IDs. |
 | Unique exact number/text/issued/effective interval tuple | 0 matches | The non-contemporaneous saved sets do not prove cross-format continuity. |
@@ -383,10 +396,12 @@ protected source evidence was unchanged.
 | AIXM / GeoJSON translation representations | Both expose type plus simple/formatted text | Preserve source representation; equivalence is not assumed. |
 | Cancellation/update semantics | Different source structures, no overlapping identity evidence | Preserve only; never infer deletion or operational state. |
 
-Consequently, exact-ID synthetic replay is implemented and tested, but the saved
-private evidence does **not** authorize live AIXM-to-GeoJSON reconciliation. A
-contemporaneous, supervised Initial Load plus overlapping global delta (or provider
-identity documentation) is still required to prove the join.
+SPA-60 therefore established the cross-format identity mapping for overlapping
+saved records, and SPA-61 implements that correction. The non-contemporaneous
+private evidence still does **not** establish Initial Load cutover inclusion,
+delta ordering/completeness, or lifecycle semantics. A contemporaneous,
+supervised Initial Load plus overlapping global delta (or authoritative provider
+cutover documentation) remains required before live activation.
 
 ### Cutover and activation gates
 

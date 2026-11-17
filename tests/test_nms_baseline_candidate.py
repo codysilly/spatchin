@@ -24,6 +24,7 @@ NOW = datetime(2026, 11, 16, 13, tzinfo=timezone.utc)
 def initial(identifier="ID-1", airport="KMEM", *, status="associated",
             text="ORIGINAL NOTICE", updated="2026-11-16T12:54:00Z"):
     return {
+        "source_message_id": identifier,
         "source_event_aliases": ["gml-" + identifier, identifier],
         "source_gml_ids": ["gml-" + identifier],
         "source_identifiers": [identifier],
@@ -74,6 +75,8 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(current["notam"]["text"], ["ORIGINAL NOTICE"])
         self.assertEqual(current["classifications"], ["DOM"])
         self.assertEqual(current["last_updated"], ["2026-11-16T12:54:00Z"])
+        self.assertEqual(current["source_message_id"], "ID-1")
+        self.assertEqual(current["source_identifiers"], ["ID-1"])
         self.assertEqual(current["airport_associations"], ["KMEM"])
         self.assertEqual(len(candidate["unresolved_records"]), 1)
         self.assertFalse(candidate["baseline_established"])
@@ -88,6 +91,63 @@ class CandidateTests(unittest.TestCase):
             candidate = sink.finish()
         self.assertEqual(candidate["audit"]["input_records"], 1)
         self.assert_code("RECORD_LIMIT", lambda: sink(initial("SECOND")))
+
+    def test_message_identity_is_required_and_collisions_fail_closed(self):
+        missing = initial()
+        del missing["source_message_id"]
+        self.assert_code("INVALID_RECORD", lambda: self.candidate([missing]))
+        self.assert_code("IDENTITY_CONFLICT", lambda: self.candidate([
+            initial("ID-1"), initial("ID-1", text="DIFFERENT")]))
+        self.assert_code("IDENTITY_CONFLICT", lambda: self.candidate([
+            initial("ID-1", status="unresolved"),
+            initial("ID-1", status="unresolved")]))
+
+    def test_message_identity_not_event_identity_drives_join_replay_and_update(self):
+        message_id = "NMS_ID_MESSAGE_123"
+        event_id = "EVENT-UUID-456"
+        source = initial("IGNORED-FIXTURE-ID")
+        source.update({
+            "source_message_id": message_id,
+            "source_event_aliases": ["event-gml-456", event_id],
+            "source_gml_ids": ["event-gml-456"],
+            "source_identifiers": [event_id],
+        })
+
+        candidate = self.candidate([source])
+        self.assertEqual(set(candidate["catalog"]), {message_id})
+        self.assertNotIn(event_id, candidate["catalog"])
+        current = candidate["catalog"][message_id]["current"]
+        self.assertEqual(current["source_message_id"], message_id)
+        self.assertEqual(current["source_identifiers"], [event_id])
+
+        replayed = reconcile_delta(candidate, envelope([feature(message_id)]),
+            requested_since_utc="2026-11-16T12:54:00Z",
+            received_utc="2026-11-16T13:00:00Z")
+        self.assertEqual(replayed["delta_candidate"]["audit"]["replayed"], 1)
+        changed = feature(message_id, text="UPDATED BY MESSAGE ID",
+                          updated="2026-11-16T13:01:00Z")
+        updated = reconcile_delta(replayed, envelope([changed]),
+            requested_since_utc="2026-11-16T12:54:00Z",
+            received_utc="2026-11-16T13:02:00Z")
+        self.assertEqual(updated["delta_candidate"]["audit"]["updated"], 1)
+        self.assertEqual(updated["catalog"][message_id]["current"]["source_identity"],
+                         message_id)
+
+        event_only = reconcile_delta(candidate, envelope([
+            feature(event_id, text="EVENT ID IS NOT THE MESSAGE ID")]),
+            requested_since_utc="2026-11-16T12:54:00Z",
+            received_utc="2026-11-16T13:00:00Z")
+        self.assertEqual(event_only["delta_candidate"]["audit"]["unresolved"], 1)
+        self.assertNotIn(event_id, event_only["catalog"])
+
+        probe = CompatibilityProbe()
+        probe(source)
+        message_report = probe.compare(envelope([feature(message_id)]))
+        event_report = probe.compare(envelope([
+            feature(event_id, text="EVENT ID IS NOT THE MESSAGE ID")]))
+        self.assertEqual(message_report["exact_identity_matches"], 1)
+        self.assertEqual(event_report["exact_identity_matches"], 0)
+        self.assertEqual(event_report["unique_logical_field_matches"], 0)
 
     def test_delta_replay_update_cancellation_and_missing_are_explicit(self):
         candidate = self.candidate([initial(), initial("MISSING", "KORD")])
@@ -211,6 +271,8 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(report["field_equal"]["text"], 1)
         self.assertEqual(report["classification_equal"], 1)
         self.assertEqual(report["representations_equal"], 0)
+        self.assertEqual(compatibility_matrix()[0]["initial"],
+                         "AIXMBasicMessage/@gml:id")
         statuses = {row["status"] for row in compatibility_matrix()}
         self.assertIn("SEMANTICS_UNPROVEN", statuses)
 

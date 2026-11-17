@@ -4,8 +4,9 @@ The utility performs no networking, acquisition, decoding activation, lifecycle
 interpretation, runway matching, publication, or evidence mutation.  It accepts
 only exact airport identifiers present in the reviewed C070 registry and reports
 aggregate counts.  Callers may supply a record sink to retain the exact extracted
-NOTAM scalars, source identifiers, timestamps, and translation representations in
-private storage; the command-line report never emits those values.
+NOTAM scalars, message and Event identifiers, timestamps, and translation
+representations in private storage; the command-line report never emits those
+values.
 """
 from __future__ import annotations
 
@@ -105,6 +106,9 @@ class _AssociationParser:
         self.body_payloads = Counter()
         self.feature_collections = 0
         self.current_member = None
+        self.current_message_id = None
+        self.current_message_depth = None
+        self.member_message_id = None
         self.member_elements = self.member_features = 0
         self.member_text = 0
         self.current_feature = None
@@ -114,6 +118,7 @@ class _AssociationParser:
         self.airport_counts = Counter()
         self.source_counts = Counter()
         self.seen_notice_ids = set()
+        self.seen_message_ids = set()
 
     def _limit(self, condition):
         if condition:
@@ -176,7 +181,24 @@ class _AssociationParser:
             self._limit(self.current_member is not None
                         or self.members > self.limits.wfs_members)
             self.current_member = []
+            self.member_message_id = None
             self.member_elements = self.member_features = self.member_text = 0
+        if qname == (MESSAGE, "AIXMBasicMessage"):
+            message_id = attributes.get(GML + "}id")
+            if (parent != (WFS, "member") or self.current_member is None
+                    or self.current_message_depth is not None
+                    or self.member_message_id is not None
+                    or not isinstance(message_id, str) or not message_id):
+                raise InspectionError("UNSUPPORTED_STRUCTURE")
+            identity = hashlib.sha256(message_id.encode("utf-8")).digest()
+            if identity in self.seen_message_ids:
+                raise InspectionError("UNSUPPORTED_STRUCTURE")
+            self._limit(len(self.seen_message_ids) + 1 > self.limits.identities)
+            self.seen_message_ids.add(identity)
+            self.current_message_id = message_id
+            self.current_message_depth = self.depth
+            self.member_message_id = message_id
+            self.report_counts["message_ids_preserved"] += 1
         if self.current_member is not None:
             self.member_elements += 1
             self._limit(self.member_elements > self.limits.per_member_elements)
@@ -200,7 +222,8 @@ class _AssociationParser:
                 if self.current_feature.kind == (AIXM, "AirportHeliport"):
                     self.source_counts["airport_event_relationships_seen"] += 1
         if qname == (EVENT, "NOTAM"):
-            if self.current_notice is not None:
+            if (self.current_notice is not None or self.current_feature is None
+                    or self.current_feature.kind != (EVENT, "Event")):
                 raise InspectionError("UNSUPPORTED_STRUCTURE")
             self.current_notice = {"fields": {}, "translations": []}
         if qname == (EVENT, "NOTAMTranslation"):
@@ -259,6 +282,14 @@ class _AssociationParser:
                 and self.depth == self.current_feature.depth):
             self.current_member.append(self.current_feature)
             self.current_feature = None
+        if qname == (MESSAGE, "AIXMBasicMessage"):
+            if (self.current_message_depth != self.depth
+                    or self.current_message_id != self.member_message_id
+                    or self.current_feature is not None or self.current_notice is not None
+                    or self.current_translation is not None):
+                raise InspectionError("UNSUPPORTED_STRUCTURE")
+            self.current_message_id = None
+            self.current_message_depth = None
         if qname == (WFS, "member"):
             self._finish_member()
             self.current_member = None
@@ -280,6 +311,9 @@ class _AssociationParser:
         return matches
 
     def _finish_member(self):
+        if (self.current_message_depth is not None or self.current_message_id is not None
+                or not isinstance(self.member_message_id, str)):
+            raise InspectionError("UNSUPPORTED_STRUCTURE")
         events = [feature for feature in self.current_member if feature.kind == (EVENT, "Event")]
         airports = [feature for feature in self.current_member
                     if feature.kind == (AIXM, "AirportHeliport")]
@@ -289,17 +323,20 @@ class _AssociationParser:
             self.source_counts["resolved_airport_event_relationships"] += len(
                 airport.event_refs & event_aliases)
             self.source_counts["unresolved_airport_event_relationships"] += len(unresolved)
-        for event in events:
-            for notice in event.notices:
-                notice["translations"].extend(event.translations)
-            linked = [airport for airport in airports if airport.event_refs & event.aliases]
-            direct = self._match_codes(
-                [value for airport in linked for value in airport.designators],
-                "airport_designator")
-            for notice in event.notices:
-                self._finish_notice(event, notice, direct)
+        owners = [event for event in events if event.notices]
+        if (len(events) not in (1, 2) or len(owners) != 1
+                or len(owners[0].notices) != 1):
+            raise InspectionError("UNSUPPORTED_STRUCTURE")
+        owner = owners[0]
+        notice = owner.notices[0]
+        notice["translations"].extend(owner.translations)
+        linked = [airport for airport in airports if airport.event_refs & owner.aliases]
+        direct = self._match_codes(
+            [value for airport in linked for value in airport.designators],
+            "airport_designator")
+        self._finish_notice(self.member_message_id, owner, notice, direct)
 
-    def _finish_notice(self, event, notice, direct):
+    def _finish_notice(self, message_id, event, notice, direct):
         self.report_counts["total_notams"] += 1
         locations = notice["fields"].get("location", [])
         location = self._match_codes(locations, "notam_location")
@@ -340,6 +377,7 @@ class _AssociationParser:
                 entry = self.icao_index[icao]
                 evidence[icao] = {"iata": entry["iata"], "source_fields": kinds}
             self.record_sink({
+                "source_message_id": message_id,
                 "source_event_aliases": identifiers,
                 "source_gml_ids": sorted(event.gml_ids),
                 "source_identifiers": sorted(event.identifiers),
@@ -361,7 +399,9 @@ class _AssociationParser:
             raise InspectionError("MALFORMED_XML") from None
         if (self.stack or self.depth or self.current_member is not None
                 or self.current_feature is not None or self.current_notice is not None
-                or self.current_translation is not None):
+                or self.current_translation is not None
+                or self.current_message_id is not None
+                or self.current_message_depth is not None):
             raise InspectionError("MALFORMED_XML")
         if (self.root != (SOAP, "Envelope")
                 or self.envelope_children != Counter({(SOAP, "Body"): 1})
@@ -386,6 +426,7 @@ class _AssociationParser:
             "multiple_airport_notams": self.report_counts["multiple_airport_notams"],
             "duplicate_association_evidence": self.report_counts["duplicate_association_evidence"],
             "duplicate_source_identifiers": self.report_counts["duplicate_source_identifiers"],
+            "message_ids_preserved": self.report_counts["message_ids_preserved"],
             "per_airport_notice_counts": dict(sorted(self.airport_counts.items())),
             "source_fields_and_relationships": dict(sorted(self.source_counts.items())),
             "baseline_established": False,
