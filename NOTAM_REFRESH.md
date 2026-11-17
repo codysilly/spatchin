@@ -1,5 +1,46 @@
 # SPA-10: one-PC, offline-tested refresh engine (not activated)
 
+## SPA-62 supervised global delta probe (not authorized to run)
+
+`scripts/capture_global_delta.py` prepares one evidence-only global GeoJSON delta.
+Its default mode is read-only: it opens only the existing protected ledger and
+bounded Initial Load receipt, reports the exact UTC `lastUpdatedDate`, request
+shape, account-wide three-minute gate, local pending/ambiguous state, 24-hour
+lookback result, blockers, and a lower-bound-specific approval digest. It does
+not read credentials, reserve an allowance, contact NMS, or modify a file.
+
+The proposed lower bound is the verified Initial Load capture start floored to a
+whole second and moved back one second. This is the existing client replay
+overlap, not a claim about provider boundary semantics or the Initial Load
+snapshot cutoff. An expired 24-hour window is reported as `DELTA_GAP`; the tool
+does not replace the timestamp or acquire another Initial Load.
+
+A future separately authorized `--execute` requires both the exact printed
+digest and a current external-account-activity attestation. It shares the
+existing account-bound ledger, durably reserves the delta before OAuth or data
+I/O, performs exactly one OAuth POST and one unfiltered global delta GET, and
+never retries. The request is:
+
+```text
+GET /nmsapi/v1/notams?lastUpdatedDate=<UTC seconds>
+nmsResponseFormat: GEOJSON
+```
+
+No airport or classification filter is added. The response must be a successful
+GeoJSON envelope whose records have source IDs and valid provider `lastUpdated`
+timestamps. Raw response bytes and a private receipt containing UTC times, byte
+count, SHA-256, and minimal counts are retained under the protected ledger.
+Malformed and failed responses remain accounted attempts and are never labelled
+valid evidence. Tokens, headers, notice text, sensitive identifiers, and local
+paths are absent from the review and receipt.
+
+This capture path deliberately does not use or weaken the production delta
+collector's accepted-baseline gate. It does not reconcile the evidence, accept a
+baseline, advance a watermark, change a catalog/outbox/public file, infer runway
+status, schedule polling, or publish. Existing offline candidate reconciliation
+continues to reject changed equal-timestamp and older revisions, retain exact
+replays, preserve absent records, and preserve provider cancellation fields.
+
 ## SPA-56 supervised opaque Initial Load capture (not authorized to run)
 
 `scripts/capture_initial_load.py` is a separate, capture-only procedure for the
