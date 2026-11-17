@@ -180,12 +180,30 @@ def _logical_initial_value(current, name):
     return _one(current["notam"].get(name, []))
 
 
-def _same_logical_notice(initial, delta):
-    for name in ("number", "text", "issued", "effectiveStart", "effectiveEnd"):
+def _same_logical_notice(initial, delta, airports, association_status):
+    for name in ("number", "text", "issued", "effectiveStart", "effectiveEnd", "type"):
         left = _logical_initial_value(initial, name)
         right = delta.get(name)
-        if left is not None and right is not None and left != right:
+        if left is None or not isinstance(right, str) or left != right:
             return False
+    classifications = initial.get("classifications")
+    if (not isinstance(classifications, list) or len(classifications) != 1
+            or not isinstance(delta.get("classification"), str)
+            or classifications[0] != delta["classification"]):
+        return False
+    if (initial.get("association_status") != "associated"
+            or association_status != "associated"
+            or initial.get("airport_associations") != airports):
+        return False
+    initial_cancellation = initial.get("notam", {}).get("cancelationDate", [])
+    if not isinstance(initial_cancellation, list) or len(initial_cancellation) > 1:
+        return False
+    delta_has_cancellation = "cancelationDate" in delta
+    if bool(initial_cancellation) != delta_has_cancellation:
+        return False
+    if initial_cancellation and (not isinstance(delta["cancelationDate"], str)
+                                 or initial_cancellation[0] != delta["cancelationDate"]):
+        return False
     return True
 
 
@@ -256,7 +274,8 @@ def reconcile_delta(candidate, payload, *, requested_since_utc, received_utc,
             if ((previous["format"] == "NMS_GEOJSON_DELTA"
                  and previous.get("original_feature") == feature)
                     or (previous["format"] == "AIXM_5_1_INITIAL_LOAD"
-                        and _same_logical_notice(previous, record))):
+                        and _same_logical_notice(previous, record, airports,
+                                                 association_status))):
                 audit["replayed"] += 1
                 touched.add(identity)
                 continue

@@ -27,7 +27,7 @@ def initial(identifier="ID-1", airport="KMEM", *, status="associated",
         "source_event_aliases": ["gml-" + identifier, identifier],
         "source_gml_ids": ["gml-" + identifier],
         "source_identifiers": [identifier],
-        "notam": {"number": ["001"], "text": [text],
+        "notam": {"number": ["001"], "text": [text], "type": ["N"],
                   "issued": ["2026-11-16T12:00:00Z"],
                   "effectiveStart": ["2026-11-16T12:00:00Z"],
                   "effectiveEnd": ["PERM"], "location": [airport[1:]]},
@@ -120,6 +120,30 @@ class CandidateTests(unittest.TestCase):
                 candidate, envelope([change]), requested_since_utc="2026-11-16T12:54:00Z",
                 received_utc="2026-11-16T13:02:00Z"))
             self.assertEqual(candidate, before)
+
+    def test_same_timestamp_cross_format_replay_requires_all_shared_evidence(self):
+        cases = []
+        cross_airport = feature(airport="KORD")
+        cases.append(cross_airport)
+        cases.append(feature(classification="INTL"))
+        cases.append(feature(kind="C"))
+        cancellation = feature()
+        cancellation["properties"]["coreNOTAMData"]["notam"]["cancelationDate"] = (
+            "2026-11-16T12:54:00Z")
+        cases.append(cancellation)
+        missing = feature()
+        del missing["properties"]["coreNOTAMData"]["notam"]["classification"]
+        cases.append(missing)
+
+        for conflicting in cases:
+            with self.subTest(record=conflicting):
+                candidate = self.candidate()
+                before = copy.deepcopy(candidate)
+                self.assert_code("CONFLICTING_UPDATE", lambda: reconcile_delta(
+                    candidate, envelope([conflicting]),
+                    requested_since_utc="2026-11-16T12:54:00Z",
+                    received_utc="2026-11-16T13:02:00Z"))
+                self.assertEqual(candidate, before)
 
     def test_no_match_is_retained_unresolved_and_absence_never_deletes(self):
         result = reconcile_delta(self.candidate(), envelope([feature("NEW", "KORD")]),
