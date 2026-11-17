@@ -10,7 +10,7 @@ import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
-from associate_initial_load_airports import associate_evidence
+from associate_initial_load_airports import InspectionError, associate_evidence
 from c070_notam_partition import load_versioned_registry
 
 
@@ -43,6 +43,12 @@ def event(identity, location, *, text="PRIVATE NOTICE", number="1"):
     </event:Event></msg:hasMember>'''
 
 
+def event_without_notam(identity):
+    return f'''<msg:hasMember><event:Event gml:id="event-{identity}">
+      <gml:identifier>EVENT-{identity}</gml:identifier>
+    </event:Event></msg:hasMember>'''
+
+
 def airport(identity, designator, event_identity, *, duplicate_relation=False):
     relation = f'<event:theEvent xlink:href="#event-{event_identity}"/>'
     if duplicate_relation:
@@ -64,8 +70,10 @@ def runway(event_identity):
     </aixm:Runway></msg:hasMember>'''
 
 
-def member(body):
-    return f"<wfs:member><msg:AIXMBasicMessage>{body}</msg:AIXMBasicMessage></wfs:member>"
+def member(body, message_id=None):
+    message_id = message_id or "NMS_ID_" + hashlib.sha256(body.encode()).hexdigest()[:16]
+    return (f'<wfs:member><msg:AIXMBasicMessage gml:id="{message_id}">'
+            f"{body}</msg:AIXMBasicMessage></wfs:member>")
 
 
 def document(members):
@@ -158,13 +166,46 @@ class AssociationTests(unittest.TestCase):
         self.assertEqual(records[0]["source_last_updated"],
                          ["2026-11-16T12:54:00.000Z"])
         self.assertEqual(records[0]["source_identifiers"], ["EVENT-secret"])
+        self.assertTrue(records[0]["source_message_id"].startswith("NMS_ID_"))
+        self.assertEqual(report["message_ids_preserved"], 1)
         self.assertNotIn(secret, json.dumps(report))
         self.assertNotIn("EVENT-secret", json.dumps(report))
 
     def test_duplicate_source_identifier_is_counted_without_disclosure(self):
         report = self.inspect([
-            member(event("same", "MEM")), member(event("same", "MEM"))])
+            member(event("same", "MEM"), "NMS_ID_FIRST"),
+            member(event("same", "MEM"), "NMS_ID_SECOND")])
         self.assertEqual(report["duplicate_source_identifiers"], 1)
+
+    def test_two_events_one_notam_uses_notam_owner_and_message_identity(self):
+        records = []
+        report = self.inspect([member(
+            event_without_notam("context") + event("owner", "MEM")
+            + airport("mem", "KMEM", "owner"), "NMS_ID_TWO_EVENTS")], sink=records.append)
+        self.assertEqual(report["total_notams_inspected"], 1)
+        self.assertEqual(records[0]["source_message_id"], "NMS_ID_TWO_EVENTS")
+        self.assertEqual(records[0]["source_identifiers"], ["EVENT-owner"])
+        self.assertEqual(records[0]["accepted_airports"], ["KMEM"])
+
+    def test_message_structure_and_identity_fail_closed(self):
+        cases = {
+            "missing-id": '<wfs:member><msg:AIXMBasicMessage>' + event("one", "MEM")
+                          + '</msg:AIXMBasicMessage></wfs:member>',
+            "missing-notam": member(event_without_notam("one"), "NMS_ID_MISSING_NOTAM"),
+            "multiple-notams": member(event("one", "MEM") + event("two", "MEM"),
+                                      "NMS_ID_MULTIPLE_NOTAMS"),
+            "three-events": member(event("one", "MEM") + event_without_notam("two")
+                                   + event_without_notam("three"), "NMS_ID_THREE_EVENTS"),
+        }
+        for name, value in cases.items():
+            with self.subTest(name=name), self.assertRaisesRegex(
+                    InspectionError, "UNSUPPORTED_STRUCTURE"):
+                self.inspect([value])
+
+    def test_duplicate_message_ids_fail_closed(self):
+        with self.assertRaisesRegex(InspectionError, "UNSUPPORTED_STRUCTURE"):
+            self.inspect([member(event("one", "MEM"), "NMS_ID_COLLISION"),
+                          member(event("two", "KORD"), "NMS_ID_COLLISION")])
 
 
 class PrivateSpecimenTests(unittest.TestCase):
@@ -185,6 +226,7 @@ class PrivateSpecimenTests(unittest.TestCase):
         self.assertEqual(report["multiple_airport_notams"], 0)
         self.assertEqual(report["duplicate_association_evidence"], 3_848)
         self.assertEqual(report["duplicate_source_identifiers"], 0)
+        self.assertEqual(report["message_ids_preserved"], 72_675)
         self.assertFalse(report["runway_relationships_used"])
         self.assertTrue(report["evidence"]["unchanged_during_inspection"])
 

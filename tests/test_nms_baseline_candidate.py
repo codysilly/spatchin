@@ -24,6 +24,7 @@ NOW = datetime(2026, 11, 16, 13, tzinfo=timezone.utc)
 def initial(identifier="ID-1", airport="KMEM", *, status="associated",
             text="ORIGINAL NOTICE", updated="2026-11-16T12:54:00Z"):
     return {
+        "source_message_id": identifier,
         "source_event_aliases": ["gml-" + identifier, identifier],
         "source_gml_ids": ["gml-" + identifier],
         "source_identifiers": [identifier],
@@ -74,6 +75,8 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(current["notam"]["text"], ["ORIGINAL NOTICE"])
         self.assertEqual(current["classifications"], ["DOM"])
         self.assertEqual(current["last_updated"], ["2026-11-16T12:54:00Z"])
+        self.assertEqual(current["source_message_id"], "ID-1")
+        self.assertEqual(current["source_identifiers"], ["ID-1"])
         self.assertEqual(current["airport_associations"], ["KMEM"])
         self.assertEqual(len(candidate["unresolved_records"]), 1)
         self.assertFalse(candidate["baseline_established"])
@@ -88,6 +91,16 @@ class CandidateTests(unittest.TestCase):
             candidate = sink.finish()
         self.assertEqual(candidate["audit"]["input_records"], 1)
         self.assert_code("RECORD_LIMIT", lambda: sink(initial("SECOND")))
+
+    def test_message_identity_is_required_and_collisions_fail_closed(self):
+        missing = initial()
+        del missing["source_message_id"]
+        self.assert_code("INVALID_RECORD", lambda: self.candidate([missing]))
+        self.assert_code("IDENTITY_CONFLICT", lambda: self.candidate([
+            initial("ID-1"), initial("ID-1", text="DIFFERENT")]))
+        self.assert_code("IDENTITY_CONFLICT", lambda: self.candidate([
+            initial("ID-1", status="unresolved"),
+            initial("ID-1", status="unresolved")]))
 
     def test_delta_replay_update_cancellation_and_missing_are_explicit(self):
         candidate = self.candidate([initial(), initial("MISSING", "KORD")])
@@ -211,6 +224,8 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(report["field_equal"]["text"], 1)
         self.assertEqual(report["classification_equal"], 1)
         self.assertEqual(report["representations_equal"], 0)
+        self.assertEqual(compatibility_matrix()[0]["initial"],
+                         "AIXMBasicMessage/@gml:id")
         statuses = {row["status"] for row in compatibility_matrix()}
         self.assertIn("SEMANTICS_UNPROVEN", statuses)
 
