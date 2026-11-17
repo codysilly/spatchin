@@ -240,6 +240,90 @@ class Store:
                     'external_activity_attestation_required': True,
                     'reservation_created': False}
 
+    def delta_budget_review(self, now):
+        """Read-only account-wide data-pull review for capture-only deltas."""
+        now = instant(stamp(now))
+        with self.review_connect() as db:
+            state = self.load(db)
+            rows = db.execute(
+                'SELECT id,kind,reserved,last_io,status,error FROM attempts ORDER BY reserved'
+            ).fetchall()
+            latest = max((max(instant(row[2]), instant(row[3])) for row in rows),
+                         default=None)
+            not_before = latest + timedelta(minutes=3) if latest else now
+            pending = [row for row in rows if row[4] in ('RESERVED', 'IO_RESERVED')]
+            ambiguous = [row for row in rows if row[4] not in (
+                'ACCEPTED', 'CAPTURED_CANDIDATE', 'CAPTURED_INITIAL_LOAD',
+                'CAPTURED_DELTA_PROBE', 'FAILED_ACCOUNTED', 'IMPORTED')]
+            blockers = []
+            if state['active'] is not None:
+                blockers.append('ACTIVE_ATTEMPT')
+            if state['recovery'] is not None:
+                blockers.append('RECOVERY_REQUIRED')
+            if now < not_before:
+                blockers.append('ACCOUNT_WIDE_THREE_MINUTE_WAIT')
+            historical_uncertainty = [row for row in ambiguous
+                                      if row[4] == 'IMPORTED_UNCERTAIN']
+            return {
+                'ledger_history_verified': True,
+                'history_complete_through_utc': state['history_complete_through'],
+                'minimum_delta_not_before_utc': stamp(not_before),
+                'ledger_time_eligible': now >= not_before,
+                'active_attempt_present': state['active'] is not None,
+                'recovery_state_present': state['recovery'] is not None,
+                'pending_attempt_count': len(pending),
+                'ambiguous_attempt_count': len(ambiguous),
+                'local_three_minute_interval_elapsed': now >= not_before,
+                'pending_or_recovery_attempt_present': bool(
+                    pending or state['active'] is not None or state['recovery'] is not None),
+                'historical_uncertainty_present': bool(historical_uncertainty),
+                'historical_uncertainty_count': len(historical_uncertainty),
+                'historical_uncertainty_resolution':
+                    'NOT_RESOLVED_BY_LOCAL_INTERVAL; CURRENT_ACCOUNT_ATTESTATION_REQUIRED',
+                'pending_attempts': [
+                    {'kind': row[1], 'reserved_utc': row[2],
+                     'last_io_utc': row[3], 'status': row[4]}
+                    for row in pending],
+                'ambiguous_attempts': [
+                    {'kind': row[1], 'reserved_utc': row[2],
+                     'last_io_utc': row[3], 'status': row[4],
+                     'error_present': row[5] is not None}
+                    for row in ambiguous],
+                'attempt_count': state['attempt_count'],
+                'call_count': state['call_count'],
+                'response_count': state['response_count'],
+                'blockers': blockers,
+                'external_activity_attestation_required': True,
+                'reservation_created': False,
+            }
+
+    def reserve_delta_probe(self, db, since, now):
+        """Reserve one evidence-only delta without changing the production baseline."""
+        delta_request(since, now)
+        with self.transaction(db):
+            state = self.load(db)
+            if state['active'] is not None or state['recovery'] is not None:
+                raise RefreshError('RECOVERY_REQUIRED')
+            if instant(state['history_complete_through']) > now:
+                raise RefreshError('CLOCK_ROLLBACK')
+            rows = db.execute('SELECT kind,reserved,last_io FROM attempts').fetchall()
+            for kind, reserved, last_io in rows:
+                if kind not in ('bulk', 'delta', 'other-data'):
+                    raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
+                at = max(instant(reserved), instant(last_io))
+                if at > now:
+                    raise RefreshError('CLOCK_ROLLBACK')
+                if now - at < timedelta(minutes=3):
+                    raise RefreshError('BUDGET_WAIT')
+            attempt = uuid.uuid4().hex
+            at = stamp(now)
+            db.execute('INSERT INTO attempts VALUES (?,?,?,?,?,NULL)',
+                       (attempt, 'delta', at, at, 'RESERVED'))
+            state['active'] = attempt
+            state['attempt_count'] += 1
+            self.save(db, state)
+        return attempt, state
+
     def call_reserved(self, db, attempt, stage, now):
         with self.transaction(db):
             state = self.load(db)
