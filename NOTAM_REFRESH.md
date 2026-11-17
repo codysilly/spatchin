@@ -336,6 +336,75 @@ $env:SPATCHIN_IL_SPECIMEN_DIR = '<protected attempt directory>'
 python -m unittest -v tests.test_initial_load_airport_associations.PrivateSpecimenTests
 ```
 
+## SPA-55 private baseline candidate and offline delta reconciliation
+
+`scripts/nms_baseline_candidate.py` connects the SPA-58 streaming record sink to
+the existing `nms_refresh.Store` model without adding a collector, scheduler,
+cache, public writer or production decoder. `InitialCandidateSink` receives one
+Initial Load record at a time and retains bounded private candidate state. It
+preserves exact AIXM Event identifiers, NOTAM scalar values and lexical timestamps,
+FNSE classification/update values, translation representations, C070 associations
+and unresolved records. Candidate size and record count have explicit limits.
+
+The candidate remains `baseline_established=false`, `watermark=null`, coverage
+`UNKNOWN`, and `BASELINE_CUTOVER_REQUIRED`. Transactional Store acceptance writes
+only `offline_candidate_b64` and `offline_candidate_status` into the existing
+private state document. It does not replace `published_b64`, mutate the accepted
+catalog, reserve a request, or change baseline/watermark state.
+
+Synthetic global GeoJSON deltas reconcile by exact source identity only. Replayed
+same-version records are idempotent. A changed same-or-older `lastUpdated`, or a
+newer record that moves between explicit C070 airports, is a conflict and leaves
+the input candidate unchanged. New unmatched IDs are retained as unresolved;
+records absent from a delta are never deleted. Cancellation/replacement fields are
+preserved as uninterpreted source signals and never remove a notice. The proposed
+next cursor retains the existing whole-second one-second replay overlap but is not
+stored as a watermark.
+
+### Actual Initial Load / saved GeoJSON compatibility
+
+The privacy-safe comparison used the verified 72,675-record November 16 Initial
+Load and the previously saved 21,024-record DOMESTIC GeoJSON capture. It emitted
+only aggregate equality counts. The captures are from different acquisition times:
+
+The final streaming adapter pass produced a 79,764,193-byte in-memory private
+candidate: 8,298 associated records, 64,377 preserved unresolved records, zero
+identity conflicts, and classification plus last-update metadata on every
+associated record. The pass did not persist records and reverified that the
+protected source evidence was unchanged.
+
+| Mapping | Result | Behavior |
+| --- | ---: | --- |
+| AIXM `gml:identifier` → GeoJSON `notam.id` | 0 exact matches | No translation or identity join is invented. |
+| AIXM `gml:id`/all Event aliases → GeoJSON `notam.id` | 0 exact matches | Aliases are preserved privately, not treated as delta IDs. |
+| Unique exact number/text/issued/effective interval tuple | 0 matches | The non-contemporaneous saved sets do not prove cross-format continuity. |
+| Notice text and named issued/effective fields | Present in both schemas | Preserve exact lexical values; equality across the saved sets is unproven. |
+| Initial FNSE classification / GeoJSON classification | Present in both schemas | Raw codes are retained; enum equivalence is not inferred. |
+| AIXM / GeoJSON translation representations | Both expose type plus simple/formatted text | Preserve source representation; equivalence is not assumed. |
+| Cancellation/update semantics | Different source structures, no overlapping identity evidence | Preserve only; never infer deletion or operational state. |
+
+Consequently, exact-ID synthetic replay is implemented and tested, but the saved
+private evidence does **not** authorize live AIXM-to-GeoJSON reconciliation. A
+contemporaneous, supervised Initial Load plus overlapping global delta (or provider
+identity documentation) is still required to prove the join.
+
+### Cutover and activation gates
+
+| Gate | Current result |
+| --- | --- |
+| Initial inclusion through capture start | Unproven; capture start is only the conservative proposed first-delta lower bound. |
+| Delta identity and ordering continuity | Unproven by the non-overlapping saved evidence. |
+| All-classification/account scope | Initial Load scope observed; delta inclusion/ordering still unproven. |
+| First delta within 24-hour lookback | Enforced; after 24 hours returns `DELTA_GAP`. |
+| Account-wide budgets | Existing Store remains authoritative: one bulk/24h and one data/delta/3min, plus external-activity attestation. |
+| Baseline/watermark activation | Not authorized; always remains false/null. |
+
+`dashboard_projection(...)` defines a private preview for at most 30 reviewed C070
+airports. It keeps original wording, representations, source attribution, UTC
+timestamps, UNKNOWN coverage and age warnings. It writes no public file and marks
+automatic updates false. Existing dashboard and runway text matching are unchanged.
+Public conversion, live collection and activation each require separate review.
+
 ## SPA-52 classification-wide GeoJSON candidate (offline only)
 
 `scripts/nms_geojson_baseline.py` implements a second, independent evidence path

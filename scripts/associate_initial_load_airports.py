@@ -22,7 +22,7 @@ from xml.parsers import expat
 from c070_notam_partition import load_registry, load_versioned_registry
 from capture_storage import platform_storage
 from inspect_initial_load_stream import (
-    AIXM, EVENT, GML, KNOWN_NAMESPACES, MESSAGE, SOAP, WFS, XLINK,
+    AIXM, EVENT, FNSE, GML, KNOWN_NAMESPACES, MESSAGE, SOAP, WFS, XLINK,
     InspectionError, InspectionLimits,
     _hash_stream, _load_receipt, _stat_marker, _stream_gzip,
 )
@@ -48,10 +48,14 @@ class _Feature:
     kind: tuple[str, str]
     depth: int
     aliases: set[str] = field(default_factory=set)
+    gml_ids: set[str] = field(default_factory=set)
+    identifiers: set[str] = field(default_factory=set)
     event_refs: set[str] = field(default_factory=set)
     designators: list[str] = field(default_factory=list)
     notices: list[dict] = field(default_factory=list)
     translations: list[dict] = field(default_factory=list)
+    classifications: list[str] = field(default_factory=list)
+    last_updated: list[str] = field(default_factory=list)
 
 
 def _target(value):
@@ -154,7 +158,9 @@ class _AssociationParser:
                       or (self.current_translation is not None
                           and qname[1] in TRANSLATION_SCALARS))
         if self.current_feature is not None and qname in ((GML, "identifier"),
-                                                           (AIXM, "designator")):
+                                                           (AIXM, "designator"),
+                                                           (FNSE, "classification"),
+                                                           (FNSE, "lastUpdated")):
             retain = True
         self.stack.append(_Frame(qname, [] if retain else None))
         if self.root is None:
@@ -184,7 +190,8 @@ class _AssociationParser:
             gml_id = attributes.get(GML + "}id")
             if isinstance(gml_id, str) and gml_id:
                 aliases.add(gml_id)
-            self.current_feature = _Feature(qname, self.depth, aliases=aliases)
+            self.current_feature = _Feature(qname, self.depth, aliases=aliases,
+                                            gml_ids=set(aliases))
         if self.current_feature is not None and qname == (EVENT, "theEvent"):
             href = attributes.get(XLINK + "}href")
             if isinstance(href, str) and href:
@@ -224,10 +231,15 @@ class _AssociationParser:
         if value is not None and self.current_feature is not None:
             if qname == (GML, "identifier") and value.strip():
                 self.current_feature.aliases.add(value.strip())
+                self.current_feature.identifiers.add(value.strip())
             elif (qname == (AIXM, "designator")
                   and self.current_feature.kind == (AIXM, "AirportHeliport")
                   and value.strip()):
                 self.current_feature.designators.append(value.strip())
+            elif qname == (FNSE, "classification") and value.strip():
+                self.current_feature.classifications.append(value)
+            elif qname == (FNSE, "lastUpdated") and value.strip():
+                self.current_feature.last_updated.append(value)
         if value is not None and qname[0] == EVENT:
             if self.current_translation is not None and qname[1] in TRANSLATION_SCALARS:
                 self.current_translation.setdefault(qname[1], []).append(value)
@@ -328,9 +340,13 @@ class _AssociationParser:
                 entry = self.icao_index[icao]
                 evidence[icao] = {"iata": entry["iata"], "source_fields": kinds}
             self.record_sink({
-                "source_event_identifiers": identifiers,
+                "source_event_aliases": identifiers,
+                "source_gml_ids": sorted(event.gml_ids),
+                "source_identifiers": sorted(event.identifiers),
                 "notam": notice["fields"],
                 "representations": notice["translations"],
+                "classifications": list(event.classifications),
+                "source_last_updated": list(event.last_updated),
                 "association_evidence": evidence,
                 "accepted_airports": sorted(accepted),
                 "status": "conflicting" if conflict else ("associated" if accepted else "unresolved"),

@@ -37,6 +37,9 @@ def event(identity, location, *, text="PRIVATE NOTICE", number="1"):
       <event:translation><event:NOTAMTranslation><event:type>LOCAL_FORMAT</event:type>
        <event:simpleText>PRIVATE LOCAL {identity}</event:simpleText>
       </event:NOTAMTranslation></event:translation>
+      <event:extension><fnse:EventExtension><fnse:classification>DOM</fnse:classification>
+       <fnse:lastUpdated>2026-11-16T12:54:00.000Z</fnse:lastUpdated>
+      </fnse:EventExtension></event:extension>
     </event:Event></msg:hasMember>'''
 
 
@@ -70,7 +73,9 @@ def document(members):
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
  xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:gml="http://www.opengis.net/gml/3.2"
  xmlns:aixm="http://www.aixm.aero/schema/5.1" xmlns:msg="http://www.aixm.aero/schema/5.1/message"
- xmlns:event="http://www.aixm.aero/schema/5.1/event" xmlns:xlink="http://www.w3.org/1999/xlink">
+ xmlns:event="http://www.aixm.aero/schema/5.1/event"
+ xmlns:fnse="http://www.aixm.aero/schema/5.1/extensions/FAA/FNSE"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
  <soap:Body><wfs:FeatureCollection>''' + "".join(members)
             + "</wfs:FeatureCollection></soap:Body></soap:Envelope>").encode()
 
@@ -149,6 +154,10 @@ class AssociationTests(unittest.TestCase):
         self.assertEqual(records[0]["notam"]["issued"], ["2026-11-16T12:00:00.000Z"])
         self.assertEqual(records[0]["representations"][0]["simpleText"],
                          ["PRIVATE LOCAL secret"])
+        self.assertEqual(records[0]["classifications"], ["DOM"])
+        self.assertEqual(records[0]["source_last_updated"],
+                         ["2026-11-16T12:54:00.000Z"])
+        self.assertEqual(records[0]["source_identifiers"], ["EVENT-secret"])
         self.assertNotIn(secret, json.dumps(report))
         self.assertNotIn("EVENT-secret", json.dumps(report))
 
