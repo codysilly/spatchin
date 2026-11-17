@@ -282,6 +282,60 @@ python -m unittest -v tests.test_initial_load_stream.PrivateSpecimenTests
 The specimen-backed assertions describe only the approved SPA-56 artifact. They
 are not provider-wide invariants and do not authorize another request or baseline.
 
+## SPA-58 offline C070 airport association candidate
+
+`scripts/associate_initial_load_airports.py` adds a bounded, read-only association
+pass over the verified Initial Load container. It reuses the SPA-56 evidence,
+receipt, permission, mutation, gzip and XML safety checks and streams one WFS
+member at a time. It neither loads the decompressed document as a tree nor changes
+the saved specimen. There is no collector, credential, network, baseline, cursor,
+polling, public-file, dashboard, scheduler, version or deployment integration.
+
+Two source-supported signals are accepted. `event:NOTAM/event:location` may match
+an IATA or ICAO identifier only when that exact identifier is present in the
+reviewed C070 registry. An `aixm:AirportHeliport` designator may also match only
+that registry, and only when the feature has an `event:theEvent` relationship to
+the Event containing the notice. No `K` prefix is invented. Runway,
+RunwayDirection, text, geometry and name inference are deliberately excluded;
+structured runway relationships remain SPA-59 scope.
+
+If the location and Event-linked airport feature sets are both nonempty and
+disjoint, the notice is reported as conflicting and is not assigned. Multiple
+explicit Event-linked airports are supported and preserved, although none occurs
+for the C070 subset in this specimen. Duplicate evidence and duplicate Event
+identifiers are counted. A caller-supplied record sink can retain exact extracted
+NOTAM scalar fields, Event identifiers, timestamps, translation representations,
+association evidence and accepted airports in approved private storage. The CLI
+uses no sink and prints only aggregate counts and reviewed public C070 codes.
+
+Read-only validation of the approved November 16 artifact (43,073,137 compressed
+bytes; 362,833,367 decompressed bytes) measured:
+
+- 72,675 NOTAMs inspected;
+- 8,298 notices associated with at least one reviewed C070 airport;
+- all 130 C070 airports represented;
+- 64,377 notices unmatched or unresolved for the C070 registry;
+- zero conflicting notices, zero multi-airport notices and zero duplicate Event
+  identifiers;
+- 3,848 accepted notices independently supported by both the exact NOTAM location
+  and an Event-linked AirportHeliport designator.
+
+These are artifact-specific association counts, not completeness or operational
+applicability claims. The remaining 64,377 notices principally name locations
+outside the 130-airport registry. The candidate does not define lifecycle,
+refresh/cutover continuity, durable private record storage, normalization into a
+dashboard snapshot, or public publication. Those require separate review before
+any refreshable feed; `baseline_established=false`, `watermark=null`, and
+`diagnostic=BASELINE_CUTOVER_REQUIRED` remain invariant.
+
+Synthetic validation is the default. The genuine specimen assertion is opt-in:
+
+```powershell
+python -m unittest -v tests.test_initial_load_airport_associations
+$env:SPATCHIN_IL_SPECIMEN_DIR = '<protected attempt directory>'
+python -m unittest -v tests.test_initial_load_airport_associations.PrivateSpecimenTests
+```
+
 ## SPA-52 classification-wide GeoJSON candidate (offline only)
 
 `scripts/nms_geojson_baseline.py` implements a second, independent evidence path
