@@ -223,6 +223,65 @@ XML-defined `LOCAL_FORMAT` source; and continuity/cutover evidence. Until those
 are supplied and reviewed, the production seam intentionally does not assemble a
 `DecodedInitial`, establish a baseline or advance a delta cursor.
 
+## SPA-56 offline streaming inspection of preserved Initial Load evidence
+
+`scripts/inspect_initial_load_stream.py` is a separate forensic inspector for the
+verified production specimen shape: one gzip member containing UTF-8 SOAP 1.1,
+a WFS 2.0 FeatureCollection, and one AIXM Basic Message per WFS member. It has no
+collector, decoder, credential, HTTP, SQLite, baseline, cursor, outbox, public
+file, scheduler, or deployment integration. `nms_initial_decoder.decode_initial`
+remains unchanged and fail-closed with `BASELINE_CUTOVER_REQUIRED`.
+
+The inspector requires an explicit absolute protected evidence directory, exact
+approved SHA-256, and byte count. It verifies the receipt and native private
+permissions, hashes the artifact before parsing, streams the same open handle,
+and hashes it again afterward. File identity, size, last-write metadata, receipt
+bytes and file identity, directory identity, and ACLs are rechecked to detect
+mutation or replacement. Duplicate receipt keys and incomplete capture-state
+receipts are refused. It never creates or edits evidence.
+
+Gzip CRC/size validation, a single-member rule, no trailing bytes, and explicit
+compressed/decompressed limits precede acceptance. Each decompression operation
+can return at most 64 KiB; `unconsumed_tail` is drained through the same fixed
+window before more input is read. Decompressed bytes are scanned across chunk
+boundaries for DTD and entity declarations before XML events are processed. Only
+UTF-8 is accepted. Schema locations and XLinks are counted as inert attributes
+and are never opened or resolved. SOAP/WFS/AIXM namespaces and structure are
+checked exactly; malformed, unsupported, unsafe, and limit failures use fixed
+diagnostics that cannot contain source material.
+
+The namespace-aware Expat event parser has parameter entities disabled and an
+external-entity refusal handler. A pre-parser lexical bound limits a start tag
+before Expat can retain an oversized attribute, while character callbacks enforce
+per-scalar, per-member and aggregate text limits incrementally. Byte, element,
+depth, namespace, QName, attribute, WFS-member, feature, reference and identity
+limits are also explicit. No XML tree or notice body is assembled. Only current
+member/feature state plus bounded aggregate identity and reference indexes remain.
+Source text, identifiers, coordinates, reference values, internal hashes,
+credentials, private paths and unexpected structural names are absent from reports.
+
+Reports contain aggregate feature/cardinality distributions, whitelisted
+classification and translation labels, time lexical shapes, repeated-identity
+structure, and resolved/unresolved relationship counts. They do not assign
+lifecycle meaning, classification-enum equivalence, airport ownership, baseline
+coverage, or delta cutover. `baseline_established=false`, `watermark=null`, and
+`diagnostic=BASELINE_CUTOVER_REQUIRED` are invariant.
+
+Synthetic tests cover gzip corruption/concatenation/trailing data, split DTD and
+entity attacks, non-UTF-8 declarations, malformed XML, inert schemas/XLinks,
+resource limits, evidence mutation, fixed diagnostics, output privacy, and bounded
+memory across many members. The genuine private specimen test is opt-in through
+`SPATCHIN_IL_SPECIMEN_DIR`; normal CI never requires or copies private evidence:
+
+```powershell
+python -m unittest -v tests.test_initial_load_stream
+$env:SPATCHIN_IL_SPECIMEN_DIR = '<protected attempt directory>'
+python -m unittest -v tests.test_initial_load_stream.PrivateSpecimenTests
+```
+
+The specimen-backed assertions describe only the approved SPA-56 artifact. They
+are not provider-wide invariants and do not authorize another request or baseline.
+
 ## SPA-52 classification-wide GeoJSON candidate (offline only)
 
 `scripts/nms_geojson_baseline.py` implements a second, independent evidence path
