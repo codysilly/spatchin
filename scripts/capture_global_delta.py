@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
+import shutil
 
 from capture_domestic_candidate import default_store_path
 from nms_http import HTTPAdapter
@@ -17,12 +18,23 @@ from nms_refresh_contract import (RefreshError, Request, auth_request, delta_req
                                   instant, stamp)
 
 MAX_RESPONSE_BYTES = 256 * 1024 * 1024
+# One response can coexist in SQLite, its durable journal/accounting path and the
+# private evidence file. Keep a small receipt/filesystem margin as well.
+STORAGE_REQUIRED_BYTES = MAX_RESPONSE_BYTES * 3 + 1024 * 1024
 TIMEOUT_SECONDS = 300
 INTERVAL = 'one account-wide data/delta pull per elapsed three minutes'
 
 
 def _wire_lower_bound(since):
     return instant(since).replace(microsecond=0)
+
+
+def _storage_capacity(root):
+    try:
+        free = shutil.disk_usage(root).free
+        return free, free >= STORAGE_REQUIRED_BYTES, None
+    except Exception:
+        return None, False, 'PRIVATE_STORAGE_CAPACITY_UNAVAILABLE'
 
 
 def operation(since):
@@ -87,12 +99,23 @@ def proposed_since(store):
 def review(store, now, since=None):
     evidence = latest_initial_evidence(store)
     lower = since or proposed_since(store)
-    _wire_lower_bound(lower)
+    current = instant(stamp(now))
+    requested = instant(lower)
+    timestamp_diagnostic = None
+    try:
+        delta_request(lower, current)
+    except RefreshError as error:
+        if str(error) not in ('CLOCK_ROLLBACK', 'DELTA_GAP'):
+            raise
+        timestamp_diagnostic = str(error)
     budget = store.delta_budget_review(now)
-    within_lookback = instant(stamp(now)) - _wire_lower_bound(lower) <= timedelta(hours=24)
+    storage_free, storage_ready, storage_diagnostic = _storage_capacity(store.root)
+    within_lookback = requested <= current and current - requested <= timedelta(hours=24)
     blockers = list(budget['blockers'])
-    if not within_lookback:
-        blockers.append('DELTA_GAP')
+    if timestamp_diagnostic is not None:
+        blockers.append(timestamp_diagnostic)
+    if not storage_ready:
+        blockers.append(storage_diagnostic or 'INSUFFICIENT_PRIVATE_STORAGE')
     blockers.append('EXTERNAL_ACCOUNT_ACTIVITY_ATTESTATION_REQUIRED')
     blockers.append('OWNER_EXECUTION_APPROVAL_REQUIRED')
     return {
@@ -104,8 +127,14 @@ def review(store, now, since=None):
                              'nmsResponseFormat': 'GEOJSON'},
         'initial_load_evidence': evidence,
         'within_documented_24_hour_lookback': within_lookback,
+        'timestamp_diagnostic': timestamp_diagnostic,
         'budget': budget,
-        'locally_eligible': not budget['blockers'] and within_lookback,
+        'storage_free_bytes': storage_free,
+        'storage_required_bytes': STORAGE_REQUIRED_BYTES,
+        'storage_ready': storage_ready,
+        'storage_diagnostic': storage_diagnostic,
+        'locally_eligible': (not budget['blockers'] and timestamp_diagnostic is None
+                             and storage_ready),
         'actual_request_blocked': True,
         'blockers': blockers,
         'credentials_read': False,
@@ -135,6 +164,10 @@ def execute(store, *, since, credentials, transport, clock):
         try:
             started = clock()
             request = delta_request(since, started)
+            store.storage.verify_private(store.root)
+            _free, storage_ready, _diagnostic = _storage_capacity(store.root)
+            if not storage_ready:
+                raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
             attempt, _ = store.reserve_delta_probe(db, since, started)
             evidence_parent = store.root / 'delta-probe-evidence'
             if not evidence_parent.exists():
@@ -174,17 +207,21 @@ def execute(store, *, since, credentials, transport, clock):
                 features = payload_features(payload)
                 identities = set()
                 duplicates = 0
-                cancellation_markers = 0
-                inactive_markers = 0
+                cancelation_date_fields = 0
+                provider_cancellation_types = 0
+                other_lifecycle_fields = 0
                 for feature in features:
                     record = source_record(feature)
                     if record['id'] in identities:
                         duplicates += 1
                     identities.add(record['id'])
-                    if record.get('type') in ('C', 'NOTAMC') or 'cancelationDate' in record:
-                        cancellation_markers += 1
-                    if any(key in record for key in ('inactive', 'isActive', 'status')):
-                        inactive_markers += 1
+                    if 'cancelationDate' in record:
+                        cancelation_date_fields += 1
+                    if record.get('type') in ('C', 'NOTAMC'):
+                        provider_cancellation_types += 1
+                    if any(key in record for key in
+                           ('inactive', 'isActive', 'status', 'lifecycle')):
+                        other_lifecycle_fields += 1
             except RefreshError:
                 raise
             except Exception:
@@ -199,8 +236,12 @@ def execute(store, *, since, credentials, transport, clock):
                 'diagnostic_counts': {'features': len(features),
                                       'distinct_source_ids': len(identities),
                                       'duplicate_source_ids': duplicates,
-                                      'provider_cancellation_markers': cancellation_markers,
-                                      'provider_inactive_fields': inactive_markers},
+                                      'records_with_cancelation_date_field':
+                                          cancelation_date_fields,
+                                      'records_with_provider_cancellation_type':
+                                          provider_cancellation_types,
+                                      'records_with_other_provider_lifecycle_fields':
+                                          other_lifecycle_fields},
                 'stage_receipts': stages,
                 'validated_geojson': True, 'reconciled': False,
                 'baseline_established': False, 'watermark': None, 'published': False,

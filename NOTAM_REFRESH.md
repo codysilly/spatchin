@@ -6,14 +6,26 @@
 Its default mode is read-only: it opens only the existing protected ledger and
 bounded Initial Load receipt, reports the exact UTC `lastUpdatedDate`, request
 shape, account-wide three-minute gate, local pending/ambiguous state, 24-hour
-lookback result, blockers, and a lower-bound-specific approval digest. It does
-not read credentials, reserve an allowance, contact NMS, or modify a file.
+lookback result, private storage capacity, blockers, and a lower-bound-specific
+approval digest. It does not read credentials, reserve an allowance, contact
+NMS, or modify a file. A future lower bound is explicitly blocked as
+`CLOCK_ROLLBACK`; a lower bound more than 24 hours old is blocked as `DELTA_GAP`.
+Validation uses the supplied instant while the wire query retains documented
+whole-second precision.
 
 The proposed lower bound is the verified Initial Load capture start floored to a
 whole second and moved back one second. This is the existing client replay
 overlap, not a claim about provider boundary semantics or the Initial Load
 snapshot cutoff. An expired 24-hour window is reported as `DELTA_GAP`; the tool
 does not replace the timestamp or acquire another Initial Load.
+
+The local review distinguishes an elapsed three-minute interval from active,
+pending or recovery state and from imported historical uncertainty. In
+particular, `IMPORTED_UNCERTAIN` remains visible and is never reclassified or
+described as harmless merely because three minutes elapsed. Old uncertainty is
+not made a permanent local block: current account-wide activity attestation is
+still separately required before an owner-approved execution and is not inferred
+from local history.
 
 A future separately authorized `--execute` requires both the exact printed
 digest and a current external-account-activity attestation. It shares the
@@ -34,12 +46,26 @@ Malformed and failed responses remain accounted attempts and are never labelled
 valid evidence. Tokens, headers, notice text, sensitive identifiers, and local
 paths are absent from the review and receipt.
 
+Capacity review conservatively requires three times the 256 MiB response bound
+plus 1 MiB for receipt/filesystem overhead, accounting for the SQLite response,
+durable database/journal activity and the separate private evidence file.
+Execution repeats this check before reservation or authentication and fails
+closed when capacity cannot be established.
+
+Lifecycle diagnostics are neutral counts: records containing a
+`cancelationDate` field, records whose provider `type` indicates cancellation,
+and records containing other provider-supplied lifecycle/status fields. Field
+presence is not translated into a cancellation conclusion, and source records
+remain unchanged.
+
 This capture path deliberately does not use or weaken the production delta
 collector's accepted-baseline gate. It does not reconcile the evidence, accept a
 baseline, advance a watermark, change a catalog/outbox/public file, infer runway
 status, schedule polling, or publish. Existing offline candidate reconciliation
 continues to reject changed equal-timestamp and older revisions, retain exact
 replays, preserve absent records, and preserve provider cancellation fields.
+A valid contemporary probe provides evidence about the requested change window;
+it does not retroactively establish continuity with an older Initial Load.
 
 ## SPA-56 supervised opaque Initial Load capture (not authorized to run)
 

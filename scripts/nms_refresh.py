@@ -262,6 +262,8 @@ class Store:
                 blockers.append('RECOVERY_REQUIRED')
             if now < not_before:
                 blockers.append('ACCOUNT_WIDE_THREE_MINUTE_WAIT')
+            historical_uncertainty = [row for row in ambiguous
+                                      if row[4] == 'IMPORTED_UNCERTAIN']
             return {
                 'ledger_history_verified': True,
                 'history_complete_through_utc': state['history_complete_through'],
@@ -271,6 +273,13 @@ class Store:
                 'recovery_state_present': state['recovery'] is not None,
                 'pending_attempt_count': len(pending),
                 'ambiguous_attempt_count': len(ambiguous),
+                'local_three_minute_interval_elapsed': now >= not_before,
+                'pending_or_recovery_attempt_present': bool(
+                    pending or state['active'] is not None or state['recovery'] is not None),
+                'historical_uncertainty_present': bool(historical_uncertainty),
+                'historical_uncertainty_count': len(historical_uncertainty),
+                'historical_uncertainty_resolution':
+                    'NOT_RESOLVED_BY_LOCAL_INTERVAL; CURRENT_ACCOUNT_ATTESTATION_REQUIRED',
                 'pending_attempts': [
                     {'kind': row[1], 'reserved_utc': row[2],
                      'last_io_utc': row[3], 'status': row[4]}
