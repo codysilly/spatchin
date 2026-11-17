@@ -1,5 +1,37 @@
 # SPA-10: one-PC, offline-tested refresh engine (not activated)
 
+## SPA-56 supervised opaque Initial Load capture (not authorized to run)
+
+`scripts/capture_initial_load.py` is a separate, capture-only procedure for the
+documented all-classification `GET /nmsapi/v1/notams/il?allowRedirect=false`.
+Its default invocation is a read-only review: it opens the existing migrated
+Spatchin private ledger read-only, reports the account-wide bulk gate and a
+distinct operation-approval digest, checks local disk headroom, and reads neither
+credentials nor network.  It never reserves an allowance or creates evidence.
+
+Only a future, separately owner-approved `--execute` invocation can use the
+existing account-bound Store. It permits exactly one OAuth POST, one IL GET and,
+only if the validated JSON control envelope supplies it, one same-host
+authenticated content GET. Every call is durably reserved before I/O. Redirects,
+non-200 responses, malformed/expired/cross-host content paths, timeout, TLS and
+network failure stop without retry. The path does not call the decoder, accept an
+outbox, establish a baseline, set a watermark, or write public data.
+
+The legacy 64 MiB/30-second in-memory adapter remains the collector default.
+This capture path uses its new bounded streaming mode: 1 GiB maximum opaque
+content, 64 KiB chunks, and a five-minute per-call elapsed deadline. It requires
+at least 1 GiB free in the existing private-ledger volume before approval. Content
+is written first as a protected `content.partial`; success flushes and atomically
+renames it to `initial-load.bin`, while partial data remains private evidence on
+failure and the ledger's failed reservation is retained. A protected receipt holds
+UTC capture start/completion, per-stage reservation times, byte count and SHA-256
+but never URLs, tokens, headers or raw notices. The five-minute content-path bound
+is checked before starting that one GET; provider material does not establish a
+requirement that a hash-valid transfer must finish before temporary-path expiry.
+Initial control bytes remain in the existing private response history;
+the large opaque artifact remains under its existing private ledger directory,
+not a new account store.
+
 The engine uses explicit injected dependencies. The separate `nms_http.py` adapter
 now implements one bounded HTTPS call when invoked; import/construction do not
 connect. `import_nms_history.py` defaults to a read-only review and writes only
@@ -190,6 +222,65 @@ unknown fields and separately identifiable provider text representations; an
 XML-defined `LOCAL_FORMAT` source; and continuity/cutover evidence. Until those
 are supplied and reviewed, the production seam intentionally does not assemble a
 `DecodedInitial`, establish a baseline or advance a delta cursor.
+
+## SPA-56 offline streaming inspection of preserved Initial Load evidence
+
+`scripts/inspect_initial_load_stream.py` is a separate forensic inspector for the
+verified production specimen shape: one gzip member containing UTF-8 SOAP 1.1,
+a WFS 2.0 FeatureCollection, and one AIXM Basic Message per WFS member. It has no
+collector, decoder, credential, HTTP, SQLite, baseline, cursor, outbox, public
+file, scheduler, or deployment integration. `nms_initial_decoder.decode_initial`
+remains unchanged and fail-closed with `BASELINE_CUTOVER_REQUIRED`.
+
+The inspector requires an explicit absolute protected evidence directory, exact
+approved SHA-256, and byte count. It verifies the receipt and native private
+permissions, hashes the artifact before parsing, streams the same open handle,
+and hashes it again afterward. File identity, size, last-write metadata, receipt
+bytes and file identity, directory identity, and ACLs are rechecked to detect
+mutation or replacement. Duplicate receipt keys and incomplete capture-state
+receipts are refused. It never creates or edits evidence.
+
+Gzip CRC/size validation, a single-member rule, no trailing bytes, and explicit
+compressed/decompressed limits precede acceptance. Each decompression operation
+can return at most 64 KiB; `unconsumed_tail` is drained through the same fixed
+window before more input is read. Decompressed bytes are scanned across chunk
+boundaries for DTD and entity declarations before XML events are processed. Only
+UTF-8 is accepted. Schema locations and XLinks are counted as inert attributes
+and are never opened or resolved. SOAP/WFS/AIXM namespaces and structure are
+checked exactly; malformed, unsupported, unsafe, and limit failures use fixed
+diagnostics that cannot contain source material.
+
+The namespace-aware Expat event parser has parameter entities disabled and an
+external-entity refusal handler. A pre-parser lexical bound limits a start tag
+before Expat can retain an oversized attribute, while character callbacks enforce
+per-scalar, per-member and aggregate text limits incrementally. Byte, element,
+depth, namespace, QName, attribute, WFS-member, feature, reference and identity
+limits are also explicit. No XML tree or notice body is assembled. Only current
+member/feature state plus bounded aggregate identity and reference indexes remain.
+Source text, identifiers, coordinates, reference values, internal hashes,
+credentials, private paths and unexpected structural names are absent from reports.
+
+Reports contain aggregate feature/cardinality distributions, whitelisted
+classification and translation labels, time lexical shapes, repeated-identity
+structure, and resolved/unresolved relationship counts. They do not assign
+lifecycle meaning, classification-enum equivalence, airport ownership, baseline
+coverage, or delta cutover. `baseline_established=false`, `watermark=null`, and
+`diagnostic=BASELINE_CUTOVER_REQUIRED` are invariant.
+
+Synthetic tests cover gzip corruption/concatenation/trailing data, split DTD and
+entity attacks, non-UTF-8 declarations, malformed XML, inert schemas/XLinks,
+resource limits, evidence mutation, fixed diagnostics, output privacy, and bounded
+memory across many members. The genuine private specimen test is opt-in through
+`SPATCHIN_IL_SPECIMEN_DIR`; normal CI never requires or copies private evidence:
+
+```powershell
+python -m unittest -v tests.test_initial_load_stream
+$env:SPATCHIN_IL_SPECIMEN_DIR = '<protected attempt directory>'
+python -m unittest -v tests.test_initial_load_stream.PrivateSpecimenTests
+```
+
+The specimen-backed assertions describe only the approved SPA-56 artifact. They
+are not provider-wide invariants and do not authorize another request or baseline.
 
 ## SPA-52 classification-wide GeoJSON candidate (offline only)
 

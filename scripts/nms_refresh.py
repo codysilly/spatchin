@@ -105,6 +105,30 @@ class Store:
                 db.close()
 
     @contextmanager
+    def review_connect(self):
+        """Open the existing ledger read-only; review must not touch its journal."""
+        db = None
+        try:
+            for path in (self.root, self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+                self.storage.validate_location(path)
+                self.storage.verify_private(path)
+            self.import_marker()
+            db = sqlite3.connect((self.root/'account.sqlite3').as_uri()+'?mode=ro',
+                                 uri=True, timeout=2, isolation_level=None)
+            if db.execute('PRAGMA user_version').fetchone()[0] != 1:
+                raise ValueError()
+            if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+                raise ValueError()
+            yield db
+        except RefreshError:
+            raise
+        except Exception:
+            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE') from None
+        finally:
+            if db is not None:
+                db.close()
+
+    @contextmanager
     def transaction(self, db):
         for path in (self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
             self.storage.verify_private(path)
@@ -147,7 +171,7 @@ class Store:
 
     def snapshot(self):
         """The last accepted private publication handoff, not a live web writer."""
-        with self.connect() as db:
+        with self.review_connect() as db:
             return base64.b64decode(self.load(db)['published_b64'], validate=True)
 
     def reserve(self, db, mode, now):
@@ -185,7 +209,7 @@ class Store:
     def budget_review(self, now):
         """Read-only ledger eligibility; external-account activity is a separate gate."""
         now = instant(stamp(now))
-        with self.connect() as db:
+        with self.review_connect() as db:
             state = self.load(db)
             if state['active'] is not None or state['recovery'] is not None:
                 raise RefreshError('RECOVERY_REQUIRED')
@@ -198,13 +222,20 @@ class Store:
             primary_not_before = latest + timedelta(minutes=3) if latest else now
             bulk_not_before = max(primary_not_before,
                                   latest_bulk + timedelta(hours=24) if latest_bulk else now)
+            latest_bulk_row = max((row for row in rows if row[0] == 'bulk'),
+                                  key=lambda row: max(instant(row[1]), instant(row[2])), default=None)
+            calls = db.execute('SELECT stage,at FROM calls ORDER BY at').fetchall()
             return {'ledger_history_verified': True,
                     'history_complete_through_utc': state['history_complete_through'],
+                    'active_attempt': state['active'], 'recovery_state': state['recovery'],
                     'attempt_count': state['attempt_count'],
                     'call_count': state['call_count'],
                     'response_count': state['response_count'],
                     'minimum_primary_not_before_utc': stamp(primary_not_before),
                     'minimum_bulk_not_before_utc': stamp(bulk_not_before),
+                    'latest_bulk_reserved_utc': latest_bulk_row[1] if latest_bulk_row else None,
+                    'latest_bulk_last_io_utc': latest_bulk_row[2] if latest_bulk_row else None,
+                    'known_call_stage_timestamps_utc': [{'stage': stage, 'at_utc': at} for stage, at in calls],
                     'ledger_time_eligible': now >= bulk_not_before,
                     'external_activity_attestation_required': True,
                     'reservation_created': False}

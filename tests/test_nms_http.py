@@ -125,6 +125,16 @@ class HTTPTests(unittest.TestCase):
         now=[0.0];response=Response(b'x');response.on_read=lambda:now.__setitem__(0,31.0)
         self.assert_code('HTTP_TIMEOUT',lambda:HTTPAdapter(connection_factory=Factory([response]),monotonic=lambda:now[0])(bearer(initial_request()),5))
 
+    def test_streaming_refuses_length_mismatch_and_never_buffers_body(self):
+        sink=[]; response=Response(b'abc',headers={'Content-Length':'4'})
+        self.assert_code('HTTP_PROTOCOL_FAILURE',lambda:HTTPAdapter(connection_factory=Factory([response])).stream(
+            bearer(initial_request()),10,sink.append))
+        self.assertEqual(sink,[b'abc'])
+        body=b'x'*131072; chunks=[]
+        result=HTTPAdapter(connection_factory=Factory([Response(body,headers={'Content-Length':str(len(body))})])).stream(
+            bearer(initial_request()),len(body),chunks.append)
+        self.assertEqual(b''.join(chunks),body); self.assertEqual(result[1]['bytes'],len(body))
+
     def test_merged_engine_success_and_timeout_redirect_error_accounting(self):
         for failure in [None,TimeoutError(TOKEN),307,500]:
             with self.subTest(failure=type(failure).__name__),tempfile.TemporaryDirectory() as temp:
