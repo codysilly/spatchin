@@ -2,7 +2,13 @@ name: Update ATIS Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '4,14,24,34,44,54 * * * *'
+    # Separate schedules match the METAR repair for irregular cron starts.
+    - cron: '4 * * * *'
+    - cron: '14 * * * *'
+    - cron: '24 * * * *'
+    - cron: '34 * * * *'
+    - cron: '44 * * * *'
+    - cron: '54 * * * *'
 permissions:
   contents: write
 concurrency:
@@ -11,11 +17,14 @@ concurrency:
 jobs:
   update-atis:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate offline ATIS collector
+        run: python -m unittest discover -s tests -p 'test_update_atis.py'
       - name: Retrieve atis.info ATIS snapshots
         run: python scripts/update_atis.py
       - name: Commit ATIS data
@@ -25,5 +34,13 @@ jobs:
           git add data/atis.json
           if ! git diff --cached --quiet; then
             git commit -m "Update ATIS snapshot"
-            git push
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              git fetch origin main
+              git rebase origin/main
+            done
+            echo "Failed to publish ATIS after three push attempts" >&2
+            exit 1
           fi
