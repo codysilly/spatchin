@@ -15,7 +15,7 @@ const metarStart=app.indexOf('function parseMetar(m){');
 const metarEnd=app.indexOf('async function refresh(){',metarStart);
 assert.ok(from>=0&&to>from&&metarStart>0&&metarEnd>metarStart);
 const code=app.slice(from,to)+'\n'+app.slice(metarStart,metarEnd);
-const context=vm.createContext({Date,Number});
+const context=vm.createContext({Date,Number,METAR_STALE_MS:65*60*1000});
 new vm.Script(code,{filename:'dashboard-flight-categories.js'}).runInContext(context);
 const record=(category,minutesAgo=0)=>context.parseMetar({
   icaoId:'KMEM',obsTime:Math.floor((Date.now()-minutesAgo*60000)/1000),
