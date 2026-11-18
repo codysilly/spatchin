@@ -2,7 +2,14 @@ name: Update METAR Data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '7,17,27,37,47,57 * * * *'
+    # Keep separate hourly schedules. GitHub was starting the equivalent
+    # comma-list schedule only every few hours instead of every ten minutes.
+    - cron: '7 * * * *'
+    - cron: '17 * * * *'
+    - cron: '27 * * * *'
+    - cron: '37 * * * *'
+    - cron: '47 * * * *'
+    - cron: '57 * * * *'
 permissions:
   contents: write
 concurrency:
@@ -11,6 +18,7 @@ concurrency:
 jobs:
   update-metar:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

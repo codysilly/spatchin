@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Fetch validated AWC METARs, retry transient failures, preserve last good snapshot."""
 import json
+import os
 import random
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -24,7 +26,7 @@ def observation_time(item):
     raise ValueError("Missing observation time")
 
 
-def valid(item):
+def valid(item, *, enforce_freshness=True):
     if not isinstance(item, dict) or item.get("icaoId") not in AIRPORTS:
         return False
     if not item.get("rawOb"):
@@ -34,7 +36,9 @@ def valid(item):
         speed = item.get("wspd")
         if speed is not None and float(speed) < 0:
             return False
-        return observed <= time.time() + 300 and observed > time.time() - 7 * 86400
+        if observed > time.time() + 300:
+            return False
+        return not enforce_freshness or observed > time.time() - 7 * 86400
     except (ValueError, TypeError, OverflowError, OSError):
         return False
 
@@ -59,14 +63,43 @@ def fetch():
     return selected
 
 
-def main():
+def read_previous():
     previous = {}
     if DEST.exists():
         try:
             old = json.loads(DEST.read_text(encoding="utf-8"))
-            previous = {m["icaoId"]: m for m in old.get("metars", []) if valid(m)}
+            if not isinstance(old, dict) or not isinstance(old.get("metars"), list):
+                raise ValueError("Previous snapshot has an invalid shape")
+            previous = {
+                m["icaoId"]: m for m in old["metars"]
+                if valid(m, enforce_freshness=False)
+            }
         except (ValueError, KeyError, TypeError) as exc:
             print(f"Previous snapshot could not be parsed: {exc}", file=sys.stderr)
+    return previous
+
+
+def write_snapshot(snapshot):
+    """Atomically replace the snapshot so readers never see partial JSON."""
+    DEST.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=f".{DEST.name}.", dir=DEST.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(snapshot, handle, indent=2)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, DEST)
+    except BaseException:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def main():
+    previous = read_previous()
     latest = None
     for attempt in range(1, len(DELAYS) + 2):
         try:
@@ -86,13 +119,17 @@ def main():
     for code, item in latest.items():
         if code not in merged or observation_time(item) >= observation_time(merged[code]):
             merged[code] = item
-    DEST.parent.mkdir(parents=True, exist_ok=True)
+    observations = [merged[code] for code in sorted(merged)]
+    previous_observations = [previous[code] for code in sorted(previous)]
+    if observations == previous_observations:
+        print("No newer METAR observations; data/metars.json left unchanged")
+        return
     snapshot = {
         "updated_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "source": URL,
-        "metars": [merged[code] for code in sorted(merged)],
+        "metars": observations,
     }
-    DEST.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
+    write_snapshot(snapshot)
     print(f"Published {len(merged)} validated observations; older valid reports retained if missing upstream")
 
 
