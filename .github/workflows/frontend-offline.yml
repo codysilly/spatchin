@@ -1,0 +1,32 @@
+name: Frontend offline checks
+on:
+  pull_request:
+    paths:
+      - 'app.js'
+      - 'index.html'
+      - '*.css'
+      - 'tests/charcoal-dashboard.test.cjs'
+      - '.github/workflows/frontend-offline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check scan.js
+          node --check notam-reader.js
+          node --check notam-snapshots.js
+      - name: Run offline frontend regressions
+        run: |
+          node --test tests/charcoal-dashboard.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs
