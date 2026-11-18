@@ -1,0 +1,207 @@
+/* SPA-63: owner-approved charcoal operations dashboard.
+   Visual-only layer: existing source data and NOTAM behavior are retained. */
+:root{
+  --font-ui:"Overpass","Segoe UI",Arial,sans-serif;
+  --font-data:"Inconsolata",Consolas,"Courier New",monospace;
+  color-scheme:dark;
+  --bg:#1b1d1f;
+  --panel:#1b1d1f;
+  --panel2:#151617;
+  --line:#3a3d40;
+  --text:#e6e6e1;
+  --muted:#a3a6a8;
+  --blue:#4fd1e6;
+  --amber:#ffb000;
+  --green:#b4e33d;
+  --red:#ff6b6b;
+  --flight-vfr:#b4e33d;
+  --flight-mvfr:#4fd1e6;
+  --flight-ifr:#ff6b6b;
+  --flight-lifr:#ff4fd8;
+}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--text);font:400 15px/1.35 var(--font-ui,"Overpass",sans-serif)}
+header,.airport,.atis,.atis-box,.notam-summary,.notam-detail-row>td,
+.notam-reader,.scan-toolbar,.dashboard-controls .scan-toolbar,.notice,.sources,
+input,select,button{border-radius:0!important;box-shadow:none!important;background-image:none!important}
+a,.atis-full summary,.airport-notam-list>summary{color:var(--blue)}
+a:hover{color:#8deaff}
+.wip-banner{background:#26221a;color:#f6cb71;border-color:#4b402c;font-size:11px;padding:3px 12px}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 28px;min-height:69px}
+.brand{gap:12px}
+.brand-logo{width:30px;height:30px;object-fit:contain}
+.brand h1{font:700 32px/1 var(--font-data,"Inconsolata",monospace);letter-spacing:.13em}
+.brand-wordmark{font-family:var(--font-data,"Inconsolata",monospace);font-size:inherit;font-weight:700;letter-spacing:.13em;color:var(--text)}
+.brand h1 .version{font:400 13px/1 var(--font-data,"Inconsolata",monospace);margin-left:0;letter-spacing:0;color:var(--muted)}
+.clock{font:400 16px/1.2 var(--font-data,"Inconsolata",monospace);white-space:nowrap;color:var(--text)}
+main{max-width:none;width:100%;padding:14px 28px 36px}
+.dashboard-controls{gap:16px;margin:0 0 40px;align-items:flex-start}
+.dashboard-controls .scan-toolbar{padding:10px 16px;min-height:42px;border:1px solid var(--line);background:transparent}
+.scan-toggle{font:400 14px/1.25 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
+.scan-toggle svg{width:17px;height:17px}
+.scan-title{font-size:14px;font-weight:800;letter-spacing:.16em;color:var(--amber)}
+#scan-indicator{color:var(--muted)}
+.scan-panel{border-top:1px solid var(--line);margin-top:8px}
+.scan-toolbar #scan-terms{max-width:460px}
+.scan-toolbar button:not(.scan-toggle){background:var(--panel2);border:1px solid var(--blue);color:var(--blue)}
+.scan-toolbar button:disabled{border-color:var(--line)}
+.dashboard-controls .toolbar{min-height:42px}
+.dashboard-controls form{min-height:42px;gap:12px;flex-wrap:nowrap}
+.dashboard-controls label{color:var(--text);font-size:14px;white-space:nowrap}
+input,select{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-family:var(--font-data,"Inconsolata",monospace);font-size:14px;padding:8px 10px}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#iata{width:190px;height:36px}
+button{background:transparent;border:1px solid var(--blue);color:var(--blue);padding:6px 13px;font:600 13px/1.2 var(--font-ui,"Overpass",sans-serif)}
+button:hover{background:#243034}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.airport{min-width:0;overflow:hidden;background:var(--bg);border:1px solid var(--line);padding:20px 22px 22px}
+.airport-head{display:block;position:relative;padding:0 0 20px;border:0;min-height:0}
+.airport-head>div:first-child{min-width:0;flex:none}
+.airport-code-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;min-height:96px}
+.icao{font:800 clamp(70px,7.4vw,96px)/.95 var(--font-ui,"Overpass",sans-serif);letter-spacing:-.055em;color:var(--text);white-space:nowrap}
+.category-tag{display:inline-block;flex:none;align-self:flex-end;margin-bottom:3px;border:1px solid var(--line);padding:3px 10px 1px;font:800 22px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.08em;white-space:nowrap}
+.category-vfr{background:var(--flight-vfr);border-color:var(--flight-vfr);color:#111}
+.category-mvfr{background:var(--flight-mvfr);border-color:var(--flight-mvfr);color:#111}
+.category-ifr{background:var(--flight-ifr);border-color:var(--flight-ifr);color:#111}
+.category-lifr{background:var(--flight-lifr);border-color:var(--flight-lifr);color:#111}
+.category-unavailable{font-size:21px;color:var(--muted);background:transparent;border-color:var(--muted)}
+.name{font:600 20px/1.2 var(--font-ui,"Overpass",sans-serif);color:var(--text);margin-top:12px;overflow-wrap:anywhere}
+.airport-diagram{position:absolute;top:4px;right:0;width:82px;max-width:26%;text-align:left;padding:0;font:600 14px/1.12 var(--font-ui,"Overpass",sans-serif)}
+.airport-diagram a{display:inline;color:var(--blue);text-decoration:underline;text-underline-offset:2px}
+.flight-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:2px 0 12px}
+.flight-segment{display:flex;align-items:center;justify-content:center;min-width:0;min-height:25px;font:800 11px/1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.09em;border:1px solid currentColor}
+.flight-vfr{color:var(--flight-vfr)}.flight-mvfr{color:var(--flight-mvfr)}
+.flight-ifr{color:var(--flight-ifr)}.flight-lifr{color:var(--flight-lifr)}
+.flight-vfr.is-active{background:var(--flight-vfr);color:#111}
+.flight-mvfr.is-active{background:var(--flight-mvfr);color:#111}
+.flight-ifr.is-active{background:var(--flight-ifr);color:#111}
+.flight-lifr.is-active{background:var(--flight-lifr);color:#111}
+.weather-row,.taf{display:grid;grid-template-columns:58px minmax(0,1fr);column-gap:10px}
+.weather-row{border-top:1px solid var(--line);padding:12px 0 11px}
+.weather-source{padding-top:0}
+.weather-badge,.taf strong,.weather-source a.weather-badge{background:transparent!important;border:1px solid var(--muted);border-radius:0;color:var(--text);font:700 12px/1.1 var(--font-ui,"Overpass",sans-serif);text-align:center;text-decoration:none;padding:2px 4px;letter-spacing:.02em}
+.weather-source a.weather-badge:hover{color:var(--blue);border-color:var(--blue);background:transparent;text-decoration:underline}
+.metar-status{display:block;font:800 12px/1.2 var(--font-ui,"Overpass",sans-serif);letter-spacing:.07em;color:var(--amber);margin:0 0 4px}
+.metar-status::before{content:"▪";margin-right:6px}
+.metar-current{color:var(--green)}.metar-stale,.metar-unavailable{color:var(--amber)}
+.metar-raw{font:400 13px/1.55 var(--font-data,"Inconsolata",monospace);overflow-wrap:anywhere;white-space:pre-wrap;color:var(--text)}
+.metar-retained{font-size:11px;color:var(--amber)}
+.taf{border-top:1px solid var(--line);padding:11px 0 2px;margin:0 0 26px;color:var(--muted);font-size:14px;line-height:1.25}
+.taf strong{height:fit-content;background:transparent}
+.taf span{font:400 14px/1.28 var(--font-ui,"Overpass",sans-serif);color:var(--muted);padding:0}
+.atis{margin:0 0 30px;border:1px solid var(--line);background:transparent;padding:13px 14px}
+.atis-top{margin:0 0 10px;align-items:flex-start;gap:8px}
+.atis-top h3{font:800 21px/1.1 var(--font-ui,"Overpass",sans-serif);color:var(--text);letter-spacing:0}
+.atis-meta{font:400 11px/1.3 var(--font-data,"Inconsolata",monospace);color:var(--muted);white-space:nowrap;padding-top:6px}
+.atis-meta strong{color:var(--muted);font-weight:400}
+.atis-provider{display:block;max-width:none;margin:4px 0 0;font:700 12px/1.3 var(--font-ui,"Overpass",sans-serif);color:var(--amber)}
+.atis-runways{gap:7px}
+.atis-box{background:transparent;border:1px solid var(--line);padding:9px 10px;min-height:63px}
+.atis-label{font:700 12px/1.2 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em;color:var(--text)}
+.atis-value{margin-top:6px;font:700 18px/1.1 var(--font-data,"Inconsolata",monospace);color:var(--text)}
+.atis-full{border:0;margin:12px 0 0;padding:0}
+.atis-full summary{font:600 14px/1.2 var(--font-ui,"Overpass",sans-serif);text-decoration:underline}
+.atis-full summary::marker{color:var(--blue)}
+.atis-raw{font-family:var(--font-data,"Inconsolata",monospace)}
+.notam-summary{margin:0 0 18px;border:1px solid var(--line);padding:12px;background:var(--panel2);color:var(--muted);font:400 12px/1.35 var(--font-data,"Inconsolata",monospace)}
+.notam-summary>strong{font:800 12px/1.2 var(--font-ui,"Overpass",sans-serif);text-transform:uppercase;letter-spacing:.12em;color:var(--amber)}
+.notam-summary>strong::before{content:"▪";margin-right:8px}
+.notam-summary p{margin:6px 0 0;color:var(--muted)}
+.notam-summary .collection-warning{color:var(--amber)}
+.airport-notam-list{margin-top:5px}
+.airport-notam-list>summary{font:600 14px/1.3 var(--font-ui,"Overpass",sans-serif);text-decoration:underline}
+.airport-notam-list .notice-list{background:var(--panel2)}
+.time-control{margin:0 0 13px;gap:10px;flex-wrap:wrap}
+.time-control label{font:400 13px/1.2 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
+.time-control select{font:400 13px/1.2 var(--font-data,"Inconsolata",monospace);padding:5px 8px;border:1px solid var(--line);max-width:100%;background:var(--panel2)}
+.runways{padding:0 0 9px}
+.rw-table{width:100%;table-layout:fixed;border-collapse:collapse;font:400 16px/1.2 var(--font-data,"Inconsolata",monospace)}
+.rw-table>thead>tr>th{padding:7px 1px 9px;color:var(--amber);font:800 12px/1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.1em;vertical-align:bottom}
+.rw-table>thead>tr>th:nth-child(1){width:12%}
+.rw-table>thead>tr>th:nth-child(2){width:31%}
+.rw-table>thead>tr>th:nth-child(3){width:20%}
+.rw-table>thead>tr>th:nth-child(4){width:37%}
+.rw-table>tbody>.runway-row>td{padding:7px 1px;vertical-align:top;overflow-wrap:normal;border-bottom:1px solid var(--line);font-family:var(--font-data,"Inconsolata",monospace);font-size:16px}
+.rw-table>tbody>.runway-row>td:first-child{font-size:17px;font-weight:700}
+.headwind{color:var(--green)}
+.tailwind-low{color:var(--amber)}.tailwind-high{color:var(--red)}
+.crosswind-low{color:var(--text)}
+.crosswind-mid{color:var(--amber)}.crosswind-high{color:var(--red)}
+.gust{font:400 12px/1.3 var(--font-data,"Inconsolata",monospace)}
+.runway-row [data-reader-open]{width:auto;max-width:100%;min-width:0;background:transparent;border:1px solid var(--blue);color:var(--blue);font:700 13px/1.1 var(--font-ui,"Overpass",sans-serif);padding:5px 7px}
+.runway-row [aria-expanded=true]{background:#243034;outline:1px solid var(--blue)}
+.reader-note{font:400 12px/1.3 var(--font-ui,"Overpass",sans-serif);color:var(--muted);margin:3px 0 0}
+.notam-detail-row>td{background:var(--panel2);border:1px solid var(--line)!important}
+.inline-reader{background:var(--panel2);padding:8px;font-size:13px}
+.reader-scroll-title{background:var(--panel2);color:var(--text);border-color:var(--line)}
+.inline-reader>p{color:var(--amber)}
+.reader-raw{font:400 13px/1.5 var(--font-data,"Inconsolata",monospace);color:var(--text)}
+.notice-list .reader-notice{border-color:var(--line)}
+.empty{font:400 15px/1.4 var(--font-ui,"Overpass",sans-serif);color:var(--muted);padding:12px 0}
+.airport-footer{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border-top:1px solid var(--line);padding:16px 0 0;margin:12px 0 0}
+.notam-transport{margin:0;padding:0}
+.notam-transport button,.airport-footer [data-remove]{font:600 13px/1.2 var(--font-ui,"Overpass",sans-serif);padding:6px 12px;min-height:31px}
+.notam-transport button{border-color:var(--blue);color:var(--blue)}
+.airport-footer [data-remove]{border-color:var(--muted);color:var(--muted)}
+.airport-footer [data-remove]:hover{color:var(--text);border-color:var(--text)}
+.sources{background:transparent;border-color:var(--line);color:var(--muted);margin-top:24px}
+.sources h3{font-size:14px}
+footer{border-color:var(--line);color:var(--muted)}
+@media(max-width:1120px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dashboard-controls{gap:12px}
+  .airport-code-line{min-height:78px}
+  .icao{font-size:clamp(64px,7.6vw,90px)}
+  .category-tag{font-size:18px}
+}
+@media(max-width:760px){
+  header{padding:12px 16px;min-height:56px;gap:10px}
+  .brand-logo{width:26px;height:26px}
+  .brand h1{font-size:25px}
+  .brand h1 .version{font-size:12px}
+  .clock{font-size:12px}
+  main{padding:12px 14px 28px}
+  .dashboard-controls{flex-direction:column;gap:8px;margin-bottom:22px}
+  .dashboard-controls .scan-toolbar{width:100%;padding:10px 12px}
+  .dashboard-controls .toolbar{width:100%}
+  .dashboard-controls form{width:100%;gap:8px;justify-content:flex-end}
+  #iata{width:auto;flex:1;min-width:85px}
+  .cards{grid-template-columns:minmax(0,1fr);gap:14px}
+  .airport{padding:16px}
+  .airport-head{padding-bottom:20px}
+  .airport-code-line{min-height:70px;gap:8px}
+  .icao{font-size:clamp(62px,18vw,80px)}
+  .category-tag{font-size:17px;padding:3px 7px 2px}
+  .airport-diagram{width:80px;top:2px;font-size:12px}
+  .name{font-size:17px;margin-top:9px}
+  .flight-strip{gap:3px}
+  .flight-segment{font-size:10px}
+  .atis{padding:12px;margin-bottom:24px}
+  .atis-meta{font-size:10px}
+  .atis-box{padding:9px 7px}
+  .atis-label{font-size:11px}
+  .rw-table>thead>tr>th{font-size:10px;letter-spacing:.04em}
+  .rw-table>tbody>.runway-row>td{font-size:15px}
+  .runway-row [data-reader-open]{font-size:12px;min-height:36px}
+  .reader-note{font-size:11px}
+  .reader-raw{font-size:13px}
+  .inline-reader{padding:7px}
+  .time-control select{min-height:36px}
+  .notam-transport button,.airport-footer [data-remove]{min-height:36px}
+}
+@media(max-width:400px){
+  header{padding:10px 10px;gap:6px}
+  .brand{gap:7px}
+  .brand-logo{width:23px;height:23px}
+  .brand h1{font-size:21px;letter-spacing:.07em}
+  .brand-wordmark{letter-spacing:.07em}
+  .brand h1 .version{font-size:10px}
+  .clock{font-size:10px}
+  .airport{padding:12px}
+  .icao{font-size:62px}
+  .category-tag{font-size:15px}
+  .airport-diagram{width:68px}
+  .rw-table>thead>tr>th:nth-child(2){width:31%}
+  .rw-table>thead>tr>th:nth-child(3){width:18%}
+  .rw-table>thead>tr>th:nth-child(4){width:39%}
+}
