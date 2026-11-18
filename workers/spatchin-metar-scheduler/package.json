@@ -1,0 +1,12 @@
+{
+  "name": "spatchin-metar-scheduler",
+  "version": "0.9.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/index.js",
+    "test": "node --test",
+    "deploy:dry-run": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
+  }
+}
