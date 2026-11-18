@@ -190,6 +190,13 @@ footer{border-color:var(--line);color:var(--muted)}
   .notam-transport button,.airport-footer [data-remove]{min-height:36px}
 }
 @media(max-width:400px){
+  header{padding:10px 10px;gap:6px}
+  .brand{gap:7px}
+  .brand-logo{width:23px;height:23px}
+  .brand h1{font-size:21px;letter-spacing:.07em}
+  .brand-wordmark{letter-spacing:.07em}
+  .brand h1 .version{font-size:10px}
+  .clock{font-size:10px}
   .airport{padding:12px}
   .icao{font-size:62px}
   .category-tag{font-size:15px}
