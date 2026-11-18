@@ -15,7 +15,7 @@ permissions:
 jobs:
   frontend:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,3 +30,16 @@ jobs:
       - name: Run offline frontend regressions
         run: |
           node --test tests/charcoal-dashboard.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs
+      - name: Install local browser test harness
+        run: npm install --no-save --no-package-lock playwright@1.56.1
+      - name: Run synthetic desktop and mobile checks
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node --test tests/charcoal-dashboard-browser.test.cjs
+      - name: Retain visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spatchin-charcoal-screenshots
+          path: screenshots/*.png
+          if-no-files-found: ignore
