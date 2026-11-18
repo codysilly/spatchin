@@ -13,26 +13,29 @@ overlapping collectors. Remove the GitHub schedules only in a separate change
 after the Worker has been deployed and repeatedly verified; keep
 `workflow_dispatch`.
 
-## Local validation
+## Read-only local validation
 
-The Worker has no runtime dependencies. Node 18 or newer is required for the
-offline tests.
+The Worker has no runtime dependencies. Wrangler is installed locally as a
+development dependency, and Node 18 or newer is required. These commands do
+not deploy a Worker, create a secret, activate a Cron Trigger, or contact the
+GitHub dispatch or AWC endpoints:
 
 ```sh
 cd workers/spatchin-metar-scheduler
+npm ci
 npm test
 npm run check
+npm run deploy:dry-run
 ```
 
-Tests replace `fetch` with local mocks and make no AWC or GitHub requests.
-
-Before deployment, install or run a current Wrangler release according to
-Cloudflare's supported installation instructions. Validate the configuration
-without dispatching GitHub by running `npm run deploy:dry-run`. Do not use
+The tests replace `fetch` with local mocks and make no AWC or GitHub requests.
+The dry-run builds and validates the deployment bundle locally without
+uploading it. npm scripts resolve the repository's pinned Wrangler dependency;
+no global Wrangler installation is required. Do not use
 `wrangler dev --test-scheduled` with a real secret unless an intentional GitHub
-dispatch is approved.
+dispatch is separately approved.
 
-## Credential and deployment
+## Owner-controlled credential preparation
 
 Create a fine-grained GitHub personal access token yourself; never paste it into
 chat, source files, Wrangler configuration, shell history, or logs. Restrict the
@@ -44,18 +47,34 @@ revoked token produces an authentication-failure log until replaced.
 GitHub documents this under
 [Create a workflow dispatch event](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event).
 
-Authenticate Wrangler to the intended Cloudflare account, then enter the token
-interactively as an encrypted Worker secret and deploy:
+Creating the token changes GitHub account state and requires the owner's
+participation and approval. Merely preparing the token does not authorize any
+Cloudflare command. In particular, `wrangler secret put` is not a read-only
+credential setup step: Cloudflare creates and immediately deploys a new Worker
+version when the secret is changed.
+
+## Approved production activation
+
+Stop after the dry-run until the owner explicitly approves production
+activation. In an approved maintenance window, authenticate the local Wrangler
+CLI to the intended Cloudflare account and run the following commands
+interactively:
 
 ```sh
 cd workers/spatchin-metar-scheduler
-wrangler secret put GITHUB_TOKEN
+npm exec -- wrangler secret put GITHUB_TOKEN
 npm run deploy
 ```
 
-Confirm that the deployment summary shows the Worker name
-`spatchin-metar-scheduler` and cron `*/10 * * * *` before approving it. Cron
-Triggers use UTC. Do not add a route or custom domain: this Worker needs only a
+Both commands can change Cloudflare production state and require explicit owner
+approval. The first command securely prompts for the token, creates a new
+Worker version, and deploys it immediately. The second deploys the reviewed
+source and configuration, including the production Cron Trigger. Do not enter
+the token through a command-line argument, file, chat, or unattended job.
+
+After the approved activation, confirm that the deployment summary shows the
+Worker name `spatchin-metar-scheduler` and cron `*/10 * * * *`. Cron Triggers
+use UTC. Do not add a route or custom domain: this Worker needs only a
 Cron Trigger and outbound HTTPS. It is independent of any other Cloudflare
 Worker, DNS record, storage binding, or Codrasil resource.
 

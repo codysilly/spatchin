@@ -8,5 +8,8 @@
     "test": "node --test",
     "deploy:dry-run": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.164.0"
   }
 }
