@@ -1,15 +1,6 @@
 name: Update METAR Data
 on:
   workflow_dispatch:
-  schedule:
-    # Keep separate hourly schedules. GitHub was starting the equivalent
-    # comma-list schedule only every few hours instead of every ten minutes.
-    - cron: '7 * * * *'
-    - cron: '17 * * * *'
-    - cron: '27 * * * *'
-    - cron: '37 * * * *'
-    - cron: '47 * * * *'
-    - cron: '57 * * * *'
 permissions:
   contents: write
 concurrency:
