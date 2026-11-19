@@ -1,47 +1,56 @@
 {
-  "updated_utc": "2026-11-19T08:55:18.895165Z",
+  "updated_utc": "2026-11-19T13:20:48.081353Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-19T08:52:05.633Z",
-      "obsTime": 1795078260,
-      "reportTime": "2026-11-19T09:00:00.000Z",
-      "temp": 7.8,
-      "dewp": 0.6,
-      "wdir": 310,
-      "wspd": 4,
+      "receiptTime": "2026-11-19T12:54:43.179Z",
+      "obsTime": 1795092660,
+      "reportTime": "2026-11-19T13:00:00.000Z",
+      "temp": 7.2,
+      "dewp": 3.9,
+      "wdir": 0,
+      "wspd": 0,
       "visib": "10+",
-      "altim": 1030.6,
-      "slp": 1030.8,
+      "altim": 1031.9,
+      "slp": 1031.9,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KJFK 190851Z 31004KT 10SM CLR 08/01 A3043 RMK SLP308 T00780006 50000",
+      "rawOb": "METAR KJFK 191251Z 00000KT 10SM FEW015 FEW250 07/04 A3047 RMK SLP319 T00720039",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "CLR",
-      "clouds": [],
+      "cover": "FEW",
+      "clouds": [
+        {
+          "cover": "FEW",
+          "base": 1500
+        },
+        {
+          "cover": "FEW",
+          "base": 25000
+        }
+      ],
       "fltCat": "VFR"
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-19T07:56:23.993Z",
-      "obsTime": 1795074780,
-      "reportTime": "2026-11-19T08:00:00.000Z",
-      "temp": 17.2,
-      "dewp": 10.6,
-      "wdir": 180,
-      "wspd": 6,
-      "visib": "10+",
-      "altim": 1016.7,
-      "slp": 1016.3,
+      "receiptTime": "2026-11-19T12:56:31.043Z",
+      "obsTime": 1795092780,
+      "reportTime": "2026-11-19T13:00:00.000Z",
+      "temp": 15,
+      "dewp": 12.8,
+      "wdir": 130,
+      "wspd": 5,
+      "visib": 7,
+      "altim": 1015.3,
+      "slp": 1015,
       "qcField": 12,
-      "maxT24": 20.6,
-      "minT24": 10.6,
+      "wxString": "-RA",
+      "precip": 0.01,
       "metarType": "METAR",
-      "rawOb": "METAR KLAX 190753Z 18006KT 10SM FEW024 SCT045 BKN090 OVC160 17/11 A3002 RMK AO2 SLP163 T01720106 402060106 $",
+      "rawOb": "METAR KLAX 191253Z 13005KT 7SM -RA FEW020 BKN028 OVC040 15/13 A2998 RMK AO2 RAE44B46 SLP150 P0001 T01500128 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -50,70 +59,75 @@
       "clouds": [
         {
           "cover": "FEW",
-          "base": 2400
-        },
-        {
-          "cover": "SCT",
-          "base": 4500
+          "base": 2000
         },
         {
           "cover": "BKN",
-          "base": 9000
+          "base": 2800
         },
         {
           "cover": "OVC",
-          "base": 16000
+          "base": 4000
+        }
+      ],
+      "fltCat": "MVFR"
+    },
+    {
+      "icaoId": "KMEM",
+      "receiptTime": "2026-11-19T12:58:17.793Z",
+      "obsTime": 1795092840,
+      "reportTime": "2026-11-19T13:00:00.000Z",
+      "temp": 9.4,
+      "dewp": 3.9,
+      "wdir": 80,
+      "wspd": 5,
+      "visib": "10+",
+      "altim": 1028.5,
+      "slp": 1028.5,
+      "qcField": 12,
+      "metarType": "METAR",
+      "rawOb": "METAR KMEM 191254Z 08005KT 10SM FEW095 09/04 A3037 RMK AO2 SLP285 T00940039 $",
+      "lat": 35.0564,
+      "lon": -89.9864,
+      "elev": 78,
+      "name": "Memphis Intl, TN, US",
+      "cover": "FEW",
+      "clouds": [
+        {
+          "cover": "FEW",
+          "base": 9500
         }
       ],
       "fltCat": "VFR"
     },
     {
-      "icaoId": "KMEM",
-      "receiptTime": "2026-11-19T07:58:14.462Z",
-      "obsTime": 1795074840,
-      "reportTime": "2026-11-19T08:00:00.000Z",
-      "temp": 12.2,
-      "dewp": 0.6,
-      "wdir": 110,
-      "wspd": 5,
-      "visib": "10+",
-      "altim": 1027.2,
-      "slp": 1026.8,
-      "qcField": 12,
-      "metarType": "METAR",
-      "rawOb": "METAR KMEM 190754Z 11005KT 10SM CLR 12/01 A3033 RMK AO2 SLP268 T01220006 $",
-      "lat": 35.0564,
-      "lon": -89.9864,
-      "elev": 78,
-      "name": "Memphis Intl, TN, US",
-      "cover": "CLR",
-      "clouds": [],
-      "fltCat": "VFR"
-    },
-    {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-19T07:54:14.150Z",
-      "obsTime": 1795074660,
-      "reportTime": "2026-11-19T08:00:00.000Z",
-      "temp": 11.1,
-      "dewp": 1.7,
+      "receiptTime": "2026-11-19T12:54:43.807Z",
+      "obsTime": 1795092660,
+      "reportTime": "2026-11-19T13:00:00.000Z",
+      "temp": 10,
+      "dewp": 2.2,
       "wdir": 210,
-      "wspd": 11,
-      "wgst": 19,
+      "wspd": 8,
+      "wgst": 17,
       "visib": "10+",
-      "altim": 1025.8,
-      "slp": 1025.7,
+      "altim": 1025.5,
+      "slp": 1025.5,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 190751Z 21011G19KT 10SM SCT250 11/02 A3029 RMK AO2 SLP257 T01110017 $",
+      "rawOb": "METAR KORD 191251Z 21008G17KT 10SM FEW050 FEW250 10/02 A3028 RMK AO2 SLP255 T01000022 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "SCT",
+      "cover": "FEW",
       "clouds": [
         {
-          "cover": "SCT",
+          "cover": "FEW",
+          "base": 5000
+        },
+        {
+          "cover": "FEW",
           "base": 25000
         }
       ],
