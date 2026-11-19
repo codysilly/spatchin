@@ -107,8 +107,8 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   assert.deepEqual(await mem.evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})),{width:44,height:44});
   const rem=page.locator('[data-airport="MEM"] .airport-remove');
   assert.deepEqual(await rem.evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})),{width:44,height:44});
-  await mem.focus();
-  await page.keyboard.press('ArrowRight');
+  assert.equal(await mem.isDisabled(),false);
+  await mem.press('ArrowRight');
   assert.deepEqual(await order(),['IND','MEM','OAK']);
   assert.equal(await page.evaluate(()=>document.activeElement.dataset.airportDrag),'MEM');
   assert.equal(await page.locator('#airport-order-status').textContent(),'MEM moved to position 2 of 3');
