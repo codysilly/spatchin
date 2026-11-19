@@ -219,3 +219,78 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
   .brand-logo{width:46px;height:46px}
   .brand h1,.brand-wordmark{letter-spacing:.0175em}
 }
+
+
+/* SPA-65: compact two-row card header and raw-METAR-first presentation. */
+.airport-head{padding:0 0 13px;min-height:0;display:block;position:static}
+.airport-top-row{display:flex;align-items:center;gap:6px;min-width:0}
+.airport-head-spacer{flex:1 1 auto;min-width:0}
+.airport-grip,.airport-remove{
+  flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid transparent;color:var(--muted);
+  background:transparent;padding:0;border-radius:0;
+}
+.airport-grip{cursor:grab;touch-action:none}
+.airport-grip:active{cursor:grabbing}
+.airport-grip:disabled{opacity:.4;cursor:default}
+.airport-grip:hover,.airport-remove:hover{background:#292c2e;border-color:var(--line);color:var(--text)}
+.airport-remove{font:400 30px/1 var(--font-ui,"Overpass",sans-serif);cursor:pointer}
+.icao{font:700 60px/.95 var(--font-data,"Inconsolata",monospace);letter-spacing:-.045em;white-space:nowrap;flex:none}
+.category-tag{align-self:center;margin:0;padding:4px 7px 3px;font:800 14px/1.15 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
+.category-unavailable{font-size:12px;font-weight:700}
+.airport-head .airport-diagram{
+  position:static;flex:0 1 106px;max-width:106px;width:auto;
+  padding:0;text-align:right;font:600 12px/1.18 var(--font-ui,"Overpass",sans-serif);
+}
+.airport-head .airport-diagram a{display:inline;text-decoration:underline}
+.airport-head .name{
+  margin:2px 0 0 50px;color:var(--muted);
+  font:500 18px/1.25 var(--font-ui,"Overpass",sans-serif);overflow-wrap:anywhere;
+}
+.metar-panel{
+  display:block;border:1px solid var(--line);background:var(--panel2);
+  margin:3px 0 13px;padding:12px 14px 14px;min-width:0;
+}
+.metar-panel .weather-source{display:inline-block;padding:0}
+.metar-panel .weather-badge,.metar-panel .weather-source a.weather-badge{
+  border:0;background:transparent!important;color:var(--muted);
+  padding:0;font:700 11px/1.2 var(--font-ui,"Overpass",sans-serif);
+  letter-spacing:.1em;text-decoration:none;
+}
+.metar-panel .weather-source a.weather-badge:hover{background:transparent;color:var(--blue);text-decoration:underline}
+.metar-panel .weather-copy{display:contents}
+.metar-panel .metar-status{display:inline-block;margin:0 0 0 12px;font-size:11px;letter-spacing:.05em;vertical-align:middle}
+.metar-panel .metar-raw{
+  display:block;margin-top:8px;color:var(--text);
+  font:400 21px/1.6 var(--font-data,"Inconsolata",monospace);
+  white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;
+}
+.metar-panel .metar-retained{display:block;margin-top:6px}
+.airport.is-dragging{opacity:.65}
+.airport.is-drop-target{outline:2px solid var(--blue);outline-offset:-2px}
+.airport-footer [data-remove]{display:none}
+@media(max-width:1300px){
+  .airport-top-row{gap:4px}
+  .airport-head .airport-diagram{flex-basis:76px;max-width:76px;font-size:11px}
+  .icao{font-size:56px}
+}
+@media(max-width:760px){
+  .airport-head{padding:0 0 12px}
+  .icao{font-size:54px}
+  .airport-head .name{margin-left:48px;font-size:18px}
+  .metar-panel{padding:10px 12px 13px}
+  .metar-panel .metar-raw{font-size:21px;line-height:1.6}
+}
+@media(max-width:600px){
+  .airport-head .airport-diagram{flex:0 0 auto;max-width:none}
+  .airport-head .diagram-link-text{display:none}
+  .airport-top-row{gap:4px}
+}
+@media(max-width:400px){
+  .icao{font-size:48px}
+  .category-tag{font-size:12px;padding:4px 5px 3px}
+  .category-unavailable{font-size:10px}
+  .airport-head .name{margin-left:48px;font-size:17px}
+  .metar-panel .metar-raw{font-size:20px}
+}
