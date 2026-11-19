@@ -128,3 +128,26 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
+
+test('touch pointer drag reorders a single-column mobile dashboard',async()=>{
+ const context=await browser.newContext({viewport:{width:390,height:2200},hasTouch:true,isMobile:true});
+ const page=await context.newPage(),errors=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["IND","OAK"]'));
+ try{
+  await page.goto(base);
+  const src=await page.locator('[data-airport="IND"] .airport-grip').boundingBox();
+  const dst=await page.locator('[data-airport="OAK"] .airport-grip').boundingBox();
+  assert.ok(src&&dst,'both mobile grips must be visible');
+  const client=await context.newCDPSession(page);
+  const x=src.x+src.width/2,y=src.y+src.height/2;
+  const dx=dst.x+dst.width/2,dy=dst.y+dst.height/2;
+  await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+  for(let i=1;i<=10;i++)await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+(dx-x)*i/10,y:y+(dy-y)*i/10}]});
+  await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  assert.deepEqual(await page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport)),['OAK','IND']);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'["OAK","IND"]');
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
