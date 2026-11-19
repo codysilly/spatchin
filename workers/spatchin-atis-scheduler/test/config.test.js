@@ -4,10 +4,12 @@ import test from "node:test";
 
 const configUrl = new URL("../wrangler.toml", import.meta.url);
 
-test("Wrangler configuration names the isolated Worker and hourly UTC cron", async () => {
+test("Wrangler configuration names the isolated Worker without public Worker URLs", async () => {
   const config = await readFile(configUrl, "utf8");
   assert.match(config, /^name = "spatchin-atis-scheduler"$/m);
   assert.match(config, /^main = "src\/index\.js"$/m);
+  assert.match(config, /^workers_dev = false$/m);
+  assert.match(config, /^preview_urls = false$/m);
   assert.match(config, /^\[triggers\]$/m);
   assert.match(config, /^crons = \["0 \* \* \* \*"\]$/m);
   assert.doesNotMatch(config, /route|custom_domain|kv_namespaces|d1_databases/i);
