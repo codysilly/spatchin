@@ -1,15 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 112" fill="none" aria-hidden="true">
-  <defs>
-    <linearGradient id="planeGradient" x1="8" y1="91" x2="112" y2="8" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#4fd1e6"/>
-      <stop offset="0.32" stop-color="#38bdf8"/>
-      <stop offset="0.65" stop-color="#a45bfc"/>
-      <stop offset="1" stop-color="#ff4fd8"/>
-    </linearGradient>
-  </defs>
-  <g stroke="url(#planeGradient)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 8 51 111 8 79 103 53 83 31 104 31 70 Z"/>
-    <path d="M 31 70 111 8 53 83"/>
-    <path d="M 31 104 111 8 79 103"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="65 140 1130 957" role="img" aria-label="Spatchin paper airplane">
+<!-- Vector outline traced from the owner-approved thin-line airplane image (19 Nov 2026). -->
+<defs><linearGradient id="tailToNose" gradientUnits="userSpaceOnUse" x1="356" y1="1039" x2="1179" y2="154">
+ <stop offset="0" stop-color="#04e3ed"/>
+ <stop offset="0.24" stop-color="#31bafc"/>
+ <stop offset="0.52" stop-color="#8979fe"/>
+ <stop offset="0.73" stop-color="#c837f2"/>
+ <stop offset="1" stop-color="#f312d9"/>
+</linearGradient></defs>
+<path fill="url(#tailToNose)" fill-rule="evenodd" d="M 1192 151 L 666 366 L 81 591 L 300 769 L 347 1053 L 571 926 L 778 1092 L 1034 502 Z M 555 917 L 385 1013 L 502 875 Z M 1124 249 L 1055 416 L 772 1069 L 516 860 Z M 1092 248 L 489 862 L 358 1024 L 314 773 Z M 1104 213 L 820 410 L 307 754 L 111 597 Z"/>
 </svg>
