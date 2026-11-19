@@ -120,7 +120,7 @@ function metarStatus(m){
  return '<span class="metar-status metar-current">METAR CURRENT</span>';
 }
 const observedSelection=new Map();
-function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove;
+function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
  const atisOpen=new Set([...document.querySelectorAll('.atis-full[open]')].map(el=>el.closest('[data-airport]')?.dataset.airport));
  reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
 
@@ -135,6 +135,7 @@ function render(){const reloadFocus=document.activeElement?.dataset?.notamReload
  attachAirportReordering();
  if(reloadFocus)[...document.querySelectorAll('[data-notam-reload]')].find(b=>b.dataset.notamReload===reloadFocus)?.focus({preventScroll:true});
  else if(removeFocus)[...document.querySelectorAll('[data-remove]')].find(b=>b.dataset.remove===removeFocus)?.focus({preventScroll:true});
+ else if(dragFocus)[...document.querySelectorAll('[data-airport-drag]')].find(b=>b.dataset.airportDrag===dragFocus)?.focus({preventScroll:true});
  else if(activeId)document.getElementById(activeId)?.focus?.({preventScroll:true});
 }
 // Airport order is the existing spatchin-airports array, including on reload.
