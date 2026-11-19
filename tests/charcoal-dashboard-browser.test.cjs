@@ -26,7 +26,7 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   if(new URL(route.request().url()).origin===base)return route.continue();
   external.push(route.request().url());return route.abort();
  });
- await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]'));
+ await context.addInitScript(()=>{if(localStorage.getItem('spatchin-airports')===null)localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]');});
  const now=new Date();
  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{
   updated_utc:now.toISOString(),
@@ -98,7 +98,7 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
  const page=await context.newPage(),errors=[];
  page.on('pageerror',error=>errors.push(error.message));
  await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
- await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]'));
+ await context.addInitScript(()=>{if(localStorage.getItem('spatchin-airports')===null)localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]');});
  try{
   await page.goto(base);
   const order=()=>page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport));
@@ -108,10 +108,7 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   const rem=page.locator('[data-airport="MEM"] .airport-remove');
   assert.deepEqual(await rem.evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})),{width:44,height:44});
   assert.equal(await mem.isDisabled(),false);
-  await page.evaluate(()=>document.addEventListener('keydown',e=>{window.__airportKeyDebug={key:e.key,target:e.target?.dataset?.airportDrag,focused:document.activeElement?.dataset?.airportDrag,isTrusted:e.isTrusted};},true));
-  console.log('SPA-65 keyboard before',await page.evaluate(()=>({active:document.activeElement?.dataset?.airportDrag,airports:airports.slice()})));
   await mem.press('ArrowRight');
-  console.log('SPA-65 keyboard after',await page.evaluate(()=>({active:document.activeElement?.dataset?.airportDrag,airports:airports.slice(),debug:window.__airportKeyDebug,dom:[...document.querySelectorAll('.airport')].map(x=>x.dataset.airport),source:document.getElementById('cards').innerHTML.slice(0,95)})),'PAGE ERRORS',errors);
   assert.deepEqual(await order(),['IND','MEM','OAK']);
   assert.equal(await page.evaluate(()=>document.activeElement.dataset.airportDrag),'MEM');
   assert.equal(await page.locator('#airport-order-status').textContent(),'MEM moved to position 2 of 3');
