@@ -81,8 +81,14 @@ def fetch(airport):
         return select_reports(json.load(response), airport)
 
 
-def newest(reports):
-    return max(report_time(item) for item in reports)
+def merge_reports(previous, incoming):
+    """Keep the newest report for each independent ATIS type."""
+    by_type = {item['type']: item for item in previous}
+    for item in incoming:
+        kind = item['type']
+        if kind not in by_type or report_time(item) >= report_time(by_type[kind]):
+            by_type[kind] = item
+    return [by_type[kind] for kind in ('combined', 'arr', 'dep') if kind in by_type]
 
 
 def write_snapshot(airports):
@@ -118,8 +124,7 @@ def main():
         try:
             incoming = fetch(airport)
             successes.append(airport)
-            if airport not in merged or newest(incoming) >= newest(merged[airport]):
-                merged[airport] = incoming
+            merged[airport] = merge_reports(merged.get(airport, []), incoming)
         except (OSError, ValueError, TypeError, OverflowError) as exc:
             failures[airport] = str(exc)
             print(f'{airport}: {exc}; retaining previous report if present', file=sys.stderr)
