@@ -7,11 +7,10 @@ Worker, which makes one authenticated `workflow_dispatch` request for
 Python collector, commits changed `data/metars.json`, and publishes GitHub
 Pages. The Worker does not retrieve weather data.
 
-The existing GitHub Actions schedules intentionally remain enabled during the
-migration. The workflow's `spatchin-metar-update` concurrency group prevents
-overlapping collectors. Remove the GitHub schedules only in a separate change
-after the Worker has been deployed and repeatedly verified; keep
-`workflow_dispatch`.
+Cloudflare is the production scheduler. The six legacy GitHub Actions `schedule`
+entries were removed during the November 19, 2026 cutover. The GitHub workflow
+retains `workflow_dispatch`, and its `spatchin-metar-update` concurrency group
+prevents overlapping collectors.
 
 ## Read-only local validation
 
@@ -125,6 +124,10 @@ Verify each layer separately over several scheduled intervals:
    compare `https://www.spatchin.com/data/metars.json` with the `main` snapshot
    and confirm the browser refreshes it on its existing two-minute interval.
 
-Keep the current hourly ChatGPT METAR validation task unchanged. After repeated
-end-to-end success, prepare a separate reviewed pull request that removes only
-the six GitHub `schedule` entries. Never disable both schedulers at once.
+Cutover decision (2026-11-19): The owner verified the METAR data on the public
+website and expressly waived the requirement to observe multiple scheduled
+runs. The first Cloudflare invocation at 13:20:30Z received GitHub HTTP 204;
+the dispatched METAR workflow and GitHub Pages deployment completed successfully.
+The separate cutover PR removes the six legacy GitHub schedules and keeps
+`workflow_dispatch` active. Keep the existing hourly ChatGPT METAR validation
+task unchanged.
