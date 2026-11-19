@@ -17,7 +17,7 @@ for(const width of [1440,390])test(`verified green AWC badge links, footer remov
    await badge.focus();assert.equal(await badge.evaluate(el=>el===document.activeElement),true);assert.notEqual(await badge.evaluate(el=>getComputedStyle(el).outlineStyle),'none');
   }
   const unknown=page.locator('[data-airport="IND"]');assert.equal(await unknown.locator('a.weather-badge,a[href^="https://aviationweather.gov/"]').count(),0);assert.match(await unknown.locator('span.weather-badge').getAttribute('aria-label'),/unavailable.*unverified/);
-  assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);assert.equal(await page.locator('.airport-footer [data-remove]').count(),5);
+  assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);assert.equal(await page.locator('.airport-head [data-remove]').count(),5);
   assert.doesNotMatch(await page.locator('#cards').innerText(),/Last check:|Last successful check:|Show details|Original METAR/);assert.match(await page.locator('.notam-transport').first().innerText(),/Published snapshot · No live provider request/);
   await page.locator('[data-remove="MEM"]').click();assert.equal(await page.evaluate(()=>document.activeElement.dataset.remove),'ORD');assert.equal(await page.locator('[data-airport="MEM"]').count(),0);
   await page.evaluate(()=>render());assert.equal(await page.evaluate(()=>document.activeElement.dataset.remove),'ORD');
