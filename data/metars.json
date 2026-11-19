@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-19T15:00:39.117224Z",
+  "updated_utc": "2026-11-19T15:30:59.895006Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -33,23 +33,19 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-19T14:56:36.971Z",
-      "obsTime": 1795099980,
-      "reportTime": "2026-11-19T15:00:00.000Z",
-      "temp": 13.9,
-      "dewp": 12.8,
-      "wdir": 110,
-      "wspd": 9,
-      "visib": 4,
-      "altim": 1015,
-      "slp": 1014.6,
+      "receiptTime": "2026-11-19T15:22:13.852Z",
+      "obsTime": 1795101540,
+      "reportTime": "2026-11-19T15:19:00.000Z",
+      "temp": 15,
+      "dewp": 13.3,
+      "wdir": 140,
+      "wspd": 8,
+      "visib": 8,
+      "altim": 1014.6,
       "qcField": 12,
-      "wxString": "-RA BR",
-      "presTend": -0.6,
-      "precip": 0.05,
-      "pcp3hr": 0.07,
-      "metarType": "METAR",
-      "rawOb": "METAR KLAX 191453Z 11009KT 4SM -RA BR SCT015 BKN024 OVC029 14/13 A2997 RMK AO2 RAB00 SLP146 P0005 60007 T01390128 58006 $",
+      "precip": 0.005,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KLAX 191519Z 14008KT 8SM FEW016 SCT022 OVC031 15/13 A2996 RMK AO2 RAE07 P0000 T01500133 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -57,19 +53,19 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 1500
+          "cover": "FEW",
+          "base": 1600
         },
         {
-          "cover": "BKN",
-          "base": 2400
+          "cover": "SCT",
+          "base": 2200
         },
         {
           "cover": "OVC",
-          "base": 2900
+          "base": 3100
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KMEM",
