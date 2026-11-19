@@ -111,7 +111,7 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   await page.evaluate(()=>document.addEventListener('keydown',e=>{window.__airportKeyDebug={key:e.key,target:e.target?.dataset?.airportDrag,focused:document.activeElement?.dataset?.airportDrag,isTrusted:e.isTrusted};},true));
   console.log('SPA-65 keyboard before',await page.evaluate(()=>({active:document.activeElement?.dataset?.airportDrag,airports:airports.slice()})));
   await mem.press('ArrowRight');
-  console.log('SPA-65 keyboard after',await page.evaluate(()=>({active:document.activeElement?.dataset?.airportDrag,airports:airports.slice(),debug:window.__airportKeyDebug})));
+  console.log('SPA-65 keyboard after',await page.evaluate(()=>({active:document.activeElement?.dataset?.airportDrag,airports:airports.slice(),debug:window.__airportKeyDebug,dom:[...document.querySelectorAll('.airport')].map(x=>x.dataset.airport),source:document.getElementById('cards').innerHTML.slice(0,95)})),'PAGE ERRORS',errors);
   assert.deepEqual(await order(),['IND','MEM','OAK']);
   assert.equal(await page.evaluate(()=>document.activeElement.dataset.airportDrag),'MEM');
   assert.equal(await page.locator('#airport-order-status').textContent(),'MEM moved to position 2 of 3');
