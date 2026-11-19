@@ -11,7 +11,7 @@ function diagramHeader(code){
  const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
  if(!diagram||!/^https:\/\/[^/?#]+\/[^?#]*\.pdf(?:[?#].*)?$/i.test(diagram.url||''))return '';
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
- return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}">Airport diagram <span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)}; opens in a new tab)</span></a></div>`;
+ return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
 }
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
@@ -145,7 +145,7 @@ function moveAirport(code,targetIndex){
  airports.splice(targetIndex,0,code);
  save();
  render();
- document.querySelector('[data-airport-drag="'+code+'"]')?.focus({preventScroll:true});
+ document.querySelector?.('[data-airport-drag="'+code+'"]')?.focus({preventScroll:true});
  const status=document.getElementById('airport-order-status');
  if(status)status.textContent=code+' moved to position '+(targetIndex+1)+' of '+airports.length;
  return true;
