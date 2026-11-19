@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-19T17:10:43.716610Z",
+  "updated_utc": "2026-11-19T17:20:47.008892Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -27,21 +27,21 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-19T17:09:06.484Z",
-      "obsTime": 1795107960,
-      "reportTime": "2026-11-19T17:06:00.000Z",
+      "receiptTime": "2026-11-19T17:14:06.927Z",
+      "obsTime": 1795108260,
+      "reportTime": "2026-11-19T17:11:00.000Z",
       "temp": 16.7,
       "dewp": 15,
-      "wdir": 270,
-      "wspd": 20,
-      "wgst": 28,
-      "visib": 1.75,
+      "wdir": 280,
+      "wspd": 23,
+      "wgst": 31,
+      "visib": 3,
       "altim": 1015,
       "qcField": 12,
-      "wxString": "RA BR",
+      "wxString": "-RA BR",
       "precip": 0.15,
       "metarType": "SPECI",
-      "rawOb": "SPECI KLAX 191706Z 27020G28KT 1 3/4SM R25L/3500VP6000FT RA BR FEW005 BKN012 OVC024 17/15 A2997 RMK AO2 PK WND 27028/1706 WSHFT 1645 VIS 1/2V2 1/2 P0015 T01670150 $",
+      "rawOb": "SPECI KLAX 191711Z 28023G31KT 3SM R25L/5000VP6000FT -RA BR FEW007 OVC012 17/15 A2997 RMK AO2 PK WND 28031/1710 WSHFT 1645 P0015 T01670150 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -50,18 +50,14 @@
       "clouds": [
         {
           "cover": "FEW",
-          "base": 500
-        },
-        {
-          "cover": "BKN",
-          "base": 1200
+          "base": 700
         },
         {
           "cover": "OVC",
-          "base": 2400
+          "base": 1200
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KMEM",
