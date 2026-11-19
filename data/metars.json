@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-19T14:40:39.864754Z",
+  "updated_utc": "2026-11-19T14:50:40.657948Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -36,20 +36,20 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-19T14:30:05.923Z",
-      "obsTime": 1795098420,
-      "reportTime": "2026-11-19T14:27:00.000Z",
-      "temp": 15,
+      "receiptTime": "2026-11-19T14:42:03.708Z",
+      "obsTime": 1795099080,
+      "reportTime": "2026-11-19T14:38:00.000Z",
+      "temp": 14.4,
       "dewp": 12.8,
       "wdir": 90,
-      "wspd": 7,
-      "visib": 2.5,
+      "wspd": 8,
+      "visib": 3,
       "altim": 1015.3,
       "qcField": 12,
       "wxString": "-RA BR",
-      "precip": 0.02,
+      "precip": 0.04,
       "metarType": "SPECI",
-      "rawOb": "SPECI KLAX 191427Z 09007KT 2 1/2SM -RA BR FEW015 BKN027 OVC033 15/13 A2998 RMK AO2 RAB00 VIS 2V4 P0002 T01500128 $",
+      "rawOb": "SPECI KLAX 191438Z 09008KT 3SM -RA BR FEW015 BKN027 OVC033 14/13 A2998 RMK AO2 RAB00 VIS 2V4 P0004 T01440128 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
@@ -69,7 +69,7 @@
           "base": 3300
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KMEM",
