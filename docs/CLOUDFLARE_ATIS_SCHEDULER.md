@@ -15,7 +15,7 @@ preserve `workflow_dispatch` so the Worker can continue dispatching the job.
 
 ## Offline validation
 
-Node 18 or newer is required. From the Worker directory, run:
+Node.js 22 or newer is recommended for the checked-in Wrangler dependency set. From the Worker directory, run:
 
 ```sh
 cd workers/spatchin-atis-scheduler
