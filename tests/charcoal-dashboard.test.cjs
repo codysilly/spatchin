@@ -28,15 +28,14 @@ test('only the four AWC flight-category values are accepted',()=>{
   assert.equal(metar.flightCategory,category);
   const markup=context.categoryMarkup(metar);
   assert.match(markup.tag,new RegExp('>'+category+'<'));
-  assert.match(markup.strip,new RegExp('flight-'+category.toLowerCase()+' is-active'));
-  assert.equal((markup.strip.match(/class="flight-segment/g)||[]).length,4);
+  assert.equal(markup.strip,undefined,'four-part legend is removed');
  }
  for(const value of [undefined,null,'','NO DATA','UNKNOWN','vfr','SYNTHETIC']){
   const metar=record(value);
   assert.equal(metar.flightCategory,null);
   const markup=context.categoryMarkup(metar);
   assert.match(markup.tag,/NO DATA/);
-  assert.equal(markup.strip,'');
+  assert.equal(markup.strip,undefined);
  }
 });
 
@@ -44,7 +43,7 @@ test('stale categories remain marked as observation-based, not live',()=>{
  const metar=record('VFR',120);
  assert.equal(context.metarState(metar),'stale');
  assert.match(context.categoryMarkup(metar).tag,/stale METAR observation/);
- assert.match(context.categoryMarkup(metar).strip,/stale observation/);
+ assert.equal(context.categoryMarkup(metar).strip,undefined);
  assert.match(context.metarStatus(metar),/STALE/);
 });
 
@@ -71,4 +70,16 @@ test('existing SCAN and NOTAM markup remain available',()=>{
  assert.match(app,/class="airport-footer">\$\{notamTransportBlock\(code\)\}/);
  assert.match(css,/\.cards\{display:grid;grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
  assert.match(css,/@media\(max-width:760px\)/);
+});
+
+test('compact row and raw METAR markup preserve source links',()=>{
+ assert.match(app,/class="airport-top-row"/);
+ assert.match(app,/data-airport-drag="/);
+ assert.match(app,/data-remove="/);
+ assert.match(app,/class="weather-row metar-panel"/);
+ assert.match(app,/function moveAirport\(code,targetIndex\)/);
+ assert.ok(!app.includes('${category.strip}'));
+ assert.match(css,/\.icao\{font:700 60px\/\.95 var\(--font-data/);
+ assert.match(css,/font:400 21px\/1\.6 var\(--font-data/);
+ assert.match(html,/id="airport-order-status"/);
 });

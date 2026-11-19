@@ -73,7 +73,7 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
   assert.equal(await page.locator('.runways .sub').count(),0);
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);
   assert.equal(await page.evaluate(()=>runwayData.source_url),runways.source_url);
-  assert.equal(await page.locator('.airport-footer [data-remove="MEM"]').count(),1);
+  assert.equal(await page.locator('.airport-head [data-remove="MEM"]').count(),1);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   mkdirSync('/tmp/spatchin-mem-review',{recursive:true});await page.screenshot({path:`/tmp/spatchin-mem-review/${width}.png`,fullPage:true});

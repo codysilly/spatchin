@@ -11,7 +11,7 @@ function diagramHeader(code){
  const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
  if(!diagram||!/^https:\/\/[^/?#]+\/[^?#]*\.pdf(?:[?#].*)?$/i.test(diagram.url||''))return '';
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
- return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}">Airport diagram <span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)}; opens in a new tab)</span></a></div>`;
+ return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
 }
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
@@ -103,9 +103,10 @@ const flightCategories=['VFR','MVFR','IFR','LIFR'];
 function flightCategory(m){return flightCategories.includes(m?.flightCategory)?m.flightCategory:null;}
 function categoryMarkup(m){
  const current=flightCategory(m),stale=metarState(m)==='stale';
- const tag=current?'<span class="category-tag category-'+current.toLowerCase()+'" title="Flight category from '+(stale?'stale ':'')+'METAR observation">'+current+'</span>':'<span class="category-tag category-unavailable">NO DATA</span>';
- const strip=current?'<div class="flight-strip" role="group" aria-label="Reported METAR flight category '+current+(stale?' (stale observation)':'')+'">'+flightCategories.map(c=>'<span class="flight-segment flight-'+c.toLowerCase()+(c===current?' is-active':'')+'">'+c+'</span>').join('')+'</div>':'';
- return {tag,strip};
+ // The AWC fltCat value represents the limiting (worst) ceiling/visibility category.
+ // Do not guess a category if the provider omits it or the observation is unavailable.
+ const tag=current?'<span class="category-tag category-'+current.toLowerCase()+'" title="AWC ceiling/visibility flight category from '+(stale?'stale ':'')+'METAR observation">'+current+'</span>':'<span class="category-tag category-unavailable">NO DATA</span>';
+ return {tag};
 }
 function metarState(m){
  if(!m || !m.wind || !m.observed || !Number.isFinite(Date.parse(m.observed)))return 'unavailable';
@@ -119,21 +120,88 @@ function metarStatus(m){
  return '<span class="metar-status metar-current">METAR CURRENT</span>';
 }
 const observedSelection=new Map();
-function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove;
+function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
  const atisOpen=new Set([...document.querySelectorAll('.atis-full[open]')].map(el=>el.closest('[data-airport]')?.dataset.airport));
  reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
 
  const observation=m?.raw||m?.error||'Observation unavailable';
  const retained=metarFeedError&&m?.raw?'<span class="metar-retained">Feed refresh failed; showing retained observation.</span>':'';
  const category=categoryMarkup(m);
- return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-title"><div class="airport-code-line"><div class="icao">${esc(code)}</div>${category.tag}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div>${diagramHeader(code)}</div>${category.strip}<div class="weather-row"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></div><section class="taf"><strong>TAF</strong><span>Unavailable — feed not connected; forecast selection not supported.</span></section>${atisBlock(code)}${reader?.summary(icao(code))||''}<div class="time-control"><label for="time-${code}">Time (UTC / Zulu)</label><select id="time-${code}" data-observed-time="${code}"><option value="${esc(m?.observed||'unavailable')}">${m?.observed?'Observed '+esc(utc(m.observed)):'Observation unavailable'}</option><option disabled>Forecast unavailable</option></select></div><div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}<button type="button" data-remove="${code}" aria-label="Remove ${code} airport">Remove airport</button></footer></article>`;}).join('');
+ return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-top-row"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airports.length<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="icao">${esc(code)}</div>${category.tag}<div class="airport-head-spacer"></div>${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></section><section class="taf"><strong>TAF</strong><span>Unavailable — feed not connected; forecast selection not supported.</span></section>${atisBlock(code)}${reader?.summary(icao(code))||''}<div class="time-control"><label for="time-${code}">Time (UTC / Zulu)</label><select id="time-${code}" data-observed-time="${code}"><option value="${esc(m?.observed||'unavailable')}">${m?.observed?'Observed '+esc(utc(m.observed)):'Observation unavailable'}</option><option disabled>Forecast unavailable</option></select></div><div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}</footer></article>`;}).join('');
  document.querySelectorAll('[data-airport]').forEach(el=>{const details=el.querySelector('.atis-full');if(details)details.open=atisOpen.has(el.dataset.airport);});
  document.querySelectorAll('[data-observed-time]').forEach(el=>{const previous=observedSelection.get(el.dataset.observedTime);if([...el.options].some(o=>o.value===previous&&!o.disabled))el.value=previous;el.addEventListener('change',()=>observedSelection.set(el.dataset.observedTime,el.value));});
  document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{const index=airports.indexOf(b.dataset.remove);airports=airports.filter(x=>x!==b.dataset.remove);save();render();const next=airports[Math.min(index,airports.length-1)];([...document.querySelectorAll('[data-remove]')].find(el=>el.dataset.remove===next)||document.getElementById('iata'))?.focus();}));reader?.after();
  document.querySelectorAll('[data-notam-reload]').forEach(b=>b.addEventListener('click',()=>notamSnapshots?.refresh()));
+ attachAirportReordering();
  if(reloadFocus)[...document.querySelectorAll('[data-notam-reload]')].find(b=>b.dataset.notamReload===reloadFocus)?.focus({preventScroll:true});
  else if(removeFocus)[...document.querySelectorAll('[data-remove]')].find(b=>b.dataset.remove===removeFocus)?.focus({preventScroll:true});
+ else if(dragFocus)[...document.querySelectorAll('[data-airport-drag]')].find(b=>b.dataset.airportDrag===dragFocus)?.focus({preventScroll:true});
  else if(activeId)document.getElementById(activeId)?.focus?.({preventScroll:true});
+}
+// Airport order is the existing spatchin-airports array, including on reload.
+function moveAirport(code,targetIndex){
+ const from=airports.indexOf(code);
+ if(from<0||!Number.isInteger(targetIndex)||targetIndex<0||targetIndex>=airports.length||from===targetIndex)return false;
+ airports.splice(from,1);
+ airports.splice(targetIndex,0,code);
+ save();
+ render();
+ document.querySelector?.('[data-airport-drag="'+code+'"]')?.focus({preventScroll:true});
+ const status=document.getElementById('airport-order-status');
+ if(status)status.textContent=code+' moved to position '+(targetIndex+1)+' of '+airports.length;
+ return true;
+}
+function attachAirportReordering(){
+ // Pointer events support mouse, pen and touch without native HTML5 DnD's touch gaps.
+ document.querySelectorAll('[data-airport-drag]').forEach(handle=>{
+  const code=handle.dataset.airportDrag;
+  let drag=null;
+  const clear=()=>{
+   document.querySelectorAll('.airport.is-dragging, .airport.is-drop-target')
+    .forEach(el=>el.classList.remove('is-dragging','is-drop-target'));
+  };
+  handle.addEventListener('keydown',event=>{
+   const direction=['ArrowLeft','ArrowUp'].includes(event.key)?-1:
+    ['ArrowRight','ArrowDown'].includes(event.key)?1:0;
+   if(!direction)return;
+   event.preventDefault();
+   moveAirport(code,airports.indexOf(code)+direction);
+  });
+  // A tap or Enter also moves one position; arrows offer both directions.
+  handle.addEventListener('click',()=>{
+   if(handle.dataset.suppressClick==='true'){delete handle.dataset.suppressClick;return;}
+   const i=airports.indexOf(code);
+   if(airports.length>1)moveAirport(code,i===airports.length-1?i-1:i+1);
+  });
+  handle.addEventListener('pointerdown',event=>{
+   if(event.button!==0||event.isPrimary===false)return;
+   drag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,target:null,active:false};
+   try{handle.setPointerCapture(event.pointerId);}catch{}
+  });
+  handle.addEventListener('pointermove',event=>{
+   if(!drag||event.pointerId!==drag.pointerId)return;
+   if(!drag.active&&Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)<8)return;
+   drag.active=true;
+   document.querySelector('[data-airport="'+code+'"]')?.classList.add('is-dragging');
+   document.querySelectorAll('.airport.is-drop-target').forEach(el=>el.classList.remove('is-drop-target'));
+   const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-airport]');
+   drag.target=target?.dataset.airport&&target.dataset.airport!==code?target.dataset.airport:null;
+   if(drag.target)target.classList.add('is-drop-target');
+  });
+  const finish=(event,cancelled)=>{
+   if(!drag||event.pointerId!==drag.pointerId)return;
+   const {active,target}=drag;
+   drag=null;
+   clear();
+   if(active){
+    handle.dataset.suppressClick='true';
+    if(!cancelled&&target)moveAirport(code,airports.indexOf(target));
+   }
+  };
+  handle.addEventListener('pointerup',event=>finish(event,false));
+  handle.addEventListener('pointercancel',event=>finish(event,true));
+  handle.addEventListener('lostpointercapture',event=>finish(event,true));
+ });
 }
 const catalogOptions=document.getElementById('airport-options');if(catalogOptions)catalogOptions.innerHTML=approvedCatalog.map(c=>`<option value="${c}">${esc(airportInfo[c]?.name||'Airport metadata unverified')}</option>`).join('');
 function save(){try{localStorage.setItem(AIRPORT_STORAGE_KEY,JSON.stringify(airports));}catch{}}
