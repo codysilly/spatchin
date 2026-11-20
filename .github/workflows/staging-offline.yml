@@ -1,0 +1,44 @@
+name: Private staging security checks
+on:
+  pull_request:
+    paths:
+      - 'staging/**'
+      - '_config.yml'
+      - 'dashboard/index.html'
+      - 'app.js'
+      - 'styles.css'
+      - 'charcoal-dashboard.css'
+      - 'airport-catalog.js'
+      - 'notam-reader.js'
+      - 'notam-snapshots.js'
+      - 'scan.js'
+      - 'assets/branding/**'
+      - '.github/workflows/staging-offline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check syntax and deny-by-default behavior
+        run: |
+          node --check staging/worker-core.mjs
+          node --check staging/verify.mjs
+          node --check staging/worker.mjs
+          node --test staging/tests/*.test.mjs
+      - name: Build explicit dashboard assets
+        run: |
+          node staging/build.mjs
+          node staging/check-dist.mjs
+      - name: Compile Worker without deploying
+        run: |
+          cd staging
+          npm install --no-audit --no-fund
+          npx wrangler deploy --dry-run --outdir .wrangler/dry-run
+      # No network calls to aviation providers, no Cloudflare deployment, no credentials.
