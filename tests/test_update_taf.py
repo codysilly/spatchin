@@ -140,5 +140,46 @@ class TafCollectorTests(unittest.TestCase):
         self.assertTrue(self.module.valid(item, now=self.now))
 
 
+    def test_awc_decoded_forecast_periods_saved_with_raw_text(self):
+        item = self.report("KMEM")
+        start = item["validTimeFrom"]
+        item["fcsts"] = [
+            {"timeFrom": start, "timeTo": start + 3600,
+             "fcstChange": None, "wdir": 270, "wspd": 18, "wgst": 26,
+             "clouds": [{"cover": "BKN", "base": 1000}]},
+            {"timeFrom": start + 3600, "timeTo": start + 7200,
+             "fcstChange": "TEMPO", "wdir": "VRB", "wspd": 12, "wgst": 22},
+        ]
+        self.collect([item])
+        saved = self.snapshot()["tafs"][0]
+        self.assertEqual(saved["rawTAF"], item["rawTAF"])
+        self.assertEqual(saved["fcsts"][0]["wdir"], 270)
+        self.assertEqual(saved["fcsts"][0]["wgst"], 26)
+        self.assertEqual(saved["fcsts"][1]["fcstChange"], "TEMPO")
+        self.assertNotIn("clouds", saved["fcsts"][0])
+
+    def test_existing_same_issue_is_backfilled_with_fcsts(self):
+        item = self.report("KJFK")
+        self.previous([item])
+        start = item["validTimeFrom"]
+        incoming = dict(item, fcsts=[{"timeFrom": start, "timeTo": start + 3600,
+                                     "fcstChange": "FM", "wdir": 80, "wspd": 10}])
+        self.collect([incoming])
+        self.assertEqual(len(self.snapshot()["tafs"][0]["fcsts"]), 1)
+        before = self.module.DEST.read_bytes()
+        self.collect([item])
+        self.assertEqual(self.module.DEST.read_bytes(), before)
+
+    def test_bad_periods_not_used_for_wind_projection(self):
+        item = self.report("KMEM")
+        start = item["validTimeFrom"]
+        item["fcsts"] = [{"timeFrom": start + 3600, "timeTo": start, "wdir": 90, "wspd": 8},
+                         {"timeFrom": "bad", "timeTo": start + 3600, "wdir": 90, "wspd": 8},
+                         {"timeFrom": start, "timeTo": start + 3600, "wdir": 210, "wspd": 15}]
+        self.collect([item])
+        self.assertEqual(len(self.snapshot()["tafs"][0]["fcsts"]), 1)
+        self.assertEqual(self.snapshot()["tafs"][0]["fcsts"][0]["wdir"], 210)
+
+
 if __name__ == "__main__":
     unittest.main()
