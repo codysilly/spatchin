@@ -1,5 +1,11 @@
 # Dashboard reader and design
 
+The effective palette, typography, spacing, component outlines and responsive
+breakpoints are recorded in [UI_DESIGN.md](UI_DESIGN.md). SPA-65 / PR #50
+supersedes SPA-63 for the compact airport heading, category badge, METAR panel
+and header removal/reordering controls. The paper-plane artwork is specified
+separately in [BRANDING.md](BRANDING.md).
+
 Spatchin remains v0.9 and is not ready for actual use. This reader indexes literal
 runway references; it performs no closure, reciprocal, lifecycle or schedule interpretation.
 All approved aviation snapshots remain unchanged.
@@ -60,21 +66,27 @@ No verified diagram links exist locally for ORD, LAX, JFK or catalog-only airpor
 The NASR bearing-source ZIP remains in the underlying runway data, never used as
 a diagram. The removed card-details disclosure is not retained in hidden markup.
 
-## METAR source and card footer
+## METAR panel and airport actions (SPA-65)
 
-The green METAR badge is the only METAR source link within each configured card:
+Each configured airport has a separate **bordered inset METAR panel**. Its small,
+muted METAR source label links to
 `https://aviationweather.gov/data/metar/?ids=<verified ICAO>`. Only existing
-verified station mappings are used; unknown mappings get a noninteractive badge
+verified station mappings are used; unknown mappings get a noninteractive label
 with an accessible unavailable explanation. Links use a station-specific accessible
 name, visible focus, `target="_blank"` and `rel="noopener noreferrer"`. No link
 is fetched by the application or by offline tests. General site Sources remain.
 
-Raw METAR, observation time, freshness, gusts and component/color calculations
-remain. Show details and its duplicate fields/explanations are removed. Each card
-has an accessible footer Remove airport button; removal focuses the next/previous
-remaining card's removal control, or the add-airport field when empty. Reload
-remains with `Published snapshot · No live provider request`; internal loader
-check timestamps stay intact but are no longer displayed.
+The coded METAR remains unmodified in 21px Inconsolata (20px on compact mobile);
+observation time, freshness, gusts and component/color calculations remain.
+Show details and its duplicate fields/explanations are removed.
+
+The **header**, not the footer, now contains a six-dot 44×44 reorder grip and
+a 44×44 × remove button. Pointer, touch and keyboard reorder preserve the
+saved `spatchin-airports` order. Removal focuses the next/previous remaining
+card's removal control, or the add-airport field when empty. The footer retains
+the NOTAM snapshot reload action and the label
+`Published snapshot · No live provider request`; internal loader check timestamps
+remain available to the data loader but are not displayed.
 
 ## Airport and time controls
 
