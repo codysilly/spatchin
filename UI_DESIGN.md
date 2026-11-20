@@ -6,7 +6,7 @@ This is the **current** dashboard appearance contract, not a new mockup. The lat
 
 ## Source of truth and precedence
 
-1. `index.html` and `app.js`: current structure and semantic/UI behavior.
+1. `dashboard/index.html` and `app.js`: current dashboard structure and semantic/UI behavior.
 2. `styles.css`: consolidated **structural foundation**, containing layout, SCAN, ATIS, NOTAM reader and accessibility utilities (SPA-68).
 3. `charcoal-dashboard.css`: **authoritative current palette and component appearance**, loaded after `styles.css`.
 4. This document: approved values and the rationale for retaining them.
@@ -75,4 +75,4 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 
 ## Public site routing
 
-The public root (`/`) is the approved charcoal holding page, with the exact headline “Not cleared for takeoff… yet.”, the canonical paper-airplane SVG and a reduced-motion-aware float animation. `/dashboard/` serves the WIP v0.9 operations dashboard from `dashboard/index.html`. Its `<base href="../">` resolves existing relative scripts, styles, favicon and same-origin data snapshots at the repository root. `splash.css` is specific to the public page; the dashboard continues to use `styles.css` then `charcoal-dashboard.css`. The dashboard still shows all operational warnings.
+The public root (`/`) is the approved charcoal holding page, with the exact headline “Not cleared for takeoff… yet.”, the canonical paper-airplane SVG and a reduced-motion-aware float animation. After the owner clarified that development must be private, `dashboard/` and synthetic `preview/` are excluded from the GitHub Pages Jekyll build via `_config.yml`. The dashboard HTML stays in `dashboard/index.html` for local offline development and tests, not public access. Any future web preview requires authenticated hosting. `splash.css` belongs to the public page only; the development dashboard continues to use `styles.css` then `charcoal-dashboard.css`. The development dashboard's WIP warnings remain.

@@ -1,5 +1,7 @@
 # Spatchin
 
-The public website at https://www.spatchin.com/ displays the holding page. The working, WIP v0.9 dashboard is at https://www.spatchin.com/dashboard/.
+The public website at https://www.spatchin.com/ displays the charcoal “Not cleared for takeoff… yet.” holding page.
 
-GitHub Pages serves the repository root. The dashboard HTML is in `dashboard/index.html` with `<base href="../">` to resolve all existing application scripts, styles, icon files and published `data/*.json` snapshots from the repository root. Do not move the data files or change scheduled update workflow paths to follow the page route. The public holding page has no dashboard scripts and does not make aviation-provider requests.
+**The development dashboard is not publicly published.** After the owner confirmed that prototype access must be restricted, GitHub Pages was configured to exclude `dashboard/` and the synthetic `preview/` folder from its Jekyll build. The working v0.9 dashboard remains in the repository for local development and offline testing. A signed-in preview requires a separate protected hosting arrangement; GitHub Pages does not authenticate visitors at a path.
+
+The public repository itself, including the dashboard source, and any root-level published static files are still public. Do not store credentials or private captures in this repository or in published assets. The existing scheduled data workflows and paths are unchanged.
