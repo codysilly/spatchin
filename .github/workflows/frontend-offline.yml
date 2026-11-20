@@ -3,6 +3,11 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'taf-reader.js'
+      - 'tests/taf-reader.test.cjs'
+      - 'scripts/update_taf.py'
+      - 'tests/test_update_taf.py'
+      - '.github/workflows/taf-update.yml'
       - 'index.html'
       - 'dashboard/index.html'
       - 'splash.css'
@@ -40,12 +45,18 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
+          node --check taf-reader.js
           node --check scan.js
           node --check notam-reader.js
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs
+          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs tests/taf-reader.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test TAF collector using synthetic responses
+        run: python -m unittest discover -s tests -p 'test_update_taf.py'
       - name: Install local browser test harness
         run: npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7.0.0 pixelmatch@5.3.0
       - name: Run synthetic desktop and mobile checks
