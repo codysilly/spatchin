@@ -37,7 +37,7 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   retrieved_utc:now.toISOString(),airports:{KMEM:{completeness:'UNKNOWN',notices:[]}}
  }}));
  try{
-  await page.goto(base);
+  await page.goto(base+'/dashboard/');
   await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .category-vfr'));
   assert.equal(await page.locator('.airport').count(),3);
   assert.equal(await page.locator('[data-airport="MEM"] .category-tag').innerText(),'VFR');
@@ -100,7 +100,7 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
  await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
  await context.addInitScript(()=>{if(localStorage.getItem('spatchin-airports')===null)localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]');});
  try{
-  await page.goto(base);
+  await page.goto(base+'/dashboard/');
   const order=()=>page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport));
   assert.deepEqual(await order(),['MEM','IND','OAK']);
   const mem=page.locator('[data-airport="MEM"] .airport-grip');
@@ -136,7 +136,7 @@ test('touch pointer drag reorders a single-column mobile dashboard',async()=>{
  await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["IND","OAK"]'));
  try{
-  await page.goto(base);
+  await page.goto(base+'/dashboard/');
   const src=await page.locator('[data-airport="IND"] .airport-grip').boundingBox();
   const dst=await page.locator('[data-airport="OAK"] .airport-grip').boundingBox();
   assert.ok(src&&dst,'both mobile grips must be visible');

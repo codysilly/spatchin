@@ -4,6 +4,10 @@ on:
     paths:
       - 'app.js'
       - 'index.html'
+      - 'dashboard/index.html'
+      - 'splash.css'
+      - 'tests/site-routing.test.cjs'
+      - 'tests/site-routing-browser.test.cjs'
       - '*.css'
       - 'tests/charcoal-dashboard.test.cjs'
       - 'tests/airport-storage.test.cjs'
@@ -39,13 +43,13 @@ jobs:
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs
+          node --test tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs
       - name: Install local browser test harness
         run: npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7.0.0 pixelmatch@5.3.0
       - name: Run synthetic desktop and mobile checks
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
-          node --test tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs
+          node --test tests/site-routing-browser.test.cjs tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs
       - name: Fetch SPA-67 baseline for parity check
         if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
         run: git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c

@@ -113,3 +113,7 @@ decoder, justified baseline/cutover, reviewed history/accounting and an authoriz
 collection-to-publication path. Merged PR #22's HTTP/history code is reused unchanged.
 The FAA initial-content decoder has not started. No collector, transport,
 scheduler, accounting or deployment changes are part of this dashboard work.
+
+## Public URL
+
+The working dashboard is served at `https://www.spatchin.com/dashboard/`. The root site now displays the “Not cleared for takeoff… yet.” holding page. The dashboard references the repository-root scripts, styles, approved branding, and `data/` snapshots through `<base href="../">` in `dashboard/index.html`. No aviation behavior, source workflow, refresh cadence or v0.9 version was changed by this routing update.

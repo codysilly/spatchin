@@ -9,7 +9,7 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
  await context.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
  page.on('dialog',async d=>{dialogs.push(d.message());await d.dismiss();});
  try{
-  await page.goto(base);await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
   assert.equal(await page.locator('#airport-options option').count(),130);
   await page.fill('#iata','ZZZ');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/approved C070 catalog/);
   await page.fill('#iata','IND');await page.locator('#add-form button').click();assert.deepEqual(await page.evaluate(()=>airports),['MEM','IND']);
@@ -30,7 +30,7 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
  await context.route('**/data/notams.json',r=>r.fulfill({json:{retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:entry}}}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const a=page.locator('[data-reader-open="KMEM-18R"]'),b=page.locator('[data-reader-open="KMEM-36L"]');
   await a.focus();await page.keyboard.press('Enter');await b.focus();await page.keyboard.press('Space');
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await b.getAttribute('aria-expanded'),'true');
