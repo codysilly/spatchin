@@ -73,8 +73,9 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
   assert.match(await mem.locator('.forecast-alt').first().innerText(),/TEMPO/);
   await page.fill('#forecast-date-MEM',fmt(probAt+5*60000));
   assert.match(await mem.locator('.forecast-alt').first().innerText(),/PROB 30%/);
-  await page.locator('#forecast-slider-MEM').fill('2');
-  await page.locator('#forecast-slider-MEM').dispatchEvent('change');
+  await page.locator('#forecast-slider-MEM').evaluate(el=>{
+   el.value='2';el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));
+  });
   assert.match(await mem.locator('.forecast-summary').innerText(),/TAF FORECAST/);
   await page.selectOption('#time-MEM',{index:0});
   assert.equal(await mem.locator('.forecast-table').count(),0);
