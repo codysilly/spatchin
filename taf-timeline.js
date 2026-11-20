@@ -4,7 +4,8 @@
 const TafTimeline=(()=>{
   const STEP=30*60000,HOUR=3600000;
   function time(value){
-    if(typeof value==='number')return Number.isFinite(value)?value*1000:NaN;
+    // AWC fields use Unix seconds; internal slider/Date values use milliseconds.
+    if(typeof value==='number')return Number.isFinite(value)?(Math.abs(value)>=1e11?value:value*1000):NaN;
     if(typeof value!=='string'||!value.trim())return NaN;
     const text=value.trim().replace(' ','T');
     return Date.parse(/(?:Z|[+-]\d{2}:?\d{2})$/i.test(text)?text:text+'Z');
