@@ -28,6 +28,8 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
  await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});
  const entry={completeness:'UNKNOWN',warning:'SYNTHETIC fixture — not real FAA data',notices:[{number:'11/207',text,formatted_texts:[{type:'LOCAL_FORMAT',text}]},{number:'11/9',text:'SYNTHETIC RWY 18R',formatted_texts:[{type:'LOCAL_FORMAT',text:'SYNTHETIC short LOCAL_FORMAT'}]},{number:'11/9',text:'SYNTHETIC unmatched source record'}]};
  await context.route('**/data/notams.json',r=>r.fulfill({json:{retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:entry}}}));
+ // Keep this NOTAM/observed-time test in the forecast-unavailable state; TAF has its own tests.
+ await context.route('**/data/tafs.json*',r=>r.fulfill({status:404,body:''}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
   await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);

@@ -7,7 +7,7 @@ const root = join(here, '..');
 const dist = join(here, 'dist');
 const paths = [
   'styles.css', 'charcoal-dashboard.css', 'app.js', 'airport-catalog.js',
-  'notam-reader.js', 'notam-snapshots.js', 'scan.js',
+  'notam-reader.js', 'notam-snapshots.js', 'taf-reader.js', 'taf-timeline.js', 'scan.js',
   'assets/branding/logo-cyan-magenta.svg',
   'assets/branding/logo-16.png', 'assets/branding/logo-32.png',
   'assets/branding/logo-64.png', 'assets/branding/logo-128.png',

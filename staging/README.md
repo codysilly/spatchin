@@ -10,7 +10,7 @@ The public `www.spatchin.com` remains a holding page on GitHub Pages. Its `_conf
 - Worker-level Cloudflare Access must cover **All traffic**, not just previews. Configure exact-email Allow rules; do not use Everyone, Bypass, or an entire email domain.
 - The Worker independently verifies the signed Access JWT against the configured team's rotating JWKS, issuer and application audience. It also checks an exact-email allowlist. Missing configuration, invalid signature, or unlisted email returns 403.
 - `run_worker_first = true` prevents the static asset router from bypassing the JWT gate. `build.mjs` copies only explicitly allowlisted HTML, JS, CSS and approved branding.
-- The Worker proxies only the four existing **public** JSON snapshots from `https://www.spatchin.com/data/`, after authentication. No direct FAA, AWC or atis.info API calls are made. The originals remain public.
+- The Worker proxies only the five existing **public** JSON snapshots from `https://www.spatchin.com/data/`, after authentication. No direct FAA, AWC or atis.info API calls are made. The originals remain public.
 - Root public source code and published data remain public because the GitHub repository is public. Private page access does not make the repository private.
 
 Cloudflare reference: https://developers.cloudflare.com/workers/configuration/cloudflare-access/ and https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/.

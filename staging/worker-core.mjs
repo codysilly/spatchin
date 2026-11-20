@@ -1,5 +1,5 @@
 // Entry-point-independent security boundary. Never serve assets before auth.
-const allowedData = new Set(['metars.json', 'atis.json', 'runways.json', 'notams.json']);
+const allowedData = new Set(['metars.json', 'atis.json', 'runways.json', 'notams.json', 'tafs.json']);
 const securityHeaders = Object.freeze({
   'Cache-Control': 'private, no-store',
   'X-Content-Type-Options': 'nosniff',
