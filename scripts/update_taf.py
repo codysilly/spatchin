@@ -53,8 +53,30 @@ def valid(item, *, now=None, enforce_freshness=True):
 
 
 def compact(item):
-    return {key: item[key] for key in
-            ("icaoId", "rawTAF", "issueTime", "validTimeFrom", "validTimeTo")}
+    """Preserve AWC decoded forecast periods beside the verbatim raw TAF.
+
+    Older snapshots do not include fcsts; a newer collector run can fill those
+    records without needing a new TAF issue or any extra provider request.
+    """
+    selected = {key: item[key] for key in
+                ("icaoId", "rawTAF", "issueTime", "validTimeFrom", "validTimeTo")}
+    periods = item.get("fcsts")
+    if isinstance(periods, list):
+        saved = []
+        for period in periods[:64]:
+            if not isinstance(period, dict):
+                continue
+            try:
+                start, end = epoch(period.get("timeFrom")), epoch(period.get("timeTo"))
+                if start >= end or end < epoch(item["validTimeFrom"]) or start > epoch(item["validTimeTo"]):
+                    continue
+            except (ValueError, TypeError, OverflowError, OSError):
+                continue
+            fields = ("timeFrom", "timeTo", "timeBec", "fcstChange",
+                      "probability", "wdir", "wspd", "wgst")
+            saved.append({key: period[key] for key in fields if key in period})
+        selected["fcsts"] = saved
+    return selected
 
 
 def select(records):
@@ -126,8 +148,13 @@ def main():
         raise SystemExit(1)
     merged = dict(previous)
     for code, item in incoming.items():
-        if code not in merged or epoch(item["issueTime"]) >= epoch(merged[code]["issueTime"]):
+        older = merged.get(code)
+        if older is None or epoch(item["issueTime"]) > epoch(older["issueTime"]):
             merged[code] = item
+        elif epoch(item["issueTime"]) == epoch(older["issueTime"]):
+            # Do not erase decoded periods on a temporary provider omission.
+            if len(item.get("fcsts", [])) >= len(older.get("fcsts", [])):
+                merged[code] = item
     if merged == previous:
         print("No new TAF issue; existing snapshot unchanged")
         return
