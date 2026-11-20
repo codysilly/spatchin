@@ -294,3 +294,9 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
   .airport-head .name{margin-left:48px;font-size:17px}
   .metar-panel .metar-raw{font-size:20px}
 }
+
+/* SPA-67: keep the full UTC clock readable when the 46px logo fills a 320px header. */
+@media(max-width:340px){
+  header{flex-wrap:wrap;row-gap:2px}
+  .header-right{flex:0 0 100%;width:100%;text-align:right}
+}

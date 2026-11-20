@@ -12,6 +12,9 @@ on:
       - 'BRANDING.md'
       - 'scripts/render-brand-icons.py'
       - 'tests/branding-assets.test.cjs'
+      - 'tests/ui-style-baseline-browser.test.cjs'
+      - 'UI_DESIGN.md'
+      - 'DASHBOARD.md'
       - '.github/workflows/frontend-offline.yml'
   workflow_dispatch:
 
@@ -41,7 +44,7 @@ jobs:
       - name: Run synthetic desktop and mobile checks
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
-          node --test tests/charcoal-dashboard-browser.test.cjs
+          node --test tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs
       - name: Retain visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4
