@@ -131,14 +131,15 @@ button:hover{background:#243034}
 .empty{font:400 15px/1.4 var(--font-ui,"Overpass",sans-serif);color:var(--muted);padding:12px 0}
 .airport-footer{display:flex;flex-wrap:wrap;align-items:center;gap:10px;border-top:1px solid var(--line);padding:16px 0 0;margin:12px 0 0}
 .notam-transport{margin:0;padding:0}
-.notam-transport button,.notam-transport button{border-color:var(--blue);color:var(--blue)}
+.notam-transport button{font:600 13px/1.2 var(--font-ui,"Overpass",sans-serif);padding:6px 12px;min-height:31px}
+.notam-transport button{border-color:var(--blue);color:var(--blue)}
 .sources{background:transparent;border-color:var(--line);color:var(--muted);margin-top:24px}
 .sources h3{font-size:14px}
 footer{border-color:var(--line);color:var(--muted)}
 @media(max-width:1120px){
   .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
   .dashboard-controls{gap:12px}
-  .icao{font-size:clamp(64px,7.6vw,90px)}
+.icao{font-size:clamp(64px,7.6vw,90px)}
   .category-tag{font-size:18px}
 }
 @media(max-width:760px){
@@ -156,11 +157,11 @@ footer{border-color:var(--line);color:var(--muted)}
   .cards{grid-template-columns:minmax(0,1fr);gap:14px}
   .airport{padding:16px}
   .airport-head{padding-bottom:20px}
-  .icao{font-size:clamp(62px,18vw,80px)}
+.icao{font-size:clamp(62px,18vw,80px)}
   .category-tag{font-size:17px;padding:3px 7px 2px}
   .airport-diagram{width:80px;top:2px;font-size:12px}
   .name{font-size:17px;margin-top:9px}
-  .atis{padding:12px;margin-bottom:24px}
+.atis{padding:12px;margin-bottom:24px}
   .atis-meta{font-size:10px}
   .atis-box{padding:9px 7px}
   .atis-label{font-size:11px}
@@ -171,7 +172,8 @@ footer{border-color:var(--line);color:var(--muted)}
   .reader-raw{font-size:13px}
   .inline-reader{padding:7px}
   .time-control select{min-height:36px}
-  .notam-transport button,}
+  .notam-transport button{min-height:36px}
+}
 @media(max-width:400px){
   header{padding:10px 10px;gap:6px}
   .brand{gap:7px}
