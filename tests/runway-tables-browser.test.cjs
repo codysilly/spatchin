@@ -42,7 +42,12 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await b.getAttribute('aria-expanded'),'true');
   await a.click();assert.equal(await a.getAttribute('aria-expanded'),'false');assert.equal(await b.getAttribute('aria-expanded'),'true');
   await b.click();await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('SCANINLINE');
-  await page.waitForFunction(()=>document.querySelector('[data-reader-inline] mark'));await page.locator('#scan-next').click();
+  await page.waitForFunction(()=>document.querySelector('[data-reader-inline] mark'));
+  // SCAN also indexes the airport-wide source list, which precedes runway rows.
+  // Navigate across matches until the matching runway detail is revealed.
+  for(let i=0;i<20&&(await a.getAttribute('aria-expanded'))!=='true';i++){
+   await page.locator('#scan-next').click();
+  }
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await page.locator('#reader-KMEM-18R .reader-raw').last().textContent(),text);
   await page.evaluate(()=>render());assert.equal(await a.getAttribute('aria-expanded'),'true');
   await page.locator('#scan-terms').fill('');await page.waitForFunction(()=>!document.querySelector('mark[data-scan-match]'));
