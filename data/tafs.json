@@ -1,110 +1,80 @@
 {
-  "updated_utc": "2026-11-20T16:50:55.682649Z",
+  "updated_utc": "2026-11-20T22:53:37.719279Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "tafs": [
     {
       "icaoId": "KJFK",
-      "rawTAF": "TAF KJFK 201440Z 2015/2118 25008KT P6SM SKC FM202300 29006KT P6SM SKC FM210100 33004KT P6SM SKC FM210600 02004KT P6SM SKC FM211500 08004KT P6SM SCT150",
-      "issueTime": "2026-11-20T14:40:00.000Z",
-      "validTimeFrom": 1795186800,
-      "validTimeTo": 1795284000,
+      "rawTAF": "TAF KJFK 202037Z 2021/2124 21007KT P6SM SKC FM210200 24004KT P6SM SKC FM210600 26004KT P6SM SKC FM211600 08006KT P6SM FEW250",
+      "issueTime": "2026-11-20T20:37:00.000Z",
+      "validTimeFrom": 1795208400,
+      "validTimeTo": 1795305600,
       "fcsts": [
         {
-          "timeFrom": 1795186800,
-          "timeTo": 1795215600,
+          "timeFrom": 1795208400,
+          "timeTo": 1795226400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 250,
-          "wspd": 8,
+          "wdir": 210,
+          "wspd": 7,
           "wgst": null
         },
         {
-          "timeFrom": 1795215600,
-          "timeTo": 1795222800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 290,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795222800,
+          "timeFrom": 1795226400,
           "timeTo": 1795240800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 330,
+          "wdir": 240,
           "wspd": 4,
           "wgst": null
         },
         {
           "timeFrom": 1795240800,
-          "timeTo": 1795273200,
+          "timeTo": 1795276800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 20,
+          "wdir": 260,
           "wspd": 4,
           "wgst": null
         },
         {
-          "timeFrom": 1795273200,
-          "timeTo": 1795284000,
+          "timeFrom": 1795276800,
+          "timeTo": 1795305600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 80,
-          "wspd": 4,
+          "wspd": 6,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KLAX",
-      "rawTAF": "TAF KLAX 201456Z 2015/2118 VRB03KT P6SM SKC FM202000 26006KT P6SM SKC FM202200 26012KT P6SM SKC FM210300 30010KT P6SM SKC FM210700 35010KT P6SM SKC FM210900 35005KT P6SM SKC FM211300 04005KT P6SM SKC FM211600 VRB03KT P6SM SKC",
-      "issueTime": "2026-11-20T14:56:00.000Z",
-      "validTimeFrom": 1795186800,
-      "validTimeTo": 1795284000,
+      "rawTAF": "TAF KLAX 202108Z 2021/2124 26012KT P6SM SKC FM210200 32010KT P6SM SKC FM210700 35010KT P6SM SKC FM210900 35005KT P6SM SKC FM211300 05005KT P6SM SKC FM212100 26010KT P6SM SKC",
+      "issueTime": "2026-11-20T21:08:00.000Z",
+      "validTimeFrom": 1795208400,
+      "validTimeTo": 1795305600,
       "fcsts": [
         {
-          "timeFrom": 1795186800,
-          "timeTo": 1795204800,
+          "timeFrom": 1795208400,
+          "timeTo": 1795226400,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795204800,
-          "timeTo": 1795212000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 260,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795212000,
-          "timeTo": 1795230000,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 260,
           "wspd": 12,
           "wgst": null
         },
         {
-          "timeFrom": 1795230000,
+          "timeFrom": 1795226400,
           "timeTo": 1795244400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 300,
+          "wdir": 320,
           "wspd": 10,
           "wgst": null
         },
@@ -130,35 +100,35 @@
         },
         {
           "timeFrom": 1795266000,
-          "timeTo": 1795276800,
+          "timeTo": 1795294800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 40,
+          "wdir": 50,
           "wspd": 5,
           "wgst": null
         },
         {
-          "timeFrom": 1795276800,
-          "timeTo": 1795284000,
+          "timeFrom": 1795294800,
+          "timeTo": 1795305600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
+          "wdir": 260,
+          "wspd": 10,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KMEM",
-      "rawTAF": "TAF KMEM 201453Z 2015/2118 12006KT P6SM SKC FM210000 08006KT P6SM SKC FM211700 15006KT P6SM BKN060",
-      "issueTime": "2026-11-20T14:53:00.000Z",
-      "validTimeFrom": 1795186800,
-      "validTimeTo": 1795284000,
+      "rawTAF": "TAF KMEM 202046Z 2021/2124 12006KT P6SM SKC FM210000 08006KT P6SM SKC FM211700 15006KT P6SM BKN060",
+      "issueTime": "2026-11-20T20:46:00.000Z",
+      "validTimeFrom": 1795208400,
+      "validTimeTo": 1795305600,
       "fcsts": [
         {
-          "timeFrom": 1795186800,
+          "timeFrom": 1795208400,
           "timeTo": 1795219200,
           "timeBec": null,
           "fcstChange": null,
@@ -179,7 +149,7 @@
         },
         {
           "timeFrom": 1795280400,
-          "timeTo": 1795284000,
+          "timeTo": 1795305600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -191,26 +161,16 @@
     },
     {
       "icaoId": "KORD",
-      "rawTAF": "TAF KORD 201458Z 2015/2118 18010KT P6SM SCT300 FM201800 19011G19KT P6SM SCT300 FM202300 18009KT P6SM FEW300 FM211500 20014G24KT P6SM SKC",
-      "issueTime": "2026-11-20T14:58:00.000Z",
-      "validTimeFrom": 1795186800,
-      "validTimeTo": 1795284000,
+      "rawTAF": "TAF KORD 202101Z 2021/2124 19011G19KT P6SM FEW045 SCT300 FM202300 18010KT P6SM SCT300 FM211500 20014G22KT P6SM SCT300",
+      "issueTime": "2026-11-20T21:01:00.000Z",
+      "validTimeFrom": 1795208400,
+      "validTimeTo": 1795305600,
       "fcsts": [
         {
-          "timeFrom": 1795186800,
-          "timeTo": 1795197600,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 180,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795197600,
+          "timeFrom": 1795208400,
           "timeTo": 1795215600,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 190,
           "wspd": 11,
@@ -223,18 +183,18 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 180,
-          "wspd": 9,
+          "wspd": 10,
           "wgst": null
         },
         {
           "timeFrom": 1795273200,
-          "timeTo": 1795284000,
+          "timeTo": 1795305600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 200,
           "wspd": 14,
-          "wgst": 24
+          "wgst": 22
         }
       ]
     }
