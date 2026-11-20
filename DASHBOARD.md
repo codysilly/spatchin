@@ -103,8 +103,14 @@ Maximum 30 total, MEM is removable, and an intentional empty selection persists.
 The per-card UTC dropdown contains the actual published observation with its UTC
 date, or observation unavailable. Forecast is disabled. Each card retains a valid
 selection through rerender; a new observation replaces an obsolete observed-time
-option. There is no forecast timeline, TAF feed, or forecast computation. Existing
+option. There is no forecast timeline or forecast-wind computation. SPA-74 adds a raw AWC TAF feed only for the four verified ICAO stations. Each TAF shows its original text, UTC issue and validity times, and a status based on validity and report age. It is not used to calculate runway wind components. Other C070 airports have no verified TAF station mapping yet. Existing
 METAR calculations/65-minute freshness and ATIS explicit-clause extraction remain.
+
+## TAF collection (SPA-74)
+
+The AWC TAF updater runs from `.github/workflows/taf-update.yml` at six UTC minutes per hour (08/18/28/38/48/58) and supports manual dispatch. Each run makes one batched HTTPS request and validates `icaoId`, `rawTAF`, `issueTime`, `validTimeFrom` and `validTimeTo`. `data/tafs.json` is updated only if a new accepted issue is available. Missing stations retain their last accepted reports, which the browser marks stale when appropriate; complete retrieval failures do not rewrite the file. The browser polls the published snapshot every two minutes and does not call AWC directly. CI uses synthetic responses without provider contact.
+
+The site's holding page remains public while the dashboard is excluded from GitHub Pages. This TAF feed does not unlock or publish the dashboard. The forecast-time selector remains disabled until the separate SPA-13 timeline is implemented.
 
 ## Remaining acquisition dependencies
 
