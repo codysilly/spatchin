@@ -7,9 +7,7 @@ reloads share one in-flight request. Clock updates, airport changes, SCAN and
 ordinary rerenders do not trigger another NOTAM fetch. Existing aviation-feed
 schedules are unchanged.
 
-No production NOTAM file is included in this change. Until a separately reviewed
-snapshot is published, a missing file produces NOTAM data unavailable. Production
-rejects explicitly synthetic snapshots. A local synthetic transport and inventory
+A separately reviewed, fixed production snapshot is now published at `data/notams.json`. As inspected on 2026-11-20, it contains 38 KMEM notices, `completeness: UNKNOWN`, retrieval timestamp `2026-11-15T10:39:04.087408+00:00`, and `automatic_updates: false`. Its existence is not proof of live FAA collection or 130-airport data coverage. A missing file still produces NOTAM data unavailable. Production rejects explicitly synthetic snapshots. A local synthetic transport and inventory
 are available only in the separate `preview/snapshot-loader.html` harness.
 
 ## Accepted input and failure behavior
@@ -42,13 +40,7 @@ published-file loading and do not expose provider-refresh actions.
 
 ## MEM runway inventory
 
-The updater on main already selects MEM and requires eight ends, but the checked-in
-runway snapshot has no MEM entry. No live updater is run and no production runway
-data is fabricated here. The dashboard accepts existing three-airport runway files
-and validates MEM's eight distinct designations and true bearings if MEM is present.
-Absent MEM data leaves runway inventory pending while airport-level notices remain
-accessible. Malformed optional MEM data rejects the incoming runway snapshot and
-retains the previous one.
+The current `data/runways.json` contains eight MEM runway ends, added through PR #13 from the supplied airport chart. The headings are chart-derived approximate true bearings, not newly verified NASR runway survey measurements. This documentation does not run the updater or change runway data. Malformed incoming MEM data still requires rejection with retention of the previous valid snapshot.
 
 ## Offline verification and review
 
