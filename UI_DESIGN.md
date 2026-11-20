@@ -48,6 +48,7 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 - **Sharp corners:** 0 px radius on cards, ATIS, reader, controls and inputs; no shadows or decorative background gradients. The current SCAN keyword chip may use a small 2 px radius and the focus ring may use an outline.
 - **Outlines:** generally **1 px solid `--line`**. Runway row dividers use the same 1 px line; links and actions are cyan; visible keyboard focus uses a 2 px cyan outline (some legacy, reader-specific selectors have stronger focus styles).
 - Card grid: **3 equal columns**, **16 px gap** by default; **2 columns at ≤1120px**; **1 column at ≤760px**, **14 px gap** on mobile.
+- Header: keep the full UTC clock readable at normal sizes; at **≤340px** the clock moves to a second, right-aligned header row rather than overflowing or shrinking the approved logo.
 - Main content padding: **14 px top / 28 px sides / 36 px bottom** desktop, **12 / 14 / 28 px** at ≤760px.
 - Card padding: **20 px top, 22 px sides/bottom** desktop; **16 px ≤760px**, **12 px ≤400px**.
 - Dashboard controls-to-cards separation: **40 px** desktop; **22 px ≤760px**.
@@ -66,7 +67,7 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 
 ## Validation and change procedure
 
-- Run the existing offline frontend checks, with **computed-style browser assertions** at 1440px and 390px (effective palette, 1px lines, square corners, typography, spacing, mobile widths and 44px controls); recheck intermediate layouts if changing breakpoints.
+- Run the existing offline frontend checks, with **computed-style browser assertions** at 1440, 1120, 760, 390 and 320px (effective palette, 1px lines, square corners, typography, spacing, 44px controls and horizontal overflow). Check the intentional ≤340px clock wrap; recheck intermediate layouts if changing breakpoints.
 - Compare synthetic browser screenshots when changes affect real page geometry or wrapping. Do not claim public-site pixel parity from source review alone.
 - If values change after an owner-approved redesign, update this document and its tests in the **same PR**. Maintain `v0.9` unless the owner authorizes a version increment.
 - This visual specification is not a license to change the FAA acquisition cadence, NOTAM semantics, or aviation calculations.
