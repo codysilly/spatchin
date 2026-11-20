@@ -1,0 +1,182 @@
+{
+  "updated_utc": "2026-11-20T09:00:44.865458Z",
+  "source": "https://aviationweather.gov/api/data/taf?ids=KORD,KLAX,KJFK,KMEM&format=json",
+  "tafs": [
+    {
+      "icaoId": "KJFK",
+      "rawTAF": "TAF KJFK 200831Z 2009/2112 23007KT P6SM FEW250 FM210100 33004KT P6SM SKC FM210600 02004KT P6SM SKC",
+      "issueTime": "2026-11-20T08:31:00.000Z",
+      "validTimeFrom": 1795165200,
+      "validTimeTo": 1795262400,
+      "fcsts": [
+        {
+          "timeFrom": 1795165200,
+          "timeTo": 1795222800,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 230,
+          "wspd": 7,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795222800,
+          "timeTo": 1795240800,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 330,
+          "wspd": 4,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795240800,
+          "timeTo": 1795262400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 20,
+          "wspd": 4,
+          "wgst": null
+        }
+      ]
+    },
+    {
+      "icaoId": "KLAX",
+      "rawTAF": "TAF KLAX 200839Z 2009/2112 VRB05KT P6SM SCT025 SCT150 FM201200 04005KT P6SM SKC FM201800 28005KT P6SM SKC FM202200 26012KT P6SM SKC FM210300 30010KT P6SM SKC FM210900 04005KT P6SM SKC",
+      "issueTime": "2026-11-20T08:39:00.000Z",
+      "validTimeFrom": 1795165200,
+      "validTimeTo": 1795262400,
+      "fcsts": [
+        {
+          "timeFrom": 1795165200,
+          "timeTo": 1795176000,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": "VRB",
+          "wspd": 5,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795176000,
+          "timeTo": 1795197600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 40,
+          "wspd": 5,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795197600,
+          "timeTo": 1795212000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 280,
+          "wspd": 5,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795212000,
+          "timeTo": 1795230000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 260,
+          "wspd": 12,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795230000,
+          "timeTo": 1795251600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 300,
+          "wspd": 10,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795251600,
+          "timeTo": 1795262400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 40,
+          "wspd": 5,
+          "wgst": null
+        }
+      ]
+    },
+    {
+      "icaoId": "KMEM",
+      "rawTAF": "TAF KMEM 200520Z 2006/2112 11003KT P6SM FEW250 FM201500 13006KT P6SM SKC",
+      "issueTime": "2026-11-20T05:20:00.000Z",
+      "validTimeFrom": 1795154400,
+      "validTimeTo": 1795262400,
+      "fcsts": [
+        {
+          "timeFrom": 1795154400,
+          "timeTo": 1795186800,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 110,
+          "wspd": 3,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795186800,
+          "timeTo": 1795262400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 130,
+          "wspd": 6,
+          "wgst": null
+        }
+      ]
+    },
+    {
+      "icaoId": "KORD",
+      "rawTAF": "TAF KORD 200838Z 2009/2112 21004KT P6SM FEW250 FM201500 19011G20KT P6SM FEW060 SCT250 FM202300 18009KT P6SM SCT250",
+      "issueTime": "2026-11-20T08:38:00.000Z",
+      "validTimeFrom": 1795165200,
+      "validTimeTo": 1795262400,
+      "fcsts": [
+        {
+          "timeFrom": 1795165200,
+          "timeTo": 1795186800,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 210,
+          "wspd": 4,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795186800,
+          "timeTo": 1795215600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 190,
+          "wspd": 11,
+          "wgst": 20
+        },
+        {
+          "timeFrom": 1795215600,
+          "timeTo": 1795262400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 180,
+          "wspd": 9,
+          "wgst": null
+        }
+      ]
+    }
+  ]
+}
