@@ -35,6 +35,7 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
  try{
   await page.goto(origin);
   await page.waitForSelector('[data-airport="MEM"] .metar-panel');
+  await page.waitForSelector('[data-airport="MEM"] .runway-row td');
   const ui=await page.evaluate(()=>{
    const s=selector=>getComputedStyle(document.querySelector(selector));
    const prop=(selector,name)=>s(selector)[name];
