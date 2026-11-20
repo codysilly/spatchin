@@ -1,0 +1,33 @@
+name: C070 backend offline checks
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/c070_station_registry.py'
+      - 'scripts/update_metar.py'
+      - 'tests/test_c070_station_registry.py'
+      - 'tests/test_update_metar.py'
+      - 'tests/test_updater_airports.py'
+      - 'docs/reference/c070-airport-registry.json'
+      - 'docs/reference/c070-airports.csv'
+      - '.github/workflows/c070-backend-offline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  c070-metar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate C070 station registry and METAR updater offline
+        run: |
+          python -m unittest discover -s tests -p 'test_c070_station_registry.py'
+          python -m unittest discover -s tests -p 'test_c070_registry.py'
+          python -m unittest discover -s tests -p 'test_updater_airports.py'
+          python -m unittest discover -s tests -p 'test_update_metar.py'
