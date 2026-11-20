@@ -7,11 +7,12 @@ This is the **current** dashboard appearance contract, not a new mockup. The lat
 ## Source of truth and precedence
 
 1. `index.html` and `app.js`: current structure and semantic/UI behavior.
-2. `charcoal-dashboard.css`: **effective visual overrides**; loaded after `styles.css` and `dashboard.css`.
-3. This document: approved values and the rationale for retaining them.
-4. `BRANDING.md`: airplane geometry, gradient, wordmark tracking and raster icons. It is authoritative for the logo and should not be duplicated or reinterpreted here.
+2. `styles.css`: consolidated **structural foundation**, containing layout, SCAN, ATIS, NOTAM reader and accessibility utilities (SPA-68).
+3. `charcoal-dashboard.css`: **authoritative current palette and component appearance**, loaded after `styles.css`.
+4. This document: approved values and the rationale for retaining them.
+5. `BRANDING.md`: airplane geometry, gradient, wordmark tracking and raster icons. It is authoritative for the logo and should not be duplicated or reinterpreted here.
 
-The three loaded CSS layers still contain superseded blue-theme and prior-layout declarations. The late charcoal overrides keep the live design consistent, but removing old declarations requires a separate, screenshot-tested refactor; see SPA-68. Do **not** choose an earlier CSS value without checking final computed styles.
+SPA-68 consolidated the original `styles.css` and `dashboard.css` into one structural `styles.css`, removed the superseded navy theme roots and gradients, and retired the `dashboard.css` file. Old component-compatibility rules remain only where needed for computed-style parity and SCAN/NOTAM functionality. SPA-65's obsolete category-strip and footer-remove selectors were removed. The charcoal layer retains the approved appearance. Do **not** infer final styling from an earlier foundation rule without checking computed styles.
 
 ## Palette
 
