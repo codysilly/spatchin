@@ -8,7 +8,7 @@ async function localPage(width){const context=await browser.newContext({viewport
 for(const width of [1440,390])test(`verified green AWC badge links, footer removal/focus and empty preference at ${width}px`,async()=>{
  const {context,page,external,errors}=await localPage(width);
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing);
   await page.evaluate(()=>{airports=['MEM','ORD','LAX','JFK','IND'];save();render();});
   for(const [code,station] of [['MEM','KMEM'],['ORD','KORD'],['LAX','KLAX'],['JFK','KJFK']]){
    const card=page.locator(`[data-airport="${code}"]`),badge=card.locator('a.weather-badge');
@@ -38,7 +38,7 @@ for(const width of [1440,390])test(`LOCAL_FORMAT-only DOM and SCAN retain all un
  ]}}};
  await context.route('**/data/notams.json',r=>r.fulfill({json:data}));
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const before=await page.evaluate(()=>JSON.stringify(notamTransport.snapshot));
   const a=page.locator('[data-reader-open="KMEM-18R"]'),b=page.locator('[data-reader-open="KMEM-36L"]');assert.equal(await a.innerText(),'NOTAMs (4)');assert.match(await a.getAttribute('aria-label'),/NOTAMs \(4\).*18R.*KMEM/);
   await a.click();await b.click();assert.equal(await page.locator('#reader-KMEM-18R .reader-notice').count(),4);assert.equal(await page.locator('#reader-KMEM-18R .local-unavailable').textContent(),'LOCAL_FORMAT text unavailable.');

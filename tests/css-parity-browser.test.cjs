@@ -39,12 +39,12 @@ async function launch(width,legacy){
  await page.route('**/*',route=>{
   const u=new URL(route.request().url());
   if(u.origin!==origin)return route.abort();
-  const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
+  const file=u.pathname==='/dashboard/'||u.pathname==='/dashboard/index.html'?'index.html':u.pathname.slice(1);
   if(legacy&&Object.prototype.hasOwnProperty.call(original,file))
-   return route.fulfill({status:200,contentType:file.endsWith('.css')?'text/css':'text/html',body:original[file]});
+   return route.fulfill({status:200,contentType:file.endsWith('.css')?'text/css':'text/html',body:file==='index.html'?original[file].replace('<head>','<head><base href="../">'):original[file]});
   return route.continue();
  });
- await page.goto(origin,{waitUntil:'load'});
+ await page.goto(origin+'/dashboard/',{waitUntil:'load'});
  await page.waitForSelector('[data-airport="MEM"] .runway-row');
  return {context,page,errors};
 }

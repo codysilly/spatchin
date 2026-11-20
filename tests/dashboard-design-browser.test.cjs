@@ -22,7 +22,7 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
  await context.route('**/data/atis.json?*',r=>r.fulfill({json:{retrieved_utc:now,airports:Object.fromEntries(['KMEM','KLAX','KJFK'].map(c=>[c,[{type:'combined',code:'S',time:'1200',updatedAt:now,datis:`SYNTHETIC ONLY. LANDING RWY ${c==='KMEM'?'18R':c==='KLAX'?'06L':'04L'}. DEP EXP RWYS ${c==='KMEM'?'36L':c==='KLAX'?'24R':'22R'}. Demonstration; not an airport configuration.`}]]))}}));
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","LAX","JFK"]'));
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8&&metars.MEM?.wind);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8&&metars.MEM?.wind);
   await page.evaluate(()=>{const label=document.createElement('div');label.className='synthetic-banner';label.textContent='SYNTHETIC VISUAL TEST — NOT LIVE AVIATION DATA';document.querySelector('.wip-banner').after(label);});
   assert.equal(await page.locator('.wip-banner').innerText(),'WORK IN PROGRESS — Spatchin is not ready for actual use.');
   assert.match(await page.title(),/v0\.9$/);assert.match(await page.locator('.version').innerText(),/v0\.9/);
@@ -51,7 +51,7 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
 test('public MEM keeps 100 records and all 48 LOCAL_FORMAT / 83 ICAO representations in data only',async()=>{
  const {context,page,external,errors}=await localPage(1440),data=JSON.parse(readFileSync('data/notams.json','utf8'));
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const records=await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).map(n=>({key:n.key,text:n.text,formatted_texts:n.formatted_texts})));
   assert.equal(records.length,100);assert.equal(records.reduce((n,r)=>n+(r.formatted_texts||[]).length,0),131);
   for(const record of records){const original=data.airports.KMEM.notices[Number(record.key.split('-')[1])];assert.equal(record.text,original.text);assert.deepEqual(record.formatted_texts,original.formatted_texts);}

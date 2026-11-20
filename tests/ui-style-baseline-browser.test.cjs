@@ -33,7 +33,7 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
  await context.route('**/*',route=>new URL(route.request().url()).origin===origin?route.continue():route.abort());
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]'));
  try{
-  await page.goto(origin);
+  await page.goto(origin+'/dashboard/');
   await page.waitForSelector('[data-airport="MEM"] .metar-panel');
   await page.waitForSelector('[data-airport="MEM"] .runway-row td');
   const ui=await page.evaluate(()=>{

@@ -72,3 +72,7 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 - Compare synthetic browser screenshots when changes affect real page geometry or wrapping. Do not claim public-site pixel parity from source review alone.
 - If values change after an owner-approved redesign, update this document and its tests in the **same PR**. Maintain `v0.9` unless the owner authorizes a version increment.
 - This visual specification is not a license to change the FAA acquisition cadence, NOTAM semantics, or aviation calculations.
+
+## Public site routing
+
+The public root (`/`) is the approved charcoal holding page, with the exact headline “Not cleared for takeoff… yet.”, the canonical paper-airplane SVG and a reduced-motion-aware float animation. `/dashboard/` serves the WIP v0.9 operations dashboard from `dashboard/index.html`. Its `<base href="../">` resolves existing relative scripts, styles, favicon and same-origin data snapshots at the repository root. `splash.css` is specific to the public page; the dashboard continues to use `styles.css` then `charcoal-dashboard.css`. The dashboard still shows all operational warnings.
