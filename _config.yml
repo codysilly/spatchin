@@ -1,0 +1,6 @@
+# Public GitHub Pages site: publish the holding page only.
+# Do not publish in-development dashboards or synthetic previews.
+# Keep Jekyll enabled: the exclude rules are the publication boundary.
+exclude:
+  - dashboard
+  - preview

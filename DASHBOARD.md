@@ -116,4 +116,4 @@ scheduler, accounting or deployment changes are part of this dashboard work.
 
 ## Public URL
 
-The working dashboard is served at `https://www.spatchin.com/dashboard/`. The root site now displays the “Not cleared for takeoff… yet.” holding page. The dashboard references the repository-root scripts, styles, approved branding, and `data/` snapshots through `<base href="../">` in `dashboard/index.html`. No aviation behavior, source workflow, refresh cadence or v0.9 version was changed by this routing update.
+The public root serves the “Not cleared for takeoff… yet.” holding page. The dashboard and synthetic preview directories are excluded from the GitHub Pages Jekyll build by `_config.yml`. The dashboard remains locally available in `dashboard/index.html` for supervised development and tests. A future web preview must be behind actual authentication before it is published. The root-level data snapshots and repository source remain public; no aviation behavior, collector workflow, refresh cadence, or v0.9 version was changed.
