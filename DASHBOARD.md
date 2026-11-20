@@ -36,8 +36,7 @@ at least 12px in the data labels, and primary touch controls at least 44px tall.
 
 There is no airport-wide reader or replacement view. All original records,
 representations, metadata, unmatched and airport-wide records remain in the
-accepted snapshot and existing storage architecture. The public MEM snapshot
-still contains 100 records and 131 representations (48 LOCAL_FORMAT, 83 ICAO).
+accepted snapshot and existing storage architecture. The published fixed MEM snapshot inspected on November 20, 2026 contains **38** notices and **59** provider text representations (38 LOCAL_FORMAT, 21 ICAO), retrieved 2026-11-15 10:39 UTC. Completeness remains UNKNOWN and automatic updates are disabled; this is not a live or complete airport feed.
 Only associated LOCAL_FORMAT text is rendered and searchable. Source-data
 preservation is checked in memory, not by claiming 131 DOM-rendered representations.
 
@@ -124,11 +123,7 @@ Following the owner's November 24, 2026 decision, the dashboard and its TAF fore
 
 ## Remaining acquisition dependencies
 
-Selected-airport raw NOTAM population still needs the SPA-10 architecture's initial
-decoder, justified baseline/cutover, reviewed history/accounting and an authorized
-collection-to-publication path. Merged PR #22's HTTP/history code is reused unchanged.
-The FAA initial-content decoder has not started. No collector, transport,
-scheduler, accounting or deployment changes are part of this dashboard work.
+Current raw-NOTAM population across the 130-airport catalog still needs a trustworthy accepted live baseline/cutover, delta continuity, reviewed private request accounting and a separately authorized collection-to-publication path. Offline Initial Load decoding, airport association, message identity and synthetic delta candidate work have been merged in PRs #34–#38; these are not live FAA polling or permission to publish new data. Existing HTTP/history code from PR #22 remains separate. This UI work does not activate collectors, change schedules, consume FAA allowances or change production configuration.
 
 ## Public URL — owner decision November 24, 2026
 
