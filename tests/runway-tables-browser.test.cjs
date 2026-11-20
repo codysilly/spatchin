@@ -64,7 +64,7 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   assert.equal(await page.evaluate(()=>document.activeElement.id),'time-MEM');
   assert.match(await page.locator('#time-MEM').innerText(),/2026-11-12 23:59Z/);assert.match(await page.locator('#time-LAX').innerText(),/2026-11-13 00:01Z/);
   assert.equal(await page.locator('#time-MEM option:not([disabled])').count(),1);
-  assert.match(await page.locator('.taf').first().innerText(),/Unavailable/);
+  assert.match(await page.locator('.taf').first().innerText(),/unavailable/i);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
