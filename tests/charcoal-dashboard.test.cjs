@@ -54,7 +54,8 @@ test('approved palette and fonts are attached after original styles',()=>{
  assert.ok(css.includes('background-image:none!important'));
  assert.match(html,/fonts\.googleapis\.com\/css2\?family=Inconsolata/);
  assert.match(html,/family=Overpass/);
- assert.ok(html.indexOf('charcoal-dashboard.css')>html.indexOf('dashboard.css'));
+ assert.ok(html.indexOf('charcoal-dashboard.css')>html.indexOf('styles.css'));
+ assert.ok(!html.includes('href="dashboard.css"'),'retired stylesheet must not be loaded');
  assert.match(html,/class="brand-wordmark">SPATCHIN/);
  assert.match(html,/v0\.9/);
 });
