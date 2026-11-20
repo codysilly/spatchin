@@ -107,6 +107,7 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.deepEqual(ui.grip,{width:44,height:44});
   assert.deepEqual(ui.remove,{width:44,height:44});
   assert.equal(ui.hasStrip,0);
+  if(ui.overflow>1)console.log('SPA-67 OVERFLOW DIAGNOSTIC',width,await page.evaluate(()=>[...document.body.querySelectorAll('*')].map(el=>{const box=el.getBoundingClientRect();return {tag:el.tagName,className:typeof el.className==='string'?el.className.slice(0,80):'',id:el.id||'',text:el.textContent?.trim().slice(0,35),left:Math.round(box.left),right:Math.round(box.right),width:Math.round(box.width),scrollWidth:el.scrollWidth,clientWidth:el.clientWidth};}).filter(e=>e.right>innerWidth+1||e.left < -1).sort((a,b)=>b.right-a.right).slice(0,30)));
   assert.ok(ui.overflow<=1,'horizontal overflow '+ui.overflow+'px at '+width);
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
