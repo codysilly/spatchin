@@ -66,7 +66,7 @@ jobs:
       - name: Run synthetic desktop and mobile checks
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
-          node --test tests/site-routing-browser.test.cjs tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs tests/taf-timeline-browser.test.cjs
+          node --test tests/site-routing-browser.test.cjs tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs tests/runway-tables-browser.test.cjs tests/taf-timeline-browser.test.cjs
       - name: Fetch SPA-67 baseline for parity check
         if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
         run: git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c
