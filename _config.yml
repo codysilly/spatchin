@@ -4,3 +4,4 @@
 exclude:
   - dashboard
   - preview
+  - staging
