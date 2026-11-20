@@ -9,7 +9,7 @@ const pixelmatch=require('pixelmatch');
 const {chromium}=require('playwright');
 const origin='http://127.0.0.1:8798';
 const baseline='5120d81945787a5c80da738bf5e086a4105e0a1c';
-const original=Object.fromEntries(['styles.css','dashboard.css','charcoal-dashboard.css'].map(p=>
+const original=Object.fromEntries(['index.html','styles.css','dashboard.css','charcoal-dashboard.css'].map(p=>
  [p,execFileSync('git',['show',baseline+':'+p],{encoding:'utf8'})]));
 const freeze=Date.parse('2026-11-20T07:00:00Z');
 let server,browser;
@@ -39,9 +39,9 @@ async function launch(width,legacy){
  await page.route('**/*',route=>{
   const u=new URL(route.request().url());
   if(u.origin!==origin)return route.abort();
-  const file=u.pathname.slice(1);
+  const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
   if(legacy&&Object.prototype.hasOwnProperty.call(original,file))
-   return route.fulfill({status:200,contentType:'text/css',body:original[file]});
+   return route.fulfill({status:200,contentType:file.endsWith('.css')?'text/css':'text/html',body:original[file]});
   return route.continue();
  });
  await page.goto(origin,{waitUntil:'load'});
