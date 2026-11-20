@@ -57,7 +57,7 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   assert.equal(await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).length),3);
   assert.equal(await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).some(n=>n.text==='SYNTHETIC unmatched source record')),true);
   const all=page.locator('#airport-notams-KMEM');assert.match(await all.locator('summary').textContent(),/All airport snapshot notices \(3\)/);
-  assert.match(await all.textContent(),/unmatched source record/);
+  assert.match(await all.textContent(),/LOCAL_FORMAT text unavailable/);assert.doesNotMatch(await all.textContent(),/unmatched source record/);
   await page.evaluate(()=>{metars.MEM={observed:'2026-11-12T23:59:00Z',wind:{direction:100,speed:5}};airports.push('LAX');metars.LAX={observed:'2026-11-13T00:01:00Z',wind:{direction:200,speed:8}};render();});
   await page.selectOption('#time-MEM','2026-11-12T23:59:00Z');await page.focus('#time-MEM');await page.evaluate(()=>render());
   assert.equal(await page.locator('#time-MEM').inputValue(),'2026-11-12T23:59:00Z');assert.equal(await page.locator('#time-LAX').inputValue(),'2026-11-13T00:01:00Z');
