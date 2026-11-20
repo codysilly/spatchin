@@ -8,6 +8,10 @@ on:
       - 'tests/charcoal-dashboard.test.cjs'
       - 'tests/airport-storage.test.cjs'
       - 'tests/charcoal-dashboard-browser.test.cjs'
+      - 'assets/branding/**'
+      - 'BRANDING.md'
+      - 'scripts/render-brand-icons.py'
+      - 'tests/branding-assets.test.cjs'
       - '.github/workflows/frontend-offline.yml'
   workflow_dispatch:
 
@@ -31,7 +35,7 @@ jobs:
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs
+          node --test tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs
       - name: Install local browser test harness
         run: npm install --no-save --no-package-lock playwright@1.56.1
       - name: Run synthetic desktop and mobile checks
