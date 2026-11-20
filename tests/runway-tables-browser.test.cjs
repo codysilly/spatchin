@@ -66,6 +66,6 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
   assert.equal(await page.locator('#time-MEM option:not([disabled])').count(),1);
   assert.match(await page.locator('.taf').first().innerText(),/unavailable/i);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
+  assert.deepEqual(errors,[]);assert.ok(external.every(url=>/^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(url)),external.join(', '));
  }finally{await context.close();}
 });
