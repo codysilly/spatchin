@@ -13,6 +13,7 @@ on:
       - 'scripts/render-brand-icons.py'
       - 'tests/branding-assets.test.cjs'
       - 'tests/ui-style-baseline-browser.test.cjs'
+      - 'tests/css-parity-browser.test.cjs'
       - 'UI_DESIGN.md'
       - 'DASHBOARD.md'
       - '.github/workflows/frontend-offline.yml'
@@ -40,11 +41,19 @@ jobs:
         run: |
           node --test tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs
       - name: Install local browser test harness
-        run: npm install --no-save --no-package-lock playwright@1.56.1
+        run: npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7.0.0 pixelmatch@5.3.0
       - name: Run synthetic desktop and mobile checks
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
           node --test tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs
+      - name: Fetch SPA-67 baseline for parity check
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
+        run: git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c
+      - name: Compare all rendered CSS against SPA-67 baseline
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node --test tests/css-parity-browser.test.cjs
       - name: Retain visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4
