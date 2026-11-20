@@ -84,3 +84,15 @@ test('compact row and raw METAR markup preserve source links',()=>{
  assert.match(css,/font:400 21px\/1\.6 var\(--font-data/);
  assert.match(html,/id="airport-order-status"/);
 });
+
+test('SPA-68 uses a single structural foundation and removes old theme rules',()=>{
+ const foundation=readFileSync('styles.css','utf8');
+ assert.equal((html.match(/rel="stylesheet" href="[^"]+\.css"/g)||[]).length,2);
+ assert.ok(html.indexOf('styles.css')<html.indexOf('charcoal-dashboard.css'));
+ assert.ok(!html.includes('href="dashboard.css"'));
+ assert.doesNotMatch(foundation,/--bg:#0b1520|--bg:#061321/);
+ assert.doesNotMatch(foundation,/radial-gradient|linear-gradient/);
+ assert.doesNotMatch(css,/\.flight-strip\{|\.flight-segment\{|\.airport-code-line\{/);
+ for(const active of ['.scan-toggle{','.scan-panel{','.notam-reader{','.atis-runways{','.inline-reader{','.sr-only{'])
+  assert.ok(foundation.includes(active),'preserved structural rule '+active);
+});
