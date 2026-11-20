@@ -1,5 +1,5 @@
 {
-  "retrieved_utc": "2026-11-20T10:00:15.046063Z",
+  "retrieved_utc": "2026-11-20T10:00:32.675094Z",
   "source": "https://atis.info/api",
   "airports": {
     "KORD": [
@@ -29,7 +29,7 @@
         "code": "N",
         "datis": "JFK ATIS INFO N 0951Z. 26005KT 10SM SCT200 BKN250 09/04 A3031 (THREE ZERO THREE ONE). APPROACH IN USE ILS RY 31R, VISUAL APCH RY 31L. DEPG RY 31L. RWY 4R, 22L CLSD. JFK VOR OTS. NUM CRANES OPERATING AT JFK. BIRD ACTIVITY VICINITY ARPT. READBACK ALL RWY ASSIGNMENTS AND HOLD SHORT INSTRUCTIONS. ...ADVS YOU HAVE INFO N.",
         "time": "0951",
-        "updatedAt": "2026-11-20T09:59:19.2275358Z"
+        "updatedAt": "2026-11-20T10:00:19.1559415Z"
       }
     ]
   },
