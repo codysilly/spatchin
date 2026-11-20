@@ -24,5 +24,13 @@ jobs:
           git add data/metars.json
           if ! git diff --cached --quiet; then
             git commit -m "Update METAR observations"
-            git push
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              git fetch origin main
+              git rebase origin/main
+            done
+            echo "Failed to publish METAR after three push attempts" >&2
+            exit 1
           fi
