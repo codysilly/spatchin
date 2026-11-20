@@ -100,17 +100,27 @@ unavailable metadata/data; no K-prefix mapping or provider lookup is attempted.
 Existing saved selections remain usable; new additions must be catalog members.
 Maximum 30 total, MEM is removable, and an intentional empty selection persists.
 
-The per-card UTC dropdown contains the actual published observation with its UTC
-date, or observation unavailable. Forecast is disabled. Each card retains a valid
-selection through rerender; a new observation replaces an obsolete observed-time
-option. There is no forecast timeline or forecast-wind computation. SPA-74 adds a raw AWC TAF feed only for the four verified ICAO stations. Each TAF shows its original text, UTC issue and validity times, and a status based on validity and report age. It is not used to calculate runway wind components. Other C070 airports have no verified TAF station mapping yet. Existing
-METAR calculations/65-minute freshness and ATIS explicit-clause extraction remain.
+The per-card UTC selector retains the original METAR observation option. When the
+published TAF has decoded forecast periods, a separate TAF option, a 30-minute
+step slider and an exact-minute UTC date/time control become available. Changing
+the control updates all runway-end head/tail and crosswind calculations at that
+airport. The same 5/10/15-kt color thresholds and gust calculations apply.
+The UI marks forecast mode in blue and labels the selected UTC time, TAF issue
+time, publication time, and heading source; selecting the observation returns
+to METAR-only runway values. Forecast selection lasts for the current browser
+session and is preserved during routine rerenders, but is not saved between
+visits. Other C070 airports do not get guessed ICAO mappings or forecast data.
+Existing METAR calculations/65-minute freshness and ATIS extraction remain.
 
 ## TAF collection (SPA-74)
 
-The AWC TAF updater runs from `.github/workflows/taf-update.yml` at six UTC minutes per hour (08/18/28/38/48/58) and supports manual dispatch. Each run makes one batched HTTPS request and validates `icaoId`, `rawTAF`, `issueTime`, `validTimeFrom` and `validTimeTo`. `data/tafs.json` is updated only if a new accepted issue is available. Missing stations retain their last accepted reports, which the browser marks stale when appropriate; complete retrieval failures do not rewrite the file. The browser polls the published snapshot every two minutes and does not call AWC directly. CI uses synthetic responses without provider contact.
+The AWC TAF updater runs from `.github/workflows/taf-update.yml` at six UTC minutes per hour (08/18/28/38/48/58) and supports manual dispatch. Each run makes one batched HTTPS request, validates station, raw text and issue/validity times, and saves decoded `fcsts[]` wind periods alongside the original raw TAF. An issue already saved by SPA-74 can gain its missing decoded groups on a later collection of the same issue. Malformed periods are excluded; temporary upstream omission of decoded periods does not erase previously saved groups. Missing stations retain their latest accepted reports; complete retrieval failures do not rewrite the file. The browser polls the published snapshot every two minutes and does not call AWC directly. CI uses synthetic responses without provider contact.
 
-The site's holding page remains public while the dashboard is excluded from GitHub Pages. This TAF feed does not unlock or publish the dashboard. The forecast-time selector remains disabled until the separate SPA-13 timeline is implemented.
+The timeline selects BASE and FM as prevailing wind periods. It displays TEMPO and PROB changes as separate alternative wind components with their source labels; a TEMPO/PROB group without wind does not invent an alternate wind. During a BECMG wind transition, runway components are unavailable because the exact change time is unknown. After the transition, the new wind is used until a later FM period. VRB winds, missing decoded winds and stale TAF issues have no calculated components. Stale raw forecasts remain visible, but stale forecast wind calculations are disabled. All times are UTC, and no aviation data is used to make runway-operation or flight-safety decisions.
+
+The project has not independently verified a current live AWC decoded response for these four stations through this issue. Passing offline tests establishes only synthetic-case behavior. Production collection and a browser check against an actual saved `data/tafs.json` are separate verification conditions.
+
+The site's holding page remains public while the dashboard is excluded from GitHub Pages. The forecast timeline operates in the local dashboard only; it does not unlock or publish the dashboard.
 
 ## Remaining acquisition dependencies
 
