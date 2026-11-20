@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-20T23:00:39.670548Z",
+  "updated_utc": "2026-11-20T23:20:39.039665Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -64,30 +64,25 @@
     },
     {
       "icaoId": "KMEM",
-      "receiptTime": "2026-11-20T21:58:08.625Z",
-      "obsTime": 1795211640,
-      "reportTime": "2026-11-20T22:00:00.000Z",
-      "temp": 23.3,
-      "dewp": 6.1,
+      "receiptTime": "2026-11-20T23:14:19.598Z",
+      "obsTime": 1795215240,
+      "reportTime": "2026-11-20T23:00:00.000Z",
+      "temp": 21.1,
+      "dewp": 4.4,
       "wdir": 100,
       "wspd": 8,
       "visib": "10+",
       "altim": 1020.4,
-      "slp": 1020.2,
+      "slp": 1020,
       "qcField": 12,
       "metarType": "METAR",
-      "rawOb": "METAR KMEM 202154Z 10008KT 10SM FEW250 23/06 A3013 RMK AO2 SLP202 T02330061 $",
+      "rawOb": "METAR KMEM 202254Z 10008KT 10SM CLR 21/04 A3013 RMK AO2 SLP200 T02110044 $",
       "lat": 35.0564,
       "lon": -89.9864,
       "elev": 78,
       "name": "Memphis Intl, TN, US",
-      "cover": "FEW",
-      "clouds": [
-        {
-          "cover": "FEW",
-          "base": 25000
-        }
-      ],
+      "cover": "CLR",
+      "clouds": [],
       "fltCat": "VFR"
     },
     {
