@@ -11,8 +11,14 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-AIRPORTS = {"KORD", "KLAX", "KJFK", "KMEM"}
-URL = "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json"
+# Direct script execution and importlib-based offline tests use different sys.path roots.
+try:
+    from scripts.c070_station_registry import load_c070_stations
+except ModuleNotFoundError:
+    from c070_station_registry import load_c070_stations
+
+AIRPORTS = frozenset(load_c070_stations().values())
+URL = "https://aviationweather.gov/api/data/metar?ids=" + ",".join(sorted(AIRPORTS)) + "&format=json"
 DEST = Path("data/metars.json")
 DELAYS = (15, 30, 60)  # seconds before retries 2, 3, and 4
 
