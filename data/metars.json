@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-21T21:00:55.697591Z",
+  "updated_utc": "2026-11-21T21:20:39.651786Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -108,25 +108,30 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-21T19:54:09.517Z",
-      "obsTime": 1795290660,
-      "reportTime": "2026-11-21T20:00:00.000Z",
-      "temp": 20.6,
+      "receiptTime": "2026-11-21T21:16:09.605Z",
+      "obsTime": 1795294260,
+      "reportTime": "2026-11-21T21:00:00.000Z",
+      "temp": 20,
       "dewp": 5.6,
-      "wdir": 210,
-      "wspd": 9,
+      "wdir": 170,
+      "wspd": 8,
       "visib": "10+",
       "altim": 1014.6,
-      "slp": 1014.4,
-      "qcField": 12,
+      "slp": 1014.2,
+      "qcField": 0,
+      "presTend": -1.5,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 211951Z 21009KT 10SM BKN300 21/06 A2996 RMK AO2 SLP144 T02060056 $",
+      "rawOb": "METAR KORD 212051Z 17008KT 10SM FEW060 BKN300 20/06 A2996 RMK SLP142 T02000056 56015",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
       "cover": "BKN",
       "clouds": [
+        {
+          "cover": "FEW",
+          "base": 6000
+        },
         {
           "cover": "BKN",
           "base": 30000
