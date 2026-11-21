@@ -1,14 +1,6 @@
 name: Update ATIS Data
 on:
   workflow_dispatch:
-  schedule:
-    # Separate schedules match the METAR repair for irregular cron starts.
-    - cron: '4 * * * *'
-    - cron: '14 * * * *'
-    - cron: '24 * * * *'
-    - cron: '34 * * * *'
-    - cron: '44 * * * *'
-    - cron: '54 * * * *'
 permissions:
   contents: write
 concurrency:
