@@ -100,6 +100,30 @@ HTTP 204 means only that GitHub accepted the dispatch. It does not establish
 that a workflow run started, the collector succeeded, observations changed, or
 GitHub Pages published a new file.
 
+### Per-airport METAR retention diagnostics
+
+The GitHub Actions **Update METAR Data** job logs one line for each airport
+whose saved observation is retained rather than replaced. The line shows the
+ICAO code, reason, saved and upstream observation times in UTC, candidate count,
+and validation-rejection counts. Reasons are:
+
+- `missing_upstream`: no record for that airport in the successfully parsed
+  response. This does not prove the station failed to issue a METAR.
+- `rejected_upstream`: the response included airport records, but none
+  passed validation. Rejection counts identify missing raw text, invalid
+  observation times or wind speeds, future observations, or reports outside
+  the seven-day acceptance window.
+- `older_upstream`: the newest accepted upstream report predates the saved
+  observation.
+- `unchanged_upstream`: the accepted upstream report is identical to the
+  saved observation.
+
+When there is no saved observation, the log uses `unavailable` rather than
+`retained`. If a network request fails or the response has an invalid shape,
+no `missing_upstream` assertion is made. Diagnostics appear in the workflow
+job logs even when the public snapshot is unchanged; they are NOT written to
+`data/metars.json` and do not create extra commits or Pages deployments.
+
 ## Post-deployment verification
 
 Verify each layer separately over several scheduled intervals:
