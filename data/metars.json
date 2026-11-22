@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-22T22:40:37.623531Z",
+  "updated_utc": "2026-11-22T22:50:40.080917Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -121,32 +121,39 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-22T21:54:07.899Z",
-      "obsTime": 1795384260,
-      "reportTime": "2026-11-22T22:00:00.000Z",
-      "temp": 8.9,
-      "dewp": 3.9,
-      "wdir": 300,
-      "wspd": 14,
-      "wgst": 21,
+      "receiptTime": "2026-11-22T22:44:47.847Z",
+      "obsTime": 1795387260,
+      "reportTime": "2026-11-22T22:41:00.000Z",
+      "temp": 7.8,
+      "dewp": 1.7,
+      "wdir": 320,
+      "wspd": 11,
+      "wgst": 19,
       "visib": "10+",
-      "altim": 1014.6,
-      "slp": 1014.6,
+      "altim": 1015.7,
       "qcField": 12,
-      "metarType": "METAR",
-      "rawOb": "METAR KORD 222151Z 30014G21KT 10SM OVC021 09/04 A2996 RMK AO2 PK WND 32026/2112 SLP146 T00890039 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KORD 222241Z 32011G19KT 10SM SCT023 SCT027 BKN250 08/02 A2999 RMK AO2 T00780017 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "OVC",
-          "base": 2100
+          "cover": "SCT",
+          "base": 2300
+        },
+        {
+          "cover": "SCT",
+          "base": 2700
+        },
+        {
+          "cover": "BKN",
+          "base": 25000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     }
   ]
 }
