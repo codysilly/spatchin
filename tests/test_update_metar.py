@@ -4,7 +4,7 @@ import json
 import tempfile
 import unittest
 import urllib.error
-from contextlib import redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
@@ -125,9 +125,10 @@ class UpdateMetarTests(unittest.TestCase):
         before = self.module.DEST.read_bytes()
         error = urllib.error.URLError("synthetic offline failure")
         with mock.patch.object(self.module.urllib.request, "urlopen", side_effect=error):
-            with redirect_stderr(io.StringIO()) as stderr, self.assertRaises(SystemExit):
+            with redirect_stderr(io.StringIO()) as stderr, redirect_stdout(io.StringIO()) as stdout, self.assertRaises(SystemExit):
                 self.module.main()
         self.assertIn("AWC unavailable after retries", stderr.getvalue())
+        self.assertNotIn("reason=missing_upstream", stdout.getvalue())
         self.assertEqual(self.module.DEST.read_bytes(), before)
 
     def test_older_response_never_replaces_newer_previous_observation(self):
@@ -143,6 +144,78 @@ class UpdateMetarTests(unittest.TestCase):
         before = self.module.DEST.read_bytes()
         self.run_with([current])
         self.assertEqual(self.module.DEST.read_bytes(), before)
+
+    def test_log_missing_upstream_distinct_from_rejected_and_no_rewrite(self):
+        prior = report("KORD", self.NOW - 7200)
+        live = report("KMEM", self.NOW - 30)
+        self.write_previous([prior, live])
+        before = self.module.DEST.read_bytes()
+        with redirect_stdout(io.StringIO()) as stdout:
+            self.run_with([live])
+        output = stdout.getvalue()
+        self.assertIn("METAR KORD retained: reason=missing_upstream", output)
+        self.assertIn("candidates=0; rejected=none", output)
+        self.assertIn("METAR KMEM retained: reason=unchanged_upstream", output)
+        self.assertEqual(self.module.DEST.read_bytes(), before)
+
+    def test_log_invalid_upstream_reports_validation_reasons(self):
+        prior = report("KORD", self.NOW - 7200)
+        self.write_previous([prior])
+        bad = {"icaoId": "KORD", "obsTime": self.NOW - 30}
+        good = report("KMEM", self.NOW - 30)
+        with redirect_stdout(io.StringIO()) as stdout:
+            self.run_with([bad, good])
+        self.assertIn("METAR KORD retained: reason=rejected_upstream", stdout.getvalue())
+        self.assertIn("candidates=1; rejected=missing_raw_observation:1", stdout.getvalue())
+        self.assertEqual({m["icaoId"]:m for m in self.snapshot()["metars"]}["KORD"], prior)
+
+    def test_log_older_upstream_and_preserve_file(self):
+        prior = report("KORD", self.NOW - 60)
+        self.write_previous([prior])
+        before = self.module.DEST.read_bytes()
+        with redirect_stdout(io.StringIO()) as stdout:
+            self.run_with([report("KORD", self.NOW - 120)])
+        self.assertIn("METAR KORD retained: reason=older_upstream", stdout.getvalue())
+        self.assertIn("upstream_obs=", stdout.getvalue())
+        self.assertEqual(self.module.DEST.read_bytes(), before)
+
+    def test_log_rejected_freshness_future_and_wind(self):
+        previous = report("KORD", self.NOW - 300)
+        self.write_previous([previous])
+        payload = [report("KMEM", self.NOW - 30),
+                   report("KORD", self.NOW - 8*86400),
+                   report("KORD", self.NOW + 1800),
+                   {**report("KORD", self.NOW - 30), "wspd": -1}]
+        with redirect_stdout(io.StringIO()) as stdout:
+            self.run_with(payload)
+        output = stdout.getvalue()
+        self.assertIn("reason=rejected_upstream", output)
+        self.assertIn("future_observation:1", output)
+        self.assertIn("negative_wind_speed:1", output)
+        self.assertIn("outside_7_day_window:1", output)
+
+    def test_partial_invalid_and_valid_candidates_prefer_newest(self):
+        old = report("KORD", self.NOW - 3600)
+        self.write_previous([old])
+        payload = [{"icaoId":"KORD", "obsTime":self.NOW-60},
+                   report("KORD", self.NOW - 180), report("KORD", self.NOW - 60),
+                   report("KMEM", self.NOW - 90)]
+        with redirect_stdout(io.StringIO()) as stdout:
+            self.run_with(payload)
+        self.assertNotIn("METAR KORD retained:", stdout.getvalue())
+        self.assertEqual({m["icaoId"]:m for m in self.snapshot()["metars"]}["KORD"]["obsTime"],self.NOW-60)
+
+    def test_all_rejected_logs_reason_and_preserves_file(self):
+        prior=report("KORD",self.NOW-3600)
+        self.write_previous([prior]); before=self.module.DEST.read_bytes()
+        bad={"icaoId":"KORD", "obsTime":self.NOW-30}
+        with redirect_stdout(io.StringIO()) as stdout, redirect_stderr(io.StringIO()) as stderr:
+            with mock.patch.object(self.module.urllib.request, "urlopen", return_value=Response([bad])):
+                with self.assertRaises(SystemExit):
+                    self.module.main()
+        self.assertIn("METAR KORD retained: reason=rejected_upstream",stdout.getvalue())
+        self.assertIn("AWC unavailable after retries",stderr.getvalue())
+        self.assertEqual(self.module.DEST.read_bytes(),before)
 
 
 if __name__ == "__main__":
