@@ -1,27 +1,27 @@
 {
-  "updated_utc": "2026-11-22T22:00:39.651970Z",
+  "updated_utc": "2026-11-22T22:40:37.623531Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-22T21:57:26.711Z",
-      "obsTime": 1795384260,
-      "reportTime": "2026-11-22T22:00:00.000Z",
-      "temp": 15,
+      "receiptTime": "2026-11-22T22:36:05.574Z",
+      "obsTime": 1795386600,
+      "reportTime": "2026-11-22T22:30:00.000Z",
+      "temp": 14.4,
       "dewp": 13.3,
-      "wdir": 360,
-      "wspd": 11,
-      "visib": "10+",
-      "altim": 1015,
-      "slp": 1014.8,
+      "wdir": 10,
+      "wspd": 6,
+      "visib": 3,
+      "altim": 1014.6,
       "qcField": 8,
-      "metarType": "METAR",
-      "rawOb": "METAR KJFK 222151Z 36011KT 10SM SCT015 BKN035 BKN060 BKN180 15/13 A2997 RMK SLP148 T01500133 $",
+      "wxString": "BR",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KJFK 222230Z 01006KT 3SM BR SCT015 BKN025 BKN050 OVC180 14/13 A2996 RMK T01440133 $",
       "lat": 40.6392,
       "lon": -73.7639,
       "elev": 3,
       "name": "New York/JF Kennedy Intl, NY, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
           "cover": "SCT",
@@ -29,18 +29,18 @@
         },
         {
           "cover": "BKN",
-          "base": 3500
+          "base": 2500
         },
         {
           "cover": "BKN",
-          "base": 6000
+          "base": 5000
         },
         {
-          "cover": "BKN",
+          "cover": "OVC",
           "base": 18000
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KLAX",
