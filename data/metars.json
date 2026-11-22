@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-22T21:00:55.972691Z",
+  "updated_utc": "2026-11-22T21:40:45.270250Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -86,39 +86,35 @@
     },
     {
       "icaoId": "KMEM",
-      "receiptTime": "2026-11-22T20:58:12.239Z",
-      "obsTime": 1795380840,
-      "reportTime": "2026-11-22T21:00:00.000Z",
-      "temp": 17.8,
+      "receiptTime": "2026-11-22T21:40:11.812Z",
+      "obsTime": 1795383420,
+      "reportTime": "2026-11-22T21:37:00.000Z",
+      "temp": 18.3,
       "dewp": 17.2,
-      "wdir": 210,
-      "wspd": 3,
+      "wdir": 240,
+      "wspd": 6,
       "visib": "10+",
       "altim": 1013.6,
-      "slp": 1013.2,
       "qcField": 12,
-      "wxString": "-RA",
-      "presTend": -0.4,
-      "precip": 0.23,
-      "pcp3hr": 0.23,
-      "metarType": "METAR",
-      "rawOb": "METAR KMEM 222054Z 21003KT 10SM -RA BKN042 BKN050 OVC060 18/17 A2993 RMK AO2 SLP132 P0023 60023 T01780172 56004 $",
+      "precip": 0.11,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KMEM 222137Z 24006KT 10SM FEW026 BKN039 BKN060 18/17 A2993 RMK AO2 RAE30 P0011 T01830172 $",
       "lat": 35.0564,
       "lon": -89.9864,
       "elev": 78,
       "name": "Memphis Intl, TN, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 4200
+          "cover": "FEW",
+          "base": 2600
         },
         {
           "cover": "BKN",
-          "base": 5000
+          "base": 3900
         },
         {
-          "cover": "OVC",
+          "cover": "BKN",
           "base": 6000
         }
       ],
