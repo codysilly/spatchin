@@ -1,37 +1,27 @@
 {
-  "updated_utc": "2026-11-23T01:17:58.158704Z",
+  "updated_utc": "2026-11-23T02:47:00.556410Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "tafs": [
     {
       "icaoId": "KJFK",
-      "rawTAF": "TAF KJFK 222337Z 2300/2406 36007KT P6SM OVC015 FM230200 36007KT 4SM BR OVC007 FM230700 27007KT P6SM OVC025 FM231100 27010KT P6SM BKN040 FM231800 29011G20KT P6SM SCT050 BKN100 FM232200 32012G20KT P6SM SCT100",
-      "issueTime": "2026-11-22T23:37:00.000Z",
-      "validTimeFrom": 1795392000,
+      "rawTAF": "TAF KJFK 230234Z 2303/2406 01007KT P6SM OVC010 FM230800 27007KT P6SM OVC025 FM231200 27010KT P6SM BKN040 FM231800 29011G20KT P6SM SCT050 BKN100 FM232200 32012G20KT P6SM SCT100",
+      "issueTime": "2026-11-23T02:34:00.000Z",
+      "validTimeFrom": 1795402800,
       "validTimeTo": 1795500000,
       "fcsts": [
         {
-          "timeFrom": 1795392000,
-          "timeTo": 1795399200,
+          "timeFrom": 1795402800,
+          "timeTo": 1795420800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 360,
+          "wdir": 10,
           "wspd": 7,
           "wgst": null
         },
         {
-          "timeFrom": 1795399200,
-          "timeTo": 1795417200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 360,
-          "wspd": 7,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795417200,
-          "timeTo": 1795431600,
+          "timeFrom": 1795420800,
+          "timeTo": 1795435200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -40,7 +30,7 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795431600,
+          "timeFrom": 1795435200,
           "timeTo": 1795456800,
           "timeBec": null,
           "fcstChange": "FM",
