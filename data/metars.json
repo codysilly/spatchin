@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-23T04:00:41.431228Z",
+  "updated_utc": "2026-11-23T04:50:43.341796Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -68,20 +68,19 @@
     },
     {
       "icaoId": "KMEM",
-      "receiptTime": "2026-11-23T03:58:32.789Z",
-      "obsTime": 1795406040,
-      "reportTime": "2026-11-23T04:00:00.000Z",
-      "temp": 11.7,
-      "dewp": 8.9,
-      "wdir": 360,
-      "wspd": 11,
-      "wgst": 23,
+      "receiptTime": "2026-11-23T04:42:08.282Z",
+      "obsTime": 1795408740,
+      "reportTime": "2026-11-23T04:39:00.000Z",
+      "temp": 11.1,
+      "dewp": 7.8,
+      "wdir": 10,
+      "wspd": 19,
+      "wgst": 27,
       "visib": "10+",
-      "altim": 1019,
-      "slp": 1018.6,
+      "altim": 1019.4,
       "qcField": 12,
-      "metarType": "METAR",
-      "rawOb": "METAR KMEM 230354Z 36011G23KT 10SM OVC010 12/09 A3009 RMK AO2 PK WND 36026/0334 CIG 009V013 SLP186 T01170089 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KMEM 230439Z 01019G27KT 10SM OVC015 11/08 A3010 RMK AO2 PK WND 02027/0434 T01110078 $",
       "lat": 35.0564,
       "lon": -89.9864,
       "elev": 78,
@@ -90,7 +89,7 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 1000
+          "base": 1500
         }
       ],
       "fltCat": "MVFR"
