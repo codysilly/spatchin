@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-23T12:48:13.144972Z",
+  "updated_utc": "2026-11-23T14:29:58.064887Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "tafs": [
     {
@@ -63,19 +63,19 @@
     },
     {
       "icaoId": "KLAX",
-      "rawTAF": "TAF KLAX 231120Z 2312/2418 06005KT P6SM SCT250 FM232000 26010KT P6SM SCT250 FM240400 VRB03KT P6SM SCT250 FM241100 06005KT P6SM SCT250",
-      "issueTime": "2026-11-23T11:20:00.000Z",
-      "validTimeFrom": 1795435200,
+      "rawTAF": "TAF KLAX 231405Z 2314/2418 VRB03KT P6SM SCT250 FM232000 26010KT P6SM SCT250 FM240400 VRB03KT P6SM SCT250 FM241100 06005KT P6SM SCT250",
+      "issueTime": "2026-11-23T14:05:00.000Z",
+      "validTimeFrom": 1795442400,
       "validTimeTo": 1795543200,
       "fcsts": [
         {
-          "timeFrom": 1795435200,
+          "timeFrom": 1795442400,
           "timeTo": 1795464000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 60,
-          "wspd": 5,
+          "wdir": "VRB",
+          "wspd": 3,
           "wgst": null
         },
         {
