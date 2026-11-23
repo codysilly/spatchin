@@ -15,13 +15,13 @@ Spatchin is a browser-based runway-awareness prototype, **not an operational dec
 
 | Area | Purpose | Publication and safety boundary |
 | --- | --- | --- |
-| [\`dashboard/\`](dashboard/) | In-development airport dashboard, runway-end display, SCAN and local snapshot readers | Excluded from public Pages; do not publish without explicit approval |
-| [\`preview/\`](preview/) | Synthetic/offline UI and NOTAM reader harnesses | Excluded from public Pages; fixtures are not real provider coverage |
-| [\`staging/\`](staging/) | Prepared authenticated development-hosting implementation | Not a live private preview; see [staging instructions](staging/README.md) |
-| [\`data/\`](data/) | Checked-in published static snapshots | Publication is separate from provider acquisition and from dashboard deployment |
-| [\`scripts/\`](scripts/) | Data acquisition and maintenance utilities | **Some scripts contact live aviation providers**; inspect before execution |
-| [\`tests/\`](tests/) | Offline/synthetic checks and browser regressions | Choose explicit safe commands; some suites require Chromium |
-| [\`.github/workflows/\`](.github/workflows/) | Scheduled/manual collectors, tests and publication workflows | Reading workflows is safe; dispatching, rerunning or changing them requires authorization |
+| [`dashboard/`](dashboard/) | In-development airport dashboard, runway-end display, SCAN and local snapshot readers | Excluded from public Pages; do not publish without explicit approval |
+| [`preview/`](preview/) | Synthetic/offline UI and NOTAM reader harnesses | Excluded from public Pages; fixtures are not real provider coverage |
+| [`staging/`](staging/) | Prepared authenticated development-hosting implementation | Not a live private preview; see [staging instructions](staging/README.md) |
+| [`data/`](data/) | Checked-in published static snapshots | Publication is separate from provider acquisition and from dashboard deployment |
+| [`scripts/`](scripts/) | Data acquisition and maintenance utilities | **Some scripts contact live aviation providers**; inspect before execution |
+| [`tests/`](tests/) | Offline/synthetic checks and browser regressions | Choose explicit safe commands; some suites require Chromium |
+| [`.github/workflows/`](.github/workflows/) | Scheduled/manual collectors, tests and publication workflows | Reading workflows is safe; dispatching, rerunning or changing them requires authorization |
 
 ### Airport selection and source provenance
 
@@ -29,8 +29,8 @@ The approved C070 selection catalog contains **130 IATA codes**. A dashboard may
 
 | Data | Current repository behavior | Important limitation |
 | --- | --- | --- |
-| METAR | Published \`data/metars.json\` observations, refreshed by an external automation/workflow path | An updated commit does not prove every C070 station has a fresh observation |
-| ATIS | Published \`data/atis.json\` snapshot; [ATIS update workflow](.github/workflows/atis-update.yml) currently retains six fallback schedules and manual dispatch | Provider reports may be partial; independent arrival/departure preservation is tracked in [SPA-70](https://linear.app/codesilly/issue/SPA-70) |
+| METAR | Published `data/metars.json` observations, refreshed by an external automation/workflow path | An updated commit does not prove every C070 station has a fresh observation |
+| ATIS | Published `data/atis.json` snapshot; [ATIS update workflow](.github/workflows/atis-update.yml) currently retains six fallback schedules and manual dispatch | Provider reports may be partial; independent arrival/departure preservation is tracked in [SPA-70](https://linear.app/codesilly/issue/SPA-70) |
 | TAF | Saved decoded forecast periods and a UTC runway-wind timeline where coverage exists | Forecast-derived values have uncertainty and do not establish all-airport coverage |
 | Runways | Published runway inventory; MEM's eight ends use **approximate chart-derived bearings** pending authoritative NASR verification | Never represent approximate bearings as surveyed or verified |
 | NOTAM | A reviewed, fixed published snapshot is read locally; raw LOCAL_FORMAT text is displayed without operational interpretation | No authorized automatic FAA NMS polling, completeness inference or zero-notice assertion |
@@ -43,13 +43,13 @@ Start from a clean, isolated issue branch, inspect the current source and applic
 
 The repository's [synthetic reader guide](preview/README.md) documents a network-blocking Python unittest harness, Node syntax checks and Chromium-based browser tests. Its Python harness blocks socket access; browser tests are intended to reject external requests. Review the actual commands and test side effects before running them. The following is a **syntax-only** check of local JavaScript source, not a test of live data or browser behavior:
 
-\`\`\`sh
+```sh
 node --check app.js
 node --check scan.js
 node --check notam-reader.js
-\`\`\`
+```
 
-Run this only if those paths and Node are present in the checked-out revision. Other focused offline commands appear in [NOTAM_SNAPSHOTS.md](NOTAM_SNAPSHOTS.md). **Do not** invoke \`scripts/update_atis.py\`, \`scripts/update_metar.py\`, workflow dispatches, provider collectors, production deployments or Cloudflare operations as part of a routine offline test. Report **NOT RUN** when a checkout, dependency or executable test environment is unavailable; historical CI success is not a substitute for a current run.
+Run this only if those paths and Node are present in the checked-out revision. Other focused offline commands appear in [NOTAM_SNAPSHOTS.md](NOTAM_SNAPSHOTS.md). **Do not** invoke `scripts/update_atis.py`, `scripts/update_metar.py`, workflow dispatches, provider collectors, production deployments or Cloudflare operations as part of a routine offline test. Report **NOT RUN** when a checkout, dependency or executable test environment is unavailable; historical CI success is not a substitute for a current run.
 
 ### Review and release gate
 
