@@ -1,10 +1,10 @@
 {
-  "updated_utc": "2026-11-23T22:00:51.173320Z",
+  "updated_utc": "2026-11-23T22:10:43.500179Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
       "icaoId": "KJFK",
-      "receiptTime": "2026-11-23T21:59:27.764Z",
+      "receiptTime": "2026-11-23T22:00:20.520Z",
       "obsTime": 1795470660,
       "reportTime": "2026-11-23T22:00:00.000Z",
       "temp": 17.2,
