@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-23T06:00:40.659878Z",
+  "updated_utc": "2026-11-23T06:50:38.650769Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json",
   "metars": [
     {
@@ -39,33 +39,39 @@
     },
     {
       "icaoId": "KLAX",
-      "receiptTime": "2026-11-23T05:56:54.464Z",
-      "obsTime": 1795413180,
-      "reportTime": "2026-11-23T06:00:00.000Z",
+      "receiptTime": "2026-11-23T06:48:32.292Z",
+      "obsTime": 1795416300,
+      "reportTime": "2026-11-23T06:45:00.000Z",
       "temp": 15,
-      "dewp": 11.7,
-      "wdir": "VRB",
-      "wspd": 6,
+      "dewp": 10.6,
+      "wdir": 10,
+      "wspd": 7,
       "visib": "10+",
       "altim": 1017.7,
-      "slp": 1017.4,
       "qcField": 12,
-      "presTend": 1.4,
-      "maxT": 18.3,
-      "minT": 14.4,
-      "precip": 0.01,
-      "pcp6hr": 0.01,
-      "metarType": "METAR",
-      "rawOb": "METAR KLAX 230553Z VRB06KT 10SM BKN060 15/12 A3005 RMK AO2 RAE42 SLP174 P0001 60001 T01500117 10183 20144 53014 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KLAX 230645Z 01007KT 310V040 10SM FEW005 FEW024 BKN042 OVC150 15/11 A3005 RMK AO2 SHRA NW-N T01500106 $",
       "lat": 33.9382,
       "lon": -118.3866,
       "elev": 30,
       "name": "Los Angeles Intl, CA, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
+          "cover": "FEW",
+          "base": 500
+        },
+        {
+          "cover": "FEW",
+          "base": 2400
+        },
+        {
           "cover": "BKN",
-          "base": 6000
+          "base": 4200
+        },
+        {
+          "cover": "OVC",
+          "base": 15000
         }
       ],
       "fltCat": "VFR"
