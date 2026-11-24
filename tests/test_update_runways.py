@@ -109,6 +109,40 @@ class NasrC070RunwayTests(unittest.TestCase):
         result = self.run_generate([r for r in source if not (r['ARPT_ID'] == code and r['RWY_END_ID'] == '27')])
         self.assertEqual(result['airport_coverage'][code]['reason'], 'incomplete_runway_end_inventory')
 
+    def test_reciprocal_pair_records_must_agree(self):
+        code = next(code for code in ALL_CODES if code not in LEGACY_PAIRS)
+        rows = make_rows()
+        rows.extend([
+            {'ARPT_ID': code, 'RWY_END_ID': '18',
+             'RWY_ID': '18/36', 'TRUE_ALIGNMENT': '180'},
+            {'ARPT_ID': code, 'RWY_END_ID': '36',
+             'RWY_ID': '18/36', 'TRUE_ALIGNMENT': '360'},
+        ])
+        self.assertEqual(len(self.run_generate(rows)['airports'][code]), 4)
+        reciprocal = next(row for row in rows
+                          if row['ARPT_ID'] == code and row['RWY_END_ID'] == '36')
+        # Reversed order is harmless; reciprocal endpoint identity is what matters.
+        reciprocal['RWY_ID'] = '36/18'
+        self.assertEqual(len(self.run_generate(rows)['airports'][code]), 4)
+        # Each end exists, but this reciprocal now claims a different runway pair.
+        reciprocal['RWY_ID'] = '09/36'
+        result = self.run_generate(rows)
+        self.assertNotIn(code, result['airports'])
+        self.assertEqual(result['airport_coverage'][code]['reason'],
+                         'inconsistent_runway_pair')
+        self.assertIn('ORD', result['airports'])
+
+    def test_self_referential_runway_pair_is_rejected(self):
+        code = next(code for code in ALL_CODES if code not in LEGACY_PAIRS)
+        rows = make_rows()
+        reciprocal = next(row for row in rows
+                          if row['ARPT_ID'] == code and row['RWY_END_ID'] == '27')
+        reciprocal['RWY_ID'] = '27/27'
+        result = self.run_generate(rows)
+        self.assertNotIn(code, result['airports'])
+        self.assertEqual(result['airport_coverage'][code]['reason'],
+                         'incomplete_runway_pair')
+
     def test_legacy_airport_regression_prevents_publication(self):
         source = make_rows()
         with self.assertRaisesRegex(ValueError, 'ORD'):
