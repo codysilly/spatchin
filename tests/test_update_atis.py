@@ -112,6 +112,51 @@ class UpdateAtisTests(unittest.TestCase):
         self.collect(records)
         self.assertEqual(self.module.OUTPUT.read_bytes(), before)
 
+    def test_split_arrival_update_keeps_previous_departure(self):
+        arrival_old = report('KORD', age=30, kind='arr', code='A')
+        departure = report('KORD', age=10, kind='dep', code='B')
+        arrival_new = report('KORD', age=2, kind='arr', code='C')
+        self.prior({'KORD': [arrival_old, departure]})
+        self.collect({'KORD': [arrival_new], 'KLAX': [report('KLAX')],
+                      'KJFK': [report('KJFK')]})
+        reports = self.snapshot()['airports']['KORD']
+        self.assertEqual([(r['type'], r['code']) for r in reports],
+                         [('arr', 'C'), ('dep', 'B')])
+
+    def test_split_departure_update_keeps_arrival_and_source_timestamps(self):
+        arrival = report('KORD', age=10, kind='arr', code='A')
+        departure_old = report('KORD', age=30, kind='dep', code='B')
+        departure_new = report('KORD', age=2, kind='dep', code='C')
+        self.prior({'KORD': [arrival, departure_old]})
+        self.collect({'KORD': [departure_new], 'KLAX': [report('KLAX')],
+                      'KJFK': [report('KJFK')]})
+        reports = self.snapshot()['airports']['KORD']
+        self.assertEqual([(r['type'], r['code']) for r in reports],
+                         [('arr', 'A'), ('dep', 'C')])
+        self.assertEqual(reports[0]['updatedAt'], arrival['updatedAt'])
+        self.assertEqual(reports[1]['updatedAt'], departure_new['updatedAt'])
+
+    def test_older_report_one_type_does_not_replace_newer_one(self):
+        arrival_new = report('KORD', age=2, kind='arr', code='C')
+        departure_old = report('KORD', age=15, kind='dep', code='B')
+        self.prior({'KORD': [arrival_new, departure_old]})
+        self.collect({'KORD': [report('KORD', age=30, kind='arr', code='A'),
+                               report('KORD', age=1, kind='dep', code='D')],
+                      'KLAX': [report('KLAX')], 'KJFK': [report('KJFK')]})
+        reports = self.snapshot()['airports']['KORD']
+        self.assertEqual([(r['type'], r['code']) for r in reports],
+                         [('arr', 'C'), ('dep', 'D')])
+
+    def test_combined_and_split_reports_remain_distinct(self):
+        previous = report('KORD', age=15, kind='combined', code='A')
+        arrival = report('KORD', age=3, kind='arr', code='B')
+        departure = report('KORD', age=6, kind='dep', code='C')
+        self.prior({'KORD': [previous]})
+        self.collect({'KORD': [arrival, departure], 'KLAX': [report('KLAX')],
+                      'KJFK': [report('KJFK')]})
+        self.assertEqual([r['type'] for r in self.snapshot()['airports']['KORD']],
+                         ['combined', 'arr', 'dep'])
+
     def test_future_report_and_invalid_records_are_rejected(self):
         incoming = [report('KORD', age=-40), report('KLAX'), {'airport': 'KORD',
                     'type': 'combined', 'datis': ''}]
