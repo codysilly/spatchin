@@ -54,5 +54,15 @@ class UpdaterAirportTests(unittest.TestCase):
                          {'ORD': 16, 'LAX': 8, 'JFK': 8, 'MEM': 8})
 
 
+    def test_taf_uses_only_cloudflare_dispatch_after_cutover(self):
+        workflow = (ROOT / '.github/workflows/taf-update.yml').read_text(encoding='utf-8')
+        self.assertIn("on:\n  workflow_dispatch:\npermissions:", workflow)
+        self.assertNotIn("\n  schedule:", workflow)
+        self.assertIn('  group: spatchin-taf-update', workflow)
+        self.assertIn('  cancel-in-progress: false', workflow)
+        self.assertIn('    run: python scripts/update_taf.py', workflow)
+        self.assertIn('  contents: write', workflow)
+
+
 if __name__ == '__main__':
     unittest.main()
