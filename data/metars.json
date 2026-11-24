@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T17:30:58.241521Z",
+  "updated_utc": "2026-11-24T17:40:41.880897Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -3537,20 +3537,20 @@
     },
     {
       "icaoId": "KSKA",
-      "receiptTime": "2026-11-24T17:21:58.081Z",
-      "obsTime": 1795540500,
-      "reportTime": "2026-11-24T17:15:00.000Z",
+      "receiptTime": "2026-11-24T17:30:35.429Z",
+      "obsTime": 1795541100,
+      "reportTime": "2026-11-24T17:25:00.000Z",
       "temp": 1,
       "dewp": 0,
-      "wdir": 100,
-      "wspd": 15,
-      "visib": 2.75,
+      "wdir": 110,
+      "wspd": 14,
+      "visib": 4,
       "altim": 1020.7,
       "slp": 1022.7,
       "qcField": 12,
       "wxString": "-RA BR",
       "metarType": "SPECI",
-      "rawOb": "SPECI KSKA 241715Z 10015KT 2 3/4SM -RA BR BKN020 01/M00 A3014 RMK AO2A VIS 7V9 PRESFR SLP227 $",
+      "rawOb": "SPECI KSKA 241725Z 11014KT 4SM -RA BR BKN015 BKN032 01/00 A3014 RMK AO2A SLP227 $",
       "lat": 47.612,
       "lon": -117.679,
       "elev": 754,
@@ -3559,10 +3559,14 @@
       "clouds": [
         {
           "cover": "BKN",
-          "base": 2000
+          "base": 1500
+        },
+        {
+          "cover": "BKN",
+          "base": 3200
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KSLC",
