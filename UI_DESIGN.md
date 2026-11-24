@@ -6,7 +6,7 @@ This is the **current** dashboard appearance contract, not a new mockup. The lat
 
 ## Source of truth and precedence
 
-1. `dashboard/index.html` and `app.js`: current dashboard structure and semantic/UI behavior.
+1. `index.html` and `app.js`: public dashboard structure and semantic/UI behavior (`dashboard/index.html` is a local compatibility copy).
 2. `styles.css`: consolidated **structural foundation**, containing layout, SCAN, ATIS, NOTAM reader and accessibility utilities (SPA-68).
 3. `charcoal-dashboard.css`: **authoritative current palette and component appearance**, loaded after `styles.css`.
 4. This document: approved values and the rationale for retaining them.
@@ -73,6 +73,8 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 - If values change after an owner-approved redesign, update this document and its tests in the **same PR**. Maintain `v0.9` unless the owner authorizes a version increment.
 - This visual specification is not a license to change the FAA acquisition cadence, NOTAM semantics, or aviation calculations.
 
-## Public site routing
+## Public site routing (owner decision: 2026-11-24)
 
-The public root (`/`) is the approved charcoal holding page, with the exact headline “Not cleared for takeoff… yet.”, the canonical paper-airplane SVG and a reduced-motion-aware float animation. After the owner clarified that development must be private, `dashboard/` and synthetic `preview/` are excluded from the GitHub Pages Jekyll build via `_config.yml`. The dashboard HTML stays in `dashboard/index.html` for local offline development and tests, not public access. Any future web preview requires authenticated hosting. `splash.css` belongs to the public page only; the development dashboard continues to use `styles.css` then `charcoal-dashboard.css`. The development dashboard's WIP warnings remain.
+The public root (`/`) once again serves the **working v0.9 dashboard**, not a holding page. At the top of the page, a prominent charcoal/amber banner reads exactly **“WORK IN PROGRESS. Under development and not yet validated.”** The same warning remains in `dashboard/index.html` for legacy offline tests. The primary public document is now `index.html`, with root-relative static asset resolution and no `<base href="../">` override. It loads `styles.css` followed by `charcoal-dashboard.css`.
+
+Jekyll continues to exclude the legacy duplicate `dashboard/`, synthetic `preview/`, and retired private staging source `staging/`. No private login or Cloudflare Access check is required to view the public homepage. The old `dev.spatchin.com` Cloudflare resources are an external account cleanup task, not part of the GitHub Pages serving path. Keep aviation warnings, source links, data acquisition and version safeguards unchanged.

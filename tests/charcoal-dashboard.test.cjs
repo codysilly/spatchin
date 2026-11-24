@@ -6,7 +6,7 @@ const vm=require('node:vm');
 
 const app=readFileSync('app.js','utf8');
 const css=readFileSync('charcoal-dashboard.css','utf8');
-const html=readFileSync('dashboard/index.html','utf8');
+const html=readFileSync('index.html','utf8');
 
 // Exercise exactly the pure functions used by the current dashboard renderer.
 const from=app.indexOf("const flightCategories=['VFR','MVFR','IFR','LIFR'];");

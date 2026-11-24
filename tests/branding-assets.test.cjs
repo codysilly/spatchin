@@ -5,7 +5,7 @@ const {readFileSync}=require('node:fs');
 const {inflateSync}=require('node:zlib');
 
 const svg=readFileSync('assets/branding/logo-cyan-magenta.svg','utf8');
-const html=readFileSync('dashboard/index.html','utf8');
+const html=readFileSync('index.html','utf8');
 const css=readFileSync('charcoal-dashboard.css','utf8');
 const spec=readFileSync('BRANDING.md','utf8');
 
