@@ -67,7 +67,7 @@ test('dashboard limit is 30 total and MEM remains only the removable initial exa
  const all=snapshot(registry.map(a=>report(a.icao)));
  const app=await load(registry.slice(0,31).map(a=>a.iata),all);
  assert.equal(app.run('airports.length'),30);
- app.elements.get('iata').value=registry[31].iata;
+ app.run("document.getElementById('iata')").value=registry[31].iata;
  app.elements.get('add-form').submit({preventDefault(){}});
  assert.equal(app.run('airports.length'),30);assert.deepEqual(app.alerts,['Maximum 30 airports.']);
  const initial=await load(undefined,all);
