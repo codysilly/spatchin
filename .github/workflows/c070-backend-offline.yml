@@ -8,6 +8,9 @@ on:
       - 'tests/test_c070_station_registry.py'
       - 'tests/test_update_metar.py'
       - 'tests/test_updater_airports.py'
+      - 'tests/test_c070_registry.py'
+      - 'tests/airport-storage.test.cjs'
+      - 'app.js'
       - 'docs/reference/c070-airport-registry.json'
       - 'docs/reference/c070-airports.csv'
       - '.github/workflows/c070-backend-offline.yml'
@@ -31,3 +34,8 @@ jobs:
           python -m unittest discover -s tests -p 'test_c070_registry.py'
           python -m unittest discover -s tests -p 'test_updater_airports.py'
           python -m unittest discover -s tests -p 'test_update_metar.py'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify independent dashboard airport limit offline
+        run: node --test tests/airport-storage.test.cjs

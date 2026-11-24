@@ -20,6 +20,7 @@ on:
       - 'tests/site-routing-browser.test.cjs'
       - '*.css'
       - 'tests/charcoal-dashboard.test.cjs'
+      - 'tests/atis-reader.test.cjs'
       - 'tests/airport-storage.test.cjs'
       - 'tests/charcoal-dashboard-browser.test.cjs'
       - 'assets/branding/**'
@@ -55,7 +56,7 @@ jobs:
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs
+          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/atis-reader.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

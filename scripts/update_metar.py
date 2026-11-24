@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fetch validated AWC METARs, retry transient failures, preserve last good snapshot."""
 import json
+import math
 import os
 import random
 import sys
@@ -11,11 +12,15 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Direct script execution and importlib-based offline tests use different sys.path roots.
-try:
-    from scripts.c070_station_registry import load_c070_stations
-except ModuleNotFoundError:
-    from c070_station_registry import load_c070_stations
+if __package__:
+    from .c070_station_registry import load_c070_stations
+else:
+    try:
+        from scripts.c070_station_registry import load_c070_stations
+    except ModuleNotFoundError as exc:
+        if exc.name != "scripts":
+            raise
+        from c070_station_registry import load_c070_stations
 
 AIRPORTS = frozenset(load_c070_stations().values())
 URL = "https://aviationweather.gov/api/data/metar?ids=" + ",".join(sorted(AIRPORTS)) + "&format=json"
@@ -25,31 +30,50 @@ DELAYS = (15, 30, 60)  # seconds before retries 2, 3, and 4
 
 def observation_time(item):
     value = item.get("obsTime", item.get("reportTime"))
-    if isinstance(value, (int, float)):
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
         return datetime.fromtimestamp(value, timezone.utc).timestamp()
     if isinstance(value, str):
         return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
     raise ValueError("Missing observation time")
 
 
-def valid(item, *, enforce_freshness=True):
-    if not isinstance(item, dict) or item.get("icaoId") not in AIRPORTS:
-        return False
-    if not item.get("rawOb"):
-        return False
+def requested_station(item):
+    return (isinstance(item, dict) and isinstance(item.get("icaoId"), str)
+            and item["icaoId"] in AIRPORTS)
+
+
+def rejection_reason(item, *, enforce_freshness=True):
+    """Name the first failed validation rule for an upstream METAR record."""
+    if not requested_station(item):
+        return "unrecognized_airport"
+    if not isinstance(item.get("rawOb"), str) or not item["rawOb"].strip():
+        return "missing_raw_observation"
     try:
         observed = observation_time(item)
-        speed = item.get("wspd")
-        if speed is not None and float(speed) < 0:
-            return False
-        if observed > time.time() + 300:
-            return False
-        return not enforce_freshness or observed > time.time() - 7 * 86400
     except (ValueError, TypeError, OverflowError, OSError):
-        return False
+        return "invalid_observation_time"
+    speed = item.get("wspd")
+    if speed is not None:
+        try:
+            if isinstance(speed, bool) or not math.isfinite(float(speed)):
+                return "invalid_wind_speed"
+            if float(speed) < 0:
+                return "negative_wind_speed"
+        except (ValueError, TypeError, OverflowError, OSError):
+            return "invalid_wind_speed"
+    now = time.time()
+    if observed > now + 300:
+        return "future_observation"
+    if enforce_freshness and observed <= now - 7 * 86400:
+        return "outside_7_day_window"
+    return None
 
 
-def fetch():
+def valid(item, *, enforce_freshness=True):
+    return rejection_reason(item, enforce_freshness=enforce_freshness) is None
+
+
+def fetch(diagnostics=None):
     req = urllib.request.Request(URL, headers={
         "User-Agent": "SpatchinDashboard/0.9 (GitHub Actions)",
         "Accept": "application/json",
@@ -59,11 +83,22 @@ def fetch():
     if not isinstance(payload, list):
         raise ValueError("AWC response was not a JSON array")
     selected = {}
+    summary = {}
     for item in payload:
-        if valid(item):
-            code = item["icaoId"]
-            if code not in selected or observation_time(item) > observation_time(selected[code]):
-                selected[code] = item
+        if not requested_station(item):
+            continue
+        code = item["icaoId"]
+        entry = summary.setdefault(code, {"candidates": 0, "rejected": {}})
+        entry["candidates"] += 1
+        reason = rejection_reason(item)
+        if reason:
+            entry["rejected"][reason] = entry["rejected"].get(reason, 0) + 1
+            continue
+        if code not in selected or observation_time(item) > observation_time(selected[code]):
+            selected[code] = item
+    if diagnostics is not None:
+        diagnostics["_response_received"] = True
+        diagnostics.update(summary)
     if not selected:
         raise ValueError("AWC response contained no valid requested METARs")
     return selected
@@ -83,6 +118,36 @@ def read_previous():
         except (ValueError, KeyError, TypeError) as exc:
             print(f"Previous snapshot could not be parsed: {exc}", file=sys.stderr)
     return previous
+
+
+def format_observed(item):
+    if item is None:
+        return "none"
+    return datetime.fromtimestamp(observation_time(item), timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def log_retention(previous, latest, diagnostics):
+    """Explain preserved observations in per-run Actions logs; no new public file."""
+    for code in sorted(AIRPORTS):
+        saved = previous.get(code)
+        incoming = latest.get(code)
+        evidence = diagnostics.get(code, {})
+        if incoming is None:
+            reason = "rejected_upstream" if evidence.get("candidates", 0) else "missing_upstream"
+        elif saved is not None and observation_time(incoming) < observation_time(saved):
+            reason = "older_upstream"
+        elif saved is not None and incoming == saved:
+            reason = "unchanged_upstream"
+        else:
+            continue
+        rejected = evidence.get("rejected", {})
+        rejected_detail = ",".join(f"{key}:{rejected[key]}" for key in sorted(rejected)) or "none"
+        action = "retained" if saved is not None else "unavailable"
+        print(
+            f"METAR {code} {action}: reason={reason}; "
+            f"saved_obs={format_observed(saved)}; upstream_obs={format_observed(incoming)}; "
+            f"candidates={evidence.get('candidates', 0)}; rejected={rejected_detail}"
+        )
 
 
 def write_snapshot(snapshot):
@@ -107,9 +172,11 @@ def write_snapshot(snapshot):
 def main():
     previous = read_previous()
     latest = None
+    diagnostics = {}
     for attempt in range(1, len(DELAYS) + 2):
+        diagnostics = {}
         try:
-            latest = fetch()
+            latest = fetch(diagnostics=diagnostics)
             print(f"AWC succeeded on attempt {attempt}; {len(latest)} valid airports")
             break
         except (urllib.error.URLError, ValueError, TimeoutError, OSError) as exc:
@@ -119,8 +186,11 @@ def main():
                 print(f"Retrying in {delay} seconds", flush=True)
                 time.sleep(delay)
     if latest is None:
+        if diagnostics.get("_response_received"):
+            log_retention(previous, {}, diagnostics)
         print("AWC unavailable after retries; keeping existing data/metars.json unchanged", file=sys.stderr)
         raise SystemExit(1)
+    log_retention(previous, latest, diagnostics)
     merged = dict(previous)
     for code, item in latest.items():
         if code not in merged or observation_time(item) >= observation_time(merged[code]):

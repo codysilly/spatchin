@@ -43,6 +43,10 @@ class C070StationRegistryTests(unittest.TestCase):
             self.load_modified(document=missing)
         with self.assertRaises(ValueError):
             self.load_modified(codes=self.codes[:-1])
+        extra = copy.deepcopy(self.document)
+        extra["airports"].append(copy.deepcopy(extra["airports"][0]))
+        with self.assertRaises(ValueError):
+            self.load_modified(document=extra)
 
     def test_mismatched_catalog_rejected(self):
         edited = list(self.codes)
@@ -61,6 +65,11 @@ class C070StationRegistryTests(unittest.TestCase):
         no_icao["airports"][0]["icao"] = None
         with self.assertRaises(ValueError):
             self.load_modified(document=no_icao)
+        for invalid in ([], {}, "KAB", "kabe"):
+            broken = copy.deepcopy(self.document)
+            broken["airports"][0]["icao"] = invalid
+            with self.assertRaises(ValueError):
+                self.load_modified(document=broken)
         no_name = copy.deepcopy(self.document)
         no_name["airports"][0]["name"] = ""
         with self.assertRaises(ValueError):
