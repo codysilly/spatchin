@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T18:30:39.953281Z",
+  "updated_utc": "2026-11-24T18:40:39.389636Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1536,25 +1536,20 @@
     },
     {
       "icaoId": "KGEG",
-      "receiptTime": "2026-11-24T17:56:30.859Z",
-      "obsTime": 1795542780,
-      "reportTime": "2026-11-24T18:00:00.000Z",
+      "receiptTime": "2026-11-24T18:36:13.455Z",
+      "obsTime": 1795545120,
+      "reportTime": "2026-11-24T18:32:00.000Z",
       "temp": 1.7,
-      "dewp": 0,
-      "wdir": 120,
-      "wspd": 10,
-      "visib": 5,
-      "altim": 1021.1,
-      "slp": 1022.9,
+      "dewp": 0.6,
+      "wdir": 330,
+      "wspd": 7,
+      "visib": 7,
+      "altim": 1022.1,
       "qcField": 4,
-      "wxString": "-RA -SN BR",
-      "presTend": -2,
-      "maxT": 1.7,
-      "minT": 0,
-      "precip": 0.03,
-      "pcp6hr": 0.03,
-      "metarType": "METAR",
-      "rawOb": "METAR KGEG 241753Z 12010KT 5SM -RASN BR FEW015 BKN036 OVC070 02/00 A3015 RMK AO2 RAB08SNB12 SLP229 P0003 60003 T00170000 10017 20000 58020",
+      "wxString": "-RA",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KGEG 241832Z 33007KT 7SM -RA FEW015 BKN034 OVC043 02/01 A3018 RMK AO2 SNE32 P0001 T00170006",
       "lat": 47.6217,
       "lon": -117.528,
       "elev": 718,
@@ -1567,14 +1562,14 @@
         },
         {
           "cover": "BKN",
-          "base": 3600
+          "base": 3400
         },
         {
           "cover": "OVC",
-          "base": 7000
+          "base": 4300
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KGFK",
@@ -3880,32 +3875,31 @@
     },
     {
       "icaoId": "KSKA",
-      "receiptTime": "2026-11-24T18:24:27.159Z",
-      "obsTime": 1795544460,
-      "reportTime": "2026-11-24T18:21:00.000Z",
+      "receiptTime": "2026-11-24T18:39:33.594Z",
+      "obsTime": 1795545120,
+      "reportTime": "2026-11-24T18:32:00.000Z",
       "temp": 2,
-      "dewp": 0,
-      "wdir": 10,
-      "wspd": 7,
-      "visib": 8,
-      "altim": 1021.4,
-      "slp": 1023.4,
+      "dewp": 1,
+      "wdir": 20,
+      "wspd": 6,
+      "visib": "10+",
+      "altim": 1021.1,
+      "slp": 1023.1,
       "qcField": 12,
-      "wxString": "-RA",
       "metarType": "SPECI",
-      "rawOb": "SPECI KSKA 241821Z 01007KT 8SM -RA BKN018 OVC030 02/00 A3016 RMK AO2A SLP234 $",
+      "rawOb": "SPECI KSKA 241832Z 02006KT 10SM FEW018 BKN030 02/01 A3015 RMK AO2A RAE28DZB28E32 SLP231 $",
       "lat": 47.612,
       "lon": -117.679,
       "elev": 754,
       "name": "Spokane/Fairchild AFB, WA, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "BKN",
+          "cover": "FEW",
           "base": 1800
         },
         {
-          "cover": "OVC",
+          "cover": "BKN",
           "base": 3000
         }
       ],
