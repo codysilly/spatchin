@@ -103,12 +103,19 @@ def generate(archive, url, cycle):
         if code in LEGACY_COUNTS and len(ends) != LEGACY_COUNTS[code]:
             reason = reason or 'legacy_runway_end_count_mismatch'
         if not reason:
-            available = {e['id'] for e in ends}
+            by_id = {end['id']: end for end in ends}
             for end in ends:
                 pair_ends = end['pair'].split('/')
-                if len(pair_ends) != 2 or end['id'] not in pair_ends or not set(pair_ends).issubset(available):
+                if (len(pair_ends) != 2 or len(set(pair_ends)) != 2
+                        or end['id'] not in pair_ends or not set(pair_ends).issubset(by_id)):
                     reason = 'incomplete_runway_pair'
                     break
+            if not reason:
+                for end in ends:
+                    pair_ends = set(end['pair'].split('/'))
+                    if any(set(by_id[mate]['pair'].split('/')) != pair_ends for mate in pair_ends):
+                        reason = 'inconsistent_runway_pair'
+                        break
         if reason:
             coverage[code] = {'status': 'unavailable', 'reason': reason}
             continue
