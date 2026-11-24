@@ -120,7 +120,7 @@ The timeline selects BASE and FM as prevailing wind periods. It displays TEMPO a
 
 The project has not independently verified a current live AWC decoded response for these four stations through this issue. Passing offline tests establishes only synthetic-case behavior. Production collection and a browser check against an actual saved `data/tafs.json` are separate verification conditions.
 
-The site's holding page remains public while the dashboard is excluded from GitHub Pages. The forecast timeline operates in the local dashboard only; it does not unlock or publish the dashboard.
+Following the owner's November 24, 2026 decision, the dashboard and its TAF forecast timeline are visible on the public homepage with a prominent WIP/unvalidated banner. This is not a validation of the data for operational use.
 
 ## Remaining acquisition dependencies
 
@@ -130,6 +130,8 @@ collection-to-publication path. Merged PR #22's HTTP/history code is reused unch
 The FAA initial-content decoder has not started. No collector, transport,
 scheduler, accounting or deployment changes are part of this dashboard work.
 
-## Public URL
+## Public URL — owner decision November 24, 2026
 
-The public root serves the “Not cleared for takeoff… yet.” holding page. The dashboard and synthetic preview directories are excluded from the GitHub Pages Jekyll build by `_config.yml`. The dashboard remains locally available in `dashboard/index.html` for supervised development and tests. A future web preview must be behind actual authentication before it is published. The root-level data snapshots and repository source remain public; no aviation behavior, collector workflow, refresh cadence, or v0.9 version was changed.
+`https://www.spatchin.com/` publicly serves the v0.9 WIP dashboard, with the banner **“WORK IN PROGRESS. Under development and not yet validated.”** The retired holding page is gone. The public root loads the existing root scripts, styles and `data/` snapshots directly without an extra `<base>` element. The historic `dashboard/index.html` copy remains for local tests but is excluded from GitHub Pages, as are synthetic preview and private staging source files. No login is required for the public homepage. The separately deployed Cloudflare `dev.spatchin.com` Worker and Access applications must be retired through Cloudflare, without weakening their authentication while they remain active.
+
+No change to aviation data, acquisition cadence, evidence/NOTAM safeguards or the v0.9 version accompanied this public UI change.

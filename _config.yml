@@ -1,6 +1,5 @@
-# Public GitHub Pages site: publish the holding page only.
-# Do not publish in-development dashboards or synthetic previews.
-# Keep Jekyll enabled: the exclude rules are the publication boundary.
+# Serve the WIP dashboard at the public root (owner decision: 2026-11-24).
+# Do not publish synthetic fixtures, duplicate local HTML or retired private staging code.
 exclude:
   - dashboard
   - preview

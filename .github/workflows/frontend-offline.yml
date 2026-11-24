@@ -18,7 +18,6 @@ on:
       - '.github/workflows/taf-update.yml'
       - 'index.html'
       - 'dashboard/index.html'
-      - 'splash.css'
       - '_config.yml'
       - 'tests/public-pages-config.test.cjs'
       - 'tests/site-routing.test.cjs'
