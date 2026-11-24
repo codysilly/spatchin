@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T20:20:39.219636Z",
+  "updated_utc": "2026-11-24T20:30:40.581826Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1579,19 +1579,19 @@
     },
     {
       "icaoId": "KHRL",
-      "receiptTime": "2026-11-24T20:12:09.144Z",
-      "obsTime": 1795550940,
-      "reportTime": "2026-11-24T20:09:00.000Z",
+      "receiptTime": "2026-11-24T20:24:03.382Z",
+      "obsTime": 1795551600,
+      "reportTime": "2026-11-24T20:20:00.000Z",
       "temp": 13.9,
       "dewp": 12.2,
       "wdir": 350,
-      "wspd": 18,
-      "wgst": 22,
+      "wspd": 17,
+      "wgst": 25,
       "visib": "10+",
       "altim": 1021.4,
       "qcField": 12,
       "metarType": "SPECI",
-      "rawOb": "SPECI KHRL 242009Z 35018G22KT 10SM BKN018 BKN040 OVC049 14/12 A3016 RMK AO2 T01390122 $",
+      "rawOb": "SPECI KHRL 242020Z 35017G25KT 10SM SCT018 OVC050 14/12 A3016 RMK AO2 T01390122 $",
       "lat": 26.2303,
       "lon": -97.6556,
       "elev": 9,
@@ -1599,19 +1599,15 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "BKN",
+          "cover": "SCT",
           "base": 1800
         },
         {
-          "cover": "BKN",
-          "base": 4000
-        },
-        {
           "cover": "OVC",
-          "base": 4900
+          "base": 5000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KHTS",
