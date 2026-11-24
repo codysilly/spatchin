@@ -58,7 +58,7 @@ def get_table(archive, filename):
     required = {
         'APT_BASE.csv': {'SITE_NO', 'ARPT_ID', 'ICAO_ID'},
         'APT_RWY_END.csv': {'SITE_NO', 'ARPT_ID', 'RWY_END_ID', 'TRUE_ALIGNMENT', 'RWY_ID'},
-    }.get(filename.upper())
+    }.get(filename)
     if not required or not reader.fieldnames or not required.issubset(reader.fieldnames):
         raise ValueError('FAA runway-end schema not recognized; refusing to publish')
     return list(reader)
