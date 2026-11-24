@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T17:58:35.521333Z",
+  "updated_utc": "2026-11-24T18:08:35.810424Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -943,8 +943,8 @@
     },
     {
       "icaoId": "KCAE",
-      "rawTAF": "TAF KCAE 241748Z 2418/2518 06014G21KT P6SM FEW040 FM242100 06014G21KT P6SM BKN080",
-      "issueTime": "2026-11-24T17:48:00.000Z",
+      "rawTAF": "TAF KCAE 241759Z 2418/2518 06014G21KT P6SM FEW040 FM242100 06014G21KT P6SM BKN080 FM250600 06014G21KT P6SM OVC040 FM250900 03014G21KT P6SM VCSH OVC025 FM251200 03014G21KT 6SM -RA SCT015 OVC025",
+      "issueTime": "2026-11-24T17:59:00.000Z",
       "validTimeFrom": 1795543200,
       "validTimeTo": 1795629600,
       "fcsts": [
@@ -960,11 +960,41 @@
         },
         {
           "timeFrom": 1795554000,
-          "timeTo": 1795629600,
+          "timeTo": 1795586400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 60,
+          "wspd": 14,
+          "wgst": 21
+        },
+        {
+          "timeFrom": 1795586400,
+          "timeTo": 1795597200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 60,
+          "wspd": 14,
+          "wgst": 21
+        },
+        {
+          "timeFrom": 1795597200,
+          "timeTo": 1795608000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 30,
+          "wspd": 14,
+          "wgst": 21
+        },
+        {
+          "timeFrom": 1795608000,
+          "timeTo": 1795629600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 30,
           "wspd": 14,
           "wgst": 21
         }
@@ -2118,18 +2148,28 @@
     },
     {
       "icaoId": "KGEG",
-      "rawTAF": "TAF KGEG 241737Z 2418/2518 09008KT P6SM BKN050 OVC070 FM242200 06005KT P6SM BKN120 FM250700 11004KT 6SM BR SCT015 OVC060 FM251400 14005KT 6SM BR OVC015",
-      "issueTime": "2026-11-24T17:37:00.000Z",
+      "rawTAF": "TAF KGEG 241803Z 2418/2518 12010KT 5SM -RASN BR FEW015 BKN035 OVC070 FM241900 06008KT P6SM BKN050 OVC070 FM242200 06005KT P6SM BKN120 FM250700 11004KT 6SM BR SCT015 OVC060 FM251400 14005KT 6SM BR OVC015",
+      "issueTime": "2026-11-24T18:03:00.000Z",
       "validTimeFrom": 1795543200,
       "validTimeTo": 1795629600,
       "fcsts": [
         {
           "timeFrom": 1795543200,
-          "timeTo": 1795557600,
+          "timeTo": 1795546800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 90,
+          "wdir": 120,
+          "wspd": 10,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795546800,
+          "timeTo": 1795557600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 60,
           "wspd": 8,
           "wgst": null
         },
@@ -2752,8 +2792,8 @@
     },
     {
       "icaoId": "KJAX",
-      "rawTAF": "TAF KJAX 241734Z 2418/2518 03012G18KT P6SM SCT012 BKN020 BKN150 FM242000 03013G20KT P6SM VCSH SCT008 BKN015 OVC025 FM242200 02014G23KT P6SM VCSH OVC008 FM250600 02013G20KT 6SM -RA BR OVC006 FM251200 02013G20KT 4SM -RA BR OVC004",
-      "issueTime": "2026-11-24T17:34:00.000Z",
+      "rawTAF": "TAF KJAX 241801Z 2418/2518 04012G18KT P6SM SCT012 BKN020 BKN150 FM242000 03013G20KT P6SM VCSH SCT008 BKN015 OVC025 FM242200 02014G23KT P6SM VCSH OVC008 FM250600 02013G20KT 6SM -RA BR OVC006 FM251200 02013G20KT 4SM -RA BR OVC004",
+      "issueTime": "2026-11-24T18:01:00.000Z",
       "validTimeFrom": 1795543200,
       "validTimeTo": 1795629600,
       "fcsts": [
@@ -2763,7 +2803,7 @@
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 30,
+          "wdir": 40,
           "wspd": 12,
           "wgst": 18
         },
