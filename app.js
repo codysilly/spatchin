@@ -65,7 +65,7 @@ function runwayRow(code,id,wind,forecast=null){
  function longitudinal(v){const head=v.head>=0;return `<span class="${head?'headwind':Math.abs(v.head)<5?'tailwind-low':'tailwind-high'}">${head?v.head+' HW':Math.abs(v.head)+' TW'}</span>`;}
  function lateral(v){return `<span class="${v.cross<10?'crosswind-low':v.cross<15?'crosswind-mid':'crosswind-high'}">${v.cross} ${v.side}</span>`;}
  function values(w){
-  if(!w||!Number.isFinite(w.direction)||!Number.isFinite(w.speed))return ['—','—'];
+  if(!w||!Number.isFinite(w.direction)||!Number.isFinite(w.speed)||!Number.isFinite(bearing))return ['—','—'];
   const current=components(w,bearing);
   const gust=Number.isFinite(w.gust)&&w.gust>w.speed?components({...w,speed:w.gust},bearing):null;
   return [longitudinal(current)+(gust?'<div class="gust">G '+longitudinal(gust)+'</div>':''),
@@ -79,7 +79,7 @@ function runwayRow(code,id,wind,forecast=null){
   return ['<div class="forecast-alt">'+label+': '+alt[0]+'</div>',
    '<div class="forecast-alt">'+label+': '+alt[1]+'</div>'];
  });
- return `<tr class="runway-row"><td title="${runwayBearingLabel(code)}: ${bearing}°">${esc(id)}</td><td>${primary[0]}${extra.map(x=>x[0]).join('')}</td><td>${primary[1]}${extra.map(x=>x[1]).join('')}</td>${readerStatus}</tr>`;
+ return `<tr class="runway-row"><td title="${runwayBearingLabel(code)}: ${Number.isFinite(bearing)?bearing+"°":"unavailable"}">${esc(id)}</td><td>${primary[0]}${extra.map(x=>x[0]).join('')}</td><td>${primary[1]}${extra.map(x=>x[1]).join('')}</td>${readerStatus}</tr>`;
 }
 // Conservative extraction: only explicit approach/departure clauses, never generic runway mentions.
 function advertised(text,kind){
@@ -385,17 +385,31 @@ async function refreshRunways(){
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
   if(data.heading_reference!=='TRUE'||!data.airports||!data.effective_date)throw new Error('Invalid FAA runway data');
-  for(const [code,count] of Object.entries({ORD:16,LAX:8,JFK:8})){
-   const list=data.airports[code];
-   if(!Array.isArray(list)||list.length!==count||list.some(x=>!x.id||!Number.isFinite(x.true_heading)))throw new Error(`Invalid ${code} runway data`);
+  const eligible=new Set(approvedCatalog);
+  const published=Object.entries(data.airports);
+  if(!published.length)throw new Error('FAA runway inventory empty');
+  for(const [code,list] of published){
+   if(!eligible.has(code)||!Array.isArray(list)||list.length<2||list.length>64||list.length%2)throw new Error(`Invalid ${code} runway inventory`);
+   const ids=new Set();
+   for(const item of list){
+    if(!item||!/^((0[1-9]|[12][0-9]|3[0-6])[LRC]?)$/.test(item.id)||ids.has(item.id)||
+       !(item.true_heading===null||(Number.isFinite(item.true_heading)&&item.true_heading>=0&&item.true_heading<360))||
+       typeof item.pair!=='string'||!item.pair.split('/').includes(item.id))throw new Error(`Invalid ${code} runway end`);
+    ids.add(item.id);
+   }
+   if(list.some(item=>item.pair.split('/').length!==2||!item.pair.split('/').every(id=>ids.has(id))))throw new Error(`Incomplete ${code} runway pair`);
   }
-  // Accept legacy snapshots without MEM; validate all eight ends when MEM arrives.
-  if(data.airports.MEM!==undefined){
-   const list=data.airports.MEM;
-   if(!Array.isArray(list)||list.length!==8||new Set(list.map(x=>x.id)).size!==8||list.some(x=>!/^((0[1-9]|[12][0-9]|3[0-6])[LRC]?)$/.test(x.id)||!Number.isFinite(x.true_heading)||x.true_heading<0||x.true_heading>=360))throw new Error('Invalid MEM runway data');
+  for(const [code,count] of Object.entries({ORD:16,LAX:8,JFK:8,MEM:8})){
+   if(!Array.isArray(data.airports[code])||data.airports[code].length!==count)throw new Error(`Missing verified ${code} runway ends`);
+  }
+  if(data.airport_coverage){
+   const coverage=data.airport_coverage;
+   if(Object.keys(coverage).length!==eligible.size||[...eligible].some(code=>!coverage[code]||
+      !['available','unavailable'].includes(coverage[code].status)||
+      (coverage[code].status==='available')!==Boolean(data.airports[code])))throw new Error('Invalid C070 runway coverage');
   }
   runwayData=data;render();
- }catch(e){console.info('FAA runway data not yet available; retaining provisional headings:',e.message);}
+ }catch(e){console.info('FAA runway data not yet available; retaining previously verified headings:',e.message);}
 }
 async function refreshAtis(){
  try{
