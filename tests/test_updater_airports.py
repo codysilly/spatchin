@@ -42,13 +42,15 @@ class UpdaterAirportTests(unittest.TestCase):
                          ('KORD', 'KLAX', 'KJFK'))
         self.assertEqual(assigned(module, 'URL'), 'https://atis.info/api/')
 
-    def test_runways_include_mem_in_selection_and_completeness_check(self):
+    def test_runways_use_c070_registry_and_guard_existing_four_airports(self):
         module = tree('update_runways.py')
-        self.assertEqual(assigned(module, 'AIRPORTS'),
-                         {'ORD', 'LAX', 'JFK', 'MEM'})
-        generate = next(item for item in module.body
-                        if isinstance(item, ast.FunctionDef) and item.name == 'generate')
-        self.assertEqual(assigned(generate, 'expected'),
+        imported = {node.module for node in ast.walk(module)
+                    if isinstance(node, ast.ImportFrom)}
+        self.assertIn('scripts.c070_station_registry', imported)
+        source = (ROOT / 'scripts/update_runways.py').read_text(encoding='utf-8')
+        self.assertIn('load_c070_stations()', source)
+        self.assertIn('AIRPORTS = frozenset(', source)
+        self.assertEqual(assigned(module, 'LEGACY_COUNTS'),
                          {'ORD': 16, 'LAX': 8, 'JFK': 8, 'MEM': 8})
 
 
