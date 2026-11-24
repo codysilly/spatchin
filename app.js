@@ -2,7 +2,7 @@
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const approvedCatalog=typeof AirportCatalog==='undefined'?Object.keys({MEM:1,ORD:1,LAX:1,JFK:1}):AirportCatalog;
-const airportInfo={ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}};
+const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}}:AirportMetadata;
 // Previously verified chart metadata, preserved from a986cedf13bcde536987848b16bf91d2d1213eff.
 // This is a fixed chart link, not a current-cycle lookup or the NASR bearing source.
 const verifiedDiagrams={MEM:{url:'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF',effective_date:'2026-10-29',valid_through:'2026-11-26'}};
@@ -358,6 +358,8 @@ async function refresh(){
   if(!Number.isFinite(updated)||updated>Date.now()+5*60*1000)throw new Error('Invalid METAR retrieval timestamp');
   const found=new Set();
   for(const m of data.metars){
+   if(!m||typeof m!=='object'||typeof m.icaoId!=='string'||typeof m.rawOb!=='string'||!m.rawOb.trim())continue;
+   if(typeof m.obsTime==='number'&&!Number.isFinite(new Date(m.obsTime*1000).getTime()))continue;
    const code=targets.find(c=>icao(c)===m.icaoId);
    if(!code)continue;
    const parsed=parseMetar(m);

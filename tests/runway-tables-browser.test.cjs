@@ -7,13 +7,21 @@ after(async()=>{await browser?.close();server?.kill();});
 test('catalog additions enforce 30 total; removable MEM and deliberate empty state persist',async()=>{
  const context=await browser.newContext(),page=await context.newPage(),dialogs=[];
  await context.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());
+ const observed=Math.floor((Date.now()-60000)/1000);
+ await context.route('**/data/metars.json*',r=>r.fulfill({json:{updated_utc:new Date().toISOString(),metars:[{icaoId:'KIND',obsTime:observed,wdir:180,wspd:8,fltCat:'VFR',rawOb:'KIND SYNTHETIC OFFLINE METAR'}]}}));
  page.on('dialog',async d=>{dialogs.push(d.message());await d.dismiss();});
  try{
   await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
   assert.equal(await page.locator('#airport-options option').count(),130);
   await page.fill('#iata','ZZZ');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/approved C070 catalog/);
   await page.fill('#iata','IND');await page.locator('#add-form button').click();assert.deepEqual(await page.evaluate(()=>airports),['MEM','IND']);
-  assert.equal(await page.evaluate(()=>icao('IND')),'IND');assert.match(await page.locator('[data-airport="IND"]').innerText(),/not yet configured/);
+  assert.equal(await page.evaluate(()=>icao('IND')),'KIND');
+  const ind=page.locator('[data-airport="IND"]');
+  await ind.locator('.metar-current').waitFor();
+  assert.match(await ind.locator('.name').innerText(),/INDIANAPOLIS/);
+  assert.match(await ind.locator('.metar-raw').innerText(),/KIND SYNTHETIC OFFLINE METAR/);
+  assert.match(await ind.locator('.weather-badge').getAttribute('href'),/ids=KIND$/);
+  assert.match(await ind.locator('.empty').innerText(),/Runway data pending/);
   await page.evaluate(()=>{airports=AirportCatalog.slice(0,30);render();});
   await page.fill('#iata','MEM');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/Maximum 30/);
   assert.equal(await page.locator('.airport').count(),30);
