@@ -1,6 +1,6 @@
 # Cloudflare TAF scheduler
 
-Status: prepared for owner-authorized activation. Not deployed by a repository merge.
+Status: owner reports Worker activation; SPA-80 cutover removes the fallback GitHub TAF cron. Cloudflare is the sole scheduled TAF dispatch source after this change.
 
 The isolated `spatchin-taf-scheduler` Worker uses the existing METAR timing architecture.
 One UTC Cron Trigger, `8-58/10 * * * *`, runs at minutes 08, 18, 28, 38, 48 and 58.
@@ -54,18 +54,27 @@ The Worker fails before network access if its credential is missing. Each
 invocation has one attempt and a 10-second timeout. HTTP 204 means accepted,
 not completed. Logs redact credentials and omit response bodies.
 
-## Supervised cutover
+## Cutover record — November 24, 2026
 
-Existing GitHub cron entries remain as a temporary fallback. During the
-overlap, GitHub may run both triggers (the existing concurrency group
-serializes collectors, not deduplicates them). Do not leave both schedulers
-active indefinitely. Observe several Cloudflare cycles, correlate accepted
-HTTP 204 logs with GitHub workflow_dispatch runs and successful collector
-steps, and verify returned/missing C070 station counts and the published
-snapshot/deployment. A no-change run can succeed without a commit.
+The owner reports that `spatchin-taf-scheduler` version
+`2a7da5fd-0e5f-4c4b-82f1-26abe6f5351e` is deployed with the
+`8-58/10 * * * *` UTC cron and the existing GitHub Actions token.
+GitHub [TAF run 45435578402](https://github.com/codysilly/spatchin/actions/runs/45435578402)
+started at 16:18:27Z via `workflow_dispatch`, succeeded, and published
+129 valid C070 station reports (KNQA absent) in commit
+`ab0c45685f644b5cb4fda09bafe1c65fe9b7131a`.
+[Pages deployment 45435651256](https://github.com/codysilly/spatchin/actions/runs/45435651256)
+succeeded. These are GitHub observations; a Cloudflare HTTP 204 log was not
+directly inspected. The owner explicitly accepted the remaining cycle evidence
+as successful and authorized cutover without further observation.
 
-Then remove only the six GitHub schedule entries in a separate reviewed PR,
-preserving workflow_dispatch and the concurrency group. If a cutover fails,
-restore GitHub schedules and verify them before disabling the Cloudflare cron.
-Do not disable both timing sources at once. Keep the METAR validation task
-read-only. No version bump.
+The GitHub workflow now retains only `workflow_dispatch`, with its original
+`spatchin-taf-update` concurrency group and collector steps. The Cloudflare
+Worker remains the only scheduled dispatcher. No direct provider call was made
+for this cutover.
+
+If Cloudflare timing or dispatch fails, restore the six original GitHub cron
+entries from version history in a reviewed rollback PR, verify scheduled GitHub
+execution and data publication, then disable the Cloudflare cron to avoid dual
+acquisition. Do not disable both timing sources. Keep METAR and ATIS schedulers,
+the METAR validation task, the C070 source, and v0.9 unchanged.
