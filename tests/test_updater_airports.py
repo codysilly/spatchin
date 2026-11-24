@@ -1,4 +1,4 @@
-"""Offline configuration checks: parse source only; never import or run updaters."""
+"""Offline configuration checks: parse source only; never run updaters."""
 import ast
 from pathlib import Path
 import unittest
@@ -25,15 +25,16 @@ def assigned(node, name):
 
 
 class UpdaterAirportTests(unittest.TestCase):
-    def test_metar_allowlist_matches_query_and_preserves_endpoint(self):
+    def test_metar_uses_c070_registry_and_awc_endpoint(self):
+        # Inspect source without running a provider collector.
         module = tree('update_metar.py')
-        airports = assigned(module, 'AIRPORTS')
-        self.assertEqual(airports, {'KORD', 'KLAX', 'KJFK', 'KMEM'})
-        url = urlsplit(assigned(module, 'URL'))
-        self.assertEqual((url.scheme, url.netloc, url.path),
-                         ('https', 'aviationweather.gov', '/api/data/metar'))
-        self.assertEqual(parse_qs(url.query), {
-            'ids': ['KORD,KLAX,KJFK,KMEM'], 'format': ['json']})
+        imported = {node.module for node in ast.walk(module)
+                    if isinstance(node, ast.ImportFrom)}
+        self.assertIn('scripts.c070_station_registry', imported)
+        source = (ROOT / 'scripts/update_metar.py').read_text(encoding='utf-8')
+        self.assertIn('load_c070_stations().values()', source)
+        self.assertIn('https://aviationweather.gov/api/data/metar?ids=', source)
+        self.assertIn('&format=json', source)
 
     def test_atis_excludes_unverified_kmem_and_preserves_existing_airports(self):
         module = tree('update_atis.py')

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Fetch validated AWC METARs, retry transient failures, preserve last good snapshot."""
 import json
+import math
 import os
 import random
 import sys
@@ -11,26 +12,41 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-AIRPORTS = {"KORD", "KLAX", "KJFK", "KMEM"}
-URL = "https://aviationweather.gov/api/data/metar?ids=KORD,KLAX,KJFK,KMEM&format=json"
+if __package__:
+    from .c070_station_registry import load_c070_stations
+else:
+    try:
+        from scripts.c070_station_registry import load_c070_stations
+    except ModuleNotFoundError as exc:
+        if exc.name != "scripts":
+            raise
+        from c070_station_registry import load_c070_stations
+
+AIRPORTS = frozenset(load_c070_stations().values())
+URL = "https://aviationweather.gov/api/data/metar?ids=" + ",".join(sorted(AIRPORTS)) + "&format=json"
 DEST = Path("data/metars.json")
 DELAYS = (15, 30, 60)  # seconds before retries 2, 3, and 4
 
 
 def observation_time(item):
     value = item.get("obsTime", item.get("reportTime"))
-    if isinstance(value, (int, float)):
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
         return datetime.fromtimestamp(value, timezone.utc).timestamp()
     if isinstance(value, str):
         return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
     raise ValueError("Missing observation time")
 
 
+def requested_station(item):
+    return (isinstance(item, dict) and isinstance(item.get("icaoId"), str)
+            and item["icaoId"] in AIRPORTS)
+
+
 def rejection_reason(item, *, enforce_freshness=True):
     """Name the first failed validation rule for an upstream METAR record."""
-    if not isinstance(item, dict) or item.get("icaoId") not in AIRPORTS:
+    if not requested_station(item):
         return "unrecognized_airport"
-    if not item.get("rawOb"):
+    if not isinstance(item.get("rawOb"), str) or not item["rawOb"].strip():
         return "missing_raw_observation"
     try:
         observed = observation_time(item)
@@ -39,6 +55,8 @@ def rejection_reason(item, *, enforce_freshness=True):
     speed = item.get("wspd")
     if speed is not None:
         try:
+            if isinstance(speed, bool) or not math.isfinite(float(speed)):
+                return "invalid_wind_speed"
             if float(speed) < 0:
                 return "negative_wind_speed"
         except (ValueError, TypeError, OverflowError, OSError):
@@ -67,7 +85,7 @@ def fetch(diagnostics=None):
     selected = {}
     summary = {}
     for item in payload:
-        if not isinstance(item, dict) or item.get("icaoId") not in AIRPORTS:
+        if not requested_station(item):
             continue
         code = item["icaoId"]
         entry = summary.setdefault(code, {"candidates": 0, "rejected": {}})

@@ -7,6 +7,9 @@ import urllib.error
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
+from urllib.parse import parse_qs, urlsplit
+
+from scripts.c070_station_registry import load_c070_stations
 
 
 SCRIPT = Path(__file__).parents[1] / "scripts" / "update_metar.py"
@@ -49,6 +52,10 @@ class UpdateMetarTests(unittest.TestCase):
 
     def setUp(self):
         self.module = load_module()
+        guard = mock.patch.object(self.module.urllib.request, "urlopen",
+                                  side_effect=AssertionError("Unexpected network access"))
+        guard.start()
+        self.addCleanup(guard.stop)
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.module.DEST = Path(self.temporary.name) / "data" / "metars.json"
@@ -73,6 +80,50 @@ class UpdateMetarTests(unittest.TestCase):
 
     def snapshot(self):
         return json.loads(self.module.DEST.read_text())
+
+    def test_request_contains_exactly_the_130_verified_station_ids(self):
+        stations = set(load_c070_stations().values())
+        self.assertEqual(len(stations), 130)
+        self.assertEqual(self.module.AIRPORTS, stations)
+        with mock.patch.object(self.module.urllib.request, "urlopen",
+                               return_value=Response([report("KABE", self.NOW - 60)])) as request:
+            self.module.main()
+        request.assert_called_once()
+        url = urlsplit(request.call_args.args[0].full_url)
+        self.assertEqual((url.scheme, url.netloc, url.path),
+                         ("https", "aviationweather.gov", "/api/data/metar"))
+        self.assertEqual(parse_qs(url.query),
+                         {"ids": [",".join(sorted(stations))], "format": ["json"]})
+        self.assertEqual([m["icaoId"] for m in self.snapshot()["metars"]], ["KABE"])
+
+    def test_expanded_station_partial_response_retains_last_good(self):
+        old = report("KABE", self.NOW - 120)
+        absent = report("KABQ", self.NOW - 180)
+        rejected = report("KAFW", self.NOW - 180)
+        self.write_previous([old, absent, rejected])
+        incoming = report("KIWA", self.NOW - 60)
+        payload = [incoming, report("KABE", self.NOW - 600),
+                   {**report("KAFW", self.NOW - 60), "rawOb": " "},
+                   {"icaoId": ["KABE"], "rawOb": "invalid"},
+                   {"icaoId": {"station": "KABE"}, "rawOb": "invalid"},
+                   report("ZZZZ", self.NOW - 60), None]
+        with redirect_stdout(io.StringIO()) as output:
+            self.run_with(payload)
+        self.assertEqual({m["icaoId"]: m for m in self.snapshot()["metars"]},
+                         {"KABE": old, "KABQ": absent, "KAFW": rejected, "KIWA": incoming})
+        self.assertIn("METAR KABE retained: reason=older_upstream", output.getvalue())
+        self.assertIn("METAR KABQ retained: reason=missing_upstream", output.getvalue())
+        self.assertIn("METAR KAFW retained: reason=rejected_upstream", output.getvalue())
+        self.assertIn("METAR KMEM unavailable: reason=missing_upstream", output.getvalue())
+
+    def test_malformed_fields_do_not_crash_or_replace_good_reports(self):
+        good = report("KABE", self.NOW - 60)
+        for changes in ({"icaoId": []}, {"rawOb": 17}, {"obsTime": True},
+                        {"obsTime": "invalid"}, {"wspd": "NaN"},
+                        {"wspd": float("inf")}, {"wspd": True}):
+            with self.subTest(changes=changes):
+                self.assertFalse(self.module.valid({**good, **changes}))
+        self.assertTrue(self.module.valid(good))
 
     def test_valid_awc_response_and_dashboard_compatible_output(self):
         payload = [report(code, self.NOW - index * 60) for index, code in enumerate(sorted(self.module.AIRPORTS))]
