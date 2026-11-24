@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T22:30:40.050935Z",
+  "updated_utc": "2026-11-24T22:40:40.023447Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -3236,19 +3236,18 @@
     },
     {
       "icaoId": "KSAV",
-      "receiptTime": "2026-11-24T21:57:00.640Z",
-      "obsTime": 1795557180,
-      "reportTime": "2026-11-24T22:00:00.000Z",
-      "temp": 15,
-      "dewp": 12.2,
+      "receiptTime": "2026-11-24T22:38:14.830Z",
+      "obsTime": 1795559820,
+      "reportTime": "2026-11-24T22:37:00.000Z",
+      "temp": 14.4,
+      "dewp": 11.1,
       "wdir": 40,
-      "wspd": 8,
+      "wspd": 7,
       "visib": "10+",
-      "altim": 1022.4,
-      "slp": 1022.2,
+      "altim": 1022.8,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KSAV 242153Z 04008KT 10SM SCT017 OVC030 15/12 A3019 RMK AO2 SLP222 T01500122",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSAV 242237Z 04007KT 10SM FEW017 OVC029 14/11 A3020 RMK AO2 T01440111 ",
       "lat": 32.1313,
       "lon": -81.2023,
       "elev": 10,
@@ -3256,12 +3255,12 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
+          "cover": "FEW",
           "base": 1700
         },
         {
           "cover": "OVC",
-          "base": 3000
+          "base": 2900
         }
       ],
       "fltCat": "MVFR"
