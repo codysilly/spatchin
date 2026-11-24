@@ -27,7 +27,7 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:runways}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base);await page.waitForFunction(()=>notamTransport?.checked_utc&&!notamTransport.refreshing);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.checked_utc&&!notamTransport.refreshing);
   assert.equal(requests,1);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
   await page.locator('[data-reader-open="KMEM-18L"]').click();
   const panel=page.locator('#reader-KMEM-18L');assert.match(await panel.innerText(),/lighting report/);
@@ -53,7 +53,7 @@ test('first-load 404 is unavailable; absent MEM inventory does not fabricate run
  await context.route('**/data/notams.json',route=>route.fulfill({status:404,body:''}));
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));delete legacy.airports.MEM;delete legacy.airport_metadata;
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:legacy}));
- try{await page.goto(base);await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
+ try{await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
 });
 for(const width of [1440,390])test(`published MEM NASR inventory and source provenance at ${width}px`,async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
@@ -62,7 +62,7 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[]}}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base);await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
+  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
   assert.equal(await page.locator('.rw-table > tbody > tr.runway-row > td.unknown:not(:has(button))').count(),16);
   // Bearing tooltips apply to computed components; supply wind only in this test.
@@ -73,7 +73,7 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
   assert.equal(await page.locator('.runways .sub').count(),0);
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);
   assert.equal(await page.evaluate(()=>runwayData.source_url),runways.source_url);
-  assert.equal(await page.locator('.airport-footer [data-remove="MEM"]').count(),1);
+  assert.equal(await page.locator('.airport-head [data-remove="MEM"]').count(),1);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   mkdirSync('/tmp/spatchin-mem-review',{recursive:true});await page.screenshot({path:`/tmp/spatchin-mem-review/${width}.png`,fullPage:true});

@@ -3,9 +3,33 @@ on:
   pull_request:
     paths:
       - 'app.js'
+      - 'taf-reader.js'
+      - 'taf-timeline.js'
+      - 'tests/taf-timeline.test.cjs'
+      - 'tests/taf-timeline-browser.test.cjs'
+      - 'tests/taf-reader.test.cjs'
+      - 'scripts/update_taf.py'
+      - 'tests/test_update_taf.py'
+      - '.github/workflows/taf-update.yml'
       - 'index.html'
+      - 'dashboard/index.html'
+      - 'splash.css'
+      - '_config.yml'
+      - 'tests/public-pages-config.test.cjs'
+      - 'tests/site-routing.test.cjs'
+      - 'tests/site-routing-browser.test.cjs'
       - '*.css'
       - 'tests/charcoal-dashboard.test.cjs'
+      - 'tests/airport-storage.test.cjs'
+      - 'tests/charcoal-dashboard-browser.test.cjs'
+      - 'assets/branding/**'
+      - 'BRANDING.md'
+      - 'scripts/render-brand-icons.py'
+      - 'tests/branding-assets.test.cjs'
+      - 'tests/ui-style-baseline-browser.test.cjs'
+      - 'tests/css-parity-browser.test.cjs'
+      - 'UI_DESIGN.md'
+      - 'DASHBOARD.md'
       - '.github/workflows/frontend-offline.yml'
   workflow_dispatch:
 
@@ -24,18 +48,33 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
+          node --check taf-reader.js
+          node --check taf-timeline.js
           node --check scan.js
           node --check notam-reader.js
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/charcoal-dashboard.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs
+          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/airport-storage.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/branding-assets.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test TAF collector using synthetic responses
+        run: python -m unittest discover -s tests -p 'test_update_taf.py'
       - name: Install local browser test harness
-        run: npm install --no-save --no-package-lock playwright@1.56.1
+        run: npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7.0.0 pixelmatch@5.3.0
       - name: Run synthetic desktop and mobile checks
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
-          node --test tests/charcoal-dashboard-browser.test.cjs
+          node --test tests/site-routing-browser.test.cjs tests/charcoal-dashboard-browser.test.cjs tests/ui-style-baseline-browser.test.cjs tests/runway-tables-browser.test.cjs tests/taf-timeline-browser.test.cjs
+      - name: Fetch SPA-67 baseline for parity check
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
+        run: git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c
+      - name: Compare all rendered CSS against SPA-67 baseline
+        if: github.event_name == 'pull_request' && github.head_ref == 'feature/spa-68-css-consolidation'
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"
+          node --test tests/css-parity-browser.test.cjs
       - name: Retain visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,0 +1,46 @@
+name: Update TAF Data
+on:
+  workflow_dispatch:
+  schedule:
+    # Offset from the ATIS cron. AWC receives one batched request each run.
+    - cron: '8 * * * *'
+    - cron: '18 * * * *'
+    - cron: '28 * * * *'
+    - cron: '38 * * * *'
+    - cron: '48 * * * *'
+    - cron: '58 * * * *'
+permissions:
+  contents: write
+concurrency:
+  group: spatchin-taf-update
+  cancel-in-progress: false
+jobs:
+  update-taf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test TAF collector without network access
+        run: python -m unittest discover -s tests -p 'test_update_taf.py'
+      - name: Retrieve AWC TAF reports
+        run: python scripts/update_taf.py
+      - name: Commit updated TAF data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/tafs.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update TAF forecasts"
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              git fetch origin main
+              git rebase origin/main
+            done
+            echo "Failed to publish TAF after three push attempts" >&2
+            exit 1
+          fi

@@ -116,3 +116,17 @@ test('migration write failure keeps loaded preferences and legacy; later saves d
   assert.doesNotThrow(() => app.run('airports.push("ATL");save();'));
   assert.deepEqual(app.airports(), ['JFK','ORD','ATL']);
 });
+
+test('reorder saves existing airport preference order without changing membership',()=>{
+ const app=load({[NEW]:'["MEM","IND","OAK"]'});
+ assert.equal(app.run('moveAirport("MEM",2)'),true);
+ assert.deepEqual(app.airports(),['IND','OAK','MEM']);
+ assert.equal(app.stored.get(NEW),'["IND","OAK","MEM"]');
+ assert.equal(app.run('moveAirport("OAK",0)'),true);
+ assert.deepEqual(app.airports(),['OAK','IND','MEM']);
+ assert.equal(app.run('moveAirport("OAK",0)'),false);
+ assert.equal(app.run('moveAirport("MEM",99)'),false);
+ assert.equal(app.run('moveAirport("FOO",0)'),false);
+ assert.deepEqual(app.airports(),['OAK','IND','MEM']);
+ assert.deepEqual(load(Object.fromEntries(app.stored)).airports(),['OAK','IND','MEM']);
+});

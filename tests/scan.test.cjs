@@ -23,7 +23,7 @@ beforeEach(async () => {
     external.push(route.request().url());return route.abort();
   });
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(url);
+  await page.goto(url+'/dashboard/');
   // Exercise existing aviation fixtures as a saved selection, independent of defaults.
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
   await page.reload();

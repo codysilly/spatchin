@@ -1,13 +1,33 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap" rel="stylesheet"><title>Spatchin v0.9</title><link rel="icon" type="image/png" sizes="16x16" href="assets/branding/logo-16.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/branding/logo-32.png"><link rel="apple-touch-icon" sizes="180x180" href="assets/branding/logo-180.png"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="dashboard.css"><link rel="stylesheet" href="charcoal-dashboard.css"></head><body><div class="wip-banner" role="note">WORK IN PROGRESS — Spatchin is not ready for actual use.</div>
-<header><div class="brand"><img class="brand-logo" src="assets/branding/logo-64.png" srcset="assets/branding/logo-64.png 1x, assets/branding/logo-128.png 2x" width="38" height="38" alt=""><h1><span class="brand-wordmark">SPATCHIN</span> <span class="version">v0.9</span></h1></div><div class="header-right"><div id="clock" class="clock"></div></div></header>
-<main><div class="dashboard-controls"><section id="scan-toolbar" class="scan-toolbar" aria-label="SCAN global search and highlight" data-scan-ignore>
-<button id="scan-toggle" class="scan-toggle" type="button" aria-expanded="false" aria-controls="scan-panel"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"></circle><path d="m15 15 6 6"></path></svg><span class="scan-title">SCAN</span><span id="scan-keyword-count">0 active keywords</span><span id="scan-indicator" aria-hidden="true">▾</span></button>
-<div id="scan-panel" class="scan-panel" hidden>
-<input id="scan-terms" type="search" aria-label="SCAN keywords" placeholder="Keywords, separated by commas" aria-describedby="scan-help" autocomplete="off">
-<label><input id="scan-enabled" type="checkbox" checked> Highlight</label>
-<label><input id="scan-case" type="checkbox"> Case sensitive</label>
-<div class="scan-navigation"><button id="scan-prev" type="button" aria-label="Previous SCAN match">Previous</button><button id="scan-next" type="button" aria-label="Next SCAN match">Next</button><output id="scan-count" role="status" aria-live="polite" aria-atomic="true">0 matches</output></div>
-<div id="scan-help" class="scan-help">Search all dashboard text · Enter: next · Shift+Enter: previous</div>
-<div id="scan-legend" class="scan-legend" aria-label="Keyword colors"></div>
-</div>
-</section><section class="toolbar"><form id="add-form"><label for="iata">Add airport</label><input id="iata" list="airport-options" placeholder="IATA (e.g. ATL)" maxlength="3" pattern="[A-Za-z]{3}" required><datalist id="airport-options"></datalist><button>Add</button></form></section></div><div id="cards" class="cards"></div><section class="sources"><h3>Sources</h3><p><a href="https://aviationweather.gov/" target="_blank" rel="noopener">Aviation Weather Center</a> · <a href="https://atis.info/api">atis.info API</a> · <a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">FAA NOTAM Search</a></p><p>METARs: periodically published Aviation Weather Center observations. ATIS is an unofficial atis.info snapshot; do not use for real world flight planning or navigation. TAF data connection pending. NOTAM reader loads a published snapshot when available; runway availability is not assessed. FAA runway bearings appear only after the validated FAA feed is published.</p></section></main><footer>Spatchin v0.9 · UTC throughout</footer><script src="notam-reader.js"></script><script src="notam-snapshots.js"></script><script src="airport-catalog.js"></script><script src="app.js"></script><script src="scan.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1b1d1f">
+  <title>Spatchin — Not cleared for takeoff… yet.</title>
+  <meta name="description" content="Spatchin is preparing for takeoff.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="assets/branding/logo-cyan-magenta.svg">
+  <link rel="stylesheet" href="splash.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img class="brand-logo" src="assets/branding/logo-cyan-magenta.svg" width="60" height="60" alt="">
+      <span class="brand-wordmark">SPATCHIN</span>
+    </div>
+  </header>
+  <main class="site-main">
+    <section class="holding-banner" aria-labelledby="holding-message">
+      <div class="message">
+        <h1 id="holding-message">Not cleared for<br class="desktop-break"> takeoff… <span class="accent">yet.</span></h1>
+      </div>
+      <div class="artwork">
+        <img class="floating-plane" src="assets/branding/logo-cyan-magenta.svg" width="320" height="290" alt="">
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -11,7 +11,7 @@ function diagramHeader(code){
  const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
  if(!diagram||!/^https:\/\/[^/?#]+\/[^?#]*\.pdf(?:[?#].*)?$/i.test(diagram.url||''))return '';
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
- return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}">Airport diagram <span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)}; opens in a new tab)</span></a></div>`;
+ return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
 }
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
@@ -27,6 +27,7 @@ function notamTransportBlock(code){
 }
 if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETIC_PREVIEW.runways;if(!syntheticNotamTransport)reader?.set(SPATCHIN_SYNTHETIC_PREVIEW.notams);}
 let atisData=null; let atisRetrieved=null;
+let tafData=null,tafFeedError=false;
 const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=65*60*1000;
 const AIRPORT_STORAGE_KEY='spatchin-airports';
@@ -58,14 +59,27 @@ function runwayBearingLabel(code){
  if(runwayData?.airport_metadata?.[code]?.heading_method==='chart-derived-approximate')return 'Chart-derived approximate true bearing';
  return runwayData?.airports?.[code]?'FAA NASR true alignment':'Approximate runway-number heading';
 }
-function runwayRow(code,id,wind){
+function runwayRow(code,id,wind,forecast=null){
  const readerStatus=reader?.cell(icao(code),id,ends(code))||'<td class="unknown">—</td>';
- if(!wind||!Number.isFinite(wind.direction)||!Number.isFinite(wind.speed))return `<tr class="runway-row"><td>${esc(id)}</td><td class="unknown">—</td><td class="unknown">—</td>${readerStatus}</tr>`;
- const bearing=runwayHeading(code,id), c=components(wind,bearing);
- const gust=Number.isFinite(wind.gust)&&wind.gust>wind.speed?components({...wind,speed:wind.gust},bearing):null;
+ const bearing=runwayHeading(code,id);
  function longitudinal(v){const head=v.head>=0;return `<span class="${head?'headwind':Math.abs(v.head)<5?'tailwind-low':'tailwind-high'}">${head?v.head+' HW':Math.abs(v.head)+' TW'}</span>`;}
  function lateral(v){return `<span class="${v.cross<10?'crosswind-low':v.cross<15?'crosswind-mid':'crosswind-high'}">${v.cross} ${v.side}</span>`;}
- return `<tr class="runway-row"><td title="${runwayBearingLabel(code)}: ${bearing}°">${esc(id)}</td><td>${longitudinal(c)}${gust?`<div class="gust">G ${longitudinal(gust)}</div>`:''}</td><td>${lateral(c)}${gust?`<div class="gust">G ${lateral(gust)}</div>`:''}</td>${readerStatus}</tr>`;
+ function values(w){
+  if(!w||!Number.isFinite(w.direction)||!Number.isFinite(w.speed))return ['—','—'];
+  const current=components(w,bearing);
+  const gust=Number.isFinite(w.gust)&&w.gust>w.speed?components({...w,speed:w.gust},bearing):null;
+  return [longitudinal(current)+(gust?'<div class="gust">G '+longitudinal(gust)+'</div>':''),
+   lateral(current)+(gust?'<div class="gust">G '+lateral(gust)+'</div>':'')];
+ }
+ const primary=values(wind);
+ const alternates=forecast?.alternatives||[];
+ const extra=alternates.map(item=>{
+  const alt=values(item.wind);
+  const label=esc(item.label);
+  return ['<div class="forecast-alt">'+label+': '+alt[0]+'</div>',
+   '<div class="forecast-alt">'+label+': '+alt[1]+'</div>'];
+ });
+ return `<tr class="runway-row"><td title="${runwayBearingLabel(code)}: ${bearing}°">${esc(id)}</td><td>${primary[0]}${extra.map(x=>x[0]).join('')}</td><td>${primary[1]}${extra.map(x=>x[1]).join('')}</td>${readerStatus}</tr>`;
 }
 // Conservative extraction: only explicit approach/departure clauses, never generic runway mentions.
 function advertised(text,kind){
@@ -97,15 +111,21 @@ function atisBlock(code){
  const full=list.map(r=>`<p><strong>${esc(r.type.toUpperCase())} · INFO ${esc(r.code||'—')} · ${esc(r.time||'—')}Z</strong></p><p class="atis-raw">${esc(r.datis)}</p>`).join('');
  return `<section class="atis"><div class="atis-top"><div><h3>ATIS</h3><div class="atis-provider">atis.info · ${stale?'STALE / UNVERIFIED':'UNOFFICIAL'}</div></div><div class="atis-meta">INFO ${info} · ISSUED <strong>${issue}</strong></div></div><div class="atis-runways"><div class="atis-box"><div class="atis-label">↘ LANDING</div><div class="atis-value">${esc(label(landing))}</div></div><div class="atis-box"><div class="atis-label">↗ DEPARTING</div><div class="atis-value">${esc(label(departing))}</div></div></div><details class="atis-full"><summary>Full ATIS information</summary>${full||'<p>ATIS not available.</p>'}<p>Source update: ${esc(newest?utc(newest):'—')} · Snapshot retrieved: ${esc(utc(atisRetrieved))}</p><p><a href="https://atis.info/api/${encodeURIComponent(icao(code))}" target="_blank" rel="noopener">Original ATIS source</a></p><p>Do not use for real world flight planning or navigation. Advertised runway extraction is automated and may be incomplete.</p></details></section>`;
 }
+function tafBlock(code){
+ const station=airportInfo[code]?.icao;
+ if(typeof TafReader==='undefined')return '<section class="taf"><strong>TAF</strong><span>Forecast reader unavailable.</span></section>';
+ return TafReader.render({code,station,report:tafData?.tafs?.find(item=>item.icaoId===station),feedError:tafFeedError});
+}
 function windLabel(w){if(!w)return '—';const dir=Number.isFinite(w.direction)?String(w.direction).padStart(3,'0')+'°':'VRB';return `${dir} / ${w.speed}${Number.isFinite(w.gust)&&w.gust>0?'G'+w.gust:''}KT`;}
 function utc(t){if(!t)return '—';const d=new Date(t);return Number.isNaN(d.getTime())?'—':d.toISOString().slice(0,16).replace('T',' ')+'Z';}
 const flightCategories=['VFR','MVFR','IFR','LIFR'];
 function flightCategory(m){return flightCategories.includes(m?.flightCategory)?m.flightCategory:null;}
 function categoryMarkup(m){
  const current=flightCategory(m),stale=metarState(m)==='stale';
- const tag=current?'<span class="category-tag category-'+current.toLowerCase()+'" title="Flight category from '+(stale?'stale ':'')+'METAR observation">'+current+'</span>':'<span class="category-tag category-unavailable">NO DATA</span>';
- const strip=current?'<div class="flight-strip" role="group" aria-label="Reported METAR flight category '+current+(stale?' (stale observation)':'')+'">'+flightCategories.map(c=>'<span class="flight-segment flight-'+c.toLowerCase()+(c===current?' is-active':'')+'">'+c+'</span>').join('')+'</div>':'';
- return {tag,strip};
+ // The AWC fltCat value represents the limiting (worst) ceiling/visibility category.
+ // Do not guess a category if the provider omits it or the observation is unavailable.
+ const tag=current?'<span class="category-tag category-'+current.toLowerCase()+'" title="AWC ceiling/visibility flight category from '+(stale?'stale ':'')+'METAR observation">'+current+'</span>':'<span class="category-tag category-unavailable">NO DATA</span>';
+ return {tag};
 }
 function metarState(m){
  if(!m || !m.wind || !m.observed || !Number.isFinite(Date.parse(m.observed)))return 'unavailable';
@@ -118,22 +138,181 @@ function metarStatus(m){
  if(state==='stale')return '<span class="metar-status metar-stale">METAR STALE · 65+ MIN</span>';
  return '<span class="metar-status metar-current">METAR CURRENT</span>';
 }
+
+function forecastModel(code,m){
+ const station=airportInfo[code]?.icao;
+ const report=tafData?.tafs?.find(item=>item.icaoId===station);
+ const available=typeof TafTimeline!=='undefined'&&typeof TafReader!=='undefined'&&
+  TafReader.valid(report,station)&&TafTimeline.bounds(report)&&
+  TafTimeline.periods(report).some(item=>item.kind==='BASE'||item.kind==='FM')&&
+  Date.now()-TafTimeline.time(report.issueTime)<=12*3600000;
+ const observed=m?.observed||'unavailable';
+ const selected=observedSelection.get(code);
+ const rawSelected=selected?.startsWith('taf:')?TafTimeline?.time(selected.slice(4)):NaN;
+ const bounds=available?TafTimeline.bounds(report):null;
+ const forecast=Boolean(available&&selected?.startsWith('taf:')&&Number.isFinite(rawSelected)&&
+  rawSelected>=bounds.start&&rawSelected<bounds.end);
+ const initial=available?TafTimeline.initialTime(report):NaN;
+ const at=forecast?rawSelected:initial;
+ const state=forecast?TafTimeline.select(report,at):null;
+ return {report,available:Boolean(available),bounds,observed,forecast,at,state};
+}
+function timeControl(code,m,model){
+ const prefix='<div class="time-control'+(model.forecast?' forecast-active':'')+
+  '"><label for="time-'+esc(code)+'">Time (UTC / Zulu)</label>'+
+  '<select id="time-'+esc(code)+'" data-observed-time="'+esc(code)+'">'+
+  '<option value="'+esc(model.observed)+'"'+(!model.forecast?' selected':'')+'>'+
+  (m?.observed?'Observed '+esc(utc(m.observed)):'Observation unavailable')+'</option>';
+ if(!model.available){
+  return prefix+'<option disabled>Forecast unavailable</option></select></div>';
+ }
+ const at=Number.isFinite(model.at)?model.at:TafTimeline.initialTime(model.report);
+ const iso=new Date(at).toISOString();
+ const time=esc(TafTimeline.stamp(at));
+ const chosen=esc('taf:'+iso);
+ const sliderValue=TafTimeline.stepIndex(model.report,at);
+ const max=TafTimeline.steps(model.report);
+ const range=model.bounds;
+ let result=prefix+'<option value="'+chosen+'"'+(model.forecast?' selected':'')+
+  '>TAF forecast '+time+'</option></select></div>';
+ result+='<div class="forecast-controls" data-forecast-controls="'+esc(code)+'">'+
+  '<label for="forecast-slider-'+esc(code)+'">Forecast timeline (UTC)</label>'+
+  '<input type="range" id="forecast-slider-'+esc(code)+'" data-forecast-slider="'+esc(code)+
+  '" min="0" max="'+max+'" step="1" value="'+sliderValue+
+  '" aria-label="'+esc(code)+' forecast time slider">'+
+  '<output data-forecast-output="'+esc(code)+'">'+time+'</output>'+
+  '<label for="forecast-date-'+esc(code)+'">Exact UTC time</label>'+
+  '<input id="forecast-date-'+esc(code)+'" type="datetime-local" data-forecast-date="'+esc(code)+
+  '" value="'+esc(TafTimeline.localInput(at))+'" min="'+esc(TafTimeline.localInput(range.start))+
+  '" max="'+esc(TafTimeline.localInput(range.end-60000))+'" step="60">'+
+  '<div class="forecast-range">Valid '+esc(TafTimeline.stamp(range.start))+
+  ' – '+esc(TafTimeline.stamp(range.end))+'</div></div>';
+ if(model.forecast){
+  const state=model.state;
+  const resultLabel=state?.status==='available'?'TAF FORECAST':state?.status==='transition'?
+   'BECMG TRANSITION':state?.status==='stale'?'TAF STALE':'FORECAST WIND UNAVAILABLE';
+  const wind=state?.wind?windLabel(state.wind):'Wind components unavailable';
+  const notes=(state?.notes||[]).map(esc).join(' · ');
+  const bearing=runwayData?.airports?.[code]?'Published runway true bearings':
+   'Runway-number headings are approximate';
+  result+='<div class="forecast-summary" role="status"><strong>'+resultLabel+
+   ' · '+time+'</strong><div>'+esc(wind)+(notes?' · '+notes:'')+
+   '</div><div>'+esc(bearing)+' · Issued '+esc(TafTimeline.stamp(TafTimeline.time(model.report.issueTime)))+
+   ' · Snapshot '+esc(utc(tafData?.updated_utc))+'</div>'+
+   '<div>Forecast is not an observation. TEMPO/PROB winds are alternatives, not prevailing.</div></div>';
+ }
+ return result;
+}
+
 const observedSelection=new Map();
-function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove;
+function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
  const atisOpen=new Set([...document.querySelectorAll('.atis-full[open]')].map(el=>el.closest('[data-airport]')?.dataset.airport));
- reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),w=m?.wind;
+ reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),model=forecastModel(code,m),w=model.forecast?model.state?.wind:m?.wind;
 
  const observation=m?.raw||m?.error||'Observation unavailable';
  const retained=metarFeedError&&m?.raw?'<span class="metar-retained">Feed refresh failed; showing retained observation.</span>':'';
  const category=categoryMarkup(m);
- return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-title"><div class="airport-code-line"><div class="icao">${esc(code)}</div>${category.tag}</div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div>${diagramHeader(code)}</div>${category.strip}<div class="weather-row"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></div><section class="taf"><strong>TAF</strong><span>Unavailable — feed not connected; forecast selection not supported.</span></section>${atisBlock(code)}${reader?.summary(icao(code))||''}<div class="time-control"><label for="time-${code}">Time (UTC / Zulu)</label><select id="time-${code}" data-observed-time="${code}"><option value="${esc(m?.observed||'unavailable')}">${m?.observed?'Observed '+esc(utc(m.observed)):'Observation unavailable'}</option><option disabled>Forecast unavailable</option></select></div><div class="runways">${r.length?`<table class="rw-table"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}<button type="button" data-remove="${code}" aria-label="Remove ${code} airport">Remove airport</button></footer></article>`;}).join('');
+ return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-top-row"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airports.length<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="icao">${esc(code)}</div>${category.tag}<div class="airport-head-spacer"></div>${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></section>${tafBlock(code)}${atisBlock(code)}${reader?.summary(icao(code))||''}${timeControl(code,m,model)}<div class="runways">${r.length?`<table class="rw-table${model.forecast?' forecast-table':''}"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w,model.forecast?model.state:null)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}</footer></article>`;}).join('');
  document.querySelectorAll('[data-airport]').forEach(el=>{const details=el.querySelector('.atis-full');if(details)details.open=atisOpen.has(el.dataset.airport);});
- document.querySelectorAll('[data-observed-time]').forEach(el=>{const previous=observedSelection.get(el.dataset.observedTime);if([...el.options].some(o=>o.value===previous&&!o.disabled))el.value=previous;el.addEventListener('change',()=>observedSelection.set(el.dataset.observedTime,el.value));});
+ document.querySelectorAll('[data-observed-time]').forEach(el=>el.addEventListener('change',()=>{
+  observedSelection.set(el.dataset.observedTime,el.value);render();
+ }));
+ document.querySelectorAll('[data-forecast-slider]').forEach(el=>{
+  el.addEventListener('input',()=>{
+   const code=el.dataset.forecastSlider;
+   const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
+   const when=TafTimeline.stepTime(report,el.value);
+   const output=document.querySelector('[data-forecast-output="'+code+'"]');
+   if(output&&Number.isFinite(when))output.textContent=TafTimeline.stamp(when);
+  });
+  el.addEventListener('change',()=>{
+   const code=el.dataset.forecastSlider;
+   const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
+   const when=TafTimeline.stepTime(report,el.value);
+   if(Number.isFinite(when)){observedSelection.set(code,'taf:'+new Date(when).toISOString());render();}
+  });
+ });
+ document.querySelectorAll('[data-forecast-date]').forEach(el=>el.addEventListener('change',()=>{
+  const code=el.dataset.forecastDate;
+  const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
+  const range=TafTimeline.bounds(report),when=TafTimeline.time(el.value);
+  if(range&&Number.isFinite(when)&&when>=range.start&&when<range.end){
+   observedSelection.set(code,'taf:'+new Date(when).toISOString());
+  }
+  render();
+ }));
  document.querySelectorAll('[data-remove]').forEach(b=>b.addEventListener('click',()=>{const index=airports.indexOf(b.dataset.remove);airports=airports.filter(x=>x!==b.dataset.remove);save();render();const next=airports[Math.min(index,airports.length-1)];([...document.querySelectorAll('[data-remove]')].find(el=>el.dataset.remove===next)||document.getElementById('iata'))?.focus();}));reader?.after();
  document.querySelectorAll('[data-notam-reload]').forEach(b=>b.addEventListener('click',()=>notamSnapshots?.refresh()));
+ attachAirportReordering();
  if(reloadFocus)[...document.querySelectorAll('[data-notam-reload]')].find(b=>b.dataset.notamReload===reloadFocus)?.focus({preventScroll:true});
  else if(removeFocus)[...document.querySelectorAll('[data-remove]')].find(b=>b.dataset.remove===removeFocus)?.focus({preventScroll:true});
+ else if(dragFocus)[...document.querySelectorAll('[data-airport-drag]')].find(b=>b.dataset.airportDrag===dragFocus)?.focus({preventScroll:true});
  else if(activeId)document.getElementById(activeId)?.focus?.({preventScroll:true});
+}
+// Airport order is the existing spatchin-airports array, including on reload.
+function moveAirport(code,targetIndex){
+ const from=airports.indexOf(code);
+ if(from<0||!Number.isInteger(targetIndex)||targetIndex<0||targetIndex>=airports.length||from===targetIndex)return false;
+ airports.splice(from,1);
+ airports.splice(targetIndex,0,code);
+ save();
+ render();
+ document.querySelector?.('[data-airport-drag="'+code+'"]')?.focus({preventScroll:true});
+ const status=document.getElementById('airport-order-status');
+ if(status)status.textContent=code+' moved to position '+(targetIndex+1)+' of '+airports.length;
+ return true;
+}
+function attachAirportReordering(){
+ // Pointer events support mouse, pen and touch without native HTML5 DnD's touch gaps.
+ document.querySelectorAll('[data-airport-drag]').forEach(handle=>{
+  const code=handle.dataset.airportDrag;
+  let drag=null;
+  const clear=()=>{
+   document.querySelectorAll('.airport.is-dragging, .airport.is-drop-target')
+    .forEach(el=>el.classList.remove('is-dragging','is-drop-target'));
+  };
+  handle.addEventListener('keydown',event=>{
+   const direction=['ArrowLeft','ArrowUp'].includes(event.key)?-1:
+    ['ArrowRight','ArrowDown'].includes(event.key)?1:0;
+   if(!direction)return;
+   event.preventDefault();
+   moveAirport(code,airports.indexOf(code)+direction);
+  });
+  // A tap or Enter also moves one position; arrows offer both directions.
+  handle.addEventListener('click',()=>{
+   if(handle.dataset.suppressClick==='true'){delete handle.dataset.suppressClick;return;}
+   const i=airports.indexOf(code);
+   if(airports.length>1)moveAirport(code,i===airports.length-1?i-1:i+1);
+  });
+  handle.addEventListener('pointerdown',event=>{
+   if(event.button!==0||event.isPrimary===false)return;
+   drag={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,target:null,active:false};
+   try{handle.setPointerCapture(event.pointerId);}catch{}
+  });
+  handle.addEventListener('pointermove',event=>{
+   if(!drag||event.pointerId!==drag.pointerId)return;
+   if(!drag.active&&Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)<8)return;
+   drag.active=true;
+   document.querySelector('[data-airport="'+code+'"]')?.classList.add('is-dragging');
+   document.querySelectorAll('.airport.is-drop-target').forEach(el=>el.classList.remove('is-drop-target'));
+   const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('[data-airport]');
+   drag.target=target?.dataset.airport&&target.dataset.airport!==code?target.dataset.airport:null;
+   if(drag.target)target.classList.add('is-drop-target');
+  });
+  const finish=(event,cancelled)=>{
+   if(!drag||event.pointerId!==drag.pointerId)return;
+   const {active,target}=drag;
+   drag=null;
+   clear();
+   if(active){
+    handle.dataset.suppressClick='true';
+    if(!cancelled&&target)moveAirport(code,airports.indexOf(target));
+   }
+  };
+  handle.addEventListener('pointerup',event=>finish(event,false));
+  handle.addEventListener('pointercancel',event=>finish(event,true));
+  handle.addEventListener('lostpointercapture',event=>finish(event,true));
+ });
 }
 const catalogOptions=document.getElementById('airport-options');if(catalogOptions)catalogOptions.innerHTML=approvedCatalog.map(c=>`<option value="${c}">${esc(airportInfo[c]?.name||'Airport metadata unverified')}</option>`).join('');
 function save(){try{localStorage.setItem(AIRPORT_STORAGE_KEY,JSON.stringify(airports));}catch{}}
@@ -198,4 +377,28 @@ async function refreshAtis(){
   atisData=data;atisRetrieved=data.retrieved_utc;render();
  }catch(e){console.info('ATIS snapshot unavailable:',e.message);}
 }
-function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();notamSnapshots?.refresh();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);
+async function refreshTafs(){
+ if(typeof TafReader==='undefined'||typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
+ try{
+  const response=await fetch(`./data/tafs.json?t=${Date.now()}`,{cache:'no-store'});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  if(!Array.isArray(data?.tafs))throw new Error('Invalid published TAF snapshot');
+  const published=TafReader.time(data.updated_utc);
+  if(!Number.isFinite(published)||published>Date.now()+5*60*1000)throw new Error('Invalid TAF publication time');
+  const available=new Map((tafData?.tafs||[]).map(item=>[item.icaoId,item]));
+  let accepted=0;
+  for(const item of data.tafs){
+   if(!Object.values(airportInfo).some(a=>a.icao===item?.icaoId)||!TafReader.valid(item,item.icaoId))continue;
+   accepted++;
+   const earlier=available.get(item.icaoId);
+   if(!earlier||TafReader.time(item.issueTime)>TafReader.time(earlier.issueTime)||
+    (TafReader.time(item.issueTime)===TafReader.time(earlier.issueTime)&&
+     (item.fcsts?.length||0)>=(earlier.fcsts?.length||0)))available.set(item.icaoId,item);
+  }
+  if(!accepted)throw new Error('No valid TAFs in published snapshot');
+  tafData={tafs:[...available.values()],updated_utc:data.updated_utc};tafFeedError=false;
+ }catch(e){tafFeedError=true;console.info('TAF snapshot unavailable; retaining previous reports:',e.message);}
+ render();
+}
+function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();refreshTafs();notamSnapshots?.refresh();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
