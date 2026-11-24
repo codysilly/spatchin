@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T20:40:39.169198Z",
+  "updated_utc": "2026-11-24T20:50:46.161297Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -143,18 +143,18 @@
     },
     {
       "icaoId": "KATW",
-      "receiptTime": "2026-11-24T19:46:56.534Z",
-      "obsTime": 1795549500,
-      "reportTime": "2026-11-24T20:00:00.000Z",
+      "receiptTime": "2026-11-24T20:47:08.283Z",
+      "obsTime": 1795553100,
+      "reportTime": "2026-11-24T21:00:00.000Z",
       "temp": 1,
       "dewp": -9,
-      "wdir": 250,
-      "wspd": 3,
+      "wdir": 0,
+      "wspd": 0,
       "visib": "10+",
-      "altim": 1034.6,
+      "altim": 1034.3,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KATW 241945Z 25003KT 10SM CLR 01/M09 A3055",
+      "rawOb": "METAR KATW 242045Z 00000KT 10SM CLR 01/M09 A3054",
       "lat": 44.2519,
       "lon": -88.526,
       "elev": 266,
@@ -1579,7 +1579,7 @@
     },
     {
       "icaoId": "KHRL",
-      "receiptTime": "2026-11-24T20:39:24.382Z",
+      "receiptTime": "2026-11-24T20:40:03.982Z",
       "obsTime": 1795552560,
       "reportTime": "2026-11-24T20:36:00.000Z",
       "temp": 13.9,
@@ -1947,35 +1947,30 @@
     },
     {
       "icaoId": "KLBB",
-      "receiptTime": "2026-11-24T19:56:41.069Z",
-      "obsTime": 1795549980,
-      "reportTime": "2026-11-24T20:00:00.000Z",
+      "receiptTime": "2026-11-24T20:48:03.780Z",
+      "obsTime": 1795553040,
+      "reportTime": "2026-11-24T20:44:00.000Z",
       "temp": 6.1,
       "dewp": 0.6,
-      "wdir": 330,
-      "wspd": 5,
+      "wdir": 320,
+      "wspd": 8,
       "visib": "10+",
-      "altim": 1027.9,
-      "slp": 1027.7,
+      "altim": 1026.8,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KLBB 241953Z 33005KT 10SM BKN017 BKN080 06/01 A3035 RMK AO2 SLP277 T00610006",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KLBB 242044Z 32008KT 10SM SCT020 06/01 A3032 RMK AO2 T00610006",
       "lat": 33.6658,
       "lon": -101.8233,
       "elev": 996,
       "name": "Lubbock Intl Arpt, TX, US",
-      "cover": "BKN",
+      "cover": "SCT",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 1700
-        },
-        {
-          "cover": "BKN",
-          "base": 8000
+          "cover": "SCT",
+          "base": 2000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KLCK",
