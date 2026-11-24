@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Collect a small, verified AWC TAF set; retain last good published reports."""
+"""Collect AWC TAFs for verified C070 stations; retain last good published reports."""
 import json
 import math
 import os
@@ -10,8 +10,18 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-AIRPORTS = {"KORD", "KLAX", "KJFK", "KMEM"}
-URL = "https://aviationweather.gov/api/data/taf?ids=KORD,KLAX,KJFK,KMEM&format=json"
+if __package__:
+    from .c070_station_registry import load_c070_stations
+else:
+    try:
+        from scripts.c070_station_registry import load_c070_stations
+    except ModuleNotFoundError as exc:
+        if exc.name != "scripts":
+            raise
+        from c070_station_registry import load_c070_stations
+
+AIRPORTS = frozenset(load_c070_stations().values())
+URL = "https://aviationweather.gov/api/data/taf?ids=" + ",".join(sorted(AIRPORTS)) + "&format=json"
 DEST = Path("data/tafs.json")
 
 
@@ -30,7 +40,8 @@ def epoch(value):
 
 
 def valid(item, *, now=None, enforce_freshness=True):
-    if not isinstance(item, dict) or item.get("icaoId") not in AIRPORTS:
+    if (not isinstance(item, dict) or not isinstance(item.get("icaoId"), str)
+            or item["icaoId"] not in AIRPORTS):
         return False
     if not isinstance(item.get("rawTAF"), str) or not item["rawTAF"].strip():
         return False
@@ -87,8 +98,13 @@ def select(records):
         if not valid(item):
             continue
         code = item["icaoId"]
-        if code not in selected or epoch(item["issueTime"]) >= epoch(selected[code]["issueTime"]):
-            selected[code] = compact(item)
+        candidate = compact(item)
+        earlier = selected.get(code)
+        if earlier is None or epoch(candidate["issueTime"]) > epoch(earlier["issueTime"]):
+            selected[code] = candidate
+        elif (epoch(candidate["issueTime"]) == epoch(earlier["issueTime"])
+              and len(candidate.get("fcsts", [])) >= len(earlier.get("fcsts", []))):
+            selected[code] = candidate
     if not selected:
         raise ValueError("AWC response contained no valid requested TAFs")
     return selected
@@ -155,14 +171,15 @@ def main():
             # Do not erase decoded periods on a temporary provider omission.
             if len(item.get("fcsts", [])) >= len(older.get("fcsts", [])):
                 merged[code] = item
+    missing = sorted(AIRPORTS - incoming.keys())
+    print(f"AWC returned {len(incoming)} valid station reports of {len(AIRPORTS)} configured")
+    if missing:
+        print("No usable TAF this check for: " + ", ".join(missing))
     if merged == previous:
         print("No new TAF issue; existing snapshot unchanged")
         return
     write_snapshot(merged)
-    missing = sorted(AIRPORTS - incoming.keys())
     print(f"Published {len(merged)} TAFs; {len(incoming)} valid reports from AWC")
-    if missing:
-        print("No new usable TAF this check for: " + ", ".join(missing))
 
 
 if __name__ == "__main__":
