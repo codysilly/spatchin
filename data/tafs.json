@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T21:58:35.248666Z",
+  "updated_utc": "2026-11-24T22:08:36.752829Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2274,26 +2274,16 @@
     },
     {
       "icaoId": "KGSO",
-      "rawTAF": "TAF KGSO 241740Z 2418/2518 04012G20KT P6SM FEW250 FM250000 05008KT P6SM SKC FM250800 04010G20KT P6SM SCT100 BKN250 FM251400 04016G22KT P6SM -RA OVC050",
-      "issueTime": "2026-11-24T17:40:00.000Z",
-      "validTimeFrom": 1795543200,
+      "rawTAF": "TAF KGSO 242203Z 2422/2518 05008KT P6SM SKC FM250800 04010G20KT P6SM SCT100 BKN250 FM251400 04016G22KT P6SM -RA OVC050",
+      "issueTime": "2026-11-24T22:03:00.000Z",
+      "validTimeFrom": 1795557600,
       "validTimeTo": 1795629600,
       "fcsts": [
         {
-          "timeFrom": 1795543200,
-          "timeTo": 1795564800,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 40,
-          "wspd": 12,
-          "wgst": 20
-        },
-        {
-          "timeFrom": 1795564800,
+          "timeFrom": 1795557600,
           "timeTo": 1795593600,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 50,
           "wspd": 8,
