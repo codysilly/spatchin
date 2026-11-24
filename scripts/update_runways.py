@@ -55,22 +55,63 @@ def get_table(archive, filename):
     with archive.open(matches[0]) as stream:
         data = stream.read().decode('utf-8-sig', errors='replace')
     reader = csv.DictReader(io.StringIO(data))
-    required = {'ARPT_ID', 'RWY_END_ID', 'TRUE_ALIGNMENT', 'RWY_ID'}
-    if not reader.fieldnames or not required.issubset(reader.fieldnames):
+    required = {
+        'APT_BASE.csv': {'SITE_NO', 'ARPT_ID', 'ICAO_ID'},
+        'APT_RWY_END.csv': {'SITE_NO', 'ARPT_ID', 'RWY_END_ID', 'TRUE_ALIGNMENT', 'RWY_ID'},
+    }.get(filename)
+    if not required or not reader.fieldnames or not required.issubset(reader.fieldnames):
         raise ValueError('FAA runway-end schema not recognized; refusing to publish')
     return list(reader)
 
 
 def generate(archive, url, cycle):
+    # FAA location identifiers are not reliable facility joins on their own.
+    # Map verified C070 ICAOs to unique NASR SITE_NO values in APT_BASE,
+    # then read only the runway ends belonging to those exact facilities.
+    icao_to_code = {icao: code for code, icao in load_c070_stations().items()}
+    bases = get_table(archive, 'APT_BASE.csv')
+    if not bases:
+        raise ValueError('FAA airport base table is empty')
+    by_code = {code: [] for code in AIRPORTS}
+    for row in bases:
+        code = icao_to_code.get((row.get('ICAO_ID') or '').strip().upper())
+        if code is not None:
+            by_code[code].append((
+                (row.get('SITE_NO') or '').strip(),
+                (row.get('ARPT_ID') or '').strip().upper(),
+            ))
+
+    invalid = {}
+    site_candidates = {}
+    for code, identities in by_code.items():
+        if not identities:
+            invalid[code] = 'not_in_nasr_airport_base'
+        elif len(identities) != 1 or not all(identities[0]):
+            invalid[code] = 'ambiguous_nasr_airport_identity'
+        else:
+            site, airport_id = identities[0]
+            site_candidates.setdefault(site, []).append((code, airport_id))
+
+    by_site = {}
+    for site, matches in site_candidates.items():
+        if len(matches) == 1:
+            by_site[site] = matches[0]
+        else:
+            for code, _ in matches:
+                invalid[code] = 'ambiguous_nasr_site_number'
+
     rows = get_table(archive, 'APT_RWY_END.csv')
     if not rows:
         raise ValueError('FAA runway-end table is empty')
     found = {code: [] for code in AIRPORTS}
     seen = {code: set() for code in AIRPORTS}
-    invalid = {}
     for row in rows:
-        code = (row.get('ARPT_ID') or '').strip().upper()
-        if code not in found:
+        identity = by_site.get((row.get('SITE_NO') or '').strip())
+        if identity is None:
+            continue
+        code, airport_id = identity
+        if (row.get('ARPT_ID') or '').strip().upper() != airport_id:
+            invalid.setdefault(code, 'nasr_airport_identity_mismatch')
             continue
         rid = (row.get('RWY_END_ID') or '').strip().upper()
         pair = (row.get('RWY_ID') or '').strip().upper()
@@ -125,7 +166,7 @@ def generate(archive, url, cycle):
         if code not in airports:
             raise ValueError(f'{code}: {coverage[code]["reason"]}; refusing to replace existing data')
     return {
-        'source': 'FAA NASR 28-Day Subscription — APT_RWY_END.csv',
+        'source': 'FAA NASR 28-Day Subscription — APT_BASE.csv / APT_RWY_END.csv',
         'source_url': url,
         'effective_date': cycle.isoformat(),
         'heading_reference': 'TRUE',

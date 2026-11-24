@@ -12,6 +12,8 @@ from unittest import mock
 from scripts import update_runways
 
 ALL_CODES = sorted(update_runways.AIRPORTS)
+ICAOS = update_runways.load_c070_stations()
+SITES = {code: f'{index + 10000:05d}.' for index, code in enumerate(ALL_CODES)}
 LEGACY_PAIRS = {
     'ORD': ['04L/22R', '04R/22L', '09L/27R', '09R/27L', '09C/27C',
             '10L/28R', '10C/28C', '10R/28L'],
@@ -26,19 +28,32 @@ def make_rows(codes=ALL_CODES):
     for code in codes:
         for pair in LEGACY_PAIRS.get(code, ['09/27']):
             for rid in pair.split('/'):
-                rows.append({'ARPT_ID': code, 'RWY_END_ID': rid, 'RWY_ID': pair,
+                rows.append({'SITE_NO': SITES[code], 'ARPT_ID': code,
+                             'RWY_END_ID': rid, 'RWY_ID': pair,
                              'TRUE_ALIGNMENT': '090' if rid.startswith(('09', '10')) else '270'})
     return rows
 
 
-def archive(rows, columns=('ARPT_ID', 'RWY_END_ID', 'RWY_ID', 'TRUE_ALIGNMENT')):
+def make_base_rows():
+    return [{'SITE_NO': SITES[code], 'ARPT_ID': code, 'ICAO_ID': ICAOS[code]}
+            for code in ALL_CODES]
+
+
+def write_csv(output, name, rows, fields):
     buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=columns, extrasaction='ignore')
+    writer = csv.DictWriter(buffer, fieldnames=fields, extrasaction='ignore')
     writer.writeheader()
     writer.writerows(rows)
+    output.writestr(name, buffer.getvalue())
+
+
+def archive(rows, columns=('SITE_NO', 'ARPT_ID', 'RWY_END_ID', 'RWY_ID', 'TRUE_ALIGNMENT'),
+            base_rows=None, base_columns=('SITE_NO', 'ARPT_ID', 'ICAO_ID')):
     zipbytes = io.BytesIO()
     with zipfile.ZipFile(zipbytes, 'w') as output:
-        output.writestr('APT_RWY_END.csv', buffer.getvalue())
+        write_csv(output, 'APT_BASE.csv',
+                  make_base_rows() if base_rows is None else base_rows, base_columns)
+        write_csv(output, 'APT_RWY_END.csv', rows, columns)
     zipbytes.seek(0)
     return zipfile.ZipFile(zipbytes)
 
@@ -108,6 +123,56 @@ class NasrC070RunwayTests(unittest.TestCase):
         self.assertEqual(result['airport_coverage'][code]['reason'], 'invalid_or_duplicate_runway_end')
         result = self.run_generate([r for r in source if not (r['ARPT_ID'] == code and r['RWY_END_ID'] == '27')])
         self.assertEqual(result['airport_coverage'][code]['reason'], 'incomplete_runway_end_inventory')
+
+    def test_same_airport_code_but_wrong_site_cannot_poison_legacy(self):
+        rows = make_rows()
+        # Duplicate runway label is from a different FAA facility: ignore it.
+        foreign = {**next(row for row in rows if row['ARPT_ID'] == 'ORD'),
+                   'SITE_NO': '99999.'}
+        result = self.run_generate(rows + [foreign])
+        self.assertEqual(len(result['airports']['ORD']), 16)
+        self.assertEqual(result['airport_coverage']['ORD']['status'], 'available')
+
+    def test_nonmatching_faa_lid_can_still_match_verified_icao(self):
+        code = next(code for code in ALL_CODES if code not in LEGACY_PAIRS)
+        rows = make_rows()
+        for row in rows:
+            if row['SITE_NO'] == SITES[code]:
+                row['ARPT_ID'] = 'ZZ9'
+        bases = make_base_rows()
+        next(row for row in bases if row['ICAO_ID'] == ICAOS[code])['ARPT_ID'] = 'ZZ9'
+        result = self.run_generate(rows, base_rows=bases)
+        self.assertEqual(result['airport_coverage'][code]['status'], 'available')
+        self.assertEqual(len(result['airports'][code]), 2)
+
+    def test_ambiguous_icao_base_identity_does_not_publish_airport(self):
+        code = next(code for code in ALL_CODES if code not in LEGACY_PAIRS)
+        bases = make_base_rows()
+        identity = next(row for row in bases if row['ICAO_ID'] == ICAOS[code])
+        result = self.run_generate(make_rows(),
+                                   base_rows=bases + [{**identity, 'SITE_NO': '99999.'}])
+        self.assertNotIn(code, result['airports'])
+        self.assertEqual(result['airport_coverage'][code]['reason'],
+                         'ambiguous_nasr_airport_identity')
+        self.assertEqual(len(result['airports']['ORD']), 16)
+
+    def test_wrong_icao_for_legacy_fails_closed(self):
+        bases = make_base_rows()
+        next(row for row in bases if row['ICAO_ID'] == 'KORD')['ICAO_ID'] = 'ZZZZ'
+        with self.assertRaisesRegex(ValueError, 'ORD: not_in_nasr_airport_base'):
+            self.run_generate(make_rows(), base_rows=bases)
+
+    def test_conflicting_site_and_lid_for_legacy_fails_closed(self):
+        rows = make_rows()
+        next(row for row in rows if row['ARPT_ID'] == 'ORD')['ARPT_ID'] = 'LAX'
+        with self.assertRaisesRegex(ValueError, 'ORD: nasr_airport_identity_mismatch'):
+            self.run_generate(rows)
+
+    def test_missing_or_malformed_base_table_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'schema'):
+            self.run_generate(make_rows(), base_columns=('SITE_NO', 'ARPT_ID'))
+        with self.assertRaisesRegex(ValueError, 'empty'):
+            self.run_generate(make_rows(), base_rows=[])
 
     def test_legacy_airport_regression_prevents_publication(self):
         source = make_rows()
