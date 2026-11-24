@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T19:10:40.308385Z",
+  "updated_utc": "2026-11-24T19:20:48.788732Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1191,21 +1191,20 @@
     },
     {
       "icaoId": "KFAR",
-      "receiptTime": "2026-11-24T18:56:23.306Z",
-      "obsTime": 1795546380,
-      "reportTime": "2026-11-24T19:00:00.000Z",
+      "receiptTime": "2026-11-24T19:14:34.974Z",
+      "obsTime": 1795547460,
+      "reportTime": "2026-11-24T19:11:00.000Z",
       "temp": -1.7,
       "dewp": -4.4,
       "wdir": 150,
       "wspd": 10,
-      "visib": 1.5,
+      "visib": 2,
       "altim": 1029.9,
-      "slp": 1031.6,
       "qcField": 4,
       "wxString": "-SN",
-      "precip": 0.01,
-      "metarType": "METAR",
-      "rawOb": "METAR KFAR 241853Z 15010KT 1 1/2SM -SN OVC031 M02/M04 A3041 RMK AO2 SLP316 P0001 T10171044",
+      "precip": 0.005,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFAR 241911Z 15010KT 2SM -SN SCT037 OVC050 M02/M04 A3041 RMK AO2 P0000 T10171044",
       "lat": 46.9242,
       "lon": -96.8119,
       "elev": 276,
@@ -1213,8 +1212,12 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "SCT",
+          "base": 3700
+        },
+        {
           "cover": "OVC",
-          "base": 3100
+          "base": 5000
         }
       ],
       "fltCat": "IFR"
