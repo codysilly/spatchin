@@ -70,3 +70,39 @@ test('unsupported report content is preserved but does not infer runway use',()=
  assert.match(html,/↘ LANDING · UNAVAILABLE/);assert.match(html,/RWY 18R MENTIONED/);
  assert.doesNotMatch(html,/class="atis-value">18R/);
 });
+
+test('newer report without a runway clause supersedes older runway text',()=>{
+ const vagueArr=report('arr',2,'V','1210','NO EXPLICIT RUNWAY CONFIGURATION');
+ const vagueDep=report('dep',2,'V','1210','NO EXPLICIT RUNWAY CONFIGURATION');
+ let html=render([combined(10),vagueArr]);
+ assert.match(html,/↘ LANDING · UNAVAILABLE/);
+ assert.doesNotMatch(html,/class="atis-value">18R/);
+ assert.match(html,/↗ DEPARTING · CURRENT/);assert.match(html,/>36L</);
+ assert.match(html,/RAW COMBINED/);
+ html=render([combined(10),vagueDep]);
+ assert.match(html,/↗ DEPARTING · UNAVAILABLE/);
+ assert.doesNotMatch(html,/class="atis-value">36L/);
+ assert.match(html,/↘ LANDING · CURRENT/);
+ const vagueCombined=report('combined',1,'N','1211','NO EXPLICIT RUNWAY CONFIGURATION');
+ html=render([arrival(5),departure(5),vagueCombined]);
+ assert.match(html,/↘ LANDING · UNAVAILABLE/);assert.match(html,/↗ DEPARTING · UNAVAILABLE/);
+ assert.doesNotMatch(html,/class="atis-value">(?:09|27)/);
+});
+
+test('source times require explicit timezone and valid calendar values',()=>{
+ for(const updatedAt of [stamp(5).slice(0,-1),'2026-02-30T12:00:00Z','2026-11-24T24:00:00Z',stamp(-10)]){
+  const html=render([{...arrival(5),updatedAt}]);
+  assert.match(html,/↘ LANDING · UNAVAILABLE/);
+  assert.match(html,/INFO — · ISSUED <strong>—/);
+ }
+ const offset=stamp(5).replace(/Z$/,'+00:00');
+ const html=render([{...arrival(5),updatedAt:offset}]);
+ assert.match(html,/↘ LANDING · CURRENT/);
+ assert.match(render([{...arrival(5),updatedAt:stamp(5).replace(/Z$/,'1234Z')}]),/↘ LANDING · CURRENT/);
+});
+
+test('timezone-less snapshot retrieval cannot mark report current',()=>{
+ const html=render([arrival(5)],stamp(1).slice(0,-1));
+ assert.match(html,/↘ LANDING · STALE/);
+ assert.match(html,/Snapshot retrieved: —/);
+});
