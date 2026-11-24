@@ -6,6 +6,8 @@ on:
       - 'scripts/c070_station_registry.py'
       - 'scripts/update_metar.py'
       - 'scripts/update_taf.py'
+      - 'scripts/update_runways.py'
+      - 'tests/test_update_runways.py'
       - 'tests/test_update_taf.py'
       - 'tests/test_c070_station_registry.py'
       - 'tests/test_update_metar.py'
@@ -37,6 +39,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_updater_airports.py'
           python -m unittest discover -s tests -p 'test_update_metar.py'
           python -m unittest discover -s tests -p 'test_update_taf.py'
+          python -m unittest discover -s tests -p 'test_update_runways.py'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
