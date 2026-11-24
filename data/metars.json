@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T18:40:39.389636Z",
+  "updated_utc": "2026-11-24T18:50:39.719090Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1783,20 +1783,21 @@
     },
     {
       "icaoId": "KHRL",
-      "receiptTime": "2026-11-24T18:22:05.898Z",
-      "obsTime": 1795544340,
-      "reportTime": "2026-11-24T18:19:00.000Z",
+      "receiptTime": "2026-11-24T18:48:04.322Z",
+      "obsTime": 1795545840,
+      "reportTime": "2026-11-24T18:44:00.000Z",
       "temp": 12.8,
       "dewp": 12.8,
       "wdir": 350,
-      "wspd": 13,
-      "visib": 2,
+      "wspd": 17,
+      "wgst": 30,
+      "visib": 4,
       "altim": 1022.1,
       "qcField": 12,
       "wxString": "-RA BR",
-      "precip": 0.02,
+      "precip": 0.03,
       "metarType": "SPECI",
-      "rawOb": "SPECI KHRL 241819Z 35013KT 2SM -RA BR SCT007 SCT013 OVC019 13/13 A3018 RMK AO2 P0002 T01280128 $",
+      "rawOb": "SPECI KHRL 241844Z 35017G30KT 4SM -RA BR FEW008 BKN023 OVC027 13/13 A3018 RMK AO2 PK WND 36030/1841 P0003 T01280128 $",
       "lat": 26.2303,
       "lon": -97.6556,
       "elev": 9,
@@ -1804,19 +1805,19 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 700
+          "cover": "FEW",
+          "base": 800
         },
         {
-          "cover": "SCT",
-          "base": 1300
+          "cover": "BKN",
+          "base": 2300
         },
         {
           "cover": "OVC",
-          "base": 1900
+          "base": 2700
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KHTS",
@@ -2779,19 +2780,19 @@
     },
     {
       "icaoId": "KNQA",
-      "receiptTime": "2026-11-24T17:45:40.980Z",
-      "obsTime": 1795542600,
-      "reportTime": "2026-11-24T18:00:00.000Z",
-      "temp": 9,
+      "receiptTime": "2026-11-24T18:48:44.249Z",
+      "obsTime": 1795546200,
+      "reportTime": "2026-11-24T19:00:00.000Z",
+      "temp": 10,
       "dewp": -2,
-      "wdir": 50,
-      "wspd": 8,
-      "wgst": 16,
+      "wdir": 40,
+      "wspd": 10,
+      "wgst": 20,
       "visib": "10+",
-      "altim": 1027.2,
+      "altim": 1026.2,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KNQA 241750Z 05008G16KT 10SM CLR 09/M02 A3033",
+      "rawOb": "METAR KNQA 241850Z 04010G20KT 10SM CLR 10/M02 A3030",
       "lat": 35.3619,
       "lon": -89.8612,
       "elev": 90,
@@ -4048,10 +4049,10 @@
     },
     {
       "icaoId": "KSWF",
-      "receiptTime": "2026-11-24T17:42:39.034Z",
-      "obsTime": 1795542300,
-      "reportTime": "2026-11-24T18:00:00.000Z",
-      "temp": 7,
+      "receiptTime": "2026-11-24T18:44:52.060Z",
+      "obsTime": 1795545900,
+      "reportTime": "2026-11-24T19:00:00.000Z",
+      "temp": 8,
       "dewp": -7,
       "wdir": 360,
       "wspd": 10,
@@ -4060,18 +4061,13 @@
       "altim": 1028.2,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KSWF 241745Z 36010G20KT 10SM FEW040 07/M07 A3036",
+      "rawOb": "METAR KSWF 241845Z 36010G20KT 10SM SKC 08/M07 A3036",
       "lat": 41.5045,
       "lon": -74.0999,
       "elev": 139,
       "name": "Newburgh/Stewart Intl, NY, US",
-      "cover": "FEW",
-      "clouds": [
-        {
-          "cover": "FEW",
-          "base": 4000
-        }
-      ],
+      "cover": "SKC",
+      "clouds": [],
       "fltCat": "VFR"
     },
     {
