@@ -123,6 +123,19 @@ class UpdateAtisTests(unittest.TestCase):
         self.assertEqual([(r['type'], r['code']) for r in reports],
                          [('arr', 'C'), ('dep', 'B')])
 
+    def test_split_departure_update_keeps_arrival_and_source_timestamps(self):
+        arrival = report('KORD', age=10, kind='arr', code='A')
+        departure_old = report('KORD', age=30, kind='dep', code='B')
+        departure_new = report('KORD', age=2, kind='dep', code='C')
+        self.prior({'KORD': [arrival, departure_old]})
+        self.collect({'KORD': [departure_new], 'KLAX': [report('KLAX')],
+                      'KJFK': [report('KJFK')]})
+        reports = self.snapshot()['airports']['KORD']
+        self.assertEqual([(r['type'], r['code']) for r in reports],
+                         [('arr', 'A'), ('dep', 'C')])
+        self.assertEqual(reports[0]['updatedAt'], arrival['updatedAt'])
+        self.assertEqual(reports[1]['updatedAt'], departure_new['updatedAt'])
+
     def test_older_report_one_type_does_not_replace_newer_one(self):
         arrival_new = report('KORD', age=2, kind='arr', code='C')
         departure_old = report('KORD', age=15, kind='dep', code='B')
