@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T16:10:52.837399Z",
+  "updated_utc": "2026-11-24T16:30:49.083628Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1979,19 +1979,18 @@
     },
     {
       "icaoId": "KLBB",
-      "receiptTime": "2026-11-24T15:57:33.447Z",
-      "obsTime": 1795535580,
-      "reportTime": "2026-11-24T16:00:00.000Z",
-      "temp": 1.1,
+      "receiptTime": "2026-11-24T16:28:03.163Z",
+      "obsTime": 1795537440,
+      "reportTime": "2026-11-24T16:24:00.000Z",
+      "temp": 1.7,
       "dewp": -1.1,
       "wdir": 10,
-      "wspd": 8,
+      "wspd": 6,
       "visib": "10+",
       "altim": 1029.9,
-      "slp": 1030.1,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KLBB 241553Z 01008KT 10SM OVC008 01/M01 A3041 RMK AO2 SLP301 T00111011",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KLBB 241624Z 01006KT 10SM OVC010 02/M01 A3041 RMK AO2 T00171011",
       "lat": 33.6658,
       "lon": -101.8233,
       "elev": 996,
@@ -2000,10 +1999,10 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 800
+          "base": 1000
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KLCK",
@@ -3583,20 +3582,19 @@
     },
     {
       "icaoId": "KSMF",
-      "receiptTime": "2026-11-24T15:57:33.991Z",
-      "obsTime": 1795535580,
-      "reportTime": "2026-11-24T16:00:00.000Z",
+      "receiptTime": "2026-11-24T16:26:04.247Z",
+      "obsTime": 1795537320,
+      "reportTime": "2026-11-24T16:22:00.000Z",
       "temp": 7.8,
       "dewp": 7.2,
-      "wdir": 230,
-      "wspd": 6,
-      "visib": 0.75,
-      "altim": 1023.5,
-      "slp": 1023.4,
+      "wdir": 210,
+      "wspd": 4,
+      "visib": 1,
+      "altim": 1023.8,
       "qcField": 4,
       "wxString": "BR BCFG",
-      "metarType": "METAR",
-      "rawOb": "METAR KSMF 241553Z 23006KT 3/4SM R17R/P6000FT BR BCFG OVC005 08/07 A3022 RMK AO2 TWR VIS 1 1/2 SLP234 T00780072",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSMF 241622Z 21004KT 1SM BR BCFG OVC004 08/07 A3023 RMK AO2 TWR VIS 1 1/2 CIG 002V009 T00780072 RVRNO",
       "lat": 38.7007,
       "lon": -121.5948,
       "elev": 7,
@@ -3605,7 +3603,7 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 500
+          "base": 400
         }
       ],
       "fltCat": "LIFR"
@@ -3700,31 +3698,25 @@
     },
     {
       "icaoId": "KSYR",
-      "receiptTime": "2026-11-24T15:58:14.119Z",
-      "obsTime": 1795535640,
-      "reportTime": "2026-11-24T16:00:00.000Z",
+      "receiptTime": "2026-11-24T16:22:05.167Z",
+      "obsTime": 1795537080,
+      "reportTime": "2026-11-24T16:18:00.000Z",
       "temp": 1.1,
-      "dewp": -4.4,
-      "wdir": 0,
-      "wspd": 0,
-      "visib": 9,
+      "dewp": -5,
+      "wdir": 340,
+      "wspd": 3,
+      "visib": "10+",
       "altim": 1031.9,
-      "slp": 1031.9,
-      "qcField": 12,
-      "wxString": "-SN",
+      "qcField": 4,
       "precip": 0.005,
-      "metarType": "METAR",
-      "rawOb": "METAR KSYR 241554Z 00000KT 9SM -SN SCT038 OVC045 01/M04 A3047 RMK AO2 SLP319 PCPN VRY LGT P0000 T00111044 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSYR 241618Z 34003KT 10SM OVC045 01/M05 A3047 RMK AO2 SNE18 P0000 T00111050",
       "lat": 43.1111,
       "lon": -76.1038,
       "elev": 125,
       "name": "Syracuse/Hancock Intl, NY, US",
       "cover": "OVC",
       "clouds": [
-        {
-          "cover": "SCT",
-          "base": 3800
-        },
         {
           "cover": "OVC",
           "base": 4500
