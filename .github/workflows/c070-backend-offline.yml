@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/c070_station_registry.py'
       - 'scripts/update_metar.py'
+      - 'scripts/update_taf.py'
+      - 'tests/test_update_taf.py'
       - 'tests/test_c070_station_registry.py'
       - 'tests/test_update_metar.py'
       - 'tests/test_updater_airports.py'
@@ -28,12 +30,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate C070 station registry and METAR updater offline
+      - name: Validate C070 registry and weather collectors offline
         run: |
           python -m unittest discover -s tests -p 'test_c070_station_registry.py'
           python -m unittest discover -s tests -p 'test_c070_registry.py'
           python -m unittest discover -s tests -p 'test_updater_airports.py'
           python -m unittest discover -s tests -p 'test_update_metar.py'
+          python -m unittest discover -s tests -p 'test_update_taf.py'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

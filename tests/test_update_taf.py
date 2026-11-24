@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from unittest import mock
 from urllib.error import URLError
+from urllib.parse import parse_qs, urlsplit
+from scripts.c070_station_registry import load_c070_stations
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "update_taf.py"
 
@@ -33,6 +35,10 @@ class Response:
 class TafCollectorTests(unittest.TestCase):
     def setUp(self):
         self.module = load()
+        guard = mock.patch.object(self.module.urllib.request, "urlopen",
+                                  side_effect=AssertionError("Unexpected network access"))
+        guard.start()
+        self.addCleanup(guard.stop)
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.module.DEST = Path(self.directory.name) / "data" / "tafs.json"
@@ -70,9 +76,55 @@ class TafCollectorTests(unittest.TestCase):
     def snapshot(self):
         return json.loads(self.module.DEST.read_text(encoding="utf-8"))
 
+    def test_exact_130_station_request_and_registry_parity(self):
+        stations = set(load_c070_stations().values())
+        self.assertEqual(len(stations), 130)
+        self.assertEqual(self.module.AIRPORTS, stations)
+        url = urlsplit(self.module.URL)
+        self.assertEqual((url.scheme, url.netloc, url.path),
+                         ("https", "aviationweather.gov", "/api/data/taf"))
+        self.assertEqual(parse_qs(url.query),
+                         {"ids": [",".join(sorted(stations))], "format": ["json"]})
+        self.collect([self.report("KIWA")])
+        self.assertEqual([item["icaoId"] for item in self.snapshot()["tafs"]], ["KIWA"])
+
+    def test_partial_expansion_with_absent_invalid_and_older_reports(self):
+        current = self.report("KABE", issue_hours=1)
+        absent = self.report("KABQ", issue_hours=2)
+        rejected = self.report("KAFW", issue_hours=2)
+        self.previous([current, absent, rejected])
+        valid_new = self.report("KIWA")
+        bad = dict(self.report("KAFW"), rawTAF=" ")
+        with mock.patch("builtins.print") as log:
+            self.collect([self.report("KABE", issue_hours=3), bad, valid_new,
+                          None, {"icaoId": ["KABE"]}, {"icaoId": {}},
+                          self.report("ZZZZ")])
+        result = {x["icaoId"]: x for x in self.snapshot()["tafs"]}
+        self.assertEqual(result, {"KABE": current, "KABQ": absent,
+                                  "KAFW": rejected, "KIWA": valid_new})
+        self.assertTrue(any("2 valid station reports of 130" in str(call)
+                            for call in log.call_args_list))
+
+    def test_equal_issue_duplicate_does_not_erase_decoded_periods(self):
+        item = self.report("KIWA")
+        start = item["validTimeFrom"]
+        detailed = dict(item, fcsts=[{"timeFrom": start, "timeTo": start + 3600,
+                                      "wdir": "VRB", "wspd": 5}])
+        self.assertEqual(self.module.select([detailed, item])["KIWA"], detailed)
+        self.assertEqual(self.module.select([item, detailed])["KIWA"], detailed)
+
+    def test_malformed_station_and_timestamp_do_not_abort_other_records(self):
+        good = self.report("KIND")
+        for changes in ({"icaoId": []}, {"icaoId": {}}, {"icaoId": None},
+                        {"issueTime": True}, {"issueTime": float("nan")},
+                        {"validTimeTo": "invalid"}, {"rawTAF": 42}):
+            with self.subTest(changes=changes):
+                self.assertFalse(self.module.valid(dict(good, **changes)))
+        self.assertEqual(self.module.select([dict(good, icaoId=[]), good]), {"KIND": good})
+
     def test_full_success_and_exact_source_text(self):
         items = [self.report(c) for c in sorted(self.module.AIRPORTS)]
-        items[0]["rawTAF"] = "TAF KJFK 201200Z <test> & 18010KT"
+        items[0]["rawTAF"] = f"TAF {items[0]['icaoId']} 201200Z <test> & 18010KT"
         self.collect(items)
         snapshot = self.snapshot()
         self.assertEqual(set(x["icaoId"] for x in snapshot["tafs"]), self.module.AIRPORTS)
