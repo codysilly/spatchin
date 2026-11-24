@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T23:40:48.937901Z",
+  "updated_utc": "2026-11-24T23:50:39.997251Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -155,18 +155,18 @@
     },
     {
       "icaoId": "KATW",
-      "receiptTime": "2026-11-24T22:57:06.782Z",
-      "obsTime": 1795560300,
-      "reportTime": "2026-11-24T23:00:00.000Z",
+      "receiptTime": "2026-11-24T23:47:06.925Z",
+      "obsTime": 1795563900,
+      "reportTime": "2026-11-25T00:00:00.000Z",
       "temp": -1,
       "dewp": -8,
-      "wdir": "VRB",
-      "wspd": 3,
+      "wdir": 0,
+      "wspd": 0,
       "visib": "10+",
       "altim": 1034.6,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KATW 242245Z VRB03KT 10SM SCT120 M01/M08 A3055",
+      "rawOb": "METAR KATW 242345Z 00000KT 10SM SCT120 M01/M08 A3055",
       "lat": 44.2519,
       "lon": -88.526,
       "elev": 266,
@@ -1226,41 +1226,31 @@
     },
     {
       "icaoId": "KFLL",
-      "receiptTime": "2026-11-24T22:56:31.807Z",
-      "obsTime": 1795560780,
-      "reportTime": "2026-11-24T23:00:00.000Z",
+      "receiptTime": "2026-11-24T23:40:12.476Z",
+      "obsTime": 1795563420,
+      "reportTime": "2026-11-24T23:37:00.000Z",
       "temp": 25,
-      "dewp": 18.9,
+      "dewp": 19.4,
       "wdir": 70,
-      "wspd": 8,
+      "wspd": 7,
       "visib": "10+",
-      "altim": 1014.6,
-      "slp": 1014.5,
+      "altim": 1015,
       "qcField": 12,
-      "precip": 0.005,
-      "metarType": "METAR",
-      "rawOb": "METAR KFLL 242253Z 07008KT 10SM SCT024 BKN080 BKN120 OVC250 25/19 A2996 RMK AO2 RAB34E46 SLP145 P0000 T02500189 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFLL 242337Z 07007KT 10SM FEW001 BKN090 25/19 A2997 RMK AO2 T02500194 $",
       "lat": 26.0787,
       "lon": -80.1622,
       "elev": 1,
       "name": "Ft Lauderdale-Hollywood Intl, FL, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 2400
+          "cover": "FEW",
+          "base": 100
         },
         {
           "cover": "BKN",
-          "base": 8000
-        },
-        {
-          "cover": "BKN",
-          "base": 12000
-        },
-        {
-          "cover": "OVC",
-          "base": 25000
+          "base": 9000
         }
       ],
       "fltCat": "VFR"
@@ -2444,25 +2434,30 @@
     },
     {
       "icaoId": "KNQA",
-      "receiptTime": "2026-11-24T22:47:12.664Z",
-      "obsTime": 1795560600,
-      "reportTime": "2026-11-24T23:00:00.000Z",
+      "receiptTime": "2026-11-24T23:42:27.718Z",
+      "obsTime": 1795564200,
+      "reportTime": "2026-11-25T00:00:00.000Z",
       "temp": 8,
       "dewp": -3,
-      "wdir": 40,
-      "wspd": 5,
-      "wgst": 15,
+      "wdir": 20,
+      "wspd": 11,
+      "wgst": 16,
       "visib": "10+",
-      "altim": 1024.8,
+      "altim": 1025.1,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KNQA 242250Z 04005G15KT 10SM CLR 08/M03 A3026",
+      "rawOb": "METAR KNQA 242350Z 02011G16KT 10SM OVC040 08/M03 A3027",
       "lat": 35.3619,
       "lon": -89.8612,
       "elev": 90,
       "name": "Millington Rgnl, TN, US",
-      "cover": "CLR",
-      "clouds": [],
+      "cover": "OVC",
+      "clouds": [
+        {
+          "cover": "OVC",
+          "base": 4000
+        }
+      ],
       "fltCat": "VFR"
     },
     {
