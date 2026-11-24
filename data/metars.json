@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-24T19:20:48.788732Z",
+  "updated_utc": "2026-11-24T19:40:39.872047Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1597,22 +1597,19 @@
     },
     {
       "icaoId": "KHRL",
-      "receiptTime": "2026-11-24T18:56:30.688Z",
-      "obsTime": 1795546320,
-      "reportTime": "2026-11-24T19:00:00.000Z",
-      "temp": 12.8,
-      "dewp": 12.8,
+      "receiptTime": "2026-11-24T19:34:04.937Z",
+      "obsTime": 1795548600,
+      "reportTime": "2026-11-24T19:30:00.000Z",
+      "temp": 13.3,
+      "dewp": 12.2,
       "wdir": 350,
-      "wspd": 18,
-      "wgst": 27,
-      "visib": 5,
-      "altim": 1022.1,
-      "slp": 1021.7,
+      "wspd": 13,
+      "visib": 7,
+      "altim": 1021.8,
       "qcField": 12,
-      "wxString": "-RA BR",
-      "precip": 0.03,
-      "metarType": "METAR",
-      "rawOb": "METAR KHRL 241852Z 35018G27KT 5SM -RA BR FEW013 BKN023 OVC027 13/13 A3018 RMK AO2 PK WND 36030/1841 SLP217 P0003 T01280128 $",
+      "precip": 0.005,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KHRL 241930Z 35013KT 7SM SCT022 OVC034 13/12 A3017 RMK AO2 PK WND 36028/1902 RAE28 P0000 T01330122 $",
       "lat": 26.2303,
       "lon": -97.6556,
       "elev": 9,
@@ -1620,19 +1617,15 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 1300
-        },
-        {
-          "cover": "BKN",
-          "base": 2300
+          "cover": "SCT",
+          "base": 2200
         },
         {
           "cover": "OVC",
-          "base": 2700
+          "base": 3400
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KHTS",
