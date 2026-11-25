@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T12:40:39.103224Z",
+  "updated_utc": "2026-11-25T12:50:39.891513Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1075,20 +1075,20 @@
     },
     {
       "icaoId": "KDJT",
-      "receiptTime": "2026-11-25T12:34:03.579Z",
-      "obsTime": 1795609560,
-      "reportTime": "2026-11-25T12:26:00.000Z",
+      "receiptTime": "2026-11-25T12:40:17.971Z",
+      "obsTime": 1795610220,
+      "reportTime": "2026-11-25T12:37:00.000Z",
       "temp": 20.6,
       "dewp": 20,
-      "wdir": 10,
-      "wspd": 6,
-      "visib": 5,
-      "altim": 1013.6,
-      "qcField": 13,
+      "wdir": 360,
+      "wspd": 9,
+      "visib": 2,
+      "altim": 1013.3,
+      "qcField": 12,
       "wxString": "-RA BR",
-      "precip": 0.08,
+      "precip": 0.18,
       "metarType": "SPECI",
-      "rawOb": "SPECI KDJT 251226Z COR 01006KT 5SM -RA BR BKN005 BKN044 OVC060 21/20 A2993 RMK AO2 CB DSNT NE-S P0008 T02060200 $",
+      "rawOb": "SPECI KDJT 251237Z 36009KT 2SM R10L/4000VP6000FT -RA BR BKN005 BKN034 OVC055 21/20 A2992 RMK AO2 CB DSNT NE-S P0018 T02060200 $",
       "lat": 26.6851,
       "lon": -80.0992,
       "elev": 4,
@@ -1101,11 +1101,11 @@
         },
         {
           "cover": "BKN",
-          "base": 4400
+          "base": 3400
         },
         {
           "cover": "OVC",
-          "base": 6000
+          "base": 5500
         }
       ],
       "fltCat": "IFR"
@@ -1340,44 +1340,40 @@
     },
     {
       "icaoId": "KFLL",
-      "receiptTime": "2026-11-25T12:36:07.929Z",
-      "obsTime": 1795609980,
-      "reportTime": "2026-11-25T12:33:00.000Z",
+      "receiptTime": "2026-11-25T12:48:03.806Z",
+      "obsTime": 1795610640,
+      "reportTime": "2026-11-25T12:44:00.000Z",
       "temp": 21.7,
       "dewp": 20.6,
-      "wdir": 340,
+      "wdir": 330,
       "wspd": 4,
-      "visib": 4,
+      "visib": 2.5,
       "altim": 1012.3,
       "qcField": 12,
       "wxString": "RA BR",
-      "precip": 0.03,
+      "precip": 0.09,
       "metarType": "SPECI",
-      "rawOb": "SPECI KFLL 251233Z 34004KT 4SM RA BR SCT004 SCT050 BKN080 OVC130 22/21 A2989 RMK AO2 P0003 T02170206 $",
+      "rawOb": "SPECI KFLL 251244Z 33004KT 2 1/2SM RA BR FEW004 SCT014 BKN030 22/21 A2989 RMK AO2 P0009 T02170206 $",
       "lat": 26.0787,
       "lon": -80.1622,
       "elev": 1,
       "name": "Ft Lauderdale-Hollywood Intl, FL, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "SCT",
+          "cover": "FEW",
           "base": 400
         },
         {
           "cover": "SCT",
-          "base": 5000
+          "base": 1400
         },
         {
           "cover": "BKN",
-          "base": 8000
-        },
-        {
-          "cover": "OVC",
-          "base": 13000
+          "base": 3000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KFNT",
@@ -2433,25 +2429,20 @@
     },
     {
       "icaoId": "KMIA",
-      "receiptTime": "2026-11-25T11:56:30.322Z",
-      "obsTime": 1795607580,
-      "reportTime": "2026-11-25T12:00:00.000Z",
+      "receiptTime": "2026-11-25T12:48:07.675Z",
+      "obsTime": 1795610700,
+      "reportTime": "2026-11-25T12:45:00.000Z",
       "temp": 21.7,
       "dewp": 21.1,
-      "wdir": 30,
-      "wspd": 5,
-      "visib": 8,
-      "altim": 1012.6,
-      "slp": 1012.6,
+      "wdir": 10,
+      "wspd": 4,
+      "visib": 2.5,
+      "altim": 1012.3,
       "qcField": 12,
-      "wxString": "-RA",
-      "maxT": 22.8,
-      "minT": 21.1,
-      "precip": 0.39,
-      "pcp6hr": 2.06,
-      "pcp24hr": 2.65,
-      "metarType": "METAR",
-      "rawOb": "METAR KMIA 251153Z 03005KT 8SM -RA SCT018 BKN030 BKN050 OVC130 22/21 A2990 RMK AO2 SLP126 P0039 60206 70265 T02170211 10228 20211 55000 $",
+      "wxString": "RA BR",
+      "precip": 0.14,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KMIA 251245Z 01004KT 2 1/2SM RA BR BKN020 BKN050 OVC090 22/21 A2989 RMK AO2 P0014 T02170211 $",
       "lat": 25.7881,
       "lon": -80.3169,
       "elev": 1,
@@ -2459,12 +2450,8 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 1800
-        },
-        {
           "cover": "BKN",
-          "base": 3000
+          "base": 2000
         },
         {
           "cover": "BKN",
@@ -2472,10 +2459,10 @@
         },
         {
           "cover": "OVC",
-          "base": 13000
+          "base": 9000
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KMKE",
@@ -3499,18 +3486,18 @@
     },
     {
       "icaoId": "KSBD",
-      "receiptTime": "2026-11-25T12:22:08.794Z",
-      "obsTime": 1795609200,
-      "reportTime": "2026-11-25T12:20:00.000Z",
-      "temp": 7.4,
-      "dewp": 1.5,
-      "wdir": 20,
-      "wspd": 3,
+      "receiptTime": "2026-11-25T12:42:09.494Z",
+      "obsTime": 1795610400,
+      "reportTime": "2026-11-25T12:40:00.000Z",
+      "temp": 8.4,
+      "dewp": 0.9,
+      "wdir": 60,
+      "wspd": 4,
       "visib": "10+",
-      "altim": 1019.4,
+      "altim": 1019,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KSBD 251220Z AUTO 02003KT 10SM CLR 07/02 A3010 RMK AO2 T00740015",
+      "rawOb": "METAR KSBD 251240Z AUTO 06004KT 10SM CLR 08/01 A3009 RMK AO2 T00840009",
       "lat": 34.09,
       "lon": -117.247,
       "elev": 353,
