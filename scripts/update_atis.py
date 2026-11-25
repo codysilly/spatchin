@@ -8,7 +8,20 @@ import sys
 import tempfile
 import urllib.request
 
-AIRPORTS = ('KORD', 'KLAX', 'KJFK')
+if __package__:
+    from .c070_station_registry import load_c070_stations
+else:
+    try:
+        from scripts.c070_station_registry import load_c070_stations
+    except ModuleNotFoundError as exc:
+        if exc.name != 'scripts':
+            raise
+        from c070_station_registry import load_c070_stations
+
+# Explicit bounded collection plan. C070 identity is not proof of ATIS availability.
+CONFIGURED_IATA = ('ORD', 'LAX', 'JFK', 'MEM')
+_registry = load_c070_stations()
+AIRPORTS = tuple(_registry[code] for code in CONFIGURED_IATA)
 OUTPUT = pathlib.Path('data/atis.json')
 URL = 'https://atis.info/api/'
 TYPES = frozenset(('combined', 'arr', 'dep'))
@@ -55,7 +68,7 @@ def select_reports(records, airport):
 
 def read_previous():
     if not OUTPUT.exists():
-        return {}
+        return {}, None, None
     try:
         payload = json.loads(OUTPUT.read_text(encoding='utf-8'))
         if not isinstance(payload, dict) or not isinstance(payload.get('airports'), dict):
@@ -66,10 +79,10 @@ def read_previous():
                 previous[airport] = select_reports(payload['airports'][airport], airport)
             except (KeyError, ValueError, TypeError):
                 continue
-        return previous
+        return previous, payload.get('configured_airports'), payload.get('retrieved_utc')
     except (OSError, ValueError, TypeError) as exc:
         print(f'Previous ATIS snapshot unreadable: {exc}', file=sys.stderr)
-        return {}
+        return {}, None, None
 
 
 def fetch(airport):
@@ -91,9 +104,10 @@ def merge_reports(previous, incoming):
     return [by_type[kind] for kind in ('combined', 'arr', 'dep') if kind in by_type]
 
 
-def write_snapshot(airports):
+def write_snapshot(airports, *, retrieved_utc=None):
     payload = {
-        'retrieved_utc': dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'retrieved_utc': retrieved_utc or dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'configured_airports': list(AIRPORTS),
         'source': URL.rstrip('/'),
         'airports': airports,
         'notice': 'atis.info: Do not use for real world flight planning or navigation.',
@@ -116,7 +130,7 @@ def write_snapshot(airports):
 
 
 def main():
-    previous = read_previous()
+    previous, previous_coverage, previous_retrieved = read_previous()
     merged = dict(previous)
     successes = []
     failures = {}
@@ -132,7 +146,12 @@ def main():
         print('All ATIS retrievals failed; keeping published snapshot unchanged', file=sys.stderr)
         raise SystemExit(1)
     if merged == previous:
-        print('ATIS checked; no newer reports; published snapshot unchanged')
+        if previous_coverage != list(AIRPORTS):
+            # Metadata-only migration must not refresh the age of retained reports.
+            write_snapshot(merged, retrieved_utc=previous_retrieved)
+            print('Published ATIS coverage metadata; source reports unchanged')
+        else:
+            print('ATIS checked; no newer reports; published snapshot unchanged')
     else:
         write_snapshot(merged)
         print('Published ATIS reports for:', ', '.join(sorted(merged)))

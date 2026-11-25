@@ -44,22 +44,28 @@ class UpdateAtisTests(unittest.TestCase):
         self.addCleanup(self.directory.cleanup)
         self.module.OUTPUT = Path(self.directory.name) / 'data' / 'atis.json'
 
-    def prior(self, airport_reports):
+    def prior(self, airport_reports, *, coverage=True):
         path = self.module.OUTPUT
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({'retrieved_utc': '2026-01-01T00:00:00Z',
-                                    'airports': airport_reports}), encoding='utf-8')
+        payload = {'retrieved_utc': '2026-01-01T00:00:00Z', 'airports': airport_reports}
+        if coverage:
+            payload['configured_airports'] = list(self.module.AIRPORTS)
+        path.write_text(json.dumps(payload), encoding='utf-8')
         return path.read_bytes()
 
     def collect(self, payloads):
+        calls = []
         def urlopen(request, timeout=20):
             airport = request.full_url.rsplit('/', 1)[-1]
-            data = payloads[airport]
+            calls.append(airport)
+            data = payloads.get(airport, URLError('synthetic station unavailable'))
             if isinstance(data, Exception):
                 raise data
             return Response(data)
         with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=urlopen):
             self.module.main()
+        self.assertEqual(calls, list(self.module.AIRPORTS))
+        self.assertEqual(len(calls), 4)
 
     def snapshot(self):
         return json.loads(self.module.OUTPUT.read_text(encoding='utf-8'))
@@ -72,13 +78,15 @@ class UpdateAtisTests(unittest.TestCase):
         self.assertTrue(snapshot['retrieved_utc'].endswith('Z'))
         self.assertEqual(snapshot['source'], 'https://atis.info/api')
         self.assertEqual(snapshot['airports']['KORD'][0]['type'], 'combined')
+        self.assertEqual(snapshot['configured_airports'], list(self.module.AIRPORTS))
+        self.assertEqual(set(self.module.AIRPORTS), {'KORD', 'KLAX', 'KJFK', 'KMEM'})
 
     def test_failed_airport_keeps_previous_while_others_update(self):
         old = report('KORD', age=30, code='X')
         self.prior({'KORD': [old]})
         self.collect({'KORD': URLError('synthetic outage'),
                       'KLAX': [report('KLAX', age=2)],
-                      'KJFK': [report('KJFK', age=3)]})
+                      'KJFK': [report('KJFK', age=3)], 'KMEM': [report('KMEM')]})
         snapshot = self.snapshot()
         self.assertEqual(snapshot['airports']['KORD'], [old])
         self.assertEqual(set(snapshot['airports']), set(self.module.AIRPORTS))
@@ -156,6 +164,31 @@ class UpdateAtisTests(unittest.TestCase):
                       'KJFK': [report('KJFK')]})
         self.assertEqual([r['type'] for r in self.snapshot()['airports']['KORD']],
                          ['combined', 'arr', 'dep'])
+
+    def test_mem_failure_is_configured_without_report(self):
+        self.collect({code: [report(code)] for code in self.module.AIRPORTS if code != 'KMEM'})
+        snapshot = self.snapshot()
+        self.assertIn('KMEM', snapshot['configured_airports'])
+        self.assertNotIn('KMEM', snapshot['airports'])
+        self.assertNotIn('KIND', snapshot['configured_airports'])
+
+    def test_legacy_metadata_migration_does_not_refresh_retrieval_time(self):
+        records = {code: [report(code)] for code in self.module.AIRPORTS}
+        self.prior(records, coverage=False)
+        self.collect(records)
+        snapshot = self.snapshot()
+        self.assertEqual(snapshot['configured_airports'], list(self.module.AIRPORTS))
+        self.assertEqual(snapshot['retrieved_utc'], '2026-01-01T00:00:00Z')
+        self.assertEqual(snapshot['airports'], records)
+
+    def test_coverage_change_with_unchanged_reports(self):
+        records = {code: [report(code)] for code in self.module.AIRPORTS if code != 'KMEM'}
+        self.prior(records, coverage=False)
+        self.collect(records)
+        snapshot = self.snapshot()
+        self.assertIn('KMEM', snapshot['configured_airports'])
+        self.assertNotIn('KMEM', snapshot['airports'])
+        self.assertEqual(snapshot['retrieved_utc'], '2026-01-01T00:00:00Z')
 
     def test_future_report_and_invalid_records_are_rejected(self):
         incoming = [report('KORD', age=-40), report('KLAX'), {'airport': 'KORD',

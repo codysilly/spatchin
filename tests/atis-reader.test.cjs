@@ -21,8 +21,8 @@ const report=(type,minutesAgo,code,time,datis)=>({airport:'KMEM',type,code,time,
 const combined=(minutesAgo,code='C',time='1200')=>report('combined',minutesAgo,code,time,'ARR EXP RWY 18R. DEP EXP RWYS 36L. RAW COMBINED');
 const arrival=(minutesAgo,code='A',time='1201')=>report('arr',minutesAgo,code,time,'ARR EXP RWY 09. RAW ARRIVAL');
 const departure=(minutesAgo,code='D',time='1202')=>report('dep',minutesAgo,code,time,'DEP EXP RWYS 27. RAW DEPARTURE');
-function render(reports,retrieved=stamp(1)){
- context.atisData={airports:{KMEM:reports}};context.atisRetrieved=retrieved;
+function render(reports,retrieved=stamp(1),configured=['KMEM']){
+ context.atisData={airports:reports===null?{}:{KMEM:reports},configured_airports:configured};context.atisRetrieved=retrieved;
  return vm.runInContext("atisBlock('KMEM')",context);
 }
 
@@ -105,4 +105,30 @@ test('timezone-less snapshot retrieval cannot mark report current',()=>{
  const html=render([arrival(5)],stamp(1).slice(0,-1));
  assert.match(html,/↘ LANDING · STALE/);
  assert.match(html,/Snapshot retrieved: —/);
+});
+
+test('configured missing MEM differs from explicitly excluded MEM',()=>{
+ let html=render(null,stamp(1),['KMEM','KORD']);
+ assert.match(html,/atis.info · UNAVAILABLE/);
+ assert.match(html,/↘ LANDING · UNAVAILABLE/);
+ assert.match(html,/Configured airport; no usable ATIS report/);
+ html=render(null,stamp(1),['KORD']);
+ assert.match(html,/atis.info · NOT CONFIGURED/);
+ assert.match(html,/↘ LANDING · NOT CONFIGURED/);
+ assert.match(html,/↗ DEPARTING · NOT CONFIGURED/);
+ assert.match(html,/outside collection coverage/);
+});
+
+test('legacy or malformed coverage is unknown, not excluded',()=>{
+ for(const coverage of [null,[],['KORD','KORD'],['bad']]){
+  const html=render(null,stamp(1),coverage);
+  assert.match(html,/atis.info · COVERAGE UNKNOWN/);
+  assert.doesNotMatch(html,/NOT CONFIGURED/);
+ }
+ const html=render([arrival(5)],stamp(1),null);
+ assert.match(html,/↘ LANDING · CURRENT/);
+ assert.match(html,/ATIS collection coverage is unknown/);
+ const inconsistent=render([arrival(5)],stamp(1),['KORD']);
+ assert.match(inconsistent,/↘ LANDING · CURRENT/);
+ assert.doesNotMatch(inconsistent,/NOT CONFIGURED/);
 });

@@ -123,20 +123,40 @@ function atisState(report,retrieved=atisRetrieved){
  return sourceAge>ATIS_STALE_MS||sourceAge< -5*60*1000||snapshot===null||
   snapshotAge>ATIS_STALE_MS||snapshotAge< -5*60*1000?'stale':'current';
 }
+function atisCoverage(station,snapshot=atisData){
+ const configured=snapshot?.configured_airports;
+ const reports=snapshot?.airports;
+ if(!reports||typeof reports!=='object'||Array.isArray(reports))return 'unknown';
+ // Do not infer coverage from missing reports, malformed metadata or a legacy snapshot.
+ if(Array.isArray(configured)&&configured.length&&
+  configured.every(code=>typeof code==='string'&&/^[A-Z0-9]{4}$/.test(code))&&
+  new Set(configured).size===configured.length&&Object.keys(reports).every(code=>configured.includes(code))){
+  return configured.includes(station)?'configured':'not configured';
+ }
+ return 'unknown';
+}
 function atisBlock(code){
- const reports=atisData?.airports?.[icao(code)];
- const list=Array.isArray(reports)?reports:[];
+ const station=icao(code),coverage=atisCoverage(station);
+ const reports=atisData?.airports?.[station];
+ const list=Array.isArray(reports)?reports.filter(r=>r&&['arr','dep','combined'].includes(r.type)):[];
+ const missingState=coverage==='not configured'?'not configured':
+  coverage==='unknown'&&!list.length?'coverage unknown':'unavailable';
  const arr=atisApplicable(list,'arr'),dep=atisApplicable(list,'dep');
  const report=list.filter(x=>atisSourceTime(x)!==null).sort((a,b)=>atisSourceTime(b)-atisSourceTime(a))[0]||null;
  const landing=arr?advertised(arr.datis,'arr'):[], departing=dep?advertised(dep.datis,'dep'):[];
- const arrState=landing.length?atisState(arr):'unavailable',depState=departing.length?atisState(dep):'unavailable';
+ const arrState=landing.length?atisState(arr):missingState,depState=departing.length?atisState(dep):missingState;
  const providerState=arrState==='stale'||depState==='stale'?'STALE / UNVERIFIED':
-  arrState==='unavailable'&&depState==='unavailable'?'UNAVAILABLE':'UNOFFICIAL';
+  !landing.length&&!departing.length?missingState.toUpperCase():'UNOFFICIAL';
+ const coverageNote=coverage==='not configured'?'Airport is outside collection coverage in this snapshot.':
+  coverage==='unknown'?'ATIS collection coverage is unknown in this snapshot.':
+  !list.length?'Configured airport; no usable ATIS report in this snapshot.':'Configured airport.';
+ const runwayNote=list.length&&(!landing.length||!departing.length)?
+  ' No usable explicit runway information for one or both directions.':'';
  const label=values=>values.length?values.join(' · '):'—';
  const info=report?.code?esc(report.code):'—';
  const issue=report?.time&&/^\d{4}$/.test(String(report.time))?esc(report.time)+'Z':'—';
  const full=list.map(r=>`<p><strong>${esc(r.type.toUpperCase())} · INFO ${esc(r.code||'—')} · ${esc(r.time||'—')}Z</strong></p><p class="atis-raw">${esc(r.datis)}</p>`).join('');
- return `<section class="atis"><div class="atis-top"><div><h3>ATIS</h3><div class="atis-provider">atis.info · ${providerState}</div></div><div class="atis-meta">INFO ${info} · ISSUED <strong>${issue}</strong></div></div><div class="atis-runways"><div class="atis-box"><div class="atis-label">↘ LANDING · ${arrState.toUpperCase()}</div><div class="atis-value">${esc(label(landing))}</div></div><div class="atis-box"><div class="atis-label">↗ DEPARTING · ${depState.toUpperCase()}</div><div class="atis-value">${esc(label(departing))}</div></div></div><details class="atis-full"><summary>Full ATIS information</summary>${full||'<p>ATIS not available.</p>'}<p>Landing source update: ${esc(atisSourceTime(arr)!==null?utc(atisSourceTime(arr)):'—')} · Departure source update: ${esc(atisSourceTime(dep)!==null?utc(atisSourceTime(dep)):'—')} · Snapshot retrieved: ${esc(utc(atisTimestamp(atisRetrieved)))}</p><p><a href="https://atis.info/api/${encodeURIComponent(icao(code))}" target="_blank" rel="noopener">Original ATIS source</a></p><p>Do not use for real world flight planning or navigation. Advertised runway extraction is automated and may be incomplete.</p></details></section>`;
+ return `<section class="atis"><div class="atis-top"><div><h3>ATIS</h3><div class="atis-provider">atis.info · ${providerState}</div></div><div class="atis-meta">INFO ${info} · ISSUED <strong>${issue}</strong></div></div><div class="atis-runways"><div class="atis-box"><div class="atis-label">↘ LANDING · ${arrState.toUpperCase()}</div><div class="atis-value">${esc(label(landing))}</div></div><div class="atis-box"><div class="atis-label">↗ DEPARTING · ${depState.toUpperCase()}</div><div class="atis-value">${esc(label(departing))}</div></div></div><details class="atis-full"><summary>Full ATIS information</summary>${full}<p>${esc(coverageNote+runwayNote)}</p><p>Landing source update: ${esc(atisSourceTime(arr)!==null?utc(atisSourceTime(arr)):'—')} · Departure source update: ${esc(atisSourceTime(dep)!==null?utc(atisSourceTime(dep)):'—')} · Snapshot retrieved: ${esc(utc(atisTimestamp(atisRetrieved)))}</p><p><a href="https://atis.info/api/${encodeURIComponent(icao(code))}" target="_blank" rel="noopener">Original ATIS source</a></p><p>Do not use for real world flight planning or navigation. Advertised runway extraction is automated and may be incomplete.</p></details></section>`;
 }
 function tafBlock(code){
  const station=airportInfo[code]?.icao;
