@@ -23,9 +23,20 @@ test('source text is escaped without rewriting its contents',()=>{
  assert.match(html,/&amp; X/);
  assert.doesNotMatch(html,/<script>/);
 });
-test('expired and old issues are marked stale and keep raw text',()=>{
- assert.match(TafReader.render({code:'MEM',station:'KMEM',report:report({validTimeTo:NOW/1000-1}),now:NOW}),/TAF STALE/);
+test('expired forecasts are NO LONGER VALID, while old issues are STALE',()=>{
+ const expired=report({issueTime:new Date(NOW-3*3600000).toISOString(),validTimeTo:NOW/1000-1});
+ const html=TafReader.render({code:'MEM',station:'KMEM',report:expired,now:NOW});
+ assert.match(html,/<div class="taf-status taf-expired">NO LONGER VALID<\/div>/);
+ assert.match(html,/2006\/2106 09005KT/,'retain raw TAF for provenance');
+ assert.doesNotMatch(html,/TAF STALE/);
  assert.match(TafReader.render({code:'MEM',station:'KMEM',report:report({issueTime:'2026-11-19T06:00:00Z'}),now:NOW}),/TAF STALE/);
+});
+test('validity end is exclusive: NO LONGER VALID starts at the exact end',()=>{
+ const issued=new Date(NOW-3*3600000).toISOString();
+ const current=report({issueTime:issued,validTimeTo:(NOW+1)/1000});
+ const ended=report({issueTime:issued,validTimeTo:NOW/1000});
+ assert.match(TafReader.render({code:'MEM',station:'KMEM',report:current,now:NOW}),/TAF CURRENT/);
+ assert.match(TafReader.render({code:'MEM',station:'KMEM',report:ended,now:NOW}),/NO LONGER VALID/);
 });
 test('missing station and malformed reports are unavailable, not current',()=>{
  for(const r of [null,report({icaoId:'KLAX'}),report({rawTAF:''}),report({issueTime:'tomorrow'}),report({validTimeTo:0})]){

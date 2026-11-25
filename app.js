@@ -172,6 +172,7 @@ function forecastModel(code,m){
  const available=typeof TafTimeline!=='undefined'&&typeof TafReader!=='undefined'&&
   TafReader.valid(report,station)&&TafTimeline.bounds(report)&&
   TafTimeline.periods(report).some(item=>item.kind==='BASE'||item.kind==='FM')&&
+  Date.now()<TafTimeline.bounds(report).end&&
   Date.now()-TafTimeline.time(report.issueTime)<=TafTimeline.STALE_MS;
  const observed=m?.observed||'unavailable';
  const selected=observedSelection.get(code);
@@ -217,7 +218,8 @@ function timeControl(code,m,model){
  if(model.forecast){
   const state=model.state;
   const resultLabel=state?.status==='available'?'TAF FORECAST':state?.status==='transition'?
-   'BECMG TRANSITION':state?.status==='stale'?'TAF STALE':'FORECAST WIND UNAVAILABLE';
+   'BECMG TRANSITION':state?.status==='expired'?'NO LONGER VALID':
+   state?.status==='stale'?'TAF STALE':'FORECAST WIND UNAVAILABLE';
   const wind=state?.wind?windLabel(state.wind):'Wind components unavailable';
   const notes=(state?.notes||[]).map(esc).join(' · ');
   const bearing=runwayData?.airports?.[code]?'Published runway true bearings':
