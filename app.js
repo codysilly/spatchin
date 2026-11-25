@@ -172,7 +172,7 @@ function forecastModel(code,m){
  const available=typeof TafTimeline!=='undefined'&&typeof TafReader!=='undefined'&&
   TafReader.valid(report,station)&&TafTimeline.bounds(report)&&
   TafTimeline.periods(report).some(item=>item.kind==='BASE'||item.kind==='FM')&&
-  Date.now()-TafTimeline.time(report.issueTime)<=12*3600000;
+  Date.now()-TafTimeline.time(report.issueTime)<=TafTimeline.STALE_MS;
  const observed=m?.observed||'unavailable';
  const selected=observedSelection.get(code);
  const rawSelected=selected?.startsWith('taf:')?TafTimeline?.time(selected.slice(4)):NaN;

@@ -1,7 +1,7 @@
 'use strict';
 // Pure display helper. The dashboard reads published JSON, never the live AWC API.
 const TafReader=(()=>{
-  const HOUR=3600000;
+  const HOUR=3600000,STALE_MS=6*HOUR;
   function time(value){
     if(typeof value==='number')return Number.isFinite(value)?value*1000:NaN;
     if(typeof value!=='string'||!value.trim())return NaN;
@@ -24,11 +24,11 @@ const TafReader=(()=>{
       content=`<div class="taf-status taf-unavailable">TAF UNAVAILABLE</div><div>${station?'No verified published forecast.':'Station mapping not verified.'}</div>${source}`;
     }else{
       const issued=time(report.issueTime),from=time(report.validTimeFrom),to=time(report.validTimeTo);
-      const state=now<from?'TAF NOT YET VALID':now>=to||now-issued>12*HOUR||now<issued-300000?'TAF STALE':'TAF CURRENT';
+      const state=now<from?'TAF NOT YET VALID':now>=to||now-issued>STALE_MS||now<issued-300000?'TAF STALE':'TAF CURRENT';
       content=`<div class="taf-status">${state}</div><pre class="taf-raw">${esc(report.rawTAF)}</pre><div class="taf-meta">Issued ${stamp(issued)} · Valid ${stamp(from)}–${stamp(to)}</div>${feedError?'<div class="taf-retained">Snapshot refresh failed; retained previous TAF.</div>':''}${source}`;
     }
     return `<section class="taf" aria-label="${esc(code)} TAF"><strong>TAF</strong><div class="taf-copy">${content}</div></section>`;
   }
-  return {valid,render,time};
+  return {valid,render,time,STALE_MS};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=TafReader;

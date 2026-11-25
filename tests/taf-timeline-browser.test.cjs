@@ -81,6 +81,21 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
   assert.equal(await mem.locator('.forecast-table').count(),0);
   assert.equal(await mem.locator('.runway-row').first().locator('td').nth(1).innerText(),observed);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)<=1);
+  // Verify raw TAF status and forecast availability use the same six-hour cutoff.
+  await page.evaluate(()=>{
+   const report=tafData.tafs.find(item=>item.icaoId==='KMEM');
+   report.issueTime=new Date(Date.now()-6*3600000-60000).toISOString();
+   render();
+  });
+  assert.match(await mem.locator('.taf-status').innerText(),/TAF STALE/);
+  assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),1);
+  await page.evaluate(()=>{
+   const report=tafData.tafs.find(item=>item.icaoId==='KMEM');
+   report.issueTime=new Date(Date.now()-6*3600000+60000).toISOString();
+   render();
+  });
+  assert.match(await mem.locator('.taf-status').innerText(),/TAF CURRENT/);
+  assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),2);
   assert.deepEqual(errors,[]);
   assert.ok(external.every(url=>/fonts\.(googleapis|gstatic)\.com/.test(url)),external.join(', '));
  }finally{await context.close();}

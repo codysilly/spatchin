@@ -41,3 +41,13 @@ test('retained forecast has a refresh failure notice',()=>{
  const html=TafReader.render({code:'MEM',station:'KMEM',report:report(),feedError:true,now:NOW});
  assert.match(html,/retained previous TAF/);
 });
+
+test('TAF is current through exactly six hours after issue and stale afterward',()=>{
+ const within=report({issueTime:new Date(NOW-6*3600000+60000).toISOString()});
+ const exact=report({issueTime:new Date(NOW-6*3600000).toISOString()});
+ const overdue=report({issueTime:new Date(NOW-6*3600000-1).toISOString()});
+ for(const r of [within,exact])
+  assert.match(TafReader.render({code:'MEM',station:'KMEM',report:r,now:NOW}),/TAF CURRENT/);
+ assert.match(TafReader.render({code:'MEM',station:'KMEM',report:overdue,now:NOW}),/TAF STALE/);
+ assert.equal(TafReader.STALE_MS,6*3600000);
+});
