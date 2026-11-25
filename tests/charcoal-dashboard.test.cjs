@@ -40,11 +40,11 @@ test('only the four AWC flight-category values are accepted',()=>{
 });
 
 test('METAR becomes stale at 70 minutes, not 65',()=>{
- assert.match(app,/const METAR_STALE_MS=70\\*60\\*1000;/);
+ assert.match(app,/const METAR_STALE_MS=70\*60\*1000;/);
  assert.equal(context.metarState(record('VFR',65)),'current');
  assert.equal(context.metarState(record('VFR',69)),'current');
  assert.equal(context.metarState(record('VFR',70)),'stale');
- assert.match(context.metarStatus(record('VFR',70)),/STALE · 70\\+ MIN/);
+ assert.match(context.metarStatus(record('VFR',70)),/STALE · 70\+ MIN/);
 });
 
 test('stale categories remain marked as observation-based, not live',()=>{
