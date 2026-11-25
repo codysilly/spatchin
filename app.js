@@ -93,6 +93,20 @@ function advertised(text,kind){
    if(/^(?:0[1-9]|[12][0-9]|3[0-6])[LRC]?$/.test(id))found.add(id);
   }
  }
+ // Explicit in-use clauses observed in MEM ATIS. Require a complete runway list,
+ // not arbitrary numbers in the remainder of the report.
+ const inUse=kind==='arr'
+  ? /(?:^|[.!?]\s*)ILS\s+APCH\s+IN\s+USE\s+R(?:W)?YS?\s+([^.!?]*)(?=[.!?]|$)/g
+  : /(?:^|[.!?]\s*)SIMUL\s+DEPS?\s+IN\s+USE\s+R(?:W)?YS?\s+([^.!?]*)(?=[.!?]|$)/g;
+ const runwayList=/^(?:0?[1-9]|[12][0-9]|3[0-6])[LRC]?(?:(?:\s*,\s*(?:AND\s+)?|\s+AND\s+|\s+)(?:0?[1-9]|[12][0-9]|3[0-6])[LRC]?)*$/;
+ while((match=inUse.exec(normalized))!==null){
+  const fragment=match[1].trim();
+  if(!runwayList.test(fragment))continue;
+  for(const token of fragment.matchAll(/\b(?:0?[1-9]|[12][0-9]|3[0-6])[LRC]?\b/g)){
+   const id=token[0].padStart(/[LRC]$/.test(token[0])?3:2,'0');
+   found.add(id);
+  }
+ }
  return [...found];
 }
 const ATIS_STALE_MS=45*60*1000;

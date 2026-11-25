@@ -156,3 +156,28 @@ test('a delisted station retains raw text without claiming current runway use',(
  assert.match(html,/RAW ARRIVAL/);
  assert.doesNotMatch(html,/class="atis-value">09|LANDING · CURRENT/);
 });
+
+test('MEM explicit in-use approach and simultaneous departure clauses are extracted independently',()=>{
+ const text='SYNTHETIC ATIS. ILS APCH IN USE RY 36L, 36R. SIMUL DEPS IN USE RY 36L 36C 36R. NOTICE TO AIRMEN. RY 36C ALS OTS. RWY 18R ALIGNMENT INDICATOR LIGHTS OTS. RWY 27 CONDITION CODES 5 5 5.';
+ const html=render([report('combined',5,'S','1954',text)]);
+ assert.match(html,/LANDING · CURRENT<\/div><div class="atis-value">36L · 36R<\/div>/);
+ assert.match(html,/DEPARTING · CURRENT<\/div><div class="atis-value">36L · 36C · 36R<\/div>/);
+ assert.match(html,/RWY 27 CONDITION CODES 5 5 5/);
+ const stale=render([report('combined',60,'S','1954',text)]);
+ assert.match(stale,/LANDING · STALE<\/div><div class="atis-value">36L · 36R/);
+ assert.match(stale,/DEPARTING · STALE/);
+});
+
+test('in-use extraction accepts explicit runway-list variants and rejects unrelated or ambiguous clauses',()=>{
+ const valid=render([report('combined',5,'T','2000','ILS APCH IN USE RWYS 9L AND 09R. SIMUL DEPS IN USE RWY 18, 18R, AND 18L.')]);
+ assert.match(valid,/LANDING · CURRENT<\/div><div class="atis-value">09L · 09R/);
+ assert.match(valid,/DEPARTING · CURRENT<\/div><div class="atis-value">18 · 18R · 18L/);
+ for(const text of ['ILS APCH IN USE RY 36L CLOSED. SIMUL DEPS IN USE RY 36R NOT AUTHORIZED.',
+  'NO ILS APCH IN USE RY 36L. NO SIMUL DEPS IN USE RY 36R.',
+  'ILS APCH IN USE RY 37. SIMUL DEPS IN USE RY 00.',
+  'RWY 36L CONDITION CODES 5 5 5. RWY 36R ALS OTS. RWY 27 CLOSED.']){
+  const html=render([report('combined',5,'T','2000',text)]);
+  assert.match(html,/LANDING · UNAVAILABLE/);
+  assert.match(html,/DEPARTING · UNAVAILABLE/);
+ }
+});
