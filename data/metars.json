@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T15:10:46.337153Z",
+  "updated_utc": "2026-11-25T15:20:46.172903Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -701,24 +701,21 @@
     },
     {
       "icaoId": "KCHS",
-      "receiptTime": "2026-11-25T14:58:28.931Z",
-      "obsTime": 1795618560,
-      "reportTime": "2026-11-25T15:00:00.000Z",
-      "temp": 8.9,
+      "receiptTime": "2026-11-25T15:18:20.424Z",
+      "obsTime": 1795619700,
+      "reportTime": "2026-11-25T15:15:00.000Z",
+      "temp": 9.4,
       "dewp": 8.3,
-      "wdir": 20,
-      "wspd": 13,
-      "wgst": 22,
+      "wdir": 10,
+      "wspd": 16,
+      "wgst": 23,
       "visib": 1.5,
-      "altim": 1021.4,
-      "slp": 1021.2,
+      "altim": 1021.1,
       "qcField": 4,
-      "wxString": "+RA BR",
-      "presTend": -0.6,
-      "precip": 0.15,
-      "pcp3hr": 0.21,
-      "metarType": "METAR",
-      "rawOb": "METAR KCHS 251456Z 02013G22KT 1 1/2SM +RA BR BKN008 OVC020 09/08 A3016 RMK AO2 SLP212 P0015 60021 T00890083 56006",
+      "wxString": "RA BR",
+      "precip": 0.08,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KCHS 251515Z 01016G23KT 1 1/2SM RA BR SCT006 BKN020 OVC050 09/08 A3015 RMK AO2 P0008 T00940083",
       "lat": 32.8995,
       "lon": -80.0407,
       "elev": 12,
@@ -726,12 +723,16 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "SCT",
+          "base": 600
+        },
+        {
           "cover": "BKN",
-          "base": 800
+          "base": 2000
         },
         {
           "cover": "OVC",
-          "base": 2000
+          "base": 5000
         }
       ],
       "fltCat": "IFR"
@@ -1812,23 +1813,20 @@
     },
     {
       "icaoId": "KIND",
-      "receiptTime": "2026-11-25T14:58:19.992Z",
-      "obsTime": 1795618440,
-      "reportTime": "2026-11-25T15:00:00.000Z",
+      "receiptTime": "2026-11-25T15:12:04.184Z",
+      "obsTime": 1795619280,
+      "reportTime": "2026-11-25T15:08:00.000Z",
       "temp": 0,
-      "dewp": -4.4,
+      "dewp": -3.9,
       "wdir": 50,
-      "wspd": 10,
+      "wspd": 11,
       "visib": "10+",
-      "altim": 1028.9,
-      "slp": 1029.4,
+      "altim": 1028.5,
       "qcField": 4,
-      "wxString": "-RA -SN",
-      "presTend": -0.3,
-      "precip": 0.005,
-      "pcp3hr": 0.005,
-      "metarType": "METAR",
-      "rawOb": "METAR KIND 251454Z 05010KT 10SM -RASN FEW080 BKN095 BKN250 00/M04 A3038 RMK AO2 RAB28SNB28 SLP294 P0000 60000 T00001044 58003",
+      "wxString": "-RA",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KIND 251508Z 05011KT 10SM -RA BKN070 BKN090 BKN250 00/M04 A3037 RMK AO2 SNE08 P0001 T00001039",
       "lat": 39.7252,
       "lon": -86.2816,
       "elev": 242,
@@ -1836,12 +1834,12 @@
       "cover": "BKN",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 8000
+          "cover": "BKN",
+          "base": 7000
         },
         {
           "cover": "BKN",
-          "base": 9500
+          "base": 9000
         },
         {
           "cover": "BKN",
@@ -3380,24 +3378,29 @@
     },
     {
       "icaoId": "KSBD",
-      "receiptTime": "2026-11-25T13:42:08.951Z",
-      "obsTime": 1795614000,
-      "reportTime": "2026-11-25T13:40:00.000Z",
-      "temp": 7.9,
-      "dewp": 0.9,
+      "receiptTime": "2026-11-25T15:10:21.015Z",
+      "obsTime": 1795618800,
+      "reportTime": "2026-11-25T15:00:00.000Z",
+      "temp": 9,
+      "dewp": 1,
       "wdir": 0,
       "wspd": 0,
       "visib": "10+",
       "altim": 1019.7,
-      "qcField": 6,
+      "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KSBD 251340Z AUTO 00000KT 10SM CLR 08/01 A3011 RMK AO2 T00790009",
+      "rawOb": "METAR KSBD 251500Z 00000KT 10SM BKN150 09/01 A3011",
       "lat": 34.09,
       "lon": -117.247,
       "elev": 353,
       "name": "San Bernardino Intl, CA, US",
-      "cover": "CLR",
-      "clouds": [],
+      "cover": "BKN",
+      "clouds": [
+        {
+          "cover": "BKN",
+          "base": 15000
+        }
+      ],
       "fltCat": "VFR"
     },
     {
