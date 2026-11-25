@@ -145,3 +145,14 @@ test('full catalog metadata distinguishes excluded stations and malformed catalo
  assert.match(html,/COVERAGE UNKNOWN/);
  assert.doesNotMatch(html,/NOT CONFIGURED/);
 });
+
+test('a delisted station retains raw text without claiming current runway use',()=>{
+ const catalog=['KMEM','KORD',...Array.from({length:128},(_,i)=>'X'+String(i).padStart(3,'0'))];
+ context.atisData={airports:{KMEM:[arrival(5)]},configured_airports:['KORD'],catalog_airports:catalog};
+ context.atisRetrieved=stamp(1);
+ const html=vm.runInContext("atisBlock('KMEM')",context);
+ assert.match(html,/NOT CONFIGURED/);
+ assert.match(html,/Retained historical reports/);
+ assert.match(html,/RAW ARRIVAL/);
+ assert.doesNotMatch(html,/class="atis-value">09|LANDING · CURRENT/);
+});

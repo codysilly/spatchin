@@ -130,11 +130,12 @@ function atisCoverage(station,snapshot=atisData){
  // Do not infer coverage from missing reports, malformed metadata or a legacy snapshot.
  if(Array.isArray(configured)&&configured.length&&
   configured.every(code=>typeof code==='string'&&/^[A-Z0-9]{4}$/.test(code))&&
-  new Set(configured).size===configured.length&&Object.keys(reports).every(code=>configured.includes(code))){
+  new Set(configured).size===configured.length){
   const catalog=snapshot?.catalog_airports;
   if(catalog!==undefined&&(!Array.isArray(catalog)||catalog.length!==130||
    new Set(catalog).size!==catalog.length||!catalog.every(code=>typeof code==='string'&&/^[A-Z0-9]{4}$/.test(code))||
-   !configured.every(code=>catalog.includes(code))||!catalog.includes(station)))return 'unknown';
+   !configured.every(code=>catalog.includes(code))||!Object.keys(reports).every(code=>catalog.includes(code))||!catalog.includes(station)))return 'unknown';
+  if(catalog===undefined&&!Object.keys(reports).every(code=>configured.includes(code)))return 'unknown';
   return configured.includes(station)?'configured':'not configured';
  }
  return 'unknown';
@@ -145,8 +146,9 @@ function atisBlock(code){
  const list=Array.isArray(reports)?reports.filter(r=>r&&['arr','dep','combined'].includes(r.type)):[];
  const missingState=coverage==='not configured'?'not configured':
   coverage==='unknown'&&!list.length?'coverage unknown':'unavailable';
- const arr=atisApplicable(list,'arr'),dep=atisApplicable(list,'dep');
- const report=list.filter(x=>atisSourceTime(x)!==null).sort((a,b)=>atisSourceTime(b)-atisSourceTime(a))[0]||null;
+ const active=coverage==='not configured'?[]:list;
+ const arr=atisApplicable(active,'arr'),dep=atisApplicable(active,'dep');
+ const report=active.filter(x=>atisSourceTime(x)!==null).sort((a,b)=>atisSourceTime(b)-atisSourceTime(a))[0]||null;
  const landing=arr?advertised(arr.datis,'arr'):[], departing=dep?advertised(dep.datis,'dep'):[];
  const arrState=landing.length?atisState(arr):missingState,depState=departing.length?atisState(dep):missingState;
  const providerState=arrState==='stale'||depState==='stale'?'STALE / UNVERIFIED':
@@ -154,8 +156,8 @@ function atisBlock(code){
  const coverageNote=coverage==='not configured'?'Airport is outside collection coverage in this snapshot. Provider support is not established.':
   coverage==='unknown'?'ATIS collection coverage is unknown in this snapshot.':
   !list.length?'Configured airport; no usable ATIS report in this snapshot.':'Configured airport.';
- const runwayNote=list.length&&(!landing.length||!departing.length)?
-  ' No usable explicit runway information for one or both directions.':'';
+ const runwayNote=coverage==='not configured'&&list.length?' Retained historical reports below are not current configuration.':
+  list.length&&(!landing.length||!departing.length)?' No usable explicit runway information for one or both directions.':'';
  const label=values=>values.length?values.join(' · '):'—';
  const info=report?.code?esc(report.code):'—';
  const issue=report?.time&&/^\d{4}$/.test(String(report.time))?esc(report.time)+'Z':'—';
