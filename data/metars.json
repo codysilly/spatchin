@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T21:00:41.086843Z",
+  "updated_utc": "2026-11-25T21:10:41.551194Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -948,7 +948,7 @@
     },
     {
       "icaoId": "KDAY",
-      "receiptTime": "2026-11-25T20:59:08.866Z",
+      "receiptTime": "2026-11-25T21:00:35.437Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 7.8,
@@ -1352,7 +1352,7 @@
     },
     {
       "icaoId": "KFSD",
-      "receiptTime": "2026-11-25T20:58:36.807Z",
+      "receiptTime": "2026-11-25T21:00:34.607Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 1.7,
@@ -1868,18 +1868,18 @@
     },
     {
       "icaoId": "KIWA",
-      "receiptTime": "2026-11-25T19:48:51.410Z",
-      "obsTime": 1795636020,
-      "reportTime": "2026-11-25T20:00:00.000Z",
-      "temp": 23,
+      "receiptTime": "2026-11-25T21:08:50.596Z",
+      "obsTime": 1795639920,
+      "reportTime": "2026-11-25T21:00:00.000Z",
+      "temp": 24,
       "dewp": 0,
       "wdir": 150,
-      "wspd": 5,
+      "wspd": 4,
       "visib": "10+",
-      "altim": 1017.7,
-      "qcField": 0,
+      "altim": 1017,
+      "qcField": 1,
       "metarType": "METAR",
-      "rawOb": "METAR KIWA 251947Z 15005KT 10SM CLR 23/00 A3005",
+      "rawOb": "METAR KIWA 252052Z COR 15004KT 10SM CLR 24/00 A3003",
       "lat": 33.3008,
       "lon": -111.6437,
       "elev": 420,
@@ -1890,7 +1890,7 @@
     },
     {
       "icaoId": "KJAX",
-      "receiptTime": "2026-11-25T20:59:10.813Z",
+      "receiptTime": "2026-11-25T21:00:27.687Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 11.7,
@@ -1959,7 +1959,7 @@
     },
     {
       "icaoId": "KLAS",
-      "receiptTime": "2026-11-25T20:59:07.153Z",
+      "receiptTime": "2026-11-25T21:00:28.525Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 15.6,
@@ -2054,7 +2054,7 @@
     },
     {
       "icaoId": "KLCK",
-      "receiptTime": "2026-11-25T20:58:32.819Z",
+      "receiptTime": "2026-11-25T21:00:27.569Z",
       "obsTime": 1795640100,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 9,
@@ -2270,7 +2270,7 @@
     },
     {
       "icaoId": "KMDT",
-      "receiptTime": "2026-11-25T20:59:10.831Z",
+      "receiptTime": "2026-11-25T21:00:34.161Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 5,
@@ -3471,7 +3471,7 @@
     },
     {
       "icaoId": "KSDF",
-      "receiptTime": "2026-11-25T20:59:05.813Z",
+      "receiptTime": "2026-11-25T21:00:34.684Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 6.7,
@@ -3545,7 +3545,7 @@
     },
     {
       "icaoId": "KSFO",
-      "receiptTime": "2026-11-25T20:59:05.865Z",
+      "receiptTime": "2026-11-25T21:00:34.787Z",
       "obsTime": 1795640160,
       "reportTime": "2026-11-25T21:00:00.000Z",
       "temp": 15,
