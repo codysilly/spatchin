@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T00:20:38.756705Z",
+  "updated_utc": "2026-11-25T00:30:39.042420Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1416,20 +1416,20 @@
     },
     {
       "icaoId": "KFSD",
-      "receiptTime": "2026-11-25T00:06:08.949Z",
-      "obsTime": 1795564980,
-      "reportTime": "2026-11-25T00:03:00.000Z",
-      "temp": -1.7,
-      "dewp": -4.4,
+      "receiptTime": "2026-11-25T00:22:10.458Z",
+      "obsTime": 1795565940,
+      "reportTime": "2026-11-25T00:19:00.000Z",
+      "temp": -2.2,
+      "dewp": -3.9,
       "wdir": 170,
-      "wspd": 11,
+      "wspd": 9,
       "visib": 1.5,
       "altim": 1029.2,
       "qcField": 4,
-      "wxString": "-SN",
-      "precip": 0.005,
+      "wxString": "-SN BR",
+      "precip": 0.01,
       "metarType": "SPECI",
-      "rawOb": "SPECI KFSD 250003Z 17011KT 1 1/2SM -SN FEW020 OVC035 M02/M04 A3039 RMK AO2 SFC VIS 2 P0000 T10171044",
+      "rawOb": "SPECI KFSD 250019Z 17009KT 1 1/2SM -SN BR BKN022 BKN030 OVC037 M02/M04 A3039 RMK AO2 SFC VIS 2 P0001 T10221039",
       "lat": 43.5775,
       "lon": -96.7539,
       "elev": 433,
@@ -1437,12 +1437,16 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 2000
+          "cover": "BKN",
+          "base": 2200
+        },
+        {
+          "cover": "BKN",
+          "base": 3000
         },
         {
           "cover": "OVC",
-          "base": 3500
+          "base": 3700
         }
       ],
       "fltCat": "IFR"
