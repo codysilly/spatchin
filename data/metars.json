@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T11:40:38.992507Z",
+  "updated_utc": "2026-11-25T11:50:41.223629Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -230,19 +230,18 @@
     },
     {
       "icaoId": "KBFM",
-      "receiptTime": "2026-11-25T10:56:28.152Z",
-      "obsTime": 1795603980,
-      "reportTime": "2026-11-25T11:00:00.000Z",
-      "temp": 15,
-      "dewp": 13.9,
-      "wdir": 50,
-      "wspd": 5,
+      "receiptTime": "2026-11-25T11:46:04.422Z",
+      "obsTime": 1795606920,
+      "reportTime": "2026-11-25T11:42:00.000Z",
+      "temp": 16.1,
+      "dewp": 15,
+      "wdir": 80,
+      "wspd": 7,
       "visib": "10+",
       "altim": 1015.7,
-      "slp": 1015.6,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KBFM 251053Z 05005KT 10SM OVC010 15/14 A2999 RMK AO2 SLP156 T01500139",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KBFM 251142Z 08007KT 10SM OVC009 16/15 A2999 RMK AO2 T01610150",
       "lat": 30.6147,
       "lon": -88.063,
       "elev": 7,
@@ -251,10 +250,10 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 1000
+          "base": 900
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KBGR",
@@ -474,7 +473,7 @@
     },
     {
       "icaoId": "KBUF",
-      "receiptTime": "2026-11-25T10:58:22.473Z",
+      "receiptTime": "2026-11-25T11:46:10.134Z",
       "obsTime": 1795604040,
       "reportTime": "2026-11-25T11:00:00.000Z",
       "temp": -4.4,
@@ -484,15 +483,20 @@
       "visib": "10+",
       "altim": 1037,
       "slp": 1038,
-      "qcField": 12,
+      "qcField": 13,
       "metarType": "METAR",
-      "rawOb": "METAR KBUF 251054Z 05006KT 10SM CLR M04/M07 A3062 RMK AO2 SLP380 T10441072 $",
+      "rawOb": "METAR KBUF 251054Z COR 05006KT 10SM SCT250 M04/M07 A3062 RMK AO2 SLP380 T10441072 $",
       "lat": 42.94,
       "lon": -78.7361,
       "elev": 217,
       "name": "Buffalo-Niagara Intl, NY, US",
-      "cover": "CLR",
-      "clouds": [],
+      "cover": "SCT",
+      "clouds": [
+        {
+          "cover": "SCT",
+          "base": 25000
+        }
+      ],
       "fltCat": "VFR"
     },
     {
@@ -1161,7 +1165,7 @@
     },
     {
       "icaoId": "KFLL",
-      "receiptTime": "2026-11-25T11:38:40.948Z",
+      "receiptTime": "2026-11-25T11:40:14.377Z",
       "obsTime": 1795606560,
       "reportTime": "2026-11-25T11:36:00.000Z",
       "temp": 21.1,
@@ -3055,18 +3059,18 @@
     },
     {
       "icaoId": "KSBD",
-      "receiptTime": "2026-11-25T11:22:17.585Z",
-      "obsTime": 1795605600,
-      "reportTime": "2026-11-25T11:20:00.000Z",
-      "temp": 8.5,
-      "dewp": 0.9,
+      "receiptTime": "2026-11-25T11:42:14.678Z",
+      "obsTime": 1795606800,
+      "reportTime": "2026-11-25T11:40:00.000Z",
+      "temp": 7.7,
+      "dewp": 1.5,
       "wdir": 0,
       "wspd": 0,
       "visib": "10+",
-      "altim": 1019.4,
+      "altim": 1019,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KSBD 251120Z AUTO 00000KT 10SM CLR 09/01 A3010 RMK AO2 T00850009",
+      "rawOb": "METAR KSBD 251140Z AUTO 00000KT 10SM CLR 08/02 A3009 RMK AO2 T00770015",
       "lat": 34.09,
       "lon": -117.247,
       "elev": 353,
