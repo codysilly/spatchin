@@ -174,11 +174,11 @@ footer{border-color:var(--line);color:var(--muted)}
   .atis-label{font-size:11px}
   .rw-table>thead>tr>th{font-size:10px;letter-spacing:.04em}
   .rw-table>tbody>.runway-row>td{font-size:15px}
-  .runway-row [data-reader-open]{font-size:12px;min-height:36px}
-  .reader-note{font-size:11px}
+  .runway-row [data-reader-open]{font-size:12px;min-height:44px}
+  .reader-note{font-size:12px}
   .reader-raw{font-size:13px}
   .inline-reader{padding:7px}
-  .time-control select{min-height:36px}
+  .time-control select{min-height:44px}
   .notam-transport button{min-height:36px}
 }
 @media(max-width:400px){

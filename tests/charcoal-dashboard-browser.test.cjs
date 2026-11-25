@@ -8,7 +8,7 @@ const {chromium}=require('playwright');
 const base='http://127.0.0.1:8784';
 let server,browser;
 before(async()=>{
- server=spawn('python3',['-B','-m','http.server','8784','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8784','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let i=0;i<60;i++){
   try{if((await fetch(base)).ok)break;}catch{}
   await new Promise(r=>setTimeout(r,100));

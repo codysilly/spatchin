@@ -6,7 +6,7 @@ const {chromium}=require('playwright');
 const origin='http://127.0.0.1:8799';
 let server,browser;
 before(async()=>{
- server=spawn('python3',['-B','-m','http.server','8799','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8799','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let i=0;i<80;i++){try{if((await fetch(origin)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined,headless:true});
 });

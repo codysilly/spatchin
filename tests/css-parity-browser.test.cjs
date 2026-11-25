@@ -1,6 +1,7 @@
 'use strict';
-// Compare the current visual result to SPA-67's pre-refactor CSS.
-// Reference styles are read from a pinned commit, not from external providers.
+// Preserve SPA-68's historical zero-difference proof, independently of later features.
+// Also compare this worktree to the pre-SPA-96 main, using identical pinned data.
+// No external provider or font requests are allowed.
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn,execFileSync}=require('node:child_process');
@@ -9,12 +10,16 @@ const pixelmatch=require('pixelmatch');
 const {chromium}=require('playwright');
 const origin='http://127.0.0.1:8798';
 const baseline='5120d81945787a5c80da738bf5e086a4105e0a1c';
-const original=Object.fromEntries(['index.html','styles.css','dashboard.css','charcoal-dashboard.css'].map(p=>
- [p,execFileSync('git',['show',baseline+':'+p],{encoding:'utf8'})]));
+const refactored='7a33c2f7ac021cb77b3e118d33a777297c76c868';
+const currentBaseline='defc13157003499d36c0223eff4729e0410ab23e';
+const trees=new Map(),blobs=new Map();
+function paths(sha){if(!trees.has(sha))trees.set(sha,new Set(execFileSync('git',['ls-tree','-r','--name-only',sha],{encoding:'utf8'}).trim().split(/\r?\n/)));return trees.get(sha);}
+function blob(sha,file){const key=sha+':'+file;if(!blobs.has(key))blobs.set(key,execFileSync('git',['show',key],{maxBuffer:32*1024*1024}));return blobs.get(key);}
+const mime={html:'text/html',css:'text/css',js:'text/javascript',json:'application/json',svg:'image/svg+xml',png:'image/png',ico:'image/x-icon',woff2:'font/woff2'};
 const freeze=Date.parse('2026-11-20T07:00:00Z');
 let server,browser;
 before(async()=>{
- server=spawn('python3',['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let i=0;i<80;i++){
   try{if((await fetch(origin)).ok)break;}catch{}
   await new Promise(r=>setTimeout(r,100));
@@ -23,7 +28,7 @@ before(async()=>{
 });
 after(async()=>{await browser?.close();server?.kill();});
 
-async function launch(width,legacy){
+async function launch(width,revision,dataRevision){
  const context=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
  const page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
@@ -39,13 +44,29 @@ async function launch(width,legacy){
  await page.route('**/*',route=>{
   const u=new URL(route.request().url());
   if(u.origin!==origin)return route.abort();
-  const file=u.pathname==='/dashboard/'||u.pathname==='/dashboard/index.html'?'index.html':u.pathname.slice(1);
-  if(legacy&&Object.prototype.hasOwnProperty.call(original,file))
-   return route.fulfill({status:200,contentType:file.endsWith('.css')?'text/css':'text/html',body:file==='index.html'?original[file].replace('<head>','<head><base href="../">'):original[file]});
-  return route.continue();
+  const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
+  const sha=file.startsWith('data/')?dataRevision:revision;
+  if(!sha)return route.continue();
+  if(!paths(sha).has(file))return route.fulfill({status:404,body:''});
+  return route.fulfill({status:200,contentType:mime[file.split('.').at(-1)]||'application/octet-stream',body:(()=>{
+    const original=blob(sha,file);
+    if(sha!==currentBaseline||file!=='charcoal-dashboard.css')return original;
+    let css=original.toString('utf8');
+    const changes=[
+     ['.reader-note{font-size:11px}','.reader-note{font-size:12px}'],
+     ['.runway-row [data-reader-open]{font-size:12px;min-height:36px}','.runway-row [data-reader-open]{font-size:12px;min-height:44px}'],
+     ['.time-control select{min-height:36px}','.time-control select{min-height:44px}']
+    ];
+    for(const [from,to] of changes){
+     assert.equal(css.split(from).length,2,'Expected reference CSS rule: '+from);
+     css=css.replace(from,to);
+    }
+    return css;
+   })()});
  });
- await page.goto(origin+'/dashboard/',{waitUntil:'load'});
+ await page.goto(origin+'/',{waitUntil:'load'});
  await page.waitForSelector('[data-airport="MEM"] .runway-row');
+ await page.waitForLoadState('networkidle');
  return {context,page,errors};
 }
 async function state(page,name){
@@ -64,8 +85,8 @@ async function imageOf(page){
  await page.evaluate(()=>document.fonts.ready);
  return PNG.sync.read(await page.screenshot({fullPage:true,animations:'disabled'}));
 }
-async function render(width,name,legacy){
- const app=await launch(width,legacy);
+async function render(width,name,revision,dataRevision){
+ const app=await launch(width,revision,dataRevision);
  await state(app.page,name);
  const png=await imageOf(app.page);
  const computed=await app.page.evaluate(()=>{
@@ -87,13 +108,15 @@ async function render(width,name,legacy){
 for(const width of [1440,1120,760,390,320]){
  for(const scene of width===1440||width===390?['default','scan','reader']:['default']){
   test('SPA-68 CSS parity '+width+'px '+scene,async()=>{
-   const before=await render(width,scene,true),after=await render(width,scene,false);
+   for(const [label,left,right,data] of [['SPA-68 historical',baseline,refactored,baseline],['SPA-96 unchanged UI',currentBaseline,null,currentBaseline]]){
+   const before=await render(width,scene,left,data),after=await render(width,scene,right,data);
    assert.deepEqual(before.errors,[]);assert.deepEqual(after.errors,[]);
-   assert.deepEqual(after.computed,before.computed,'Computed style differs at '+width+' '+scene);
+   assert.deepEqual(after.computed,before.computed,label+': computed style differs at '+width+' '+scene);
    assert.equal(after.png.width,before.png.width,'Screenshot width differs');
    assert.equal(after.png.height,before.png.height,'Screenshot height differs');
    const difference=pixelmatch(before.png.data,after.png.data,null,before.png.width,before.png.height,{threshold:.02,includeAA:false});
-   assert.equal(difference,0,'Screenshot differs by '+difference+' pixels at '+width+' '+scene);
+   assert.equal(difference,0,label+': screenshot differs by '+difference+' pixels at '+width+' '+scene);
+   }
   });
  }
 }
