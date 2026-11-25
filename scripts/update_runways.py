@@ -82,6 +82,19 @@ def generate(archive, url, cycle):
             ))
 
     invalid = {}
+    rejected_samples = {}
+
+    def record_rejection(code, category, runway_end='', runway_pair='', raw_heading=''):
+        # FAA runway identifiers are public, but keep production failure logs bounded.
+        samples = rejected_samples.setdefault(code, [])
+        if len(samples) < 3:
+            samples.append({
+                'category': category,
+                'runway_end': runway_end[:8],
+                'runway_pair': runway_pair[:16],
+                'true_alignment': 'missing' if not raw_heading else 'present',
+            })
+
     site_candidates = {}
     for code, identities in by_code.items():
         if not identities:
@@ -115,11 +128,19 @@ def generate(archive, url, cycle):
             continue
         rid = (row.get('RWY_END_ID') or '').strip().upper()
         pair = (row.get('RWY_ID') or '').strip().upper()
-        if not END_ID.fullmatch(rid) or rid in seen[code] or not pair:
+        raw = (row.get('TRUE_ALIGNMENT') or '').strip()
+        rejection = None
+        if not END_ID.fullmatch(rid):
+            rejection = 'invalid_runway_end_id'
+        elif rid in seen[code]:
+            rejection = 'duplicate_runway_end_id'
+        elif not pair:
+            rejection = 'missing_runway_pair'
+        if rejection:
             invalid.setdefault(code, 'invalid_or_duplicate_runway_end')
+            record_rejection(code, rejection, rid, pair, raw)
             continue
         seen[code].add(rid)
-        raw = (row.get('TRUE_ALIGNMENT') or '').strip()
         degrees = None
         if raw:
             try:
@@ -164,7 +185,9 @@ def generate(archive, url, cycle):
     # Preserve the four already verified airports; refuse an update that loses them.
     for code in LEGACY_COUNTS:
         if code not in airports:
-            raise ValueError(f'{code}: {coverage[code]["reason"]}; refusing to replace existing data')
+            details = rejected_samples.get(code, [])
+            diagnostic = f'; rejected_examples={json.dumps(details, sort_keys=True)}' if details else ''
+            raise ValueError(f'{code}: {coverage[code]["reason"]}{diagnostic}; refusing to replace existing data')
     return {
         'source': 'FAA NASR 28-Day Subscription — APT_BASE.csv / APT_RWY_END.csv',
         'source_url': url,

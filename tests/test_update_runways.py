@@ -174,6 +174,38 @@ class NasrC070RunwayTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'empty'):
             self.run_generate(make_rows(), base_rows=[])
 
+    def test_invalid_legacy_end_logs_bounded_public_identifiers(self):
+        rows = make_rows()
+        rows.append({**next(row for row in rows if row['ARPT_ID'] == 'ORD'),
+                     'RWY_END_ID': '0X', 'RWY_ID': '0X/22R',
+                     'TRUE_ALIGNMENT': ''})
+        with self.assertRaisesRegex(ValueError, 'ORD: invalid_or_duplicate_runway_end') as caught:
+            self.run_generate(rows)
+        message = str(caught.exception)
+        self.assertIn('"category": "invalid_runway_end_id"', message)
+        self.assertIn('"runway_end": "0X"', message)
+        self.assertIn('"true_alignment": "missing"', message)
+
+    def test_duplicate_legacy_end_diagnostic_reports_heading_state(self):
+        rows = make_rows()
+        rows.append({**next(row for row in rows if row['ARPT_ID'] == 'ORD'),
+                     'TRUE_ALIGNMENT': ''})
+        with self.assertRaisesRegex(ValueError, 'ORD: invalid_or_duplicate_runway_end') as caught:
+            self.run_generate(rows)
+        self.assertIn('"category": "duplicate_runway_end_id"', str(caught.exception))
+        self.assertIn('"true_alignment": "missing"', str(caught.exception))
+
+    def test_missing_pair_diagnostic_without_any_publication(self):
+        rows = make_rows()
+        for row in rows:
+            if row['ARPT_ID'] == 'ORD' and row['RWY_END_ID'] == '04L':
+                row['RWY_ID'] = ''
+                break
+        with self.assertRaisesRegex(ValueError, 'ORD: invalid_or_duplicate_runway_end') as caught:
+            self.run_generate(rows)
+        self.assertIn('"category": "missing_runway_pair"', str(caught.exception))
+        self.assertFalse(update_runways.OUT.exists())
+
     def test_legacy_airport_regression_prevents_publication(self):
         source = make_rows()
         with self.assertRaisesRegex(ValueError, 'ORD'):
