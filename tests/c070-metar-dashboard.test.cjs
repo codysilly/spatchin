@@ -59,7 +59,7 @@ test('METAR staleness begins at the 70-minute boundary',async()=>{
  assert.match(current.html(),/METAR CURRENT/);
  const stale=await load(['MEM'],snapshot([report('KMEM',70)]));
  assert.equal(stale.state('MEM'),'stale');
- assert.match(stale.html(),/METAR STALE · 70\\+ MIN/);
+ assert.match(stale.html(),/METAR STALE · 70\+ MIN/);
 });
 
 test('partial, older, stale, malformed and failed snapshots preserve truthful display',async()=>{
