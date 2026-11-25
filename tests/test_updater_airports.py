@@ -36,10 +36,15 @@ class UpdaterAirportTests(unittest.TestCase):
         self.assertIn('https://aviationweather.gov/api/data/metar?ids=', source)
         self.assertIn('&format=json', source)
 
-    def test_atis_excludes_unverified_kmem_and_preserves_existing_airports(self):
+    def test_atis_uses_bounded_c070_coverage_including_mem(self):
         module = tree('update_atis.py')
-        self.assertEqual(assigned(module, 'AIRPORTS'),
-                         ('KORD', 'KLAX', 'KJFK'))
+        imported = {node.module for node in ast.walk(module)
+                    if isinstance(node, ast.ImportFrom)}
+        self.assertIn('scripts.c070_station_registry', imported)
+        self.assertEqual(assigned(module, 'CONFIGURED_IATA'),
+                         ('ORD', 'LAX', 'JFK', 'MEM'))
+        source = (ROOT / 'scripts/update_atis.py').read_text(encoding='utf-8')
+        self.assertIn('AIRPORTS = tuple(_registry[code] for code in CONFIGURED_IATA)', source)
         self.assertEqual(assigned(module, 'URL'), 'https://atis.info/api/')
 
     def test_runways_use_c070_registry_and_guard_existing_four_airports(self):
