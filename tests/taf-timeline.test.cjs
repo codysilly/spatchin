@@ -113,3 +113,11 @@ test('six-hour issuance cutoff applies to projected winds, with exact boundary c
  assert.equal(at(overdue,'20T10:00:00').wind,null);
  assert.equal(T.STALE_MS,6*3600000);
 });
+
+test('expired TAF is distinct from issue-age staleness and gives no wind',()=>{
+ const expired=report([base],{issueTime:'2026-11-20T08:30:00Z',validTimeTo:Z('20T10:00:00')});
+ const atEnd=T.select(expired,Z('20T09:00:00')*1000,Z('20T10:00:00')*1000);
+ assert.equal(atEnd.status,'expired');
+ assert.equal(atEnd.wind,null);
+ assert.match(atEnd.notes.join(' '),/no longer valid/);
+});

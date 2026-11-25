@@ -96,6 +96,17 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
   });
   assert.match(await mem.locator('.taf-status').innerText(),/TAF CURRENT/);
   assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),2);
+  // Expired validity is not a stale issue: keep raw text, show red and disable projections.
+  await page.evaluate(()=>{
+   const report=tafData.tafs.find(item=>item.icaoId==='KMEM');
+   report.issueTime=new Date(Date.now()-90*60000).toISOString();
+   report.validTimeTo=Math.floor((Date.now()-60*60000)/1000);
+   render();
+  });
+  assert.equal(await mem.locator('.taf-status').innerText(),'NO LONGER VALID');
+  assert.equal(await mem.locator('.taf-status').evaluate(el=>getComputedStyle(el).color),'rgb(255, 107, 107)');
+  assert.match(await mem.locator('.taf-raw').innerText(),/SYNTHETIC 27012KT/);
+  assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),1);
   assert.deepEqual(errors,[]);
   assert.ok(external.every(url=>/fonts\.(googleapis|gstatic)\.com/.test(url)),external.join(', '));
  }finally{await context.close();}

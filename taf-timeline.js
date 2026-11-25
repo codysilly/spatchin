@@ -57,6 +57,8 @@ const TafTimeline=(()=>{
     const validity=bounds(report),at=time(instant);
     if(!validity||!Number.isFinite(at)||at<validity.start||at>=validity.end)
       return {status:'outside',wind:null,alternatives:[],notes:['Time outside TAF validity']};
+    if(now>=validity.end)
+      return {status:'expired',wind:null,alternatives:[],notes:['TAF no longer valid']};
     const issued=time(report.issueTime);
     if(!Number.isFinite(issued)||issued>now+300000||now-issued>STALE_MS)
       return {status:'stale',wind:null,alternatives:[],notes:['TAF issue time is stale or invalid']};
