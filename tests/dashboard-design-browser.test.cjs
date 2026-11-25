@@ -42,7 +42,7 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
   await page.screenshot({path:join(screenshots,`synthetic-scan-${width}.png`),fullPage:true});
   if(width===1440){
    await page.evaluate(()=>{metars.MEM={observed:new Date(Date.now()-2*60*60*1000).toISOString(),raw:'SYNTHETIC STALE METAR — LAYOUT EVIDENCE ONLY',wind:{direction:80,speed:9,gust:null},error:null};atisData=null;atisRetrieved=null;render();const label=document.querySelector('.synthetic-banner');label.textContent='SYNTHETIC STALE METAR / UNAVAILABLE ATIS — NOT LIVE AVIATION DATA';});
-   assert.equal(await page.locator('[data-airport="MEM"] .metar-status').textContent(),'METAR STALE · 65+ MIN');assert.match(await page.locator('[data-airport="MEM"] .atis-full').textContent(),/ATIS not available/);
+   assert.equal(await page.locator('[data-airport="MEM"] .metar-status').textContent(),'METAR STALE · 70+ MIN');assert.match(await page.locator('[data-airport="MEM"] .atis-full').textContent(),/ATIS not available/);
    await upperCardScreenshot(page,join(screenshots,'synthetic-stale-metar-unavailable-atis-upper-1440.png'));
   }
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);

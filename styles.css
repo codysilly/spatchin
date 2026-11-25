@@ -35,7 +35,7 @@ main{padding-top:14px}
 .atis-raw{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
 .atis-value{overflow-wrap:anywhere;font-size:18px}
 
-/* v0.9: METAR observation freshness (65-minute threshold) */
+/* v0.9: METAR observation freshness (70-minute threshold) */
 .metar-status{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;letter-spacing:.02em}
 .metar-current{color:var(--green)}
 .metar-stale{color:var(--red)}

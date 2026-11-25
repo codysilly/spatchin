@@ -53,6 +53,15 @@ test('all 130 stations render in batches of at most 30 using the same shared sna
   assert.equal(app.requests.filter(x=>x.includes('metars.json')).length,1);
  }
 });
+test('METAR staleness begins at the 70-minute boundary',async()=>{
+ const current=await load(['MEM'],snapshot([report('KMEM',69)]));
+ assert.equal(current.state('MEM'),'current');
+ assert.match(current.html(),/METAR CURRENT/);
+ const stale=await load(['MEM'],snapshot([report('KMEM',70)]));
+ assert.equal(stale.state('MEM'),'stale');
+ assert.match(stale.html(),/METAR STALE · 70\+ MIN/);
+});
+
 test('partial, older, stale, malformed and failed snapshots preserve truthful display',async()=>{
  const app=await load(['IWA','IND','OAK','ABE'],snapshot([report('KIWA'),report('KIND',70)]));
  assert.equal(app.state('IWA'),'current');assert.equal(app.state('IND'),'stale');assert.equal(app.state('OAK'),'unavailable');
