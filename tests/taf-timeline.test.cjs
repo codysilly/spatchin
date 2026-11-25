@@ -103,3 +103,13 @@ test('missing, malformed and unknown wind values do not produce fictitious calcu
  assert.equal(T.windOf({wdir:50,wspd:null}),null);
  assert.equal(T.select({validTimeFrom:1,validTimeTo:0,fcsts:[base]},NOW,NOW).status,'outside');
 });
+
+test('six-hour issuance cutoff applies to projected winds, with exact boundary current',()=>{
+ const atSix=report([base],{issueTime:new Date(NOW-6*3600000).toISOString()});
+ const overdue=report([base],{issueTime:new Date(NOW-6*3600000-1).toISOString()});
+ assert.equal(at(atSix,'20T10:00:00').status,'available');
+ assert.equal(at(atSix,'20T10:00:00').wind.direction,270);
+ assert.equal(at(overdue,'20T10:00:00').status,'stale');
+ assert.equal(at(overdue,'20T10:00:00').wind,null);
+ assert.equal(T.STALE_MS,6*3600000);
+});

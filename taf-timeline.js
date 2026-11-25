@@ -2,7 +2,7 @@
 // SPA-13: interpretation of saved AWC decoded TAF periods. No provider calls.
 // All times are UTC. Uncertain changes remain distinct from prevailing winds.
 const TafTimeline=(()=>{
-  const STEP=30*60000,HOUR=3600000;
+  const STEP=30*60000,HOUR=3600000,STALE_MS=6*HOUR;
   function time(value){
     // AWC fields use Unix seconds; internal slider/Date values use milliseconds.
     if(typeof value==='number')return Number.isFinite(value)?(Math.abs(value)>=1e11?value:value*1000):NaN;
@@ -58,7 +58,7 @@ const TafTimeline=(()=>{
     if(!validity||!Number.isFinite(at)||at<validity.start||at>=validity.end)
       return {status:'outside',wind:null,alternatives:[],notes:['Time outside TAF validity']};
     const issued=time(report.issueTime);
-    if(!Number.isFinite(issued)||issued>now+300000||now-issued>12*HOUR)
+    if(!Number.isFinite(issued)||issued>now+300000||now-issued>STALE_MS)
       return {status:'stale',wind:null,alternatives:[],notes:['TAF issue time is stale or invalid']};
     if(!Array.isArray(report.fcsts)||report.fcsts.length===0)
       return {status:'missing',wind:null,alternatives:[],notes:['Decoded forecast periods unavailable']};
@@ -113,6 +113,6 @@ const TafTimeline=(()=>{
     if(!range)return NaN;
     return now>=range.start&&now<range.end?stepTime(report,stepIndex(report,now)):range.start;
   }
-  return {time,bounds,stamp,localInput,windOf,periods,select,steps,stepTime,stepIndex,initialTime,STEP};
+  return {time,bounds,stamp,localInput,windOf,periods,select,steps,stepTime,stepIndex,initialTime,STEP,STALE_MS};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=TafTimeline;
