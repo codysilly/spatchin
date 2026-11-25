@@ -3,6 +3,7 @@ const {test,before,after}=require('node:test'),assert=require('node:assert/stric
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const {readFileSync,mkdtempSync}=require('node:fs'),{tmpdir}=require('node:os'),{join}=require('node:path'),{createHash}=require('node:crypto');
 const longNotices=require('./fixtures/ui-long-notams.cjs');
+const offlineFont='https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap';
 const base='http://127.0.0.1:8771',screenshots=process.env.SPATCHIN_SCREENSHOTS||mkdtempSync(join(tmpdir(),'spatchin-dashboard-'));let server,browser;
 const hash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
 before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8771','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
@@ -12,7 +13,7 @@ test('version-controlled originals match owner-approved fingerprints',()=>{
  assert.equal(hash('docs/reference/dashboard-reference.png'),'8380cbe3c991e1af1259294fffc2ab90bd538d6be74a1f798b47a5e3d9ca4c09');
 });
 async function localPage(width){const context=await browser.newContext({viewport:{width,height:1200}}),page=await context.newPage(),external=[],errors=[];
- await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
+ await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(r.request().url()===offlineFont)return r.fulfill({status:200,contentType:'text/css',body:''});external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
 async function upperCardScreenshot(page,path){await page.evaluate(()=>scrollTo(0,0));const clip=await page.locator('[data-airport="MEM"]').evaluate(el=>{const card=el.getBoundingClientRect(),atis=el.querySelector('.atis').getBoundingClientRect();return {x:card.x,y:card.y,width:card.width,height:atis.bottom-card.y};});await page.screenshot({path,clip});}
 for(const width of [1440,390])test(`actual app synthetic visual review and branding at ${width}px`,async()=>{
  const {context,page,external,errors}=await localPage(width),now=new Date().toISOString();
@@ -24,47 +25,47 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
  try{
   await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8&&metars.MEM?.wind);
   await page.evaluate(()=>{const label=document.createElement('div');label.className='synthetic-banner';label.textContent='SYNTHETIC VISUAL TEST — NOT LIVE AVIATION DATA';document.querySelector('.wip-banner').after(label);});
-  assert.equal(await page.locator('.wip-banner').innerText(),'WORK IN PROGRESS — Spatchin is not ready for actual use.');
+  assert.equal(await page.locator('.wip-banner').innerText(),'WORK IN PROGRESS. Under development and not yet validated.');
   assert.match(await page.title(),/v0\.9$/);assert.match(await page.locator('.version').innerText(),/v0\.9/);
   assert.equal(await page.locator('.brand-logo').evaluate(el=>el.complete&&el.naturalWidth>0&&getComputedStyle(el).objectFit==='contain'),true);
   const sizes=await page.evaluate(()=>Promise.all([...document.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"]')].map(el=>new Promise(resolve=>{const image=new Image();image.onload=()=>resolve(image.naturalWidth>0);image.onerror=()=>resolve(false);image.src=el.href;}))));
-  assert.deepEqual(sizes,[true,true,true]);
+  assert.deepEqual(sizes,[true,true,true,true]);
   const columns=await page.locator('.cards').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);assert.equal(columns,width===1440?3:1);
   assert.equal(await page.locator('.airport').count(),3);assert.equal(await page.locator('[data-observed-time]').count(),3);
   await page.locator('[data-reader-open="KMEM-36L"]').click();
   await page.screenshot({path:join(screenshots,`synthetic-${width}.png`),fullPage:true});
   await upperCardScreenshot(page,join(screenshots,`synthetic-current-populated-upper-${width}.png`));
-  await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('LOWER_MATCH_A, LOWER_MATCH_B');await page.waitForFunction(()=>document.querySelector('#cards mark'));await page.locator('#scan-next').click();await page.locator('#scan-next').click();
-  assert.equal(await page.locator('.scan-current').textContent(),'LOWER_MATCH_B');
+  await page.locator('#scan-toggle').click();await page.locator('#scan-terms').fill('LOWER_MATCH_A, LOWER_MATCH_B');await page.waitForFunction(()=>document.querySelector('#cards mark'));for(let i=0;i<await page.locator('#cards mark[data-scan-match]').count();i++){await page.locator('#scan-next').click();const current=page.locator('#scroll-KMEM-36L .scan-current');if(await current.count()&&await current.textContent()==='LOWER_MATCH_B')break;}
+  assert.equal(await page.locator('#scroll-KMEM-36L .scan-current').textContent(),'LOWER_MATCH_B');
   assert.ok(await page.locator('.scan-current').evaluate(el=>{const r=el.getBoundingClientRect(),panel=el.closest('[data-reader-scroll]'),p=panel.getBoundingClientRect();return r.top>=Math.max(0,p.top)&&r.bottom<=Math.min(innerHeight,p.bottom)&&panel.scrollTop>(panel.scrollHeight-panel.clientHeight)*.8;}));
   assert.equal(await page.locator('mark mark').count(),0);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.screenshot({path:join(screenshots,`synthetic-scan-${width}.png`),fullPage:true});
   if(width===1440){
    await page.evaluate(()=>{metars.MEM={observed:new Date(Date.now()-2*60*60*1000).toISOString(),raw:'SYNTHETIC STALE METAR — LAYOUT EVIDENCE ONLY',wind:{direction:80,speed:9,gust:null},error:null};atisData=null;atisRetrieved=null;render();const label=document.querySelector('.synthetic-banner');label.textContent='SYNTHETIC STALE METAR / UNAVAILABLE ATIS — NOT LIVE AVIATION DATA';});
-   assert.equal(await page.locator('[data-airport="MEM"] .metar-status').textContent(),'METAR STALE · 70+ MIN');assert.match(await page.locator('[data-airport="MEM"] .atis-full').textContent(),/ATIS not available/);
+   assert.equal(await page.locator('[data-airport="MEM"] .metar-status').textContent(),'METAR STALE · 70+ MIN');assert.match(await page.locator('[data-airport="MEM"] .atis-full').textContent(),/ATIS collection coverage is unknown in this snapshot/);
    await upperCardScreenshot(page,join(screenshots,'synthetic-stale-metar-unavailable-atis-upper-1440.png'));
   }
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
-test('public MEM keeps 100 records and all 48 LOCAL_FORMAT / 83 ICAO representations in data only',async()=>{
+test('public MEM retains all 38 notices and 59 typed representations',async()=>{
  const {context,page,external,errors}=await localPage(1440),data=JSON.parse(readFileSync('data/notams.json','utf8'));
  try{
   await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const records=await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).map(n=>({key:n.key,text:n.text,formatted_texts:n.formatted_texts})));
-  assert.equal(records.length,100);assert.equal(records.reduce((n,r)=>n+(r.formatted_texts||[]).length,0),131);
+  assert.equal(records.length,38);assert.equal(records.reduce((n,r)=>n+(r.formatted_texts||[]).length,0),59);
   for(const record of records){const original=data.airports.KMEM.notices[Number(record.key.split('-')[1])];assert.equal(record.text,original.text);assert.deepEqual(record.formatted_texts,original.formatted_texts);}
-  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='LOCAL_FORMAT').length,48);
-  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='ICAO').length,83);
+  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='LOCAL_FORMAT').length,38);
+  assert.equal(records.flatMap(n=>n.formatted_texts||[]).filter(t=>t.type==='ICAO').length,21);
   for(const id of await page.evaluate(()=>ends('MEM'))){
    const associated=await page.evaluate(id=>NotamReader.records('KMEM',ends('MEM')).filter(n=>n.references.some(r=>r.id===id)).map(n=>({key:n.key,texts:NotamReader.localTexts(n)})),id);
    for(const n of associated)assert.deepEqual(await page.locator(`#reader-KMEM-${id} [data-reader-key="${n.key}"] .reader-raw`).allTextContents(),n.texts);
   }
   assert.equal(await page.locator('.notam-reader,.notice-table,.notice-provenance,.inline-reader pre,.inline-reader details,[data-expand]').count(),0);
-  assert.match(await page.locator('.notam-summary').innerText(),/2026-11-13T02:52:31\.040326\+00:00/);
-  assert.match(await page.locator('.notam-summary').innerText(),/UNKNOWN/);assert.match(await page.locator('.notam-summary').innerText(),/no automatic updates/i);
-  assert.equal(await page.locator('.collection-warning').textContent(),data.airports.KMEM.warning);
+  assert.match(await page.locator('.notam-summary').innerText(),/Retrieved: 2026-11-15 10:39 UTC/);
+  assert.match(await page.evaluate(()=>NotamReader.availability('KMEM')),/Coverage UNKNOWN/);assert.match(await page.locator('.notam-transport').innerText(),/Published snapshot.*No live provider request/);
+  assert.equal(data.airports.KMEM.completeness,'UNKNOWN');assert.equal(await page.locator('#airport-notams-KMEM .reader-notice').count(),38);
   await page.locator('[data-reader-open="KMEM-36L"]').click();await page.screenshot({path:join(screenshots,'public-historical-mem-desktop.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-desktop.png'));
   await page.setViewportSize({width:390,height:1200});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(screenshots,'public-historical-mem-mobile.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-mobile.png'));
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);

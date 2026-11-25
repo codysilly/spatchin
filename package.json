@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test:node": "node scripts/run-node-tests.cjs",
-    "test:browser": "node --test tests/*browser*.test.cjs",
+    "test:browser": "node --test --test-concurrency=1 tests/*browser*.test.cjs",
     "test:scan": "node --test tests/scan.test.cjs"
   },
   "devDependencies": {
