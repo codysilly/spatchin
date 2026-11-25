@@ -8,7 +8,7 @@ const origin='http://127.0.0.1:8787';
 let server,browser;
 
 before(async()=>{
- server=spawn('python3',['-B','-m','http.server','8787','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8787','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let attempt=0;attempt<80;attempt++){
   try{if((await fetch(origin)).ok)break;}catch{}
   await new Promise(resolve=>setTimeout(resolve,100));

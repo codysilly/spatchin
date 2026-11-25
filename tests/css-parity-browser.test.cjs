@@ -14,7 +14,7 @@ const original=Object.fromEntries(['index.html','styles.css','dashboard.css','ch
 const freeze=Date.parse('2026-11-20T07:00:00Z');
 let server,browser;
 before(async()=>{
- server=spawn('python3',['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let i=0;i<80;i++){
   try{if((await fetch(origin)).ok)break;}catch{}
   await new Promise(r=>setTimeout(r,100));

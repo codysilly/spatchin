@@ -2,7 +2,7 @@
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const base='http://127.0.0.1:8774';let server,browser;
-before(async()=>{server=spawn('python3',['-B','-m','http.server','8774','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8774','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 async function localPage(width){const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
 for(const width of [1440,390])test(`verified green AWC badge links, footer removal/focus and empty preference at ${width}px`,async()=>{

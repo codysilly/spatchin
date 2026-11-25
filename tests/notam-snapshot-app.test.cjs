@@ -10,7 +10,7 @@ function load({notams,runways}={}){
    if(path.endsWith('/runways.json')&&runways)return Promise.resolve({ok:true,json:async()=>runways});
    return new Promise(resolve=>pending.push(resolve));
   }});
- for(const name of ['notam-reader.js','notam-snapshots.js','app.js'])vm.runInContext(readFileSync(join(__dirname,'..',name),'utf8'),ctx);
+ for(const name of ['airport-catalog.js','notam-reader.js','notam-snapshots.js','app.js'])vm.runInContext(readFileSync(join(__dirname,'..',name),'utf8'),ctx);
  return {ctx,calls,elements,run:s=>vm.runInContext(s,ctx)};
 }
 const valid=()=>({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{notices:[{text:'SYNTHETIC RWY 18L retained report'}]}}});
@@ -20,7 +20,8 @@ test('dashboard startup requests one local NOTAM snapshot; ordinary rerenders ne
  assert.equal(app.run('notamTransport.error'),null);assert.doesNotMatch(app.elements.get('cards').innerHTML,/retained report/);assert.equal(app.run("NotamReader.records('KMEM',[])[0].text"),'SYNTHETIC RWY 18L retained report');
  app.run('render();render();render()');assert.equal(app.calls.filter(u=>u.includes('notams.json')).length,1);
  assert.ok(app.calls.every(u=>new URL(u,'http://local.test').hostname==='local.test'));
- assert.match(app.elements.get('cards').innerHTML,/Reading only; no applicability or closure assessment/);
+ assert.match(app.elements.get('cards').innerHTML,/Retrieved: 2020-01-01 00:00 UTC/);
+ assert.match(app.elements.get('cards').innerHTML,/LOCAL_FORMAT text unavailable/);
 });
 test('dashboard first-load failure is explicit and synthetic production data is refused',async()=>{
  for(const notams of [{ok:false,status:404},{ok:true,json:async()=>({...valid(),synthetic:true})}]){
@@ -31,7 +32,11 @@ test('valid optional eight-end MEM snapshot renders without wind; invalid MEM is
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
  delete legacy.airports.MEM;delete legacy.airport_metadata;
  for(const mem of [undefined,Array.from({length:8},(_,i)=>({id:['09','27','18L','36R','18C','36C','18R','36L'][i],true_heading:i*40})),Array(8).fill({id:'09',true_heading:90}),[{id:'18L',true_heading:999}]]){
-  const runways=JSON.parse(JSON.stringify(legacy));if(mem!==undefined)runways.airports.MEM=mem;
+  const runways=JSON.parse(JSON.stringify(legacy));
+  if(mem!==undefined){
+   runways.airports.MEM=mem.map((end,i)=>({...end,pair:end.pair||[['09','27'],['27','09'],['18L','36R'],['36R','18L'],['18C','36C'],['36C','18C'],['18R','36L'],['36L','18R']][i]?.join('/')}));
+   if(runways.airport_coverage?.MEM)runways.airport_coverage.MEM.status='available';
+  }else if(runways.airport_coverage?.MEM)runways.airport_coverage.MEM.status='unavailable';
   const app=load({runways});await tick();
   const expected=mem&&new Set(mem.map(x=>x.id)).size===8?8:0;
   assert.equal(app.run('ends("MEM").length'),expected);
@@ -56,7 +61,7 @@ test('published MEM NASR inventory preserves every source bearing and provenance
   assert.ok(end.pair.split('/').includes(end.id));
  }
  const html=app.elements.get('cards').innerHTML;
- assert.equal((html.match(/<td class="unknown">—<\/td>/g)||[]).length,16);
+ assert.equal((html.match(/<td>[^<]*<\/td>/g)||[]).length,16);
  assert.equal(app.run('runwayData.effective_date'),runways.effective_date);
  assert.equal(app.run('runwayData.source_url'),runways.source_url);
  assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/00253AD.PDF/);

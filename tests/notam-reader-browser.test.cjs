@@ -2,7 +2,7 @@ const {test,before,after}=require('node:test'),assert=require('node:assert/stric
 const {spawn,spawnSync}=require('node:child_process'),{chromium}=require('playwright');
 const {readFileSync}=require('node:fs'),{join}=require('node:path');
 const base='http://127.0.0.1:8767';let server,browser;
-before(async()=>{server=spawn('python3',['-B','-m','http.server','8767','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8767','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 async function localPage(width=1440){const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
 test('LOCAL_FORMAT preserves empty/multiple/exact strings; other evidence stays only in memory',async()=>{

@@ -10,7 +10,7 @@ const screenshots = mkdtempSync(join(tmpdir(), 'spatchin-scan-'));
 let browser, server, context, page, errors, external;
 const url = 'http://127.0.0.1:8766';
 before(async () => {
-  server = spawn('python3', ['-m', 'http.server', '8766', '--bind', '127.0.0.1', '--directory', process.cwd()], {stdio:'ignore'});
+  server = spawn(process.env.PYTHON||'python3', ['-m', 'http.server', '8766', '--bind', '127.0.0.1', '--directory', process.cwd()], {stdio:'ignore'});
   for (let i=0;i<50;i++) {try {if ((await fetch(url)).ok) break;} catch {} await new Promise(r=>setTimeout(r,100));}
   browser = await chromium.launch({...(process.env.CHROMIUM_PATH ? {executablePath:process.env.CHROMIUM_PATH} : {}), headless:true});
 });

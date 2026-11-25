@@ -2,7 +2,7 @@
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const base='http://127.0.0.1:8770';let server,browser;
-before(async()=>{server=spawn('python3',['-B','-m','http.server','8770','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8770','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 test('catalog additions enforce 30 total; removable MEM and deliberate empty state persist',async()=>{
  const context=await browser.newContext(),page=await context.newPage(),dialogs=[];
