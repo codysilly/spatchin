@@ -20,6 +20,7 @@ beforeEach(async () => {
   page = await context.newPage(); errors=[]; external=[];
   await context.route('**/*', route => {
     if (new URL(route.request().url()).origin === url) return route.continue();
+    if (route.request().url() === 'https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap') return route.fulfill({status:200,contentType:'text/css',body:''});
     external.push(route.request().url());return route.abort();
   });
   page.on('pageerror',e=>errors.push(e.message));
@@ -57,7 +58,7 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
   assert.equal(await page.evaluate(()=>runwayBearingLabel('MEM')),'FAA NASR true alignment');
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
-  assert.equal(await page.locator('.rw-table > tbody > tr.runway-row > td.unknown:not(:has(button))').count(),16);
+  assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row > td:nth-child(2), .rw-table > tbody > tr.runway-row > td:nth-child(3)').allTextContents(),Array(16).fill('—'));
   assert.equal(await page.locator('[data-airport="MEM"] .airport-diagram a').getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
   assert.equal(await page.evaluate(()=>localStorage.getItem('niltsi-airports')),null);
@@ -87,15 +88,16 @@ test('KMEM observation loads through refresh and renders on the MEM card',async(
   assert.ok(requests>0,'Startup refresh fetched same-origin METAR JSON');
   assert.equal(await card.count(),1);
   assert.equal(await card.locator('.icao').textContent(),'MEM');
-  assert.equal(await card.locator('.name').textContent(),'Memphis International Airport');
+  assert.equal(await card.locator('.name').textContent(),'FREDERICK W SMITH INTL/MEMPHIS');
   assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');
   assert.match(await card.locator('.metar-raw').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
   assert.equal(await card.locator('a.weather-badge').getAttribute('href'),
     'https://aviationweather.gov/data/metar/?ids=KMEM');
   fail=true;await page.evaluate(()=>refresh());assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');assert.equal(await card.locator('.metar-raw').textContent(),raw);assert.match(await card.locator('.metar-retained').textContent(),/refresh failed.*retained/i);
+  await page.route('**/data/atis.json?*',route=>route.fulfill({json:{retrieved_utc:new Date().toISOString(),configured_airports:['KMEM'],airports:{}}}));
   await page.evaluate(()=>refreshAtis());
-  assert.equal(await card.locator('.atis-provider').textContent(),'atis.info · STALE / UNVERIFIED');
-  assert.match(await card.locator('.atis-full').textContent(),/ATIS not available\./);
+  assert.equal(await card.locator('.atis-provider').textContent(),'atis.info · UNAVAILABLE');
+  assert.match(await card.locator('.atis-full').textContent(),/Configured airport; no usable ATIS report in this snapshot\./);
   assert.equal(await card.locator('.atis-raw').count(),0);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),null);
 });
