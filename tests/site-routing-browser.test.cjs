@@ -44,3 +44,29 @@ for(const width of [1440,390])test('public homepage serves live WIP UI '+width+'
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
+
+test('synthetic preview loads current stylesheet without external requests',async()=>{
+ const context=await browser.newContext({viewport:{width:1440,height:900}});
+ const page=await context.newPage(),errors=[],external=[],missing=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ page.on('response',response=>{
+  if(new URL(response.url()).origin===origin&&response.status()>=400)missing.push(new URL(response.url()).pathname);
+ });
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin){external.push(url.origin);return route.abort();}
+  return route.continue();
+ });
+ try{
+  const stylesheet=page.waitForResponse(response=>new URL(response.url()).pathname==='/charcoal-dashboard.css');
+  await page.goto(origin+'/preview/');
+  assert.equal((await stylesheet).status(),200);
+  await page.waitForSelector('.runway-row');
+  assert.equal(await page.locator('.runway-row').count(),8);
+  assert.match(await page.locator('.synthetic-banner').innerText(),/SYNTHETIC/);
+  assert.ok(await page.evaluate(()=>Array.from(document.styleSheets).some(sheet=>sheet.href&&new URL(sheet.href).pathname==='/charcoal-dashboard.css'&&sheet.cssRules.length>0)));
+  assert.ok(!missing.includes('/dashboard.css'));
+  assert.deepEqual(errors,[]);
+  assert.deepEqual(external,[]);
+ }finally{await context.close();}
+});
