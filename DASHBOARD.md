@@ -110,7 +110,7 @@ time, publication time, and heading source; selecting the observation returns
 to METAR-only runway values. Forecast selection lasts for the current browser
 session and is preserved during routine rerenders, but is not saved between
 visits. Other C070 airports do not get guessed ICAO mappings or forecast data.
-Existing METAR calculations/65-minute freshness and ATIS extraction remain.
+Existing METAR calculations/70-minute freshness and ATIS extraction remain.
 
 ## TAF collection (SPA-74)
 
