@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'scripts/update_atis.py'
+      - 'scripts/c070_station_registry.py'
+      - 'docs/reference/c070-airport-registry.json'
+      - 'docs/reference/c070-airports.csv'
       - 'tests/test_update_atis.py'
       - '.github/workflows/atis-offline.yml'
   workflow_dispatch:

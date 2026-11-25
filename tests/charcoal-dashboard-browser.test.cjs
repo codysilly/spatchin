@@ -151,3 +151,32 @@ test('touch pointer drag reorders a single-column mobile dashboard',async()=>{
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
+
+for(const width of [1440,390])test('ATIS coverage states render at '+width+'px',async()=>{
+ const context=await browser.newContext({viewport:{width,height:1000}});
+ const page=await context.newPage(),errors=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","ORD","ABE"]'));
+ const now=new Date().toISOString();
+ await context.route('**/data/atis.json?*',route=>route.fulfill({json:{
+  retrieved_utc:now,configured_airports:['KMEM','KORD','KLAX','KJFK'],
+  airports:{KMEM:[{airport:'KMEM',type:'arr',code:'A',time:'1200',updatedAt:now,datis:'ARR EXP RWY 18R. SYNTHETIC ATIS'}]}
+ }}));
+ try{
+  await page.goto(base+'/dashboard/');
+  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .atis-label')?.textContent.includes('CURRENT'));
+  const label=(code,index)=>page.locator('[data-airport="'+code+'"] .atis-label').nth(index).innerText();
+  assert.match(await label('MEM',0),/CURRENT/);
+  assert.match(await label('MEM',1),/UNAVAILABLE/);
+  assert.match(await label('ORD',0),/UNAVAILABLE/);
+  assert.match(await label('ABE',0),/NOT CONFIGURED/);
+  await page.locator('[data-airport="MEM"] .atis-full summary').click();
+  assert.match(await page.locator('[data-airport="MEM"] .atis-raw').innerText(),/SYNTHETIC ATIS/);
+  const overflow=await page.locator('.atis').evaluateAll(els=>els.map(el=>el.scrollWidth-el.clientWidth));
+  assert.ok(overflow.every(n=>n<=1),String(overflow));
+  assert.deepEqual(errors,[]);
+  mkdirSync('screenshots',{recursive:true});
+  await page.screenshot({path:'screenshots/atis-coverage-'+width+'.png',fullPage:true});
+ }finally{await context.close();}
+});

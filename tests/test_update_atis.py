@@ -8,7 +8,7 @@ from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'update_atis.py'
 
@@ -43,53 +43,66 @@ class UpdateAtisTests(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.module.OUTPUT = Path(self.directory.name) / 'data' / 'atis.json'
+        self.stations = ['KJFK', 'KLAX', 'KMEM', 'KORD']
 
-    def prior(self, airport_reports):
+    def prior(self, airport_reports, *, coverage=True):
         path = self.module.OUTPUT
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({'retrieved_utc': '2026-01-01T00:00:00Z',
-                                    'airports': airport_reports}), encoding='utf-8')
+        payload = {'retrieved_utc': '2026-01-01T00:00:00Z', 'airports': airport_reports}
+        if coverage:
+            payload['configured_airports'] = sorted(self.stations)
+            payload['catalog_airports'] = list(self.module.CATALOG_AIRPORTS)
+        path.write_text(json.dumps(payload), encoding='utf-8')
         return path.read_bytes()
 
-    def collect(self, payloads):
+    def collect(self, payloads, *, stations=None):
+        calls = []
+        records = []
+        for value in payloads.values():
+            if isinstance(value, Exception):
+                continue
+            records.extend(value if isinstance(value, list) else [value])
         def urlopen(request, timeout=20):
-            airport = request.full_url.rsplit('/', 1)[-1]
-            data = payloads[airport]
-            if isinstance(data, Exception):
-                raise data
-            return Response(data)
+            endpoint = request.full_url.rsplit('/', 1)[-1]
+            calls.append(endpoint)
+            return Response((self.stations if stations is None else stations)
+                            if endpoint == 'stations' else records)
         with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=urlopen):
             self.module.main()
+        self.assertEqual(calls, ['stations', 'all'])
 
     def snapshot(self):
         return json.loads(self.module.OUTPUT.read_text(encoding='utf-8'))
 
     def test_success_publishes_dashboard_compatible_snapshot(self):
-        payloads = {code: [report(code)] for code in self.module.AIRPORTS}
+        payloads = {code: [report(code)] for code in self.stations}
         self.collect(payloads)
         snapshot = self.snapshot()
-        self.assertEqual(set(snapshot['airports']), set(self.module.AIRPORTS))
+        self.assertEqual(set(snapshot['airports']), set(self.stations))
         self.assertTrue(snapshot['retrieved_utc'].endswith('Z'))
         self.assertEqual(snapshot['source'], 'https://atis.info/api')
         self.assertEqual(snapshot['airports']['KORD'][0]['type'], 'combined')
+        self.assertEqual(snapshot['configured_airports'], sorted(self.stations))
+        self.assertEqual(len(snapshot['catalog_airports']), 130)
+        self.assertEqual(len(set(snapshot['catalog_airports']) - set(snapshot['configured_airports'])), 126)
 
     def test_failed_airport_keeps_previous_while_others_update(self):
         old = report('KORD', age=30, code='X')
         self.prior({'KORD': [old]})
         self.collect({'KORD': URLError('synthetic outage'),
                       'KLAX': [report('KLAX', age=2)],
-                      'KJFK': [report('KJFK', age=3)]})
+                      'KJFK': [report('KJFK', age=3)], 'KMEM': [report('KMEM')]})
         snapshot = self.snapshot()
         self.assertEqual(snapshot['airports']['KORD'], [old])
-        self.assertEqual(set(snapshot['airports']), set(self.module.AIRPORTS))
+        self.assertEqual(set(snapshot['airports']), {'KORD', 'KLAX', 'KJFK', 'KMEM'})
 
     def test_all_failures_keep_snapshot_and_signal_failure(self):
         before = self.prior({'KORD': [report('KORD')]})
         with redirect_stderr(io.StringIO()) as stderr:
             with self.assertRaises(SystemExit) as raised:
-                self.collect({code: URLError('synthetic outage') for code in self.module.AIRPORTS})
+                self.collect({code: URLError('synthetic outage') for code in self.stations})
         self.assertEqual(raised.exception.code, 1)
-        self.assertIn('All ATIS retrievals failed', stderr.getvalue())
+        self.assertIn('ATIS bulk collection failed', stderr.getvalue())
         self.assertEqual(self.module.OUTPUT.read_bytes(), before)
 
     def test_bad_response_does_not_block_valid_airport(self):
@@ -107,7 +120,7 @@ class UpdateAtisTests(unittest.TestCase):
         self.assertEqual(self.snapshot()['airports']['KORD'], [previous])
 
     def test_repeated_unchanged_reports_do_not_rewrite_file(self):
-        records = {code: [report(code)] for code in self.module.AIRPORTS}
+        records = {code: [report(code)] for code in self.stations}
         before = self.prior(records)
         self.collect(records)
         self.assertEqual(self.module.OUTPUT.read_bytes(), before)
@@ -156,6 +169,102 @@ class UpdateAtisTests(unittest.TestCase):
                       'KJFK': [report('KJFK')]})
         self.assertEqual([r['type'] for r in self.snapshot()['airports']['KORD']],
                          ['combined', 'arr', 'dep'])
+
+    def test_mem_failure_is_configured_without_report(self):
+        self.collect({code: [report(code)] for code in self.stations if code != 'KMEM'})
+        snapshot = self.snapshot()
+        self.assertIn('KMEM', snapshot['configured_airports'])
+        self.assertNotIn('KMEM', snapshot['airports'])
+        self.assertNotIn('KABE', snapshot['configured_airports'])
+        self.assertIn('KABE', snapshot['catalog_airports'])
+
+    def test_legacy_metadata_migration_does_not_refresh_retrieval_time(self):
+        records = {code: [report(code)] for code in self.stations}
+        self.prior(records, coverage=False)
+        self.collect(records)
+        snapshot = self.snapshot()
+        self.assertEqual(snapshot['configured_airports'], sorted(self.stations))
+        self.assertEqual(snapshot['retrieved_utc'], '2026-01-01T00:00:00Z')
+        self.assertEqual(snapshot['airports'], records)
+
+    def test_coverage_change_with_unchanged_reports(self):
+        records = {code: [report(code)] for code in self.stations if code != 'KMEM'}
+        self.prior(records, coverage=False)
+        self.collect(records)
+        snapshot = self.snapshot()
+        self.assertIn('KMEM', snapshot['configured_airports'])
+        self.assertNotIn('KMEM', snapshot['airports'])
+        self.assertEqual(snapshot['retrieved_utc'], '2026-01-01T00:00:00Z')
+
+    def test_full_c070_bulk_two_requests_and_non_catalog_filter(self):
+        self.stations = list(self.module.CATALOG_AIRPORTS)
+        payloads = {code: [report(code)] for code in self.stations}
+        payloads['ZZZZ'] = [report('ZZZZ')]
+        self.collect(payloads, stations=self.stations + ['ZZZZ'])
+        snapshot = self.snapshot()
+        self.assertEqual(len(snapshot['airports']), 130)
+        self.assertEqual(snapshot['configured_airports'], sorted(self.stations))
+        self.assertNotIn('ZZZZ', snapshot['airports'])
+        self.assertEqual(snapshot['coverage_source'], 'https://atis.info/api/stations')
+
+    def test_rate_limit_or_unavailable_never_retries_or_falls_back(self):
+        before = self.prior({'KORD': [report('KORD')]})
+        for status in (429, 503):
+            with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=[
+                HTTPError('https://atis.info/api/stations', status, 'limited', {}, None)
+            ]) as fetch:
+                with self.assertRaises(SystemExit):
+                    self.module.main()
+            self.assertEqual(fetch.call_count, 1)
+            self.assertEqual(self.module.OUTPUT.read_bytes(), before)
+
+    def test_bulk_failure_preserves_snapshot_after_station_success(self):
+        before = self.prior({'KORD': [report('KORD')]})
+        with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=[
+            Response(self.stations), URLError('synthetic outage')
+        ]) as fetch:
+            with self.assertRaises(SystemExit):
+                self.module.main()
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(self.module.OUTPUT.read_bytes(), before)
+
+    def test_malformed_station_list_fails_before_bulk(self):
+        before = self.prior({'KORD': [report('KORD')]})
+        for invalid in ([], {}, ['bad'], [None]):
+            with mock.patch.object(self.module.urllib.request, 'urlopen', return_value=Response(invalid)) as fetch:
+                with self.assertRaises(SystemExit):
+                    self.module.main()
+            self.assertEqual(fetch.call_count, 1)
+            self.assertEqual(self.module.OUTPUT.read_bytes(), before)
+
+    def test_station_list_bulk_disagreement_keeps_snapshot(self):
+        before = self.prior({'KORD': [report('KORD')]})
+        with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=[
+            Response(['KORD']), Response([report('KMEM')])
+        ]) as fetch:
+            with self.assertRaises(SystemExit):
+                self.module.main()
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(self.module.OUTPUT.read_bytes(), before)
+
+    def test_delisted_station_keeps_historical_report(self):
+        old = report('KMEM', age=10)
+        self.prior({'KMEM': [old]})
+        self.collect({'KORD': [report('KORD')]}, stations=['KORD'])
+        snapshot = self.snapshot()
+        self.assertNotIn('KMEM', snapshot['configured_airports'])
+        self.assertEqual(snapshot['airports']['KMEM'], [old])
+
+    def test_oversized_bulk_response_keeps_snapshot(self):
+        before = self.prior({'KORD': [report('KORD')]})
+        with mock.patch.object(self.module, 'MAX_RESPONSE_BYTES', 128), \
+             mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=[
+                 Response(self.stations), Response([report('KORD', text='X'*200)])
+             ]) as fetch:
+            with self.assertRaises(SystemExit):
+                self.module.main()
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(self.module.OUTPUT.read_bytes(), before)
 
     def test_future_report_and_invalid_records_are_rejected(self):
         incoming = [report('KORD', age=-40), report('KLAX'), {'airport': 'KORD',

@@ -8,7 +8,22 @@ import sys
 import tempfile
 import urllib.request
 
-AIRPORTS = ('KORD', 'KLAX', 'KJFK')
+if __package__:
+    from .c070_station_registry import load_c070_stations
+else:
+    try:
+        from scripts.c070_station_registry import load_c070_stations
+    except ModuleNotFoundError as exc:
+        if exc.name != 'scripts':
+            raise
+        from c070_station_registry import load_c070_stations
+
+# Provider API documentation supplied by owner, 2026-11-25.
+# https://atis.info/api — /stations and /all, one request each.
+CATALOG_AIRPORTS = tuple(sorted(load_c070_stations().values()))
+MAX_REQUESTS = 2
+REQUEST_TIMEOUT_SECONDS = 20
+MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 OUTPUT = pathlib.Path('data/atis.json')
 URL = 'https://atis.info/api/'
 TYPES = frozenset(('combined', 'arr', 'dep'))
@@ -55,30 +70,74 @@ def select_reports(records, airport):
 
 def read_previous():
     if not OUTPUT.exists():
-        return {}
+        return {}, None, None, None
     try:
         payload = json.loads(OUTPUT.read_text(encoding='utf-8'))
         if not isinstance(payload, dict) or not isinstance(payload.get('airports'), dict):
             raise ValueError('Invalid previous snapshot')
         previous = {}
-        for airport in AIRPORTS:
+        for airport in CATALOG_AIRPORTS:
             try:
                 previous[airport] = select_reports(payload['airports'][airport], airport)
             except (KeyError, ValueError, TypeError):
                 continue
-        return previous
+        return previous, payload.get('configured_airports'), payload.get('retrieved_utc'), payload.get('catalog_airports')
     except (OSError, ValueError, TypeError) as exc:
         print(f'Previous ATIS snapshot unreadable: {exc}', file=sys.stderr)
-        return {}
+        return {}, None, None, None
 
 
-def fetch(airport):
-    request = urllib.request.Request(URL + airport, headers={
+def fetch_json(endpoint):
+    if endpoint not in ('stations', 'all'):
+        raise ValueError('Unexpected ATIS endpoint')
+    request = urllib.request.Request(URL + endpoint, headers={
         'User-Agent': 'Spatchin/0.9 (independent aviation data prototype)',
         'Accept': 'application/json',
     })
-    with urllib.request.urlopen(request, timeout=20) as response:
-        return select_reports(json.load(response), airport)
+    with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+        raw = response.read(MAX_RESPONSE_BYTES + 1)
+    if len(raw) > MAX_RESPONSE_BYTES:
+        raise ValueError('ATIS response exceeds size limit')
+    return json.loads(raw)
+
+
+def configured_stations(payload):
+    """Validate provider-listed identifiers; restrict coverage to C070."""
+    if not isinstance(payload, list) or not payload or any(
+        not isinstance(code, str) or len(code) != 4 or
+        not code.isascii() or not code.isalnum() or code != code.upper()
+        for code in payload
+    ):
+        raise ValueError('Invalid ATIS station list')
+    return sorted(set(payload).intersection(CATALOG_AIRPORTS))
+
+
+def bulk_reports(payload, configured):
+    """Validate the documented array of reports; ignore non-C070 data."""
+    if not isinstance(payload, list) or not payload:
+        raise ValueError('Invalid or empty ATIS bulk response')
+    grouped = {}
+    for item in payload:
+        if not isinstance(item, dict):
+            raise ValueError('Unexpected ATIS bulk report shape')
+        airport = item.get('airport')
+        if not isinstance(airport, str):
+            continue
+        airport = airport.upper()
+        if airport in CATALOG_AIRPORTS:
+            grouped.setdefault(airport, []).append(item)
+    incoming = {}
+    for airport, records in grouped.items():
+        try:
+            valid = select_reports(records, airport)
+        except (ValueError, TypeError, OverflowError):
+            continue
+        if airport not in configured:
+            raise ValueError('ATIS station list and bulk response disagree')
+        incoming[airport] = valid
+    if not incoming:
+        raise ValueError('No valid C070 ATIS reports in bulk response')
+    return incoming
 
 
 def merge_reports(previous, incoming):
@@ -91,9 +150,12 @@ def merge_reports(previous, incoming):
     return [by_type[kind] for kind in ('combined', 'arr', 'dep') if kind in by_type]
 
 
-def write_snapshot(airports):
+def write_snapshot(airports, configured, *, retrieved_utc=None):
     payload = {
-        'retrieved_utc': dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'retrieved_utc': retrieved_utc or dt.datetime.now(dt.timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'configured_airports': configured,
+        'coverage_source': URL + 'stations',
+        'catalog_airports': list(CATALOG_AIRPORTS),
         'source': URL.rstrip('/'),
         'airports': airports,
         'notice': 'atis.info: Do not use for real world flight planning or navigation.',
@@ -116,28 +178,28 @@ def write_snapshot(airports):
 
 
 def main():
-    previous = read_previous()
+    previous, previous_coverage, previous_retrieved, previous_catalog = read_previous()
+    try:
+        configured = configured_stations(fetch_json('stations'))
+        incoming = bulk_reports(fetch_json('all'), configured)
+    except (OSError, ValueError, TypeError, OverflowError) as exc:
+        print(f'ATIS bulk collection failed; keeping published snapshot unchanged: {exc}', file=sys.stderr)
+        raise SystemExit(1) from exc
     merged = dict(previous)
-    successes = []
-    failures = {}
-    for airport in AIRPORTS:
-        try:
-            incoming = fetch(airport)
-            successes.append(airport)
-            merged[airport] = merge_reports(merged.get(airport, []), incoming)
-        except (OSError, ValueError, TypeError, OverflowError) as exc:
-            failures[airport] = str(exc)
-            print(f'{airport}: {exc}; retaining previous report if present', file=sys.stderr)
-    if not successes:
-        print('All ATIS retrievals failed; keeping published snapshot unchanged', file=sys.stderr)
-        raise SystemExit(1)
+    for airport, records in incoming.items():
+        merged[airport] = merge_reports(merged.get(airport, []), records)
     if merged == previous:
-        print('ATIS checked; no newer reports; published snapshot unchanged')
+        if previous_coverage != configured or previous_catalog != list(CATALOG_AIRPORTS):
+            # Metadata-only migration must not refresh the age of retained reports.
+            write_snapshot(merged, configured, retrieved_utc=previous_retrieved)
+            print('Published ATIS coverage metadata; source reports unchanged')
+        else:
+            print('ATIS checked; no newer reports; published snapshot unchanged')
     else:
-        write_snapshot(merged)
+        write_snapshot(merged, configured)
         print('Published ATIS reports for:', ', '.join(sorted(merged)))
-    if failures:
-        print('Unavailable on this check:', ', '.join(sorted(failures)), file=sys.stderr)
+    print(f'ATIS coverage: {len(configured)}/{len(CATALOG_AIRPORTS)} C070 stations listed; '
+          f'{len(incoming)} returned usable reports')
 
 
 if __name__ == '__main__':
