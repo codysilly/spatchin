@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T02:20:41.296754Z",
+  "updated_utc": "2026-11-25T02:40:39.010614Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1227,21 +1227,20 @@
     },
     {
       "icaoId": "KFSD",
-      "receiptTime": "2026-11-25T02:00:05.960Z",
-      "obsTime": 1795571760,
-      "reportTime": "2026-11-25T02:00:00.000Z",
-      "temp": -2.2,
+      "receiptTime": "2026-11-25T02:36:04.751Z",
+      "obsTime": 1795573920,
+      "reportTime": "2026-11-25T02:32:00.000Z",
+      "temp": -1.7,
       "dewp": -3.3,
-      "wdir": 170,
-      "wspd": 8,
+      "wdir": 160,
+      "wspd": 12,
       "visib": 1,
-      "altim": 1029.2,
-      "slp": 1031.2,
+      "altim": 1028.9,
       "qcField": 4,
       "wxString": "-SN BR",
-      "precip": 0.03,
-      "metarType": "METAR",
-      "rawOb": "METAR KFSD 250156Z 17008KT 1SM R03/P6000FT -SN BR FEW008 BKN013 OVC030 M02/M03 A3039 RMK AO2 SLP312 P0003 T10221033",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFSD 250232Z 16012KT 1SM R03/P6000FT -SN BR FEW008 SCT014 OVC029 M02/M03 A3038 RMK AO2 SFC VIS 2 P0001 T10171033",
       "lat": 43.5775,
       "lon": -96.7539,
       "elev": 433,
@@ -1253,12 +1252,12 @@
           "base": 800
         },
         {
-          "cover": "BKN",
-          "base": 1300
+          "cover": "SCT",
+          "base": 1400
         },
         {
           "cover": "OVC",
-          "base": 3000
+          "base": 2900
         }
       ],
       "fltCat": "IFR"
