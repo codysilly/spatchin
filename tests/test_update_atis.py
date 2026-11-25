@@ -8,7 +8,7 @@ from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'scripts' / 'update_atis.py'
 
@@ -50,6 +50,7 @@ class UpdateAtisTests(unittest.TestCase):
         payload = {'retrieved_utc': '2026-01-01T00:00:00Z', 'airports': airport_reports}
         if coverage:
             payload['configured_airports'] = list(self.module.AIRPORTS)
+            payload['catalog_airports'] = list(self.module.CATALOG_AIRPORTS)
         path.write_text(json.dumps(payload), encoding='utf-8')
         return path.read_bytes()
 
@@ -64,8 +65,8 @@ class UpdateAtisTests(unittest.TestCase):
             return Response(data)
         with mock.patch.object(self.module.urllib.request, 'urlopen', side_effect=urlopen):
             self.module.main()
-        self.assertEqual(calls, list(self.module.AIRPORTS))
-        self.assertEqual(len(calls), 4)
+        self.assertEqual(set(calls), set(self.module.AIRPORTS))
+        self.assertEqual(len(calls), 62)
 
     def snapshot(self):
         return json.loads(self.module.OUTPUT.read_text(encoding='utf-8'))
@@ -79,7 +80,10 @@ class UpdateAtisTests(unittest.TestCase):
         self.assertEqual(snapshot['source'], 'https://atis.info/api')
         self.assertEqual(snapshot['airports']['KORD'][0]['type'], 'combined')
         self.assertEqual(snapshot['configured_airports'], list(self.module.AIRPORTS))
-        self.assertEqual(set(self.module.AIRPORTS), {'KORD', 'KLAX', 'KJFK', 'KMEM'})
+        self.assertEqual(len(self.module.AIRPORTS), 62)
+        self.assertTrue({'KORD', 'KLAX', 'KJFK', 'KMEM', 'KIND', 'KATL', 'KOAK'} <= set(self.module.AIRPORTS))
+        self.assertEqual(len(snapshot['catalog_airports']), 130)
+        self.assertEqual(len(set(snapshot['catalog_airports']) - set(snapshot['configured_airports'])), 68)
 
     def test_failed_airport_keeps_previous_while_others_update(self):
         old = report('KORD', age=30, code='X')
@@ -89,7 +93,7 @@ class UpdateAtisTests(unittest.TestCase):
                       'KJFK': [report('KJFK', age=3)], 'KMEM': [report('KMEM')]})
         snapshot = self.snapshot()
         self.assertEqual(snapshot['airports']['KORD'], [old])
-        self.assertEqual(set(snapshot['airports']), set(self.module.AIRPORTS))
+        self.assertEqual(set(snapshot['airports']), {'KORD', 'KLAX', 'KJFK', 'KMEM'})
 
     def test_all_failures_keep_snapshot_and_signal_failure(self):
         before = self.prior({'KORD': [report('KORD')]})
@@ -170,7 +174,8 @@ class UpdateAtisTests(unittest.TestCase):
         snapshot = self.snapshot()
         self.assertIn('KMEM', snapshot['configured_airports'])
         self.assertNotIn('KMEM', snapshot['airports'])
-        self.assertNotIn('KIND', snapshot['configured_airports'])
+        self.assertNotIn('KABE', snapshot['configured_airports'])
+        self.assertIn('KABE', snapshot['catalog_airports'])
 
     def test_legacy_metadata_migration_does_not_refresh_retrieval_time(self):
         records = {code: [report(code)] for code in self.module.AIRPORTS}
@@ -189,6 +194,35 @@ class UpdateAtisTests(unittest.TestCase):
         self.assertIn('KMEM', snapshot['configured_airports'])
         self.assertNotIn('KMEM', snapshot['airports'])
         self.assertEqual(snapshot['retrieved_utc'], '2026-01-01T00:00:00Z')
+
+    def test_order_rotates_without_dropping_or_duplicating_stations(self):
+        first = self.module.collection_order(0)
+        second = self.module.collection_order(1)
+        self.assertEqual(len(first), 62)
+        self.assertEqual(set(first), set(second))
+        self.assertNotEqual(first[0], second[0])
+
+    def test_rate_limit_stops_remaining_requests_without_retry(self):
+        first, second = self.module.collection_order(0)[:2]
+        with mock.patch.object(self.module, 'collection_order', return_value=self.module.collection_order(0)), \
+             mock.patch.object(self.module, 'fetch', side_effect=[
+                 [report(first)], HTTPError('https://atis.info/api/' + second, 429, 'limited', {}, None)
+             ]) as fetch:
+            self.module.main()
+        self.assertEqual(fetch.call_count, 2)
+        self.assertEqual(set(self.snapshot()['airports']), {first})
+        self.assertEqual(len(self.snapshot()['configured_airports']), 62)
+
+    def test_deadline_stops_requests_and_retains_previous(self):
+        first, second = self.module.collection_order(0)[:2]
+        old = report(second, age=30)
+        self.prior({second: [old]})
+        with mock.patch.object(self.module, 'collection_order', return_value=self.module.collection_order(0)), \
+             mock.patch.object(self.module.time, 'monotonic', side_effect=[0, 179, 181]), \
+             mock.patch.object(self.module, 'fetch', return_value=[report(first)]) as fetch:
+            self.module.main()
+        fetch.assert_called_once_with(first, timeout=1)
+        self.assertEqual(self.snapshot()['airports'][second], [old])
 
     def test_future_report_and_invalid_records_are_rejected(self):
         incoming = [report('KORD', age=-40), report('KLAX'), {'airport': 'KORD',

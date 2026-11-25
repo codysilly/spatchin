@@ -41,10 +41,11 @@ class UpdaterAirportTests(unittest.TestCase):
         imported = {node.module for node in ast.walk(module)
                     if isinstance(node, ast.ImportFrom)}
         self.assertIn('scripts.c070_station_registry', imported)
-        self.assertEqual(assigned(module, 'CONFIGURED_IATA'),
-                         ('ORD', 'LAX', 'JFK', 'MEM'))
+        self.assertEqual(assigned(module, 'MAX_REQUESTS'), 62)
         source = (ROOT / 'scripts/update_atis.py').read_text(encoding='utf-8')
-        self.assertIn('AIRPORTS = tuple(_registry[code] for code in CONFIGURED_IATA)', source)
+        self.assertIn('CATALOG_AIRPORTS = tuple(sorted(_registry.values()))', source)
+        self.assertIn('AIRPORTS = tuple(code for code in CATALOG_AIRPORTS if code in DIRECTORY_ICAO)', source)
+        self.assertEqual(assigned(module, 'RUN_BUDGET_SECONDS'), 180)
         self.assertEqual(assigned(module, 'URL'), 'https://atis.info/api/')
 
     def test_runways_use_c070_registry_and_guard_existing_four_airports(self):

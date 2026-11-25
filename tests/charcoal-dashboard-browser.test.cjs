@@ -157,7 +157,7 @@ for(const width of [1440,390])test('ATIS coverage states render at '+width+'px',
  const page=await context.newPage(),errors=[];
  page.on('pageerror',error=>errors.push(error.message));
  await context.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
- await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","ORD","IND"]'));
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","ORD","ABE"]'));
  const now=new Date().toISOString();
  await context.route('**/data/atis.json?*',route=>route.fulfill({json:{
   retrieved_utc:now,configured_airports:['KMEM','KORD','KLAX','KJFK'],
@@ -170,7 +170,7 @@ for(const width of [1440,390])test('ATIS coverage states render at '+width+'px',
   assert.match(await label('MEM',0),/CURRENT/);
   assert.match(await label('MEM',1),/UNAVAILABLE/);
   assert.match(await label('ORD',0),/UNAVAILABLE/);
-  assert.match(await label('IND',0),/NOT CONFIGURED/);
+  assert.match(await label('ABE',0),/NOT CONFIGURED/);
   await page.locator('[data-airport="MEM"] .atis-full summary').click();
   assert.match(await page.locator('[data-airport="MEM"] .atis-raw').innerText(),/SYNTHETIC ATIS/);
   const overflow=await page.locator('.atis').evaluateAll(els=>els.map(el=>el.scrollWidth-el.clientWidth));

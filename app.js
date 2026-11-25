@@ -131,6 +131,10 @@ function atisCoverage(station,snapshot=atisData){
  if(Array.isArray(configured)&&configured.length&&
   configured.every(code=>typeof code==='string'&&/^[A-Z0-9]{4}$/.test(code))&&
   new Set(configured).size===configured.length&&Object.keys(reports).every(code=>configured.includes(code))){
+  const catalog=snapshot?.catalog_airports;
+  if(catalog!==undefined&&(!Array.isArray(catalog)||catalog.length!==130||
+   new Set(catalog).size!==catalog.length||!catalog.every(code=>typeof code==='string'&&/^[A-Z0-9]{4}$/.test(code))||
+   !configured.every(code=>catalog.includes(code))||!catalog.includes(station)))return 'unknown';
   return configured.includes(station)?'configured':'not configured';
  }
  return 'unknown';
@@ -147,7 +151,7 @@ function atisBlock(code){
  const arrState=landing.length?atisState(arr):missingState,depState=departing.length?atisState(dep):missingState;
  const providerState=arrState==='stale'||depState==='stale'?'STALE / UNVERIFIED':
   !landing.length&&!departing.length?missingState.toUpperCase():'UNOFFICIAL';
- const coverageNote=coverage==='not configured'?'Airport is outside collection coverage in this snapshot.':
+ const coverageNote=coverage==='not configured'?'Airport is outside collection coverage in this snapshot. Provider support is not established.':
   coverage==='unknown'?'ATIS collection coverage is unknown in this snapshot.':
   !list.length?'Configured airport; no usable ATIS report in this snapshot.':'Configured airport.';
  const runwayNote=list.length&&(!landing.length||!departing.length)?

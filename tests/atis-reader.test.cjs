@@ -132,3 +132,16 @@ test('legacy or malformed coverage is unknown, not excluded',()=>{
  assert.match(inconsistent,/↘ LANDING · CURRENT/);
  assert.doesNotMatch(inconsistent,/NOT CONFIGURED/);
 });
+
+test('full catalog metadata distinguishes excluded stations and malformed catalog',()=>{
+ const catalog=['KMEM','KORD',...Array.from({length:128},(_,i)=>'X'+String(i).padStart(3,'0'))];
+ context.atisData={airports:{},configured_airports:['KORD'],catalog_airports:catalog};
+ context.atisRetrieved=stamp(1);
+ let html=vm.runInContext("atisBlock('KMEM')",context);
+ assert.match(html,/NOT CONFIGURED/);
+ assert.match(html,/Provider support is not established/);
+ context.atisData.catalog_airports=catalog.slice(1);
+ html=vm.runInContext("atisBlock('KMEM')",context);
+ assert.match(html,/COVERAGE UNKNOWN/);
+ assert.doesNotMatch(html,/NOT CONFIGURED/);
+});
