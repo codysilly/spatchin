@@ -15,7 +15,7 @@ const metarStart=app.indexOf('function parseMetar(m){');
 const metarEnd=app.indexOf('async function refresh(){',metarStart);
 assert.ok(from>=0&&to>from&&metarStart>0&&metarEnd>metarStart);
 const code=app.slice(from,to)+'\n'+app.slice(metarStart,metarEnd);
-const context=vm.createContext({Date,Number,METAR_STALE_MS:65*60*1000});
+const context=vm.createContext({Date,Number,METAR_STALE_MS:70*60*1000});
 new vm.Script(code,{filename:'dashboard-flight-categories.js'}).runInContext(context);
 const record=(category,minutesAgo=0)=>context.parseMetar({
   icaoId:'KMEM',obsTime:Math.floor((Date.now()-minutesAgo*60000)/1000),
@@ -37,6 +37,14 @@ test('only the four AWC flight-category values are accepted',()=>{
   assert.match(markup.tag,/NO DATA/);
   assert.equal(markup.strip,undefined);
  }
+});
+
+test('METAR becomes stale at 70 minutes, not 65',()=>{
+ assert.match(app,/const METAR_STALE_MS=70\\*60\\*1000;/);
+ assert.equal(context.metarState(record('VFR',65)),'current');
+ assert.equal(context.metarState(record('VFR',69)),'current');
+ assert.equal(context.metarState(record('VFR',70)),'stale');
+ assert.match(context.metarStatus(record('VFR',70)),/STALE · 70\\+ MIN/);
 });
 
 test('stale categories remain marked as observation-based, not live',()=>{
