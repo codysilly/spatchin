@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T16:20:50.790464Z",
+  "updated_utc": "2026-11-25T16:30:38.885537Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -773,22 +773,21 @@
     },
     {
       "icaoId": "KCLT",
-      "receiptTime": "2026-11-25T15:56:37.442Z",
-      "obsTime": 1795621920,
-      "reportTime": "2026-11-25T16:00:00.000Z",
+      "receiptTime": "2026-11-25T16:28:04.954Z",
+      "obsTime": 1795623840,
+      "reportTime": "2026-11-25T16:24:00.000Z",
       "temp": 5,
-      "dewp": 2.2,
+      "dewp": 3.3,
       "wdir": 20,
-      "wspd": 13,
-      "wgst": 21,
-      "visib": 3,
-      "altim": 1028.2,
-      "slp": 1029.7,
+      "wspd": 12,
+      "wgst": 20,
+      "visib": 2.5,
+      "altim": 1027.9,
       "qcField": 4,
       "wxString": "RA BR",
-      "precip": 0.03,
-      "metarType": "METAR",
-      "rawOb": "METAR KCLT 251552Z 02013G21KT 3SM RA BR OVC023 05/02 A3036 RMK AO2 RAB1454 SLP297 P0003 T00500022",
+      "precip": 0.06,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KCLT 251624Z 02012G20KT 2 1/2SM RA BR OVC023 05/03 A3035 RMK AO2 P0006 T00500033",
       "lat": 35.2225,
       "lon": -80.9543,
       "elev": 223,
@@ -800,7 +799,7 @@
           "base": 2300
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KCOS",
@@ -1004,20 +1003,20 @@
     },
     {
       "icaoId": "KDJT",
-      "receiptTime": "2026-11-25T16:06:04.043Z",
-      "obsTime": 1795622520,
-      "reportTime": "2026-11-25T16:02:00.000Z",
-      "temp": 21.7,
-      "dewp": 21.1,
-      "wdir": 20,
+      "receiptTime": "2026-11-25T16:26:08.543Z",
+      "obsTime": 1795623780,
+      "reportTime": "2026-11-25T16:23:00.000Z",
+      "temp": 21.1,
+      "dewp": 20.6,
+      "wdir": 350,
       "wspd": 6,
-      "visib": 1,
+      "visib": 0.5,
       "altim": 1012.6,
       "qcField": 4,
-      "wxString": "RA BR",
-      "precip": 0.09,
+      "wxString": "+RA FG",
+      "precip": 0.3,
       "metarType": "SPECI",
-      "rawOb": "SPECI KDJT 251602Z 02006KT 1SM R10L/5500VP6000FT RA BR BKN006 OVC010CB 22/21 A2990 RMK AO2 CB OHD-ALQDS MOV NE CB DSNT SE-N P0009 T02170211",
+      "rawOb": "SPECI KDJT 251623Z 35006KT 1/2SM R10L/3500V5000FT +RA FG BKN006 OVC012CB 21/21 A2990 RMK AO2 CB OHD-ALQDS MOV NE CB DSNT ALQDS P0030 T02110206",
       "lat": 26.6851,
       "lon": -80.0992,
       "elev": 4,
@@ -1030,10 +1029,10 @@
         },
         {
           "cover": "OVC",
-          "base": 1000
+          "base": 1200
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "LIFR"
     },
     {
       "icaoId": "KDLH",
@@ -2943,20 +2942,18 @@
     },
     {
       "icaoId": "KRDU",
-      "receiptTime": "2026-11-25T15:54:07.727Z",
-      "obsTime": 1795621860,
-      "reportTime": "2026-11-25T16:00:00.000Z",
-      "temp": 6.7,
-      "dewp": 0.6,
+      "receiptTime": "2026-11-25T16:24:05.103Z",
+      "obsTime": 1795623600,
+      "reportTime": "2026-11-25T16:20:00.000Z",
+      "temp": 7.2,
+      "dewp": 1.1,
       "wdir": 20,
-      "wspd": 11,
-      "wgst": 20,
+      "wspd": 10,
       "visib": "10+",
       "altim": 1029.5,
-      "slp": 1029.7,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KRDU 251551Z 02011G20KT 10SM BKN030 BKN100 OVC140 07/01 A3040 RMK AO2 SLP297 T00670006",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KRDU 251620Z 02010KT 10SM BKN028 OVC100 07/01 A3040 RMK AO2 T00720011",
       "lat": 35.8923,
       "lon": -78.782,
       "elev": 121,
@@ -2965,15 +2962,11 @@
       "clouds": [
         {
           "cover": "BKN",
-          "base": 3000
-        },
-        {
-          "cover": "BKN",
-          "base": 10000
+          "base": 2800
         },
         {
           "cover": "OVC",
-          "base": 14000
+          "base": 10000
         }
       ],
       "fltCat": "MVFR"
