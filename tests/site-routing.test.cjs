@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {readFileSync}=require('node:fs');
+const {readFileSync,existsSync}=require('node:fs');
 const root=readFileSync('index.html','utf8');
 const local=readFileSync('dashboard/index.html','utf8');
 const css=readFileSync('charcoal-dashboard.css','utf8');
@@ -21,4 +21,14 @@ test('offline dashboard remains equivalent, including source warnings and versio
  assert.ok(root.includes('do not use for real world flight planning or navigation'));
  assert.match(css,/\.wip-banner\{[^}]*font:800 clamp\(16px,/);
  assert.match(css,/\.wip-banner\{[^}]*border-bottom:2px solid #ffb000/);
+});
+
+// The local synthetic previews must not reference retired stylesheets.
+test('preview stylesheet paths resolve to existing local files',()=>{
+ for(const path of ['preview/index.html','preview/snapshot-loader.html']){
+  const html=readFileSync(path,'utf8');
+  const links=[...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/g)].map(match=>match[1]);
+  assert.ok(links.length>0,'no stylesheets in '+path);
+  for(const href of links)assert.ok(existsSync(href),'missing '+href+' in '+path);
+ }
 });
