@@ -17,8 +17,8 @@ test('approved vector and wordmark remain the single canonical brand',()=>{
  assert.match(html,/class="brand-logo" src="assets\/branding\/logo-cyan-magenta\.svg"/);
  assert.match(html,/rel="icon" type="image\/svg\+xml" href="assets\/branding\/logo-cyan-magenta\.svg"/);
  assert.match(html,/rel="apple-touch-icon" sizes="180x180" href="assets\/branding\/logo-180\.png\?rev=20261120"/);
- assert.match(css,/\.brand h1,\.brand-wordmark\{letter-spacing:\.0325em\}/);
- assert.match(css,/\.brand h1,\.brand-wordmark\{letter-spacing:\.0175em\}/);
+ assert.match(css,/\.brand\s+h1\s*,\s*\.brand-wordmark\s*\{\s*letter-spacing\s*:\s*0?\.0325em\s*;?\s*\}/);
+ assert.match(css,/\.brand\s+h1\s*,\s*\.brand-wordmark\s*\{\s*letter-spacing\s*:\s*0?\.0175em\s*;?\s*\}/);
  assert.match(spec,/original\/historical source/);
  assert.match(html,/v0\.9/);
 });
