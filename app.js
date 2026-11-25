@@ -29,7 +29,7 @@ if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETI
 let atisData=null; let atisRetrieved=null;
 let tafData=null,tafFeedError=false;
 const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
-const METAR_STALE_MS=65*60*1000;
+const METAR_STALE_MS=70*60*1000;
 const AIRPORT_STORAGE_KEY='spatchin-airports';
 function readAirports(key){
  try{
@@ -162,7 +162,7 @@ function metarState(m){
 function metarStatus(m){
  const state=metarState(m);
  if(state==='unavailable')return '<span class="metar-status metar-unavailable">METAR UNAVAILABLE</span>';
- if(state==='stale')return '<span class="metar-status metar-stale">METAR STALE · 65+ MIN</span>';
+ if(state==='stale')return '<span class="metar-status metar-stale">METAR STALE · 70+ MIN</span>';
  return '<span class="metar-status metar-current">METAR CURRENT</span>';
 }
 
