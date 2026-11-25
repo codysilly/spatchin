@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T01:08:34.908585Z",
+  "updated_utc": "2026-11-25T01:48:34.816498Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2137,36 +2137,16 @@
     },
     {
       "icaoId": "KGFK",
-      "rawTAF": "TAF KGFK 242329Z 2500/2524 16008KT 6SM -SN OVC040 TEMPO 2500/2502 OVC008 FM250200 17005KT P6SM BKN050 FM251500 17007KT P6SM BKN060",
-      "issueTime": "2026-11-24T23:29:00.000Z",
-      "validTimeFrom": 1795564800,
+      "rawTAF": "TAF KGFK 250146Z 2502/2524 17005KT P6SM OVC015 FM251500 17007KT P6SM BKN060",
+      "issueTime": "2026-11-25T01:46:00.000Z",
+      "validTimeFrom": 1795572000,
       "validTimeTo": 1795651200,
       "fcsts": [
-        {
-          "timeFrom": 1795564800,
-          "timeTo": 1795572000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 160,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795564800,
-          "timeTo": 1795572000,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
         {
           "timeFrom": 1795572000,
           "timeTo": 1795618800,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 170,
           "wspd": 5,
