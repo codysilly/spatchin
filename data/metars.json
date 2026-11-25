@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T05:10:39.329762Z",
+  "updated_utc": "2026-11-25T05:20:38.431637Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -136,18 +136,18 @@
     },
     {
       "icaoId": "KATW",
-      "receiptTime": "2026-11-25T05:02:11.381Z",
-      "obsTime": 1795582800,
-      "reportTime": "2026-11-25T05:00:00.000Z",
-      "temp": -3,
-      "dewp": -7,
-      "wdir": 340,
-      "wspd": 3,
+      "receiptTime": "2026-11-25T05:18:14.781Z",
+      "obsTime": 1795583700,
+      "reportTime": "2026-11-25T05:15:00.000Z",
+      "temp": -2,
+      "dewp": -8,
+      "wdir": 0,
+      "wspd": 0,
       "visib": "10+",
       "altim": 1034.6,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KATW 250500Z AUTO 34003KT 10SM CLR M03/M07 A3055 RMK AO2",
+      "rawOb": "METAR KATW 250515Z AUTO 00000KT 10SM CLR M02/M08 A3055 RMK AO2",
       "lat": 44.2519,
       "lon": -88.526,
       "elev": 266,
@@ -1238,19 +1238,18 @@
     },
     {
       "icaoId": "KFSD",
-      "receiptTime": "2026-11-25T05:00:09.529Z",
-      "obsTime": 1795582560,
-      "reportTime": "2026-11-25T05:00:00.000Z",
+      "receiptTime": "2026-11-25T05:14:09.695Z",
+      "obsTime": 1795583400,
+      "reportTime": "2026-11-25T05:10:00.000Z",
       "temp": -1.1,
-      "dewp": -3.3,
-      "wdir": 160,
-      "wspd": 9,
+      "dewp": -2.8,
+      "wdir": 150,
+      "wspd": 11,
       "visib": "10+",
       "altim": 1029.2,
-      "slp": 1030.9,
       "qcField": 4,
-      "metarType": "METAR",
-      "rawOb": "METAR KFSD 250456Z 16009KT 10SM OVC024 M01/M03 A3039 RMK AO2 SLP309 T10111033",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFSD 250510Z 15011KT 10SM SCT025 OVC047 M01/M03 A3039 RMK AO2 T10111028",
       "lat": 43.5775,
       "lon": -96.7539,
       "elev": 433,
@@ -1258,11 +1257,15 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "SCT",
+          "base": 2500
+        },
+        {
           "cover": "OVC",
-          "base": 2400
+          "base": 4700
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KFWA",
@@ -1917,7 +1920,7 @@
     },
     {
       "icaoId": "KLFT",
-      "receiptTime": "2026-11-25T05:09:04.744Z",
+      "receiptTime": "2026-11-25T05:10:03.572Z",
       "obsTime": 1795583160,
       "reportTime": "2026-11-25T05:06:00.000Z",
       "temp": 11.1,
@@ -2519,31 +2522,31 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-25T03:54:07.678Z",
-      "obsTime": 1795578660,
-      "reportTime": "2026-11-25T04:00:00.000Z",
-      "temp": 2.8,
+      "receiptTime": "2026-11-25T05:19:15.614Z",
+      "obsTime": 1795582260,
+      "reportTime": "2026-11-25T05:00:00.000Z",
+      "temp": 3.3,
       "dewp": -3.9,
       "wdir": 70,
       "wspd": 7,
       "visib": "10+",
-      "altim": 1033.6,
-      "slp": 1034.2,
-      "qcField": 12,
+      "altim": 1033.3,
+      "slp": 1033.9,
+      "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KORD 250351Z 07007KT 10SM SCT036 OVC250 03/M04 A3052 RMK AO2 SLP342 T00281039 $",
+      "rawOb": "METAR KORD 250451Z 07007KT 10SM SCT035 BKN250 03/M04 A3051 RMK SLP339 T00331039",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
       "name": "Chicago/O'Hare Intl, IL, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
           "cover": "SCT",
-          "base": 3600
+          "base": 3500
         },
         {
-          "cover": "OVC",
+          "cover": "BKN",
           "base": 25000
         }
       ],
