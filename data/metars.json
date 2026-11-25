@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T03:20:39.622888Z",
+  "updated_utc": "2026-11-25T03:30:39.401611Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1270,7 +1270,7 @@
     },
     {
       "icaoId": "KFSD",
-      "receiptTime": "2026-11-25T03:20:09.118Z",
+      "receiptTime": "2026-11-25T03:20:14.381Z",
       "obsTime": 1795576620,
       "reportTime": "2026-11-25T03:17:00.000Z",
       "temp": -1.7,
@@ -3586,33 +3586,34 @@
     },
     {
       "icaoId": "KTLH",
-      "receiptTime": "2026-11-25T02:56:26.349Z",
-      "obsTime": 1795575180,
-      "reportTime": "2026-11-25T03:00:00.000Z",
-      "temp": 18.9,
+      "receiptTime": "2026-11-25T03:24:10.430Z",
+      "obsTime": 1795576860,
+      "reportTime": "2026-11-25T03:21:00.000Z",
+      "temp": 18.3,
       "dewp": 15,
       "wdir": 80,
       "wspd": 11,
-      "wgst": 20,
       "visib": "10+",
-      "altim": 1019.7,
-      "slp": 1019.6,
+      "altim": 1020.1,
       "qcField": 4,
-      "presTend": 0.2,
-      "metarType": "METAR",
-      "rawOb": "METAR KTLH 250253Z 08011G20KT 10SM SCT018 19/15 A3011 RMK AO2 SLP196 T01890150 51002",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KTLH 250321Z 08011KT 10SM BKN020 BKN110 18/15 A3012 RMK AO2 T01830150",
       "lat": 30.3935,
       "lon": -84.3513,
       "elev": 17,
       "name": "Tallahassee Intl, FL, US",
-      "cover": "SCT",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 1800
+          "cover": "BKN",
+          "base": 2000
+        },
+        {
+          "cover": "BKN",
+          "base": 11000
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KTPA",
