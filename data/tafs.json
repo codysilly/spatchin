@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T01:58:36.672897Z",
+  "updated_utc": "2026-11-25T02:08:35.470817Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -962,19 +962,29 @@
     },
     {
       "icaoId": "KCHA",
-      "rawTAF": "TAF KCHA 242326Z 2500/2524 03005KT P6SM BKN040 FM252100 02006KT 6SM -SHRA BKN035 OVC040",
-      "issueTime": "2026-11-24T23:26:00.000Z",
-      "validTimeFrom": 1795564800,
+      "rawTAF": "TAF KCHA 250159Z 2502/2524 03006KT P6SM BKN040 TEMPO 2502/2504 6SM -SHRA BR BKN035 OVC040 FM252100 02006KT 6SM -SHRA BKN035 OVC040",
+      "issueTime": "2026-11-25T01:59:00.000Z",
+      "validTimeFrom": 1795572000,
       "validTimeTo": 1795651200,
       "fcsts": [
         {
-          "timeFrom": 1795564800,
+          "timeFrom": 1795572000,
           "timeTo": 1795640400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 30,
-          "wspd": 5,
+          "wspd": 6,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795572000,
+          "timeTo": 1795579200,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         },
         {
@@ -5491,13 +5501,13 @@
     },
     {
       "icaoId": "KSYR",
-      "rawTAF": "TAF KSYR 242327Z 2500/2524 26004KT P6SM SCT040 FM250500 VRB02KT P6SM FEW250 FM251600 09004KT P6SM FEW250",
-      "issueTime": "2026-11-24T23:27:00.000Z",
-      "validTimeFrom": 1795564800,
+      "rawTAF": "TAF KSYR 250202Z 2502/2524 26004KT P6SM OVC040 FM250500 VRB02KT P6SM FEW250 FM251600 09004KT P6SM FEW250",
+      "issueTime": "2026-11-25T02:02:00.000Z",
+      "validTimeFrom": 1795572000,
       "validTimeTo": 1795651200,
       "fcsts": [
         {
-          "timeFrom": 1795564800,
+          "timeFrom": 1795572000,
           "timeTo": 1795582800,
           "timeBec": null,
           "fcstChange": null,
