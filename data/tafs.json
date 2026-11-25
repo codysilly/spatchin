@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T18:18:34.163984Z",
+  "updated_utc": "2026-11-25T18:28:34.882459Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -5775,29 +5775,19 @@
     },
     {
       "icaoId": "KSMF",
-      "rawTAF": "TAF KSMF 251720Z 2518/2618 32008KT 4SM BR OVC004 FM252000 34006KT 6SM HZ OVC015 FM252200 33006KT P6SM BKN050 FM260800 33003KT 3SM BR BKN025 FM261100 33003KT 1/4SM FG OVC005 FM261700 32003KT 2SM BR OVC007",
-      "issueTime": "2026-11-25T17:20:00.000Z",
+      "rawTAF": "TAF KSMF 251817Z 2518/2618 34010KT 6SM HZ FEW010 OVC050 FM252200 33006KT P6SM BKN050 FM260800 33003KT 3SM BR BKN025 FM261100 33003KT 1/4SM FG OVC005 FM261700 32003KT 2SM BR OVC007",
+      "issueTime": "2026-11-25T18:17:00.000Z",
       "validTimeFrom": 1795629600,
       "validTimeTo": 1795716000,
       "fcsts": [
         {
           "timeFrom": 1795629600,
-          "timeTo": 1795636800,
+          "timeTo": 1795644000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 320,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795636800,
-          "timeTo": 1795644000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
           "wdir": 340,
-          "wspd": 6,
+          "wspd": 10,
           "wgst": null
         },
         {
