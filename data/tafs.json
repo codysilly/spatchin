@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-25T10:08:43.468633Z",
+  "updated_utc": "2026-11-25T10:18:36.680058Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2040,29 +2040,19 @@
     },
     {
       "icaoId": "KFSD",
-      "rawTAF": "TAF KFSD 250608Z 2506/2606 14007KT P6SM -SN OVC007 FM251200 15008KT P6SM BKN018 FM251600 15008KT P6SM BKN050",
-      "issueTime": "2026-11-25T06:08:00.000Z",
-      "validTimeFrom": 1795586400,
+      "rawTAF": "TAF KFSD 251016Z 2510/2606 14007KT P6SM BKN050 FM251600 15008KT P6SM SCT250",
+      "issueTime": "2026-11-25T10:16:00.000Z",
+      "validTimeFrom": 1795600800,
       "validTimeTo": 1795672800,
       "fcsts": [
         {
-          "timeFrom": 1795586400,
-          "timeTo": 1795608000,
+          "timeFrom": 1795600800,
+          "timeTo": 1795622400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 140,
           "wspd": 7,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795608000,
-          "timeTo": 1795622400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 150,
-          "wspd": 8,
           "wgst": null
         },
         {
@@ -2782,30 +2772,30 @@
     },
     {
       "icaoId": "KJAX",
-      "rawTAF": "TAF KJAX 250542Z 2506/2606 02013G21KT 6SM BR VCSH OVC012 FM251000 02014G20KT 4SM -RA BR OVC005 FM251600 01012G20KT 5SM -RA BR OVC006 FM252300 01010G15KT 6SM BR VCSH OVC004",
-      "issueTime": "2026-11-25T05:42:00.000Z",
-      "validTimeFrom": 1795586400,
+      "rawTAF": "TAF KJAX 251016Z 2510/2606 02014G23KT P6SM -RA OVC015 FM251200 02014G23KT 6SM -RA BKN009 OVC012 FM251600 01012G20KT 5SM -RA BR OVC006 FM252300 01010G15KT 6SM BR VCSH OVC004",
+      "issueTime": "2026-11-25T10:16:00.000Z",
+      "validTimeFrom": 1795600800,
       "validTimeTo": 1795672800,
       "fcsts": [
         {
-          "timeFrom": 1795586400,
-          "timeTo": 1795600800,
+          "timeFrom": 1795600800,
+          "timeTo": 1795608000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 20,
-          "wspd": 13,
-          "wgst": 21
+          "wspd": 14,
+          "wgst": 23
         },
         {
-          "timeFrom": 1795600800,
+          "timeFrom": 1795608000,
           "timeTo": 1795622400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 20,
           "wspd": 14,
-          "wgst": 20
+          "wgst": 23
         },
         {
           "timeFrom": 1795622400,
