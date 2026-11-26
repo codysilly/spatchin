@@ -50,10 +50,23 @@ function metarBadge(code){
  const station=airportInfo[code]?.icao;
  return station?`<a class="weather-badge" href="https://aviationweather.gov/data/metar/?ids=${encodeURIComponent(station)}" target="_blank" rel="noopener noreferrer" aria-label="METAR source for ${esc(code)} (${esc(station)}), opens in a new tab">METAR</a>`:'<span class="weather-badge" aria-label="METAR station-specific source unavailable; station mapping unverified">METAR</span>';
 }
-function components(w,h){const a=(w.direction-h)*Math.PI/180,head=w.speed*Math.cos(a),cross=w.speed*Math.sin(a);return {head:Math.round(head),cross:Math.round(Math.abs(cross)),side:cross>0?'R':cross<0?'L':'—'};}
-function heading(id){return Number(id.slice(0,2))*10%360;}
+// Pure runway wind calculations and display values. Keep provider and DOM state outside this boundary.
+const RunwayWind=(()=>{
+ function components(w,h){const a=(w.direction-h)*Math.PI/180,head=w.speed*Math.cos(a),cross=w.speed*Math.sin(a);return {head:Math.round(head),cross:Math.round(Math.abs(cross)),side:cross>0?'R':cross<0?'L':'—'};}
+ function heading(id){return Number(id.slice(0,2))*10%360;}
+ function longitudinal(v){const head=v.head>=0;return `<span class="${head?'headwind':Math.abs(v.head)<5?'tailwind-low':'tailwind-high'}">${head?v.head+' HW':Math.abs(v.head)+' TW'}</span>`;}
+ function lateral(v){return `<span class="${v.cross<10?'crosswind-low':v.cross<15?'crosswind-mid':'crosswind-high'}">${v.cross} ${v.side}</span>`;}
+ function values(w,bearing){
+  if(!w||!Number.isFinite(w.direction)||!Number.isFinite(w.speed)||!Number.isFinite(bearing))return ['—','—'];
+  const current=components(w,bearing);
+  const gust=Number.isFinite(w.gust)&&w.gust>w.speed?components({...w,speed:w.gust},bearing):null;
+  return [longitudinal(current)+(gust?'<div class="gust">G '+longitudinal(gust)+'</div>':''),
+   lateral(current)+(gust?'<div class="gust">G '+lateral(gust)+'</div>':'')];
+ }
+ return {components,heading,values};
+})();
 function ends(code){return runwayData?.airports?.[code]?.map(x=>x.id)||(runwayPairs[code]||[]).flatMap(pair=>pair.split('/'));}
-function runwayHeading(code,id){const end=runwayData?.airports?.[code]?.find(x=>x.id===id);return end?end.true_heading:heading(id);}
+function runwayHeading(code,id){const end=runwayData?.airports?.[code]?.find(x=>x.id===id);return end?end.true_heading:RunwayWind.heading(id);}
 function runwayBearingLabel(code){
  if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return 'Synthetic placeholder bearing';
  if(runwayData?.airport_metadata?.[code]?.heading_method==='chart-derived-approximate')return 'Chart-derived approximate true bearing';
@@ -62,19 +75,10 @@ function runwayBearingLabel(code){
 function runwayRow(code,id,wind,forecast=null){
  const readerStatus=reader?.cell(icao(code),id,ends(code))||'<td class="unknown">—</td>';
  const bearing=runwayHeading(code,id);
- function longitudinal(v){const head=v.head>=0;return `<span class="${head?'headwind':Math.abs(v.head)<5?'tailwind-low':'tailwind-high'}">${head?v.head+' HW':Math.abs(v.head)+' TW'}</span>`;}
- function lateral(v){return `<span class="${v.cross<10?'crosswind-low':v.cross<15?'crosswind-mid':'crosswind-high'}">${v.cross} ${v.side}</span>`;}
- function values(w){
-  if(!w||!Number.isFinite(w.direction)||!Number.isFinite(w.speed)||!Number.isFinite(bearing))return ['—','—'];
-  const current=components(w,bearing);
-  const gust=Number.isFinite(w.gust)&&w.gust>w.speed?components({...w,speed:w.gust},bearing):null;
-  return [longitudinal(current)+(gust?'<div class="gust">G '+longitudinal(gust)+'</div>':''),
-   lateral(current)+(gust?'<div class="gust">G '+lateral(gust)+'</div>':'')];
- }
- const primary=values(wind);
+ const primary=RunwayWind.values(wind,bearing);
  const alternates=forecast?.alternatives||[];
  const extra=alternates.map(item=>{
-  const alt=values(item.wind);
+  const alt=RunwayWind.values(item.wind,bearing);
   const label=esc(item.label);
   return ['<div class="forecast-alt">'+label+': '+alt[0]+'</div>',
    '<div class="forecast-alt">'+label+': '+alt[1]+'</div>'];

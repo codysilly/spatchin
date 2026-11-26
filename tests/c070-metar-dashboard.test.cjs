@@ -84,3 +84,48 @@ test('dashboard limit is 30 total and MEM remains only the removable initial exa
  initial.run('airports=[];save()');assert.equal(initial.stored.get('spatchin-airports'),'[]');
  const empty=await load([],all);assert.equal(empty.run('airports.length'),0);
 });
+
+test('runway wind components retain heading, rounding and side conventions',async()=>{
+ const app=await load([],snapshot([]));
+ const components=(direction,speed,bearing)=>JSON.parse(app.run(`JSON.stringify(RunwayWind.components({direction:${direction},speed:${speed}},${bearing}))`));
+ assert.deepEqual(components(90,12,90),{head:12,cross:0,side:'—'});
+ assert.deepEqual(components(180,12,90),{head:0,cross:12,side:'R'});
+ assert.deepEqual(components(0,12,90),{head:0,cross:12,side:'L'});
+ assert.deepEqual(components(135,12,90),{head:8,cross:8,side:'R'});
+ assert.equal(components(270,12,90).head,-12);
+ assert.equal(components(270,12,90).cross,0);
+ assert.equal(app.run("RunwayWind.heading('04L')"),40);
+ assert.equal(app.run("RunwayWind.heading('36R')"),0);
+});
+test('runway wind display retains tailwind and crosswind threshold boundaries',async()=>{
+ const app=await load([],snapshot([]));
+ const values=(direction,speed)=>JSON.parse(app.run(`JSON.stringify(RunwayWind.values({direction:${direction},speed:${speed}},0))`));
+ for(const [speed,cls] of [[4,'tailwind-low'],[5,'tailwind-high']]){
+  assert.equal(values(180,speed)[0],`<span class="${cls}">${speed} TW</span>`);
+ }
+ for(const [speed,cls] of [[9,'crosswind-low'],[10,'crosswind-mid'],[14,'crosswind-mid'],[15,'crosswind-high']]){
+  assert.equal(values(90,speed)[1],`<span class="${cls}">${speed} R</span>`);
+  assert.equal(values(270,speed)[1],`<span class="${cls}">${speed} L</span>`);
+ }
+});
+test('runway wind display preserves gusts and rejects unavailable inputs',async()=>{
+ const app=await load([],snapshot([]));
+ const values=expr=>JSON.parse(app.run('JSON.stringify(RunwayWind.values('+expr+'))'));
+ const gust=values('{direction:90,speed:9,gust:15},0');
+ assert.match(gust[1],/crosswind-low">9 R/);
+ assert.match(gust[1],/class="gust">G <span class="crosswind-high">15 R/);
+ assert.doesNotMatch(values('{direction:90,speed:9,gust:9},0')[1],/class="gust"/);
+ for(const expr of ['null,0','{direction:null,speed:12},0','{direction:"VRB",speed:12},0','{direction:90,speed:NaN},0','{direction:90,speed:12},NaN']){
+  assert.deepEqual(values(expr),['—','—']);
+ }
+});
+test('runway row uses supplied true bearing for observations, gusts and forecast alternatives',async()=>{
+ const app=await load([],snapshot([]));
+ app.run('runwayData={airports:{MEM:[{id:"18L",true_heading:90}]}}');
+ const row=app.run('runwayRow("MEM","18L",{direction:90,speed:12,gust:16},{alternatives:[{label:"TEMPO",wind:{direction:180,speed:15}},{label:"PROB 30%",wind:null}]})');
+ assert.match(row,/FAA NASR true alignment: 90°/);
+ assert.match(row,/class="headwind">12 HW/);
+ assert.match(row,/class="gust">G <span class="headwind">16 HW/);
+ assert.match(row,/TEMPO: <span class="crosswind-high">15 R/);
+ assert.match(row,/PROB 30%: —/);
+});
