@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T19:08:36.268578Z",
+  "updated_utc": "2026-11-26T19:18:34.273559Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -681,20 +681,20 @@
     },
     {
       "icaoId": "KBMI",
-      "rawTAF": "TAF KBMI 261811Z 2618/2718 02015G25KT P6SM -RA OVC012 FM262000 01016G28KT 3SM -RA BR OVC008 FM270600 33016G24KT 3SM -RA BR OVC008 FM271300 32014KT 5SM BR VCSH OVC012 FM271600 31013KT P6SM BKN060",
-      "issueTime": "2026-11-26T18:11:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KBMI 261908Z 2619/2718 36021G26KT 6SM -RA BR OVC008 FM262000 01016G28KT 4SM -RA BR OVC008 FM270600 33016G24KT 3SM -RA BR OVC008 FM271300 32014KT 5SM BR VCSH OVC012 FM271600 31013KT P6SM BKN060",
+      "issueTime": "2026-11-26T19:08:00.000Z",
+      "validTimeFrom": 1795719600,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795716000,
+          "timeFrom": 1795719600,
           "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 20,
-          "wspd": 15,
-          "wgst": 25
+          "wdir": 360,
+          "wspd": 21,
+          "wgst": 26
         },
         {
           "timeFrom": 1795723200,
@@ -5407,19 +5407,19 @@
     },
     {
       "icaoId": "KSAT",
-      "rawTAF": "TAF KSAT 261720Z 2618/2724 35012KT P6SM SKC FM262300 VRB02KT P6SM BKN250 FM271600 23010KT P6SM FEW250",
-      "issueTime": "2026-11-26T17:20:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KSAT 261915Z 2619/2724 01011KT P6SM SKC FM262300 VRB02KT P6SM BKN250 FM271600 23010KT P6SM FEW250",
+      "issueTime": "2026-11-26T19:15:00.000Z",
+      "validTimeFrom": 1795719600,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795716000,
+          "timeFrom": 1795719600,
           "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 350,
-          "wspd": 12,
+          "wdir": 10,
+          "wspd": 11,
           "wgst": null
         },
         {
@@ -6112,14 +6112,14 @@
     },
     {
       "icaoId": "KSWF",
-      "rawTAF": "TAF KSWF 261748Z 2618/2724 06018G26KT 6SM -RA BR OVC015 FM262000 06019G31KT 2SM -RA BR OVC015 FM270300 05016G24KT 1SM -RA BR OVC007 FM270500 05012G18KT 1SM -RA BR OVC007 FM270800 06007KT 1SM -RA BR OVC007 FM271200 19013G20KT 6SM -RA OVC015 AMD NOT SKED",
-      "issueTime": "2026-11-26T17:48:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KSWF 261912Z 2619/2724 06018G26KT 5SM -RA BR OVC025 FM262200 06019G31KT 2SM -RA BR OVC015 FM270300 05016G24KT 1SM -RA BR OVC007 FM270500 05012G18KT 1SM -RA BR OVC007 FM270800 06007KT 1SM -RA BR OVC007 FM271200 19013G20KT 6SM -RA OVC015 AMD NOT SKED",
+      "issueTime": "2026-11-26T19:12:00.000Z",
+      "validTimeFrom": 1795719600,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795716000,
-          "timeTo": 1795723200,
+          "timeFrom": 1795719600,
+          "timeTo": 1795730400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -6128,7 +6128,7 @@
           "wgst": 26
         },
         {
-          "timeFrom": 1795723200,
+          "timeFrom": 1795730400,
           "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": "FM",
