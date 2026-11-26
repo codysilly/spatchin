@@ -1,6 +1,7 @@
 // Execute the actual loader, reader and app with DOM stubs; transport is entirely injected.
 const {test}=require('node:test');const assert=require('node:assert/strict');
 const vm=require('node:vm');const {readFileSync}=require('node:fs');const {join}=require('node:path');
+const {mountInVM}=require('./dashboard-module-support.cjs');
 function load({notams,runways}={}){
  const calls=[],elements=new Map(),pending=[];
  const ctx=vm.createContext({URL,AbortController,setTimeout,clearTimeout,console:{info(){},error(){}},setInterval(){},localStorage:{getItem(){return null},setItem(){throw Error('No preferences should be written')}},
@@ -10,8 +11,8 @@ function load({notams,runways}={}){
    if(path.endsWith('/runways.json')&&runways)return Promise.resolve({ok:true,json:async()=>runways});
    return new Promise(resolve=>pending.push(resolve));
   }});
- for(const name of ['airport-catalog.js','notam-reader.js','notam-snapshots.js','app.js'])vm.runInContext(readFileSync(join(__dirname,'..',name),'utf8'),ctx);
- return {ctx,calls,elements,run:s=>vm.runInContext(s,ctx)};
+ const {run}=mountInVM(ctx,[['airport-catalog.js',['AirportCatalog','AirportMetadata']],['notam-reader.js',['NotamReader']],['notam-snapshots.js',['NotamSnapshots']]]);
+ return {ctx,calls,elements,run};
 }
 const valid=()=>({retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{notices:[{text:'SYNTHETIC RWY 18L retained report'}]}}});
 const tick=()=>new Promise(resolve=>setImmediate(resolve));

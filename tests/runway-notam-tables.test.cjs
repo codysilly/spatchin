@@ -1,8 +1,8 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const reader=require('../notam-reader');
-const catalog=require('../airport-catalog');
+const reader=require('../notam-reader').NotamReader;
+const catalog=require('../airport-catalog').AirportCatalog;
 test('approved catalog preserves all 130 owner-supplied codes without inventing metadata',()=>{
  assert.equal(catalog.length,130);assert.equal(new Set(catalog).size,130);
  assert.ok(['MEM','ORD','LAX','JFK','IND','EWR','DJT'].every(c=>catalog.includes(c)));

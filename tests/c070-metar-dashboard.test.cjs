@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {join}=require('node:path');
 const vm=require('node:vm');
+const {mountInVM}=require('./dashboard-module-support.cjs');
 const root=join(__dirname,'..');
 const source=name=>readFileSync(join(root,name),'utf8');
 const registry=JSON.parse(source('docs/reference/c070-airport-registry.json')).airports;
@@ -21,8 +22,7 @@ async function load(selected,initial){
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,val)=>stored.set(key,val)},
   fetch:async url=>{requests.push(url);assert.match(url,/^\.\/data\//);if(!url.startsWith('./data/metars.json'))return new Promise(()=>{});if(payload instanceof Error)throw payload;return {ok:true,json:async()=>payload};}
  });
- for(const script of ['airport-catalog.js','app.js'])vm.runInContext(source(script),context);
- const run=code=>vm.runInContext(code,context);
+ const {run}=mountInVM(context,[['airport-catalog.js',['AirportCatalog','AirportMetadata']]]);
  await new Promise(resolve=>setImmediate(resolve));
  return {run,requests,alerts,elements,stored,html:()=>elements.get('cards').innerHTML,
   state:code=>run('metarState(metars['+JSON.stringify(code)+'])'),

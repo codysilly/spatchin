@@ -1,6 +1,6 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const snapshots=require('../notam-snapshots.js');
+const snapshots=require('../notam-snapshots.js').NotamSnapshots;
 const fixture=(time='2026-11-11T12:00:00Z')=>({retrieved_utc:time,airports:{KMEM:{completeness:'UNKNOWN',notices:[{id:'duplicate',text:'RWY 18L',effectiveEnd:'PERM'},{id:'duplicate',text:null,formatted_texts:[{type:'LOCAL_FORMAT',field:'simpleText',text:'RWY 36R'}]}]}}});
 const ok=data=>({ok:true,json:async()=>data});
 const config={baseURL:'https://example.test/spatchin/index.html',now:()=>Date.parse('2026-11-12T12:00:00Z')};

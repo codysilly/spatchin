@@ -1,7 +1,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const reader=require('../notam-reader.js');
-const snapshots=require('../notam-snapshots.js');
+const reader=require('../notam-reader.js').NotamReader;
+const snapshots=require('../notam-snapshots.js').NotamSnapshots;
 const render=(code,inventory)=>reader.summary(code)+reader.row(code,inventory[0]||'09',inventory);
 test('explicit text references retain exact offsets and never infer reciprocals',()=>{
  const text='🙂 RWY 18L and 36R; TWY A near RWY 9.';
