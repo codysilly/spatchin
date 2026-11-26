@@ -129,3 +129,40 @@ test('runway row uses supplied true bearing for observations, gusts and forecast
  assert.match(row,/TEMPO: <span class="crosswind-high">15 R/);
  assert.match(row,/PROB 30%: —/);
 });
+
+test('published runway validator preserves reviewed inventory and rejects invalid snapshots',async()=>{
+ const app=await load([],snapshot([]));
+ const pairs={...JSON.parse(app.run('JSON.stringify(runwayPairs)')),MEM:['09/27','18L/36R','18C/36C','18R/36L']};
+ const airports=Object.fromEntries(Object.entries(pairs).map(([code,list])=>[code,list.flatMap(pair=>pair.split('/').map(id=>({id,pair,true_heading:Number(id.slice(0,2))*10%360})))]));
+ const fixture={heading_reference:'TRUE',effective_date:'2026-11-01',airports};
+ const validate=value=>app.run('PublishedSnapshots.runways('+JSON.stringify(value)+',approvedCatalog)');
+ assert.deepEqual(JSON.parse(JSON.stringify(validate(fixture))),fixture);
+ const copy=()=>JSON.parse(JSON.stringify(fixture));
+ const invalidHeading=copy();invalidHeading.airports.MEM[0].true_heading=360;
+ assert.throws(()=>validate(invalidHeading),/Invalid MEM runway end/);
+ const missing=copy();delete missing.airports.MEM;
+ assert.throws(()=>validate(missing),/Missing verified MEM runway ends/);
+ const badPair=copy();badPair.airports.MEM[0].pair='09/01';
+ assert.throws(()=>validate(badPair),/Incomplete MEM runway pair/);
+ const badCoverage=copy();badCoverage.airport_coverage={};
+ assert.throws(()=>validate(badCoverage),/Invalid C070 runway coverage/);
+ assert.equal(app.run('runwayData'),null);
+});
+test('published TAF selection retains newer and richer reports and rejects invalid publications',async()=>{
+ const app=await load([],snapshot([]));
+ app.run(source('taf-reader.js'));
+ const issue=minutes=>new Date(now-minutes*60000).toISOString();
+ const report=(icaoId,age,groups=1)=>({icaoId,issueTime:issue(age),validTimeFrom:Math.floor((now-3600000)/1000),validTimeTo:Math.floor((now+3600000)/1000),rawTAF:'SYNTHETIC '+icaoId+' '+age+' '+groups,fcsts:Array.from({length:groups},()=>({}))});
+ const current=report('KMEM',30,2),other=report('KORD',30);
+ const previous={tafs:[current,other],updated_utc:issue(5)};
+ const select=(tafs,updated_utc=issue(1))=>JSON.parse(app.run('JSON.stringify(PublishedSnapshots.tafs('+JSON.stringify({tafs,updated_utc})+','+JSON.stringify(previous)+',airportInfo,TafReader,Date.now))'));
+ const retained=select([report('KMEM',45,3),report('KMEM',30,1)]);
+ assert.deepEqual(retained.tafs,[current,other]);
+ const richer=report('KMEM',30,3),newer=report('KMEM',10,1);
+ assert.deepEqual(select([richer]).tafs,[richer,other]);
+ assert.deepEqual(select([richer,newer]).tafs,[newer,other]);
+ assert.throws(()=>select([report('ZZZZ',15)]),/No valid TAFs/);
+ assert.throws(()=>select([newer],issue(-6)),/Invalid TAF publication time/);
+ assert.throws(()=>select(null),/Invalid published TAF snapshot/);
+ assert.equal(app.run('tafData'),null);
+});

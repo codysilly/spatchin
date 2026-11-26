@@ -424,14 +424,11 @@ async function refresh(){
  }finally{loading=false;render();}
 }
 document.getElementById('add-form').addEventListener('submit',e=>{e.preventDefault();const f=document.getElementById('iata'),code=f.value.trim().toUpperCase();if(!approvedCatalog.includes(code)){alert('Choose an IATA code from the approved C070 catalog.');return;}if(airports.includes(code)){alert(code+' is already displayed.');return;}if(airports.length>=30){alert('Maximum 30 airports.');return;}airports.push(code);save();render();f.value='';refresh();});
-async function refreshRunways(){
- if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
- try{
-  const response=await fetch(`./data/runways.json?t=${Date.now()}`,{cache:'no-store'});
-  if(!response.ok)throw new Error(`HTTP ${response.status}`);
-  const data=await response.json();
+// Published snapshot validation and selection; no fetch, DOM, or application state.
+const PublishedSnapshots=(()=>{
+ function runways(data,catalog){
   if(data.heading_reference!=='TRUE'||!data.airports||!data.effective_date)throw new Error('Invalid FAA runway data');
-  const eligible=new Set(approvedCatalog);
+  const eligible=new Set(catalog);
   const published=Object.entries(data.airports);
   if(!published.length)throw new Error('FAA runway inventory empty');
   for(const [code,list] of published){
@@ -454,7 +451,34 @@ async function refreshRunways(){
       !['available','unavailable'].includes(coverage[code].status)||
       (coverage[code].status==='available')!==Boolean(data.airports[code])))throw new Error('Invalid C070 runway coverage');
   }
-  runwayData=data;render();
+  return data;
+ }
+ function tafs(data,previous,stations,reader,clock){
+  if(!Array.isArray(data?.tafs))throw new Error('Invalid published TAF snapshot');
+  const published=reader.time(data.updated_utc);
+  if(!Number.isFinite(published)||published>clock()+5*60*1000)throw new Error('Invalid TAF publication time');
+  const available=new Map((previous?.tafs||[]).map(item=>[item.icaoId,item]));
+  let accepted=0;
+  for(const item of data.tafs){
+   if(!Object.values(stations).some(a=>a.icao===item?.icaoId)||!reader.valid(item,item.icaoId,clock()))continue;
+   accepted++;
+   const earlier=available.get(item.icaoId);
+   if(!earlier||reader.time(item.issueTime)>reader.time(earlier.issueTime)||
+    (reader.time(item.issueTime)===reader.time(earlier.issueTime)&&
+     (item.fcsts?.length||0)>=(earlier.fcsts?.length||0)))available.set(item.icaoId,item);
+  }
+  if(!accepted)throw new Error('No valid TAFs in published snapshot');
+  return {tafs:[...available.values()],updated_utc:data.updated_utc};
+ }
+ return {runways,tafs};
+})();
+async function refreshRunways(){
+ if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
+ try{
+  const response=await fetch(`./data/runways.json?t=${Date.now()}`,{cache:'no-store'});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  runwayData=PublishedSnapshots.runways(data,approvedCatalog);render();
  }catch(e){console.info('FAA runway data not yet available; retaining previously verified headings:',e.message);}
 }
 async function refreshAtis(){
@@ -472,21 +496,7 @@ async function refreshTafs(){
   const response=await fetch(`./data/tafs.json?t=${Date.now()}`,{cache:'no-store'});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
-  if(!Array.isArray(data?.tafs))throw new Error('Invalid published TAF snapshot');
-  const published=TafReader.time(data.updated_utc);
-  if(!Number.isFinite(published)||published>Date.now()+5*60*1000)throw new Error('Invalid TAF publication time');
-  const available=new Map((tafData?.tafs||[]).map(item=>[item.icaoId,item]));
-  let accepted=0;
-  for(const item of data.tafs){
-   if(!Object.values(airportInfo).some(a=>a.icao===item?.icaoId)||!TafReader.valid(item,item.icaoId))continue;
-   accepted++;
-   const earlier=available.get(item.icaoId);
-   if(!earlier||TafReader.time(item.issueTime)>TafReader.time(earlier.issueTime)||
-    (TafReader.time(item.issueTime)===TafReader.time(earlier.issueTime)&&
-     (item.fcsts?.length||0)>=(earlier.fcsts?.length||0)))available.set(item.icaoId,item);
-  }
-  if(!accepted)throw new Error('No valid TAFs in published snapshot');
-  tafData={tafs:[...available.values()],updated_utc:data.updated_utc};tafFeedError=false;
+  tafData=PublishedSnapshots.tafs(data,tafData,airportInfo,TafReader,Date.now);tafFeedError=false;
  }catch(e){tafFeedError=true;console.info('TAF snapshot unavailable; retaining previous reports:',e.message);}
  render();
 }
