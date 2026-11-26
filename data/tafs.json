@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T07:38:34.630120Z",
+  "updated_utc": "2026-11-26T07:48:33.774054Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -6353,29 +6353,19 @@
     },
     {
       "icaoId": "KSTL",
-      "rawTAF": "TAF KSTL 260537Z 2606/2712 34008KT 1/2SM SN OVC004 TEMPO 2606/2608 1/4SM SN FG OVC003 FM261200 34010KT 2SM -RASN OVC009 FM261400 33012G20KT 4SM -RA OVC010 FM270100 32012KT P6SM OVC015",
-      "issueTime": "2026-11-26T05:37:00.000Z",
-      "validTimeFrom": 1795672800,
+      "rawTAF": "TAF KSTL 260742Z 2608/2712 34008KT 1SM -SN OVC004 FM261200 34010KT 2SM -RASN OVC009 FM261400 33012G20KT 4SM -RA OVC010 FM270100 32012KT P6SM OVC015",
+      "issueTime": "2026-11-26T07:42:00.000Z",
+      "validTimeFrom": 1795680000,
       "validTimeTo": 1795780800,
       "fcsts": [
         {
-          "timeFrom": 1795672800,
+          "timeFrom": 1795680000,
           "timeTo": 1795694400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 340,
           "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795672800,
-          "timeTo": 1795680000,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
           "wgst": null
         },
         {
