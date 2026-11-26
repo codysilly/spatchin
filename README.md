@@ -42,7 +42,7 @@ The approved C070 selection catalog contains **130 IATA codes**. A dashboard may
 | Runways | Published runway inventory; MEM's eight ends use **approximate chart-derived bearings** pending authoritative NASR verification | Never represent approximate bearings as surveyed or verified |
 | NOTAM | A reviewed, fixed published snapshot is read locally; raw LOCAL_FORMAT text is displayed without operational interpretation | No authorized automatic FAA NMS polling, completeness inference or zero-notice assertion |
 
-Data-source retrieval times, browser checks, stale/last-good handling and coverage labels are distinct concepts. Consult [dashboard reader guidance](DASHBOARD.md) and [NOTAM snapshot contract](NOTAM_SNAPSHOTS.md) for the exact implementation behavior. A Git commit, a successful test, a deployed page and verified external-data coverage are **different claims**.
+Data-source retrieval times, browser checks, stale/last-good handling and coverage labels are distinct concepts. Consult [dashboard reader guidance](docs/DASHBOARD.md) and [NOTAM snapshot contract](docs/NOTAM_SNAPSHOTS.md) for the exact implementation behavior. A Git commit, a successful test, a deployed page and verified external-data coverage are **different claims**.
 
 ### Safe local verification
 
@@ -56,7 +56,7 @@ node --check scan.js
 node --check notam-reader.js
 ```
 
-Run this only if those paths and Node are present in the checked-out revision. Other focused offline commands appear in [NOTAM_SNAPSHOTS.md](NOTAM_SNAPSHOTS.md). **Do not** invoke `scripts/update_atis.py`, `scripts/update_metar.py`, workflow dispatches, provider collectors, production deployments or Cloudflare operations as part of a routine offline test. Report **NOT RUN** when a checkout, dependency or executable test environment is unavailable; historical CI success is not a substitute for a current run.
+Run this only if those paths and Node are present in the checked-out revision. Other focused offline commands appear in [NOTAM_SNAPSHOTS.md](docs/NOTAM_SNAPSHOTS.md). **Do not** invoke `scripts/update_atis.py`, `scripts/update_metar.py`, workflow dispatches, provider collectors, production deployments or Cloudflare operations as part of a routine offline test. Report **NOT RUN** when a checkout, dependency or executable test environment is unavailable; historical CI success is not a substitute for a current run.
 
 ### Review and release gate
 

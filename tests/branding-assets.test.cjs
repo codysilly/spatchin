@@ -7,7 +7,7 @@ const { inflateSync } = require('node:zlib');
 const svg = readFileSync('assets/branding/logo-cyan-magenta.svg', 'utf8');
 const html = readFileSync('index.html', 'utf8');
 const css = readFileSync('charcoal-dashboard.css', 'utf8');
-const spec = readFileSync('BRANDING.md', 'utf8');
+const spec = readFileSync('docs/BRANDING.md', 'utf8');
 
 test('approved vector and wordmark remain the single canonical brand', () => {
   assert.match(svg, /id="tailToNose"/);

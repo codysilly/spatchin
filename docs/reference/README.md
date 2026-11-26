@@ -24,7 +24,7 @@ There was no existing favicon/build pipeline to replace.
 `c070-airports.csv` is the owner's read-only export of the approved Google Sheet,
 provided locally on the same date. `airport-catalog.js` preserves its 130 codes in
 source order. This supplies no inferred names, ICAOs, runway inventories or feed
-coverage. See [dashboard behavior](../../DASHBOARD.md) for source URL and limits.
+coverage. See [dashboard behavior](../DASHBOARD.md) for source URL and limits.
 
 ## Running-app review
 
