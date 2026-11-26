@@ -28,6 +28,8 @@ function notamTransportBlock(code){
 if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETIC_PREVIEW.runways;if(!syntheticNotamTransport)reader?.set(SPATCHIN_SYNTHETIC_PREVIEW.notams);}
 let atisData=null; let atisRetrieved=null;
 let tafData=null,tafFeedError=false;
+// Native module dependencies are absent in the synthetic previews.
+let forecastReader,forecastTimeline;
 const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=70*60*1000;
 const AIRPORT_STORAGE_KEY='spatchin-airports';
@@ -198,8 +200,8 @@ function atisBlock(code){
 }
 function tafBlock(code){
  const station=airportInfo[code]?.icao;
- if(typeof TafReader==='undefined')return '<section class="taf"><strong>TAF</strong><span>Forecast reader unavailable.</span></section>';
- return TafReader.render({code,station,report:tafData?.tafs?.find(item=>item.icaoId===station),feedError:tafFeedError});
+ if(typeof forecastReader==='undefined')return '<section class="taf"><strong>TAF</strong><span>Forecast reader unavailable.</span></section>';
+ return forecastReader.render({code,station,report:tafData?.tafs?.find(item=>item.icaoId===station),feedError:tafFeedError});
 }
 function windLabel(w){if(!w)return '—';const dir=Number.isFinite(w.direction)?String(w.direction).padStart(3,'0')+'°':'VRB';return `${dir} / ${w.speed}${Number.isFinite(w.gust)&&w.gust>0?'G'+w.gust:''}KT`;}
 function utc(t){if(!t)return '—';const d=new Date(t);return Number.isNaN(d.getTime())?'—':d.toISOString().slice(0,16).replace('T',' ')+'Z';}
@@ -227,20 +229,20 @@ function metarStatus(m){
 function forecastModel(code,m){
  const station=airportInfo[code]?.icao;
  const report=tafData?.tafs?.find(item=>item.icaoId===station);
- const available=typeof TafTimeline!=='undefined'&&typeof TafReader!=='undefined'&&
-  TafReader.valid(report,station)&&TafTimeline.bounds(report)&&
-  TafTimeline.periods(report).some(item=>item.kind==='BASE'||item.kind==='FM')&&
-  Date.now()<TafTimeline.bounds(report).end&&
-  Date.now()-TafTimeline.time(report.issueTime)<=TafTimeline.STALE_MS;
+ const available=typeof forecastTimeline!=='undefined'&&typeof forecastReader!=='undefined'&&
+  forecastReader.valid(report,station)&&forecastTimeline.bounds(report)&&
+  forecastTimeline.periods(report).some(item=>item.kind==='BASE'||item.kind==='FM')&&
+  Date.now()<forecastTimeline.bounds(report).end&&
+  Date.now()-forecastTimeline.time(report.issueTime)<=forecastTimeline.STALE_MS;
  const observed=m?.observed||'unavailable';
  const selected=observedSelection.get(code);
- const rawSelected=selected?.startsWith('taf:')?TafTimeline?.time(selected.slice(4)):NaN;
- const bounds=available?TafTimeline.bounds(report):null;
+ const rawSelected=selected?.startsWith('taf:')?forecastTimeline?.time(selected.slice(4)):NaN;
+ const bounds=available?forecastTimeline.bounds(report):null;
  const forecast=Boolean(available&&selected?.startsWith('taf:')&&Number.isFinite(rawSelected)&&
   rawSelected>=bounds.start&&rawSelected<bounds.end);
- const initial=available?TafTimeline.initialTime(report):NaN;
+ const initial=available?forecastTimeline.initialTime(report):NaN;
  const at=forecast?rawSelected:initial;
- const state=forecast?TafTimeline.select(report,at):null;
+ const state=forecast?forecastTimeline.select(report,at):null;
  return {report,available:Boolean(available),bounds,observed,forecast,at,state};
 }
 function timeControl(code,m,model){
@@ -252,12 +254,12 @@ function timeControl(code,m,model){
  if(!model.available){
   return prefix+'<option disabled>Forecast unavailable</option></select></div>';
  }
- const at=Number.isFinite(model.at)?model.at:TafTimeline.initialTime(model.report);
+ const at=Number.isFinite(model.at)?model.at:forecastTimeline.initialTime(model.report);
  const iso=new Date(at).toISOString();
- const time=esc(TafTimeline.stamp(at));
+ const time=esc(forecastTimeline.stamp(at));
  const chosen=esc('taf:'+iso);
- const sliderValue=TafTimeline.stepIndex(model.report,at);
- const max=TafTimeline.steps(model.report);
+ const sliderValue=forecastTimeline.stepIndex(model.report,at);
+ const max=forecastTimeline.steps(model.report);
  const range=model.bounds;
  let result=prefix+'<option value="'+chosen+'"'+(model.forecast?' selected':'')+
   '>TAF forecast '+time+'</option></select></div>';
@@ -269,10 +271,10 @@ function timeControl(code,m,model){
   '<output data-forecast-output="'+esc(code)+'">'+time+'</output>'+
   '<label for="forecast-date-'+esc(code)+'">Exact UTC time</label>'+
   '<input id="forecast-date-'+esc(code)+'" type="datetime-local" data-forecast-date="'+esc(code)+
-  '" value="'+esc(TafTimeline.localInput(at))+'" min="'+esc(TafTimeline.localInput(range.start))+
-  '" max="'+esc(TafTimeline.localInput(range.end-60000))+'" step="60">'+
-  '<div class="forecast-range">Valid '+esc(TafTimeline.stamp(range.start))+
-  ' – '+esc(TafTimeline.stamp(range.end))+'</div></div>';
+  '" value="'+esc(forecastTimeline.localInput(at))+'" min="'+esc(forecastTimeline.localInput(range.start))+
+  '" max="'+esc(forecastTimeline.localInput(range.end-60000))+'" step="60">'+
+  '<div class="forecast-range">Valid '+esc(forecastTimeline.stamp(range.start))+
+  ' – '+esc(forecastTimeline.stamp(range.end))+'</div></div>';
  if(model.forecast){
   const state=model.state;
   const resultLabel=state?.status==='available'?'TAF FORECAST':state?.status==='transition'?
@@ -284,7 +286,7 @@ function timeControl(code,m,model){
    'Runway-number headings are approximate';
   result+='<div class="forecast-summary" role="status"><strong>'+resultLabel+
    ' · '+time+'</strong><div>'+esc(wind)+(notes?' · '+notes:'')+
-   '</div><div>'+esc(bearing)+' · Issued '+esc(TafTimeline.stamp(TafTimeline.time(model.report.issueTime)))+
+   '</div><div>'+esc(bearing)+' · Issued '+esc(forecastTimeline.stamp(forecastTimeline.time(model.report.issueTime)))+
    ' · Snapshot '+esc(utc(tafData?.updated_utc))+'</div>'+
    '<div>Forecast is not an observation. TEMPO/PROB winds are alternatives, not prevailing.</div></div>';
  }
@@ -314,21 +316,21 @@ function render(){const reloadFocus=document.activeElement?.dataset?.notamReload
   el.addEventListener('input',()=>{
    const code=el.dataset.forecastSlider;
    const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
-   const when=TafTimeline.stepTime(report,el.value);
+   const when=forecastTimeline.stepTime(report,el.value);
    const output=document.querySelector('[data-forecast-output="'+code+'"]');
-   if(output&&Number.isFinite(when))output.textContent=TafTimeline.stamp(when);
+   if(output&&Number.isFinite(when))output.textContent=forecastTimeline.stamp(when);
   });
   el.addEventListener('change',()=>{
    const code=el.dataset.forecastSlider;
    const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
-   const when=TafTimeline.stepTime(report,el.value);
+   const when=forecastTimeline.stepTime(report,el.value);
    if(Number.isFinite(when)){observedSelection.set(code,'taf:'+new Date(when).toISOString());render();}
   });
  });
  document.querySelectorAll('[data-forecast-date]').forEach(el=>el.addEventListener('change',()=>{
   const code=el.dataset.forecastDate;
   const report=tafData?.tafs?.find(item=>item.icaoId===airportInfo[code]?.icao);
-  const range=TafTimeline.bounds(report),when=TafTimeline.time(el.value);
+  const range=forecastTimeline.bounds(report),when=forecastTimeline.time(el.value);
   if(range&&Number.isFinite(when)&&when>=range.start&&when<range.end){
    observedSelection.set(code,'taf:'+new Date(when).toISOString());
   }
@@ -514,13 +516,27 @@ async function refreshAtis(){
  }catch(e){console.info('ATIS snapshot unavailable:',e.message);}
 }
 async function refreshTafs(){
- if(typeof TafReader==='undefined'||typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
+ if(typeof forecastReader==='undefined'||typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
  try{
   const response=await fetch(`./data/tafs.json?t=${Date.now()}`,{cache:'no-store'});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
-  tafData=PublishedSnapshots.tafs(data,tafData,airportInfo,TafReader,Date.now);tafFeedError=false;
+  tafData=PublishedSnapshots.tafs(data,tafData,airportInfo,forecastReader,Date.now);tafFeedError=false;
  }catch(e){tafFeedError=true;console.info('TAF snapshot unavailable; retaining previous reports:',e.message);}
  render();
 }
-function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();refreshTafs();notamSnapshots?.refresh();setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
+function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}
+function startDashboard(){
+ clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();refreshTafs();notamSnapshots?.refresh();
+ setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
+}
+async function loadForecastModules(){
+ const [reader,timeline]=await Promise.allSettled([import('./taf-reader.js'),import('./taf-timeline.js')]);
+ if(reader.status==='fulfilled')forecastReader=reader.value.TafReader;
+ else console.info('Forecast reader module unavailable:',reader.reason?.message);
+ if(timeline.status==='fulfilled')forecastTimeline=timeline.value.TafTimeline;
+ else console.info('Forecast timeline module unavailable:',timeline.reason?.message);
+ startDashboard();
+}
+if(document.currentScript?.dataset?.forecast==='true')loadForecastModules();
+else startDashboard();
