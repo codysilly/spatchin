@@ -31,7 +31,7 @@ before(async()=>{
 });
 after(async()=>{await browser?.close();server?.kill();});
 
-async function launch(width,revision,dataRevision){
+async function launch(width,revision,dataRevision,pagePath='/'){
  const context=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
  const page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
@@ -67,8 +67,12 @@ async function launch(width,revision,dataRevision){
     return css;
    })()});
  });
- await page.goto(origin+'/',{waitUntil:'load'});
+ await page.goto(origin+pagePath,{waitUntil:'load'});
  await page.waitForSelector('[data-airport="MEM"] .runway-row');
+ if(pagePath==='/preview/snapshot-loader.html'){
+  await page.waitForFunction(()=>notamTransport?.snapshot&&!notamTransport.refreshing);
+  assert.deepEqual(await page.locator('link[rel="stylesheet"]').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),['styles.css']);
+ }
  await page.waitForLoadState('networkidle');
  return {context,page,errors};
 }
@@ -88,9 +92,13 @@ async function imageOf(page){
  await page.evaluate(()=>document.fonts.ready);
  return PNG.sync.read(await page.screenshot({fullPage:true,animations:'disabled'}));
 }
-async function render(width,name,revision,dataRevision){
- const app=await launch(width,revision,dataRevision);
- await state(app.page,name);
+async function render(width,name,revision,dataRevision,pagePath='/'){
+ const app=await launch(width,revision,dataRevision,pagePath);
+ await state(app.page,name==='preview-error'?'reader':name);
+ if(name==='preview-error'){
+  await app.page.locator('#preview-state').selectOption('error');
+  await app.page.waitForFunction(()=>notamTransport?.error&&notamTransport.snapshot&&!notamTransport.refreshing);
+ }
  const png=await imageOf(app.page);
  const computed=await app.page.evaluate(()=>{
   const s=sel=>getComputedStyle(document.querySelector(sel));
@@ -120,6 +128,23 @@ for(const width of [1440,1120,760,390,320]){
    const difference=pixelmatch(before.png.data,after.png.data,null,before.png.width,before.png.height,{threshold:.02,includeAA:false});
    assert.equal(difference,0,label+': screenshot differs by '+difference+' pixels at '+width+' '+scene);
    }
+  });
+ }
+}
+
+// The isolated snapshot preview loads only styles.css. Protect that consumer independently.
+for(const width of [1440,390]){
+ for(const scene of ['default','reader','preview-error']){
+  test('SPA-106 standalone snapshot preview parity '+width+'px '+scene,async()=>{
+   const pagePath='/preview/snapshot-loader.html';
+   const before=await render(width,scene,currentBaseline,currentBaseline,pagePath);
+   const after=await render(width,scene,null,currentBaseline,pagePath);
+   assert.deepEqual(before.errors,[]);assert.deepEqual(after.errors,[]);
+   assert.deepEqual(after.computed,before.computed,'Standalone preview computed styles differ');
+   assert.equal(after.png.width,before.png.width,'Standalone preview screenshot width differs');
+   assert.equal(after.png.height,before.png.height,'Standalone preview screenshot height differs');
+   const difference=pixelmatch(before.png.data,after.png.data,null,before.png.width,before.png.height,{threshold:.02,includeAA:false});
+   assert.equal(difference,0,'Standalone preview screenshot differs by '+difference+' pixels');
   });
  }
 }
