@@ -5,6 +5,7 @@ identify compression, archive layout, a complete XML field map, or baseline
 cutover evidence.  This module therefore inspects only raw XML evidence.  It
 never guesses a container or converts opaque AIXM records into reader records.
 """
+
 from dataclasses import dataclass, field
 import re
 from xml.etree import ElementTree as ET
@@ -32,11 +33,16 @@ GML_NAMESPACES = {"http://www.opengis.net/gml/3.2"}
 
 class InitialDecodeError(Exception):
     """Fixed safe diagnostic; never includes source bytes or parser details."""
+
     CODES = {
-        "INITIAL_UNSUPPORTED_FORMAT", "INITIAL_INPUT_TOO_LARGE",
-        "INITIAL_UNSAFE_XML", "INITIAL_MALFORMED_XML",
-        "INITIAL_XML_LIMIT", "INITIAL_UNSUPPORTED_NAMESPACE",
-        "INITIAL_UNSUPPORTED_STRUCTURE", "INITIAL_MAPPING_REQUIRED",
+        "INITIAL_UNSUPPORTED_FORMAT",
+        "INITIAL_INPUT_TOO_LARGE",
+        "INITIAL_UNSAFE_XML",
+        "INITIAL_MALFORMED_XML",
+        "INITIAL_XML_LIMIT",
+        "INITIAL_UNSUPPORTED_NAMESPACE",
+        "INITIAL_UNSUPPORTED_STRUCTURE",
+        "INITIAL_MAPPING_REQUIRED",
     }
 
     def __init__(self, code):
@@ -72,8 +78,9 @@ def _validated_utf8(body):
         raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
     declaration = re.match(r"\s*<\?xml\s+([^?]*)\?>", text, re.IGNORECASE)
     if declaration:
-        encoding = re.search(r"\bencoding\s*=\s*(['\"])([^'\"]+)\1",
-                             declaration.group(1), re.IGNORECASE)
+        encoding = re.search(
+            r"\bencoding\s*=\s*(['\"])([^'\"]+)\1", declaration.group(1), re.IGNORECASE
+        )
         if encoding and encoding.group(2).upper().replace("_", "-") not in {"UTF-8", "UTF8"}:
             raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
     if re.search(r"<!\s*(?:DOCTYPE|ENTITY)\b", text, re.IGNORECASE):
@@ -97,17 +104,21 @@ def _bounded_tree(body):
         count = depth = text_chars = attributes = attribute_chars = 0
         root = None
         for offset in range(0, len(text), 65536):
-            parser.feed(text[offset:offset + 65536])
+            parser.feed(text[offset : offset + 65536])
             for event, element in parser.read_events():
                 if event == "start":
                     count += 1
                     depth += 1
                     attributes += len(element.attrib)
-                    attribute_chars += sum(len(str(name)) + len(str(value))
-                                           for name, value in element.attrib.items())
-                    if (count > MAX_ELEMENTS or depth > MAX_DEPTH
-                            or attributes > MAX_ATTRIBUTES
-                            or attribute_chars > MAX_ATTRIBUTE_CHARS):
+                    attribute_chars += sum(
+                        len(str(name)) + len(str(value)) for name, value in element.attrib.items()
+                    )
+                    if (
+                        count > MAX_ELEMENTS
+                        or depth > MAX_DEPTH
+                        or attributes > MAX_ATTRIBUTES
+                        or attribute_chars > MAX_ATTRIBUTE_CHARS
+                    ):
                         raise InitialDecodeError("INITIAL_XML_LIMIT")
                 else:
                     text_chars += len(element.text or "") + len(element.tail or "")
@@ -146,8 +157,7 @@ class _BoundedUnicodeWriter:
 
 def _serialize_member(element, aggregate):
     writer = _BoundedUnicodeWriter(aggregate)
-    ET.ElementTree(element).write(writer, encoding="unicode",
-                                  short_empty_elements=True)
+    ET.ElementTree(element).write(writer, encoding="unicode", short_empty_elements=True)
     return writer.value()
 
 
@@ -162,11 +172,15 @@ def inspect_initial(body, stage):
     child_names = [_split(child.tag) for child in root]
     headers = [child for child in root if _split(child.tag) == (soap_ns, "Header")]
     bodies = [child for child in root if _split(child.tag) == (soap_ns, "Body")]
-    if (len(headers) > 1 or len(bodies) != 1
-            or any(name not in {(soap_ns, "Header"), (soap_ns, "Body")}
-                   for name in child_names)
-            or (headers and child_names.index((soap_ns, "Header"))
-                > child_names.index((soap_ns, "Body")))):
+    if (
+        len(headers) > 1
+        or len(bodies) != 1
+        or any(name not in {(soap_ns, "Header"), (soap_ns, "Body")} for name in child_names)
+        or (
+            headers
+            and child_names.index((soap_ns, "Header")) > child_names.index((soap_ns, "Body"))
+        )
+    ):
         raise InitialDecodeError("INITIAL_UNSUPPORTED_STRUCTURE")
     payloads = list(bodies[0])
     if len(payloads) != 1:
@@ -190,8 +204,7 @@ def inspect_initial(body, stage):
             continue
         else:
             raise InitialDecodeError("INITIAL_UNSUPPORTED_STRUCTURE")
-    return InspectedInitial("raw-soap-aixm-5.1", soap_ns, message_ns,
-                            len(members), tuple(members))
+    return InspectedInitial("raw-soap-aixm-5.1", soap_ns, message_ns, len(members), tuple(members))
 
 
 def decode_initial(body, stage):

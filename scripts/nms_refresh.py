@@ -4,6 +4,7 @@ HTTP transport and history import are separate explicit integrations. This engin
 has no environment reads, initializer, scheduler, Git writer or public-file writer.
 Existing production accounting is never opened implicitly.
 """
+
 import base64
 import copy
 from contextlib import contextmanager
@@ -15,12 +16,20 @@ import uuid
 
 from capture_storage import platform_storage
 from normalize_notam_snapshot import normalize
-from nms_refresh_contract import (RefreshError, Request, DecodedInitial, auth_request,
-                                  initial_request, delta_request, content_request,
-                                  instant, stamp)
+from nms_refresh_contract import (
+    RefreshError,
+    Request,
+    DecodedInitial,
+    auth_request,
+    initial_request,
+    delta_request,
+    content_request,
+    instant,
+    stamp,
+)
 from nms_geojson_baseline import CandidateError, inspect_bytes, signature_report
 
-SCHEMA = '''
+SCHEMA = """
 CREATE TABLE state (singleton INTEGER PRIMARY KEY CHECK(singleton=1), document TEXT NOT NULL);
 CREATE TABLE attempts (id TEXT PRIMARY KEY, kind TEXT NOT NULL, reserved TEXT NOT NULL,
                        last_io TEXT NOT NULL, status TEXT NOT NULL, error TEXT);
@@ -29,13 +38,13 @@ CREATE TABLE calls (attempt TEXT NOT NULL, stage TEXT NOT NULL, at TEXT NOT NULL
 CREATE TABLE responses (attempt TEXT NOT NULL, stage TEXT NOT NULL, at TEXT NOT NULL,
                         body BLOB NOT NULL, PRIMARY KEY(attempt,stage));
 PRAGMA user_version=1;
-'''
+"""
 # Only the separate, approved history importer may create this schema. Store never
 # initializes it on open. Tests use synthetic stores in temporary directories.
 
 
 def encode(value):
-    return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode()
+    return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode()
 
 
 def reject_json_constant(_value):
@@ -47,28 +56,33 @@ class Store:
         self.root = Path(root)
         repository = Path(__file__).resolve().parents[1]
         resolved = self.root.resolve()
-        if (not self.root.is_absolute() or resolved == repository or repository in resolved.parents
-                or not isinstance(account, str) or not account):
-            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
+        if (
+            not self.root.is_absolute()
+            or resolved == repository
+            or repository in resolved.parents
+            or not isinstance(account, str)
+            or not account
+        ):
+            raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE")
         self.account = account
         self.storage = storage or platform_storage()
 
     def import_marker(self):
-        path = self.root/'import-status.json'
+        path = self.root / "import-status.json"
         if not path.exists():
             return None  # Existing pre-importer stores retain their original contract.
         try:
             self.storage.validate_location(path)
             self.storage.verify_private(path)
-            with path.open('rb') as stream:
+            with path.open("rb") as stream:
                 value = json.loads(stream.read(8193))
-            if value['schema'] != 1 or value['state'] != 'READY':
+            if value["schema"] != 1 or value["state"] != "READY":
                 raise ValueError()
-            if not isinstance(value['approval_digest'],str) or len(value['approval_digest']) != 64:
+            if not isinstance(value["approval_digest"], str) or len(value["approval_digest"]) != 64:
                 raise ValueError()
             return value
         except Exception:
-            raise RefreshError('RECOVERY_REQUIRED') from None
+            raise RefreshError("RECOVERY_REQUIRED") from None
 
     @contextmanager
     def connect(self):
@@ -76,30 +90,42 @@ class Store:
         try:
             # Missing files/history are never initialized or replaced. PERSIST keeps
             # the pre-created private rollback journal, rather than recreating ACLs.
-            for path in (self.root, self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+            for path in (
+                self.root,
+                self.root / "account.sqlite3",
+                self.root / "account.sqlite3-journal",
+            ):
                 self.storage.validate_location(path)
                 self.storage.verify_private(path)
             self.import_marker()  # Pending/interrupted/uncertain imports cannot collect.
-            db = sqlite3.connect((self.root/'account.sqlite3').as_uri()+'?mode=rw',
-                                 uri=True, timeout=2, isolation_level=None)
-            if db.execute('PRAGMA journal_mode=PERSIST').fetchone()[0] != 'persist':
+            db = sqlite3.connect(
+                (self.root / "account.sqlite3").as_uri() + "?mode=rw",
+                uri=True,
+                timeout=2,
+                isolation_level=None,
+            )
+            if db.execute("PRAGMA journal_mode=PERSIST").fetchone()[0] != "persist":
                 raise ValueError()
-            db.execute('PRAGMA synchronous=EXTRA')
-            if db.execute('PRAGMA user_version').fetchone()[0] != 1:
+            db.execute("PRAGMA synchronous=EXTRA")
+            if db.execute("PRAGMA user_version").fetchone()[0] != 1:
                 raise ValueError()
-            if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+            if db.execute("PRAGMA quick_check").fetchall() != [("ok",)]:
                 raise ValueError()
             # Hot-journal recovery must not silently recreate a less-private file.
-            for path in (self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+            for path in (self.root / "account.sqlite3", self.root / "account.sqlite3-journal"):
                 self.storage.verify_private(path)
             yield db
         except RefreshError:
             raise
         except sqlite3.OperationalError as error:
-            code = 'BUSY' if (getattr(error, 'sqlite_errorcode', 0) & 255) in (5, 6) else 'HISTORY_OR_STORAGE_UNAVAILABLE'
+            code = (
+                "BUSY"
+                if (getattr(error, "sqlite_errorcode", 0) & 255) in (5, 6)
+                else "HISTORY_OR_STORAGE_UNAVAILABLE"
+            )
             raise RefreshError(code) from None
         except Exception:
-            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE') from None
+            raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE") from None
         finally:
             if db is not None:
                 db.close()
@@ -109,98 +135,123 @@ class Store:
         """Open the existing ledger read-only; review must not touch its journal."""
         db = None
         try:
-            for path in (self.root, self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+            for path in (
+                self.root,
+                self.root / "account.sqlite3",
+                self.root / "account.sqlite3-journal",
+            ):
                 self.storage.validate_location(path)
                 self.storage.verify_private(path)
             self.import_marker()
-            db = sqlite3.connect((self.root/'account.sqlite3').as_uri()+'?mode=ro',
-                                 uri=True, timeout=2, isolation_level=None)
-            if db.execute('PRAGMA user_version').fetchone()[0] != 1:
+            db = sqlite3.connect(
+                (self.root / "account.sqlite3").as_uri() + "?mode=ro",
+                uri=True,
+                timeout=2,
+                isolation_level=None,
+            )
+            if db.execute("PRAGMA user_version").fetchone()[0] != 1:
                 raise ValueError()
-            if db.execute('PRAGMA quick_check').fetchall() != [('ok',)]:
+            if db.execute("PRAGMA quick_check").fetchall() != [("ok",)]:
                 raise ValueError()
             yield db
         except RefreshError:
             raise
         except Exception:
-            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE') from None
+            raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE") from None
         finally:
             if db is not None:
                 db.close()
 
     @contextmanager
     def transaction(self, db):
-        for path in (self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+        for path in (self.root / "account.sqlite3", self.root / "account.sqlite3-journal"):
             self.storage.verify_private(path)
-        db.execute('BEGIN IMMEDIATE')
+        db.execute("BEGIN IMMEDIATE")
         try:
             yield
-            db.execute('COMMIT')
-            for path in (self.root/'account.sqlite3', self.root/'account.sqlite3-journal'):
+            db.execute("COMMIT")
+            for path in (self.root / "account.sqlite3", self.root / "account.sqlite3-journal"):
                 self.storage.verify_private(path)
         except BaseException:
             if db.in_transaction:
-                db.execute('ROLLBACK')
+                db.execute("ROLLBACK")
             raise
 
     def load(self, db):
         try:
-            state = json.loads(db.execute('SELECT document FROM state WHERE singleton=1').fetchone()[0])
+            state = json.loads(
+                db.execute("SELECT document FROM state WHERE singleton=1").fetchone()[0]
+            )
             marker = self.import_marker()
-            if marker is not None and state.get('import_digest') != marker['approval_digest']:
+            if marker is not None and state.get("import_digest") != marker["approval_digest"]:
                 raise ValueError()
-            if (state['schema'] != 1 or state['account'] != self.account
-                    or state['history_verified'] is not True or not isinstance(state['catalog'], dict)
-                    or state['scope'] != 'all-classifications' or state['airport'] != 'KMEM'):
+            if (
+                state["schema"] != 1
+                or state["account"] != self.account
+                or state["history_verified"] is not True
+                or not isinstance(state["catalog"], dict)
+                or state["scope"] != "all-classifications"
+                or state["airport"] != "KMEM"
+            ):
                 raise ValueError()
-            instant(state['history_complete_through'])
-            if state['watermark'] is not None:
-                instant(state['watermark'])
-            base64.b64decode(state['published_b64'], validate=True)
-            for table, counter in [('attempts', 'attempt_count'), ('calls', 'call_count'),
-                                   ('responses', 'response_count')]:
-                if type(state[counter]) is not int or db.execute('SELECT count(*) FROM '+table).fetchone()[0] != state[counter]:
+            instant(state["history_complete_through"])
+            if state["watermark"] is not None:
+                instant(state["watermark"])
+            base64.b64decode(state["published_b64"], validate=True)
+            for table, counter in [
+                ("attempts", "attempt_count"),
+                ("calls", "call_count"),
+                ("responses", "response_count"),
+            ]:
+                if (
+                    type(state[counter]) is not int
+                    or db.execute("SELECT count(*) FROM " + table).fetchone()[0] != state[counter]
+                ):
                     raise ValueError()
             return state
         except Exception:
-            raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE') from None
+            raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE") from None
 
     @staticmethod
     def save(db, state):
-        db.execute('UPDATE state SET document=? WHERE singleton=1', (encode(state).decode(),))
+        db.execute("UPDATE state SET document=? WHERE singleton=1", (encode(state).decode(),))
 
     def snapshot(self):
         """The last accepted private publication handoff, not a live web writer."""
         with self.review_connect() as db:
-            return base64.b64decode(self.load(db)['published_b64'], validate=True)
+            return base64.b64decode(self.load(db)["published_b64"], validate=True)
 
     def reserve(self, db, mode, now):
-        if mode not in ('bulk', 'delta'):
-            raise RefreshError('INVALID_REQUEST')
+        if mode not in ("bulk", "delta"):
+            raise RefreshError("INVALID_REQUEST")
         with self.transaction(db):
             state = self.load(db)
-            if state['active'] is not None or state['recovery'] is not None:
-                raise RefreshError('RECOVERY_REQUIRED')
-            if instant(state['history_complete_through']) > now:
-                raise RefreshError('CLOCK_ROLLBACK')
-            if mode == 'delta':
-                if not state['baseline'] or state['watermark'] is None:
-                    raise RefreshError('BASELINE_REQUIRED')
-                delta_request(state['watermark'], now)
-            rows = db.execute('SELECT kind,reserved,last_io FROM attempts').fetchall()
+            if state["active"] is not None or state["recovery"] is not None:
+                raise RefreshError("RECOVERY_REQUIRED")
+            if instant(state["history_complete_through"]) > now:
+                raise RefreshError("CLOCK_ROLLBACK")
+            if mode == "delta":
+                if not state["baseline"] or state["watermark"] is None:
+                    raise RefreshError("BASELINE_REQUIRED")
+                delta_request(state["watermark"], now)
+            rows = db.execute("SELECT kind,reserved,last_io FROM attempts").fetchall()
             for kind, reserved, last_io in rows:
-                if kind not in ('bulk', 'delta', 'other-data'):
-                    raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
+                if kind not in ("bulk", "delta", "other-data"):
+                    raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE")
                 at = max(instant(reserved), instant(last_io))
                 if at > now:
-                    raise RefreshError('CLOCK_ROLLBACK')
-                if now-at < timedelta(minutes=3) or (mode == 'bulk' and kind == 'bulk' and now-at < timedelta(hours=24)):
-                    raise RefreshError('BUDGET_WAIT')
+                    raise RefreshError("CLOCK_ROLLBACK")
+                if now - at < timedelta(minutes=3) or (
+                    mode == "bulk" and kind == "bulk" and now - at < timedelta(hours=24)
+                ):
+                    raise RefreshError("BUDGET_WAIT")
             attempt = uuid.uuid4().hex
             at = stamp(now)
-            db.execute('INSERT INTO attempts VALUES (?,?,?,?,?,NULL)', (attempt, mode, at, at, 'RESERVED'))
-            state['active'] = attempt
-            state['attempt_count'] += 1
+            db.execute(
+                "INSERT INTO attempts VALUES (?,?,?,?,?,NULL)", (attempt, mode, at, at, "RESERVED")
+            )
+            state["active"] = attempt
+            state["attempt_count"] += 1
             self.save(db, state)
         # Commit completed before auth/data I/O. A restart now finds a durable
         # unresolved reservation; it never interprets a crashed attempt as unused.
@@ -211,34 +262,50 @@ class Store:
         now = instant(stamp(now))
         with self.review_connect() as db:
             state = self.load(db)
-            if state['active'] is not None or state['recovery'] is not None:
-                raise RefreshError('RECOVERY_REQUIRED')
-            rows = db.execute('SELECT kind,reserved,last_io FROM attempts').fetchall()
-            latest = max((max(instant(reserved), instant(last_io))
-                          for _, reserved, last_io in rows), default=None)
-            latest_bulk = max((max(instant(reserved), instant(last_io))
-                               for kind, reserved, last_io in rows if kind == 'bulk'),
-                              default=None)
+            if state["active"] is not None or state["recovery"] is not None:
+                raise RefreshError("RECOVERY_REQUIRED")
+            rows = db.execute("SELECT kind,reserved,last_io FROM attempts").fetchall()
+            latest = max(
+                (max(instant(reserved), instant(last_io)) for _, reserved, last_io in rows),
+                default=None,
+            )
+            latest_bulk = max(
+                (
+                    max(instant(reserved), instant(last_io))
+                    for kind, reserved, last_io in rows
+                    if kind == "bulk"
+                ),
+                default=None,
+            )
             primary_not_before = latest + timedelta(minutes=3) if latest else now
-            bulk_not_before = max(primary_not_before,
-                                  latest_bulk + timedelta(hours=24) if latest_bulk else now)
-            latest_bulk_row = max((row for row in rows if row[0] == 'bulk'),
-                                  key=lambda row: max(instant(row[1]), instant(row[2])), default=None)
-            calls = db.execute('SELECT stage,at FROM calls ORDER BY at').fetchall()
-            return {'ledger_history_verified': True,
-                    'history_complete_through_utc': state['history_complete_through'],
-                    'active_attempt': state['active'], 'recovery_state': state['recovery'],
-                    'attempt_count': state['attempt_count'],
-                    'call_count': state['call_count'],
-                    'response_count': state['response_count'],
-                    'minimum_primary_not_before_utc': stamp(primary_not_before),
-                    'minimum_bulk_not_before_utc': stamp(bulk_not_before),
-                    'latest_bulk_reserved_utc': latest_bulk_row[1] if latest_bulk_row else None,
-                    'latest_bulk_last_io_utc': latest_bulk_row[2] if latest_bulk_row else None,
-                    'known_call_stage_timestamps_utc': [{'stage': stage, 'at_utc': at} for stage, at in calls],
-                    'ledger_time_eligible': now >= bulk_not_before,
-                    'external_activity_attestation_required': True,
-                    'reservation_created': False}
+            bulk_not_before = max(
+                primary_not_before, latest_bulk + timedelta(hours=24) if latest_bulk else now
+            )
+            latest_bulk_row = max(
+                (row for row in rows if row[0] == "bulk"),
+                key=lambda row: max(instant(row[1]), instant(row[2])),
+                default=None,
+            )
+            calls = db.execute("SELECT stage,at FROM calls ORDER BY at").fetchall()
+            return {
+                "ledger_history_verified": True,
+                "history_complete_through_utc": state["history_complete_through"],
+                "active_attempt": state["active"],
+                "recovery_state": state["recovery"],
+                "attempt_count": state["attempt_count"],
+                "call_count": state["call_count"],
+                "response_count": state["response_count"],
+                "minimum_primary_not_before_utc": stamp(primary_not_before),
+                "minimum_bulk_not_before_utc": stamp(bulk_not_before),
+                "latest_bulk_reserved_utc": latest_bulk_row[1] if latest_bulk_row else None,
+                "latest_bulk_last_io_utc": latest_bulk_row[2] if latest_bulk_row else None,
+                "known_call_stage_timestamps_utc": [
+                    {"stage": stage, "at_utc": at} for stage, at in calls
+                ],
+                "ledger_time_eligible": now >= bulk_not_before,
+                "external_activity_attestation_required": True,
+                "reservation_created": False,
+            }
 
     def delta_budget_review(self, now):
         """Read-only account-wide data-pull review for capture-only deltas."""
@@ -246,55 +313,73 @@ class Store:
         with self.review_connect() as db:
             state = self.load(db)
             rows = db.execute(
-                'SELECT id,kind,reserved,last_io,status,error FROM attempts ORDER BY reserved'
+                "SELECT id,kind,reserved,last_io,status,error FROM attempts ORDER BY reserved"
             ).fetchall()
-            latest = max((max(instant(row[2]), instant(row[3])) for row in rows),
-                         default=None)
+            latest = max((max(instant(row[2]), instant(row[3])) for row in rows), default=None)
             not_before = latest + timedelta(minutes=3) if latest else now
-            pending = [row for row in rows if row[4] in ('RESERVED', 'IO_RESERVED')]
-            ambiguous = [row for row in rows if row[4] not in (
-                'ACCEPTED', 'CAPTURED_CANDIDATE', 'CAPTURED_INITIAL_LOAD',
-                'CAPTURED_DELTA_PROBE', 'FAILED_ACCOUNTED', 'IMPORTED')]
+            pending = [row for row in rows if row[4] in ("RESERVED", "IO_RESERVED")]
+            ambiguous = [
+                row
+                for row in rows
+                if row[4]
+                not in (
+                    "ACCEPTED",
+                    "CAPTURED_CANDIDATE",
+                    "CAPTURED_INITIAL_LOAD",
+                    "CAPTURED_DELTA_PROBE",
+                    "FAILED_ACCOUNTED",
+                    "IMPORTED",
+                )
+            ]
             blockers = []
-            if state['active'] is not None:
-                blockers.append('ACTIVE_ATTEMPT')
-            if state['recovery'] is not None:
-                blockers.append('RECOVERY_REQUIRED')
+            if state["active"] is not None:
+                blockers.append("ACTIVE_ATTEMPT")
+            if state["recovery"] is not None:
+                blockers.append("RECOVERY_REQUIRED")
             if now < not_before:
-                blockers.append('ACCOUNT_WIDE_THREE_MINUTE_WAIT')
-            historical_uncertainty = [row for row in ambiguous
-                                      if row[4] == 'IMPORTED_UNCERTAIN']
+                blockers.append("ACCOUNT_WIDE_THREE_MINUTE_WAIT")
+            historical_uncertainty = [row for row in ambiguous if row[4] == "IMPORTED_UNCERTAIN"]
             return {
-                'ledger_history_verified': True,
-                'history_complete_through_utc': state['history_complete_through'],
-                'minimum_delta_not_before_utc': stamp(not_before),
-                'ledger_time_eligible': now >= not_before,
-                'active_attempt_present': state['active'] is not None,
-                'recovery_state_present': state['recovery'] is not None,
-                'pending_attempt_count': len(pending),
-                'ambiguous_attempt_count': len(ambiguous),
-                'local_three_minute_interval_elapsed': now >= not_before,
-                'pending_or_recovery_attempt_present': bool(
-                    pending or state['active'] is not None or state['recovery'] is not None),
-                'historical_uncertainty_present': bool(historical_uncertainty),
-                'historical_uncertainty_count': len(historical_uncertainty),
-                'historical_uncertainty_resolution':
-                    'NOT_RESOLVED_BY_LOCAL_INTERVAL; CURRENT_ACCOUNT_ATTESTATION_REQUIRED',
-                'pending_attempts': [
-                    {'kind': row[1], 'reserved_utc': row[2],
-                     'last_io_utc': row[3], 'status': row[4]}
-                    for row in pending],
-                'ambiguous_attempts': [
-                    {'kind': row[1], 'reserved_utc': row[2],
-                     'last_io_utc': row[3], 'status': row[4],
-                     'error_present': row[5] is not None}
-                    for row in ambiguous],
-                'attempt_count': state['attempt_count'],
-                'call_count': state['call_count'],
-                'response_count': state['response_count'],
-                'blockers': blockers,
-                'external_activity_attestation_required': True,
-                'reservation_created': False,
+                "ledger_history_verified": True,
+                "history_complete_through_utc": state["history_complete_through"],
+                "minimum_delta_not_before_utc": stamp(not_before),
+                "ledger_time_eligible": now >= not_before,
+                "active_attempt_present": state["active"] is not None,
+                "recovery_state_present": state["recovery"] is not None,
+                "pending_attempt_count": len(pending),
+                "ambiguous_attempt_count": len(ambiguous),
+                "local_three_minute_interval_elapsed": now >= not_before,
+                "pending_or_recovery_attempt_present": bool(
+                    pending or state["active"] is not None or state["recovery"] is not None
+                ),
+                "historical_uncertainty_present": bool(historical_uncertainty),
+                "historical_uncertainty_count": len(historical_uncertainty),
+                "historical_uncertainty_resolution": "NOT_RESOLVED_BY_LOCAL_INTERVAL; CURRENT_ACCOUNT_ATTESTATION_REQUIRED",
+                "pending_attempts": [
+                    {
+                        "kind": row[1],
+                        "reserved_utc": row[2],
+                        "last_io_utc": row[3],
+                        "status": row[4],
+                    }
+                    for row in pending
+                ],
+                "ambiguous_attempts": [
+                    {
+                        "kind": row[1],
+                        "reserved_utc": row[2],
+                        "last_io_utc": row[3],
+                        "status": row[4],
+                        "error_present": row[5] is not None,
+                    }
+                    for row in ambiguous
+                ],
+                "attempt_count": state["attempt_count"],
+                "call_count": state["call_count"],
+                "response_count": state["response_count"],
+                "blockers": blockers,
+                "external_activity_attestation_required": True,
+                "reservation_created": False,
             }
 
     def reserve_delta_probe(self, db, since, now):
@@ -302,141 +387,179 @@ class Store:
         delta_request(since, now)
         with self.transaction(db):
             state = self.load(db)
-            if state['active'] is not None or state['recovery'] is not None:
-                raise RefreshError('RECOVERY_REQUIRED')
-            if instant(state['history_complete_through']) > now:
-                raise RefreshError('CLOCK_ROLLBACK')
-            rows = db.execute('SELECT kind,reserved,last_io FROM attempts').fetchall()
+            if state["active"] is not None or state["recovery"] is not None:
+                raise RefreshError("RECOVERY_REQUIRED")
+            if instant(state["history_complete_through"]) > now:
+                raise RefreshError("CLOCK_ROLLBACK")
+            rows = db.execute("SELECT kind,reserved,last_io FROM attempts").fetchall()
             for kind, reserved, last_io in rows:
-                if kind not in ('bulk', 'delta', 'other-data'):
-                    raise RefreshError('HISTORY_OR_STORAGE_UNAVAILABLE')
+                if kind not in ("bulk", "delta", "other-data"):
+                    raise RefreshError("HISTORY_OR_STORAGE_UNAVAILABLE")
                 at = max(instant(reserved), instant(last_io))
                 if at > now:
-                    raise RefreshError('CLOCK_ROLLBACK')
+                    raise RefreshError("CLOCK_ROLLBACK")
                 if now - at < timedelta(minutes=3):
-                    raise RefreshError('BUDGET_WAIT')
+                    raise RefreshError("BUDGET_WAIT")
             attempt = uuid.uuid4().hex
             at = stamp(now)
-            db.execute('INSERT INTO attempts VALUES (?,?,?,?,?,NULL)',
-                       (attempt, 'delta', at, at, 'RESERVED'))
-            state['active'] = attempt
-            state['attempt_count'] += 1
+            db.execute(
+                "INSERT INTO attempts VALUES (?,?,?,?,?,NULL)",
+                (attempt, "delta", at, at, "RESERVED"),
+            )
+            state["active"] = attempt
+            state["attempt_count"] += 1
             self.save(db, state)
         return attempt, state
 
     def call_reserved(self, db, attempt, stage, now):
         with self.transaction(db):
             state = self.load(db)
-            if state['active'] != attempt:
-                raise RefreshError('RECOVERY_REQUIRED')
-            previous = db.execute('SELECT last_io FROM attempts WHERE id=?', (attempt,)).fetchone()
+            if state["active"] != attempt:
+                raise RefreshError("RECOVERY_REQUIRED")
+            previous = db.execute("SELECT last_io FROM attempts WHERE id=?", (attempt,)).fetchone()
             if instant(previous[0]) > now:
-                raise RefreshError('CLOCK_ROLLBACK')
-            db.execute('INSERT INTO calls VALUES (?,?,?)', (attempt, stage, stamp(now)))
-            db.execute('UPDATE attempts SET last_io=?,status=? WHERE id=?', (stamp(now), 'IO_RESERVED', attempt))
-            state['call_count'] += 1
+                raise RefreshError("CLOCK_ROLLBACK")
+            db.execute("INSERT INTO calls VALUES (?,?,?)", (attempt, stage, stamp(now)))
+            db.execute(
+                "UPDATE attempts SET last_io=?,status=? WHERE id=?",
+                (stamp(now), "IO_RESERVED", attempt),
+            )
+            state["call_count"] += 1
             self.save(db, state)
 
     def received(self, db, attempt, stage, body, now):
         with self.transaction(db):
             state = self.load(db)
-            last = db.execute('SELECT last_io FROM attempts WHERE id=?', (attempt,)).fetchone()[0]
+            last = db.execute("SELECT last_io FROM attempts WHERE id=?", (attempt,)).fetchone()[0]
             if instant(last) > now:
-                raise RefreshError('CLOCK_ROLLBACK')
-            db.execute('INSERT INTO responses VALUES (?,?,?,?)', (attempt, stage, stamp(now), body))
-            db.execute('UPDATE attempts SET last_io=? WHERE id=?', (stamp(now), attempt))
-            state['response_count'] += 1
+                raise RefreshError("CLOCK_ROLLBACK")
+            db.execute("INSERT INTO responses VALUES (?,?,?,?)", (attempt, stage, stamp(now), body))
+            db.execute("UPDATE attempts SET last_io=? WHERE id=?", (stamp(now), attempt))
+            state["response_count"] += 1
             self.save(db, state)
 
     def failed(self, db, attempt, code, now):
         with self.transaction(db):
             state = self.load(db)
-            if state['active'] != attempt:
-                raise RefreshError('RECOVERY_REQUIRED')
+            if state["active"] != attempt:
+                raise RefreshError("RECOVERY_REQUIRED")
             # Prior accepted catalog, publication bytes and watermark stay intact.
-            state['active'] = None
-            if code in ('DELTA_GAP', 'CONFLICT', 'CLOCK_ROLLBACK', 'BASELINE_CUTOVER_REQUIRED'):
-                state['recovery'] = code
+            state["active"] = None
+            if code in ("DELTA_GAP", "CONFLICT", "CLOCK_ROLLBACK", "BASELINE_CUTOVER_REQUIRED"):
+                state["recovery"] = code
             self.save(db, state)
-            last = db.execute('SELECT last_io FROM attempts WHERE id=?', (attempt,)).fetchone()[0]
+            last = db.execute("SELECT last_io FROM attempts WHERE id=?", (attempt,)).fetchone()[0]
             accounted = stamp(max(instant(last), now))
-            db.execute('UPDATE attempts SET status=?,error=?,last_io=? WHERE id=?',
-                       ('FAILED_ACCOUNTED', code, accounted, attempt))
+            db.execute(
+                "UPDATE attempts SET status=?,error=?,last_io=? WHERE id=?",
+                ("FAILED_ACCOUNTED", code, accounted, attempt),
+            )
 
 
 def payload_features(payload):
-    if (not isinstance(payload, dict) or payload.get('status') != 'Success'
-            or payload.get('errors') not in (None, []) or not isinstance(payload.get('data'), dict)
-            or not isinstance(payload['data'].get('geojson'), list)):
-        raise RefreshError('INVALID_RESPONSE')
-    return payload['data']['geojson']
+    if (
+        not isinstance(payload, dict)
+        or payload.get("status") != "Success"
+        or payload.get("errors") not in (None, [])
+        or not isinstance(payload.get("data"), dict)
+        or not isinstance(payload["data"].get("geojson"), list)
+    ):
+        raise RefreshError("INVALID_RESPONSE")
+    return payload["data"]["geojson"]
 
 
 def source_record(feature):
     try:
-        record = feature['properties']['coreNOTAMData']['notam']
-        if not isinstance(record['id'], str) or not record['id']:
+        record = feature["properties"]["coreNOTAMData"]["notam"]
+        if not isinstance(record["id"], str) or not record["id"]:
             raise ValueError()
-        instant(record['lastUpdated'])
+        instant(record["lastUpdated"])
         return record
     except Exception:
-        raise RefreshError('INVALID_RECORD') from None
+        raise RefreshError("INVALID_RECORD") from None
 
 
 def mem_association(record):
     # Explicit source fields only; never runway text, FIR, radius or lifecycle.
-    icao, local = record.get('icaoLocation'), record.get('location')
-    if icao == 'KMEM' and local not in (None, 'MEM', 'KMEM'):
-        raise RefreshError('CONFLICT')
-    if local in ('MEM', 'KMEM') and icao not in (None, 'KMEM'):
-        raise RefreshError('CONFLICT')
-    return icao == 'KMEM' or local in ('MEM', 'KMEM')
+    icao, local = record.get("icaoLocation"), record.get("location")
+    if icao == "KMEM" and local not in (None, "MEM", "KMEM"):
+        raise RefreshError("CONFLICT")
+    if local in ("MEM", "KMEM") and icao not in (None, "KMEM"):
+        raise RefreshError("CONFLICT")
+    return icao == "KMEM" or local in ("MEM", "KMEM")
 
 
 def updated_catalog(prior, features, received):
     catalog = copy.deepcopy(prior)
     for feature in features:
         record = source_record(feature)
-        old = catalog.get(record['id'])
+        old = catalog.get(record["id"])
         if old is not None:
-            previous = source_record(old['feature'])
-            if feature == old['feature']:
+            previous = source_record(old["feature"])
+            if feature == old["feature"]:
                 continue  # Replayed overlap is idempotent; raw duplicates stay in responses.
-            if instant(record['lastUpdated']) <= instant(previous['lastUpdated']):
-                raise RefreshError('CONFLICT')
+            if instant(record["lastUpdated"]) <= instant(previous["lastUpdated"]):
+                raise RefreshError("CONFLICT")
             if mem_association(record) != mem_association(previous):
-                raise RefreshError('CONFLICT')
+                raise RefreshError("CONFLICT")
         mem_association(record)
-        catalog[record['id']] = {'feature': copy.deepcopy(feature), 'received_utc': received}
+        catalog[record["id"]] = {"feature": copy.deepcopy(feature), "received_utc": received}
     # No absent-ID deletion or cancellation/expiry filtering.
     return catalog
 
 
 def reader_snapshot(catalog, retrieved):
-    selected = [entry for entry in catalog.values() if mem_association(source_record(entry['feature']))]
+    selected = [
+        entry for entry in catalog.values() if mem_association(source_record(entry["feature"]))
+    ]
     # Reuse field/representation mapping only. This local partition is not falsely
     # described as an upstream location-filtered request in the output provenance.
-    mapped = normalize({'status': 'Success', 'data': {'geojson': [e['feature'] for e in selected]}},
-                       airport='KMEM', retrieved_utc=retrieved, query_context={'location': 'KMEM'})
-    notices = mapped['airports']['KMEM']['notices']
+    mapped = normalize(
+        {"status": "Success", "data": {"geojson": [e["feature"] for e in selected]}},
+        airport="KMEM",
+        retrieved_utc=retrieved,
+        query_context={"location": "KMEM"},
+    )
+    notices = mapped["airports"]["KMEM"]["notices"]
     for notice, entry in zip(notices, selected):
-        notice['retrieved_utc'] = entry['received_utc']
-    unresolved = sum(not any(source_record(e['feature']).get(k) for k in ('icaoLocation', 'location'))
-                     for e in catalog.values())
-    return {'retrieved_utc': retrieved,
-            'publication': {'source': 'NMS-API snapshot', 'automatic_updates': False,
-                            'mode': 'private collector outbox; explicit publication required',
-                            'association': 'source-reported location fields', 'unresolved_records': unresolved,
-                            'source_index_basis': 'local MEM array; original batch order retained privately'},
-            'airports': {'KMEM': {'completeness': 'UNKNOWN', 'warning':
-                'Fixed snapshot; no automatic public updates. Complete airport coverage is UNKNOWN. '
-                'Source locations and lifecycle are unverified; original notices are retained. '
-                'Reported times do not establish current operational validity. Closures are not assessed.',
-                'notices': notices}}}
+        notice["retrieved_utc"] = entry["received_utc"]
+    unresolved = sum(
+        not any(source_record(e["feature"]).get(k) for k in ("icaoLocation", "location"))
+        for e in catalog.values()
+    )
+    return {
+        "retrieved_utc": retrieved,
+        "publication": {
+            "source": "NMS-API snapshot",
+            "automatic_updates": False,
+            "mode": "private collector outbox; explicit publication required",
+            "association": "source-reported location fields",
+            "unresolved_records": unresolved,
+            "source_index_basis": "local MEM array; original batch order retained privately",
+        },
+        "airports": {
+            "KMEM": {
+                "completeness": "UNKNOWN",
+                "warning": "Fixed snapshot; no automatic public updates. Complete airport coverage is UNKNOWN. "
+                "Source locations and lifecycle are unverified; original notices are retained. "
+                "Reported times do not establish current operational validity. Closures are not assessed.",
+                "notices": notices,
+            }
+        },
+    }
 
 
-def collect(store, *, mode, credentials, transport, clock, decode_initial=None,
-            before_accept=None, max_bytes=64*1024*1024):
+def collect(
+    store,
+    *,
+    mode,
+    credentials,
+    transport,
+    clock,
+    decode_initial=None,
+    before_accept=None,
+    max_bytes=64 * 1024 * 1024,
+):
     """One all-classification pull with explicit dependencies, never a loop or retry.
 
     transport(Request, limit) -> (HTTP status, headers, bytes), exactly one call.
@@ -444,11 +567,11 @@ def collect(store, *, mode, credentials, transport, clock, decode_initial=None,
     before_accept(candidate_bytes) is a side-effect-free publication preflight.
     Accepted bytes and cursor commit together in SQLite. Public files are untouched.
     """
-    if mode not in ('bulk', 'delta') or not callable(transport) or max_bytes < 1:
-        raise RefreshError('INVALID_REQUEST')
+    if mode not in ("bulk", "delta") or not callable(transport) or max_bytes < 1:
+        raise RefreshError("INVALID_REQUEST")
     auth = auth_request(credentials)
-    if mode == 'bulk' and not callable(decode_initial):
-        raise RefreshError('DECODER_REQUIRED')
+    if mode == "bulk" and not callable(decode_initial):
+        raise RefreshError("DECODER_REQUIRED")
     attempt = None
     with store.connect() as db:
         try:
@@ -459,146 +582,175 @@ def collect(store, *, mode, credentials, transport, clock, decode_initial=None,
                 store.call_reserved(db, attempt, request.stage, now)
                 headers = dict(request.headers)
                 if token is not None:
-                    headers['Authorization'] = 'Bearer '+token
-                prepared = Request(request.stage, request.url, headers, request.body, request.method)
+                    headers["Authorization"] = "Bearer " + token
+                prepared = Request(
+                    request.stage, request.url, headers, request.body, request.method
+                )
                 try:
-                    status, response_headers, body = transport(prepared, 65536 if request.stage == 'auth' else max_bytes)
+                    status, response_headers, body = transport(
+                        prepared, 65536 if request.stage == "auth" else max_bytes
+                    )
                 except Exception:
-                    raise RefreshError('TRANSPORT_FAILED') from None
-                if not isinstance(body, bytes) or len(body) > (65536 if request.stage == 'auth' else max_bytes):
-                    raise RefreshError('RESPONSE_TOO_LARGE')
+                    raise RefreshError("TRANSPORT_FAILED") from None
+                if not isinstance(body, bytes) or len(body) > (
+                    65536 if request.stage == "auth" else max_bytes
+                ):
+                    raise RefreshError("RESPONSE_TOO_LARGE")
                 if status != 200:
                     # No error bodies, auth response, headers, tokens or URLs persisted.
-                    raise RefreshError('AUTH_FAILED' if request.stage == 'auth' else 'HTTP_FAILED')
-                if request.stage != 'auth':
+                    raise RefreshError("AUTH_FAILED" if request.stage == "auth" else "HTTP_FAILED")
+                if request.stage != "auth":
                     store.received(db, attempt, request.stage, body, clock())
                 return body
 
             try:
-                token = json.loads(send(auth))['access_token']
-                if not isinstance(token, str) or not token or any(ord(c) < 33 or ord(c) > 126 for c in token):
+                token = json.loads(send(auth))["access_token"]
+                if (
+                    not isinstance(token, str)
+                    or not token
+                    or any(ord(c) < 33 or ord(c) > 126 for c in token)
+                ):
                     raise ValueError()
             except RefreshError:
                 raise
             except Exception:
-                raise RefreshError('AUTH_FAILED') from None
+                raise RefreshError("AUTH_FAILED") from None
             started = clock()
-            if mode == 'bulk':
+            if mode == "bulk":
                 request = initial_request()
                 body = send(request, token)
                 try:
                     envelope = json.loads(body)
-                    if envelope['status'] != 'Success' or envelope.get('errors') not in (None, []):
+                    if envelope["status"] != "Success" or envelope.get("errors") not in (None, []):
                         raise ValueError()
-                    path = envelope['data']['url']
+                    path = envelope["data"]["url"]
                 except Exception:
-                    raise RefreshError('INVALID_RESPONSE') from None
+                    raise RefreshError("INVALID_RESPONSE") from None
                 body = send(content_request(path, stamp(started), clock()), token)
                 try:
                     decoded = decode_initial(body, request.stage)
                 except RefreshError as error:
-                    if str(error) == 'BASELINE_CUTOVER_REQUIRED':
+                    if str(error) == "BASELINE_CUTOVER_REQUIRED":
                         raise
-                    raise RefreshError('INVALID_RESPONSE') from None
+                    raise RefreshError("INVALID_RESPONSE") from None
                 except Exception:
-                    raise RefreshError('INVALID_RESPONSE') from None
+                    raise RefreshError("INVALID_RESPONSE") from None
                 if not isinstance(decoded, DecodedInitial):
-                    raise RefreshError('BASELINE_CUTOVER_REQUIRED')
+                    raise RefreshError("BASELINE_CUTOVER_REQUIRED")
                 lower = instant(decoded.coverage_since)
-                if lower > started or started-lower > timedelta(hours=24):
-                    raise RefreshError('BASELINE_CUTOVER_REQUIRED')
+                if lower > started or started - lower > timedelta(hours=24):
+                    raise RefreshError("BASELINE_CUTOVER_REQUIRED")
                 delta_request(decoded.coverage_since, clock())
                 watermark, payload = decoded.coverage_since, decoded.payload
             else:
-                request = delta_request(prior['watermark'], started)
+                request = delta_request(prior["watermark"], started)
                 try:
                     payload = json.loads(send(request, token))
                 except RefreshError:
                     raise
                 except Exception:
-                    raise RefreshError('INVALID_RESPONSE') from None
+                    raise RefreshError("INVALID_RESPONSE") from None
                 # Re-query the previous request start, never max(record time) or
                 # completion time. Whole-second flooring deliberately replays overlap.
                 # One second of CLIENT replay overlap protects a whole-second
                 # boundary regardless of inclusive/exclusive provider filtering.
-                watermark = stamp(started.replace(microsecond=0)-timedelta(seconds=1))
+                watermark = stamp(started.replace(microsecond=0) - timedelta(seconds=1))
             received = stamp(clock())
             features = payload_features(payload)
-            catalog = updated_catalog(prior['catalog'], features, received)
+            catalog = updated_catalog(prior["catalog"], features, received)
             candidate = encode(reader_snapshot(catalog, received))
             with store.transaction(db):
                 state = store.load(db)
-                if state['active'] != attempt:
-                    raise RefreshError('RECOVERY_REQUIRED')
+                if state["active"] != attempt:
+                    raise RefreshError("RECOVERY_REQUIRED")
                 if before_accept is not None:
                     try:
                         before_accept(candidate)
                     except Exception:
-                        raise RefreshError('PUBLICATION_FAILED') from None
-                state.update(catalog=catalog, watermark=watermark, baseline=True, active=None,
-                             published_b64=base64.b64encode(candidate).decode())
+                        raise RefreshError("PUBLICATION_FAILED") from None
+                state.update(
+                    catalog=catalog,
+                    watermark=watermark,
+                    baseline=True,
+                    active=None,
+                    published_b64=base64.b64encode(candidate).decode(),
+                )
                 store.save(db, state)
-                db.execute('UPDATE attempts SET status=? WHERE id=?', ('ACCEPTED', attempt))
-            return {'attempt': attempt, 'status': 'ACCEPTED_PRIVATE_OUTBOX',
-                    'records_received': len(features), 'coverage': 'UNKNOWN'}
+                db.execute("UPDATE attempts SET status=? WHERE id=?", ("ACCEPTED", attempt))
+            return {
+                "attempt": attempt,
+                "status": "ACCEPTED_PRIVATE_OUTBOX",
+                "records_received": len(features),
+                "coverage": "UNKNOWN",
+            }
         except Exception as error:
-            code = (str(error) if isinstance(error, RefreshError) else
-                    'BUSY' if (getattr(error, 'sqlite_errorcode', 0) & 255) in (5, 6) else 'LOCAL_FAILURE')
+            code = (
+                str(error)
+                if isinstance(error, RefreshError)
+                else "BUSY"
+                if (getattr(error, "sqlite_errorcode", 0) & 255) in (5, 6)
+                else "LOCAL_FAILURE"
+            )
             if attempt is not None:
                 try:
                     store.failed(db, attempt, code, clock())
                 except Exception:
                     # A crash/ambiguous commit is not treated as an unused allowance.
                     # No public-file promotion exists in this engine.
-                    raise RefreshError('PERSISTENCE_UNCERTAIN') from None
+                    raise RefreshError("PERSISTENCE_UNCERTAIN") from None
             raise RefreshError(code) from None
 
 
-def collect_classification_candidate(store, *, classification, credentials, transport,
-                                     clock, max_bytes=64*1024*1024):
+def collect_classification_candidate(
+    store, *, classification, credentials, transport, clock, max_bytes=64 * 1024 * 1024
+):
     """Capture one classification candidate; never establish continuity or publish.
 
     A bulk reservation is durably committed before auth. The exact initial response
     and, when supplied, its one documented same-host content continuation are kept
     in the private response ledger. There is no retry or format guessing.
     """
-    if classification != 'DOMESTIC' or not callable(transport) or max_bytes < 1:
-        raise RefreshError('INVALID_REQUEST')
+    if classification != "DOMESTIC" or not callable(transport) or max_bytes < 1:
+        raise RefreshError("INVALID_REQUEST")
     auth = auth_request(credentials)
     attempt = None
     with store.connect() as db:
         try:
-            attempt, _ = store.reserve(db, 'bulk', clock())
+            attempt, _ = store.reserve(db, "bulk", clock())
 
             def send(request, token=None):
                 store.call_reserved(db, attempt, request.stage, clock())
                 headers = dict(request.headers)
                 if token is not None:
-                    headers['Authorization'] = 'Bearer ' + token
-                prepared = Request(request.stage, request.url, headers,
-                                   request.body, request.method)
-                limit = 65536 if request.stage == 'auth' else max_bytes
+                    headers["Authorization"] = "Bearer " + token
+                prepared = Request(
+                    request.stage, request.url, headers, request.body, request.method
+                )
+                limit = 65536 if request.stage == "auth" else max_bytes
                 try:
                     status, _, body = transport(prepared, limit)
                 except Exception:
-                    raise RefreshError('TRANSPORT_FAILED') from None
+                    raise RefreshError("TRANSPORT_FAILED") from None
                 if not isinstance(body, bytes) or len(body) > limit:
-                    raise RefreshError('RESPONSE_TOO_LARGE')
+                    raise RefreshError("RESPONSE_TOO_LARGE")
                 if status != 200:
-                    raise RefreshError('AUTH_FAILED' if request.stage == 'auth' else 'HTTP_FAILED')
-                if request.stage != 'auth':
+                    raise RefreshError("AUTH_FAILED" if request.stage == "auth" else "HTTP_FAILED")
+                if request.stage != "auth":
                     store.received(db, attempt, request.stage, body, clock())
                 return body
 
             try:
-                token = json.loads(send(auth))['access_token']
-                if not isinstance(token, str) or not token or any(
-                        ord(character) < 33 or ord(character) > 126 for character in token):
+                token = json.loads(send(auth))["access_token"]
+                if (
+                    not isinstance(token, str)
+                    or not token
+                    or any(ord(character) < 33 or ord(character) > 126 for character in token)
+                ):
                     raise ValueError()
             except RefreshError:
                 raise
             except Exception:
-                raise RefreshError('AUTH_FAILED') from None
+                raise RefreshError("AUTH_FAILED") from None
 
             started = clock()
             request = initial_request(classification)
@@ -608,43 +760,65 @@ def collect_classification_candidate(store, *, classification, credentials, tran
                 envelope = json.loads(body, parse_constant=reject_json_constant)
             except (UnicodeDecodeError, json.JSONDecodeError, ValueError, RecursionError):
                 envelope = None
-            if (isinstance(envelope, dict) and envelope.get('status') == 'Success'
-                    and envelope.get('errors') in (None, [])
-                    and isinstance(envelope.get('data'), dict)
-                    and isinstance(envelope['data'].get('url'), str)
-                    and 'geojson' not in envelope['data']):
-                body = send(content_request(envelope['data']['url'], stamp(started), clock()), token)
+            if (
+                isinstance(envelope, dict)
+                and envelope.get("status") == "Success"
+                and envelope.get("errors") in (None, [])
+                and isinstance(envelope.get("data"), dict)
+                and isinstance(envelope["data"].get("url"), str)
+                and "geojson" not in envelope["data"]
+            ):
+                body = send(
+                    content_request(envelope["data"]["url"], stamp(started), clock()), token
+                )
                 continuation_used = True
 
             report = signature_report(body, classification)
             diagnostic = None
             try:
-                report = inspect_bytes(body, classification,
-                    provenance={'source': 'private production candidate',
-                                'content_continuation': continuation_used}).report
+                report = inspect_bytes(
+                    body,
+                    classification,
+                    provenance={
+                        "source": "private production candidate",
+                        "content_continuation": continuation_used,
+                    },
+                ).report
             except CandidateError as error:
                 diagnostic = str(error)
             with store.transaction(db):
                 state = store.load(db)
-                if state['active'] != attempt:
-                    raise RefreshError('RECOVERY_REQUIRED')
-                state['active'] = None
+                if state["active"] != attempt:
+                    raise RefreshError("RECOVERY_REQUIRED")
+                state["active"] = None
                 store.save(db, state)
-                db.execute('UPDATE attempts SET status=? WHERE id=?',
-                           ('CAPTURED_CANDIDATE', attempt))
-            return {'attempt': attempt, 'status': 'CAPTURED_PRIVATE_CANDIDATE',
-                    'classification': classification, 'http_status': 200,
-                    'content_continuation_used': continuation_used,
-                    'inspection_diagnostic': diagnostic, 'inspection': report,
-                    'baseline_established': False, 'watermark': None,
-                    'publication_performed': False, 'coverage': 'UNKNOWN'}
+                db.execute(
+                    "UPDATE attempts SET status=? WHERE id=?", ("CAPTURED_CANDIDATE", attempt)
+                )
+            return {
+                "attempt": attempt,
+                "status": "CAPTURED_PRIVATE_CANDIDATE",
+                "classification": classification,
+                "http_status": 200,
+                "content_continuation_used": continuation_used,
+                "inspection_diagnostic": diagnostic,
+                "inspection": report,
+                "baseline_established": False,
+                "watermark": None,
+                "publication_performed": False,
+                "coverage": "UNKNOWN",
+            }
         except Exception as error:
-            code = (str(error) if isinstance(error, RefreshError) else
-                    'BUSY' if (getattr(error, 'sqlite_errorcode', 0) & 255) in (5, 6)
-                    else 'LOCAL_FAILURE')
+            code = (
+                str(error)
+                if isinstance(error, RefreshError)
+                else "BUSY"
+                if (getattr(error, "sqlite_errorcode", 0) & 255) in (5, 6)
+                else "LOCAL_FAILURE"
+            )
             if attempt is not None:
                 try:
                     store.failed(db, attempt, code, clock())
                 except Exception:
-                    raise RefreshError('PERSISTENCE_UNCERTAIN') from None
+                    raise RefreshError("PERSISTENCE_UNCERTAIN") from None
             raise RefreshError(code) from None

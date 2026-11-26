@@ -4,7 +4,6 @@ Extracted from the uncommitted NOTAM prototype; these helpers do not validate
 FAA semantics, authenticity, completeness, or successful sanitization.
 """
 
-
 import json
 import re
 from datetime import datetime, timezone
@@ -35,15 +34,28 @@ def utc(value):
 def assert_public_source(value, sensitive=()):
     """Preserve original source intact or reject it; never silently redact it."""
     raw = json.dumps(value, ensure_ascii=False)
-    if any(secret and secret in raw for secret in sensitive) or re.search(r"(?i)\bbearer\s+\S+", raw):
+    if any(secret and secret in raw for secret in sensitive) or re.search(
+        r"(?i)\bbearer\s+\S+", raw
+    ):
         raise FeedError("SENSITIVE_RESPONSE")
+
     def walk(node):
         if isinstance(node, dict):
             for key, child in node.items():
-                if re.sub(r"[^a-z]", "", str(key).lower()) in {"authorization", "accesstoken", "refreshtoken", "clientsecret", "clientid", "password", "credential", "credentials"}:
+                if re.sub(r"[^a-z]", "", str(key).lower()) in {
+                    "authorization",
+                    "accesstoken",
+                    "refreshtoken",
+                    "clientsecret",
+                    "clientid",
+                    "password",
+                    "credential",
+                    "credentials",
+                }:
                     raise FeedError("SENSITIVE_RESPONSE")
                 walk(child)
         elif isinstance(node, list):
             for child in node:
                 walk(child)
+
     walk(value)

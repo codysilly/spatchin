@@ -8,6 +8,7 @@ NOTAM scalars, message and Event identifiers, timestamps, and translation
 representations in private storage; the command-line report never emits those
 values.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -23,17 +24,42 @@ from xml.parsers import expat
 from c070_notam_partition import load_registry, load_versioned_registry
 from capture_storage import platform_storage
 from inspect_initial_load_stream import (
-    AIXM, EVENT, FNSE, GML, KNOWN_NAMESPACES, MESSAGE, SOAP, WFS, XLINK,
-    InspectionError, InspectionLimits,
-    _hash_stream, _load_receipt, _stat_marker, _stream_gzip,
+    AIXM,
+    EVENT,
+    FNSE,
+    GML,
+    KNOWN_NAMESPACES,
+    MESSAGE,
+    SOAP,
+    WFS,
+    XLINK,
+    InspectionError,
+    InspectionLimits,
+    _hash_stream,
+    _load_receipt,
+    _stat_marker,
+    _stream_gzip,
 )
 
 
-NOTAM_SCALARS = frozenset((
-    "number", "year", "issued", "location", "effectiveStart", "effectiveEnd",
-    "text", "series", "scope", "traffic", "purpose", "selectionCode",
-    "coordinates", "type",
-))
+NOTAM_SCALARS = frozenset(
+    (
+        "number",
+        "year",
+        "issued",
+        "location",
+        "effectiveStart",
+        "effectiveEnd",
+        "text",
+        "series",
+        "scope",
+        "traffic",
+        "purpose",
+        "selectionCode",
+        "coordinates",
+        "type",
+    )
+)
 TRANSLATION_SCALARS = frozenset(("type", "simpleText", "formattedText"))
 
 
@@ -148,24 +174,30 @@ class _AssociationParser:
         self.depth += 1
         self.elements += 1
         self.attributes += len(attributes)
-        self.attribute_chars += sum(len(str(key)) + len(str(value))
-                                    for key, value in attributes.items())
+        self.attribute_chars += sum(
+            len(str(key)) + len(str(value)) for key, value in attributes.items()
+        )
         self.namespaces[qname[0]] += 1
         self.qnames[qname] += 1
-        self._limit(self.depth > self.limits.depth or self.elements > self.limits.elements
-                    or self.attributes > self.limits.attributes
-                    or self.attribute_chars > self.limits.attribute_chars
-                    or len(self.namespaces) > self.limits.namespaces
-                    or len(self.qnames) > self.limits.qnames)
+        self._limit(
+            self.depth > self.limits.depth
+            or self.elements > self.limits.elements
+            or self.attributes > self.limits.attributes
+            or self.attribute_chars > self.limits.attribute_chars
+            or len(self.namespaces) > self.limits.namespaces
+            or len(self.qnames) > self.limits.qnames
+        )
         retain = False
         if qname[0] == EVENT:
-            retain = ((self.current_notice is not None and qname[1] in NOTAM_SCALARS)
-                      or (self.current_translation is not None
-                          and qname[1] in TRANSLATION_SCALARS))
-        if self.current_feature is not None and qname in ((GML, "identifier"),
-                                                           (AIXM, "designator"),
-                                                           (FNSE, "classification"),
-                                                           (FNSE, "lastUpdated")):
+            retain = (self.current_notice is not None and qname[1] in NOTAM_SCALARS) or (
+                self.current_translation is not None and qname[1] in TRANSLATION_SCALARS
+            )
+        if self.current_feature is not None and qname in (
+            (GML, "identifier"),
+            (AIXM, "designator"),
+            (FNSE, "classification"),
+            (FNSE, "lastUpdated"),
+        ):
             retain = True
         self.stack.append(_Frame(qname, [] if retain else None))
         if self.root is None:
@@ -178,17 +210,20 @@ class _AssociationParser:
             self.feature_collections += 1
         if qname == (WFS, "member"):
             self.members += 1
-            self._limit(self.current_member is not None
-                        or self.members > self.limits.wfs_members)
+            self._limit(self.current_member is not None or self.members > self.limits.wfs_members)
             self.current_member = []
             self.member_message_id = None
             self.member_elements = self.member_features = self.member_text = 0
         if qname == (MESSAGE, "AIXMBasicMessage"):
             message_id = attributes.get(GML + "}id")
-            if (parent != (WFS, "member") or self.current_member is None
-                    or self.current_message_depth is not None
-                    or self.member_message_id is not None
-                    or not isinstance(message_id, str) or not message_id):
+            if (
+                parent != (WFS, "member")
+                or self.current_member is None
+                or self.current_message_depth is not None
+                or self.member_message_id is not None
+                or not isinstance(message_id, str)
+                or not message_id
+            ):
                 raise InspectionError("UNSUPPORTED_STRUCTURE")
             identity = hashlib.sha256(message_id.encode("utf-8")).digest()
             if identity in self.seen_message_ids:
@@ -205,15 +240,19 @@ class _AssociationParser:
         if parent == (MESSAGE, "hasMember"):
             self.features += 1
             self.member_features += 1
-            self._limit(self.current_member is None or self.current_feature is not None
-                        or self.features > self.limits.features
-                        or self.member_features > self.limits.per_member_features)
+            self._limit(
+                self.current_member is None
+                or self.current_feature is not None
+                or self.features > self.limits.features
+                or self.member_features > self.limits.per_member_features
+            )
             aliases = set()
             gml_id = attributes.get(GML + "}id")
             if isinstance(gml_id, str) and gml_id:
                 aliases.add(gml_id)
-            self.current_feature = _Feature(qname, self.depth, aliases=aliases,
-                                            gml_ids=set(aliases))
+            self.current_feature = _Feature(
+                qname, self.depth, aliases=aliases, gml_ids=set(aliases)
+            )
         if self.current_feature is not None and qname == (EVENT, "theEvent"):
             href = attributes.get(XLINK + "}href")
             if isinstance(href, str) and href:
@@ -222,8 +261,11 @@ class _AssociationParser:
                 if self.current_feature.kind == (AIXM, "AirportHeliport"):
                     self.source_counts["airport_event_relationships_seen"] += 1
         if qname == (EVENT, "NOTAM"):
-            if (self.current_notice is not None or self.current_feature is None
-                    or self.current_feature.kind != (EVENT, "Event")):
+            if (
+                self.current_notice is not None
+                or self.current_feature is None
+                or self.current_feature.kind != (EVENT, "Event")
+            ):
                 raise InspectionError("UNSUPPORTED_STRUCTURE")
             self.current_notice = {"fields": {}, "translations": []}
         if qname == (EVENT, "NOTAMTranslation"):
@@ -239,9 +281,11 @@ class _AssociationParser:
         self.text_chars += len(value)
         if self.current_member is not None:
             self.member_text += len(value)
-        self._limit(frame.chars > self.limits.scalar_chars
-                    or self.text_chars > self.limits.text_chars
-                    or self.member_text > self.limits.per_member_text_chars)
+        self._limit(
+            frame.chars > self.limits.scalar_chars
+            or self.text_chars > self.limits.text_chars
+            or self.member_text > self.limits.per_member_text_chars
+        )
         if frame.retained is not None:
             frame.retained.append(value)
 
@@ -255,9 +299,11 @@ class _AssociationParser:
             if qname == (GML, "identifier") and value.strip():
                 self.current_feature.aliases.add(value.strip())
                 self.current_feature.identifiers.add(value.strip())
-            elif (qname == (AIXM, "designator")
-                  and self.current_feature.kind == (AIXM, "AirportHeliport")
-                  and value.strip()):
+            elif (
+                qname == (AIXM, "designator")
+                and self.current_feature.kind == (AIXM, "AirportHeliport")
+                and value.strip()
+            ):
                 self.current_feature.designators.append(value.strip())
             elif qname == (FNSE, "classification") and value.strip():
                 self.current_feature.classifications.append(value)
@@ -278,15 +324,21 @@ class _AssociationParser:
                 raise InspectionError("UNSUPPORTED_STRUCTURE")
             self.current_feature.notices.append(self.current_notice)
             self.current_notice = None
-        if (self.current_feature is not None and qname == self.current_feature.kind
-                and self.depth == self.current_feature.depth):
+        if (
+            self.current_feature is not None
+            and qname == self.current_feature.kind
+            and self.depth == self.current_feature.depth
+        ):
             self.current_member.append(self.current_feature)
             self.current_feature = None
         if qname == (MESSAGE, "AIXMBasicMessage"):
-            if (self.current_message_depth != self.depth
-                    or self.current_message_id != self.member_message_id
-                    or self.current_feature is not None or self.current_notice is not None
-                    or self.current_translation is not None):
+            if (
+                self.current_message_depth != self.depth
+                or self.current_message_id != self.member_message_id
+                or self.current_feature is not None
+                or self.current_notice is not None
+                or self.current_translation is not None
+            ):
                 raise InspectionError("UNSUPPORTED_STRUCTURE")
             self.current_message_id = None
             self.current_message_depth = None
@@ -311,29 +363,33 @@ class _AssociationParser:
         return matches
 
     def _finish_member(self):
-        if (self.current_message_depth is not None or self.current_message_id is not None
-                or not isinstance(self.member_message_id, str)):
+        if (
+            self.current_message_depth is not None
+            or self.current_message_id is not None
+            or not isinstance(self.member_message_id, str)
+        ):
             raise InspectionError("UNSUPPORTED_STRUCTURE")
         events = [feature for feature in self.current_member if feature.kind == (EVENT, "Event")]
-        airports = [feature for feature in self.current_member
-                    if feature.kind == (AIXM, "AirportHeliport")]
+        airports = [
+            feature for feature in self.current_member if feature.kind == (AIXM, "AirportHeliport")
+        ]
         event_aliases = {alias for event in events for alias in event.aliases}
         for airport in airports:
             unresolved = airport.event_refs - event_aliases
             self.source_counts["resolved_airport_event_relationships"] += len(
-                airport.event_refs & event_aliases)
+                airport.event_refs & event_aliases
+            )
             self.source_counts["unresolved_airport_event_relationships"] += len(unresolved)
         owners = [event for event in events if event.notices]
-        if (len(events) not in (1, 2) or len(owners) != 1
-                or len(owners[0].notices) != 1):
+        if len(events) not in (1, 2) or len(owners) != 1 or len(owners[0].notices) != 1:
             raise InspectionError("UNSUPPORTED_STRUCTURE")
         owner = owners[0]
         notice = owner.notices[0]
         notice["translations"].extend(owner.translations)
         linked = [airport for airport in airports if airport.event_refs & owner.aliases]
         direct = self._match_codes(
-            [value for airport in linked for value in airport.designators],
-            "airport_designator")
+            [value for airport in linked for value in airport.designators], "airport_designator"
+        )
         self._finish_notice(self.member_message_id, owner, notice, direct)
 
     def _finish_notice(self, message_id, event, notice, direct):
@@ -376,19 +432,23 @@ class _AssociationParser:
                     kinds.append("AirportHeliport.designator+event:theEvent")
                 entry = self.icao_index[icao]
                 evidence[icao] = {"iata": entry["iata"], "source_fields": kinds}
-            self.record_sink({
-                "source_message_id": message_id,
-                "source_event_aliases": identifiers,
-                "source_gml_ids": sorted(event.gml_ids),
-                "source_identifiers": sorted(event.identifiers),
-                "notam": notice["fields"],
-                "representations": notice["translations"],
-                "classifications": list(event.classifications),
-                "source_last_updated": list(event.last_updated),
-                "association_evidence": evidence,
-                "accepted_airports": sorted(accepted),
-                "status": "conflicting" if conflict else ("associated" if accepted else "unresolved"),
-            })
+            self.record_sink(
+                {
+                    "source_message_id": message_id,
+                    "source_event_aliases": identifiers,
+                    "source_gml_ids": sorted(event.gml_ids),
+                    "source_identifiers": sorted(event.identifiers),
+                    "notam": notice["fields"],
+                    "representations": notice["translations"],
+                    "classifications": list(event.classifications),
+                    "source_last_updated": list(event.last_updated),
+                    "association_evidence": evidence,
+                    "accepted_airports": sorted(accepted),
+                    "status": "conflicting"
+                    if conflict
+                    else ("associated" if accepted else "unresolved"),
+                }
+            )
 
     def close(self):
         try:
@@ -397,17 +457,25 @@ class _AssociationParser:
             raise
         except expat.ExpatError:
             raise InspectionError("MALFORMED_XML") from None
-        if (self.stack or self.depth or self.current_member is not None
-                or self.current_feature is not None or self.current_notice is not None
-                or self.current_translation is not None
-                or self.current_message_id is not None
-                or self.current_message_depth is not None):
+        if (
+            self.stack
+            or self.depth
+            or self.current_member is not None
+            or self.current_feature is not None
+            or self.current_notice is not None
+            or self.current_translation is not None
+            or self.current_message_id is not None
+            or self.current_message_depth is not None
+        ):
             raise InspectionError("MALFORMED_XML")
-        if (self.root != (SOAP, "Envelope")
-                or self.envelope_children != Counter({(SOAP, "Body"): 1})
-                or self.body_payloads != Counter({(WFS, "FeatureCollection"): 1})
-                or self.feature_collections != 1 or self.members < 1
-                or self.report_counts["total_notams"] < 1):
+        if (
+            self.root != (SOAP, "Envelope")
+            or self.envelope_children != Counter({(SOAP, "Body"): 1})
+            or self.body_payloads != Counter({(WFS, "FeatureCollection"): 1})
+            or self.feature_collections != 1
+            or self.members < 1
+            or self.report_counts["total_notams"] < 1
+        ):
             raise InspectionError("UNSUPPORTED_STRUCTURE")
 
     def report(self):
@@ -435,16 +503,27 @@ class _AssociationParser:
         }
 
 
-def associate_evidence(evidence_dir, expected_sha256, *, expected_bytes,
-                       registry=None, limits=InspectionLimits(), storage=None,
-                       record_sink=None):
+def associate_evidence(
+    evidence_dir,
+    expected_sha256,
+    *,
+    expected_bytes,
+    registry=None,
+    limits=InspectionLimits(),
+    storage=None,
+    record_sink=None,
+):
     """Verify and stream one protected artifact, returning privacy-safe aggregates."""
     limits.validate()
     registry = load_versioned_registry() if registry is None else load_registry(registry)
     root = Path(evidence_dir)
-    if (not root.is_absolute() or not re.fullmatch(r"[0-9a-f]{32}", root.name)
-            or not re.fullmatch(r"[0-9a-f]{64}", expected_sha256 or "")
-            or type(expected_bytes) is not int or expected_bytes < 1):
+    if (
+        not root.is_absolute()
+        or not re.fullmatch(r"[0-9a-f]{32}", root.name)
+        or not re.fullmatch(r"[0-9a-f]{64}", expected_sha256 or "")
+        or type(expected_bytes) is not int
+        or expected_bytes < 1
+    ):
         raise InspectionError("INVALID_REQUEST")
     artifact = root / "initial-load.bin"
     receipt_path = root / "receipt.json"
@@ -472,21 +551,35 @@ def associate_evidence(evidence_dir, expected_sha256, *, expected_bytes,
         for path in (root, artifact, receipt_path):
             storage.verify_private(path)
         final_raw, final_receipt, final_marker = _load_receipt(receipt_path, root.name)
-        if (before != during or before != after or final_size != size or final_digest != digest
-                or final_raw != receipt_raw or final_receipt != receipt
-                or final_marker != receipt_marker or _stat_marker(root.stat()) != root_marker):
+        if (
+            before != during
+            or before != after
+            or final_size != size
+            or final_digest != digest
+            or final_raw != receipt_raw
+            or final_receipt != receipt
+            or final_marker != receipt_marker
+            or _stat_marker(root.stat()) != root_marker
+        ):
             raise InspectionError("EVIDENCE_CHANGED")
     except InspectionError:
         raise
     except Exception:
         raise InspectionError("EVIDENCE_UNAVAILABLE") from None
     report = parser.report()
-    report["evidence"] = {"bytes": size, "sha256_verified": True,
-                          "private_access_verified": True,
-                          "unchanged_during_inspection": True}
-    report["container"] = {"gzip_members": 1, "compressed_bytes": compressed,
-                           "decompressed_bytes": decompressed,
-                           "crc_and_size_validated": True, "trailing_bytes": 0}
+    report["evidence"] = {
+        "bytes": size,
+        "sha256_verified": True,
+        "private_access_verified": True,
+        "unchanged_during_inspection": True,
+    }
+    report["container"] = {
+        "gzip_members": 1,
+        "compressed_bytes": compressed,
+        "decompressed_bytes": decompressed,
+        "crc_and_size_validated": True,
+        "trailing_bytes": 0,
+    }
     return report
 
 
@@ -497,8 +590,9 @@ def main():
     parser.add_argument("--expected-bytes", required=True, type=int)
     args = parser.parse_args()
     try:
-        report = associate_evidence(args.evidence_dir, args.expected_sha256,
-                                    expected_bytes=args.expected_bytes)
+        report = associate_evidence(
+            args.evidence_dir, args.expected_sha256, expected_bytes=args.expected_bytes
+        )
     except InspectionError as error:
         print(str(error))
         raise SystemExit(1) from None
