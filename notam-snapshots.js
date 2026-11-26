@@ -1,6 +1,6 @@
 /* Same-origin published snapshots only. No provider access or automatic polling. */
 'use strict';
-const NotamSnapshots = (() => {
+export const NotamSnapshots = (() => {
  const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
  function validate(data,{allowSynthetic=false}={}){
   if(!object(data)||!object(data.airports))throw Error('Invalid NOTAM snapshot envelope');
@@ -60,4 +60,3 @@ const NotamSnapshots = (() => {
  }
  return {validate,create};
 })();
-if(typeof module!=='undefined')module.exports=NotamSnapshots;

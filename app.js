@@ -1,5 +1,8 @@
 'use strict';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
+// Explicit dependencies keep browser state inside one dashboard instance.
+export function mountDashboard({AirportCatalog,AirportMetadata,NotamReader,NotamSnapshots,preview,enableForecast=false}={}){
+const SPATCHIN_SYNTHETIC_PREVIEW=preview;
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const approvedCatalog=typeof AirportCatalog==='undefined'?Object.keys({MEM:1,ORD:1,LAX:1,JFK:1}):AirportCatalog;
 const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}}:AirportMetadata;
@@ -540,4 +543,24 @@ async function loadForecastModules(){
  if(forecastReader)refreshTafs();
 }
 startDashboard();
-if(document.currentScript?.dataset?.forecast==='true')loadForecastModules();
+if(enableForecast)loadForecastModules();
+return {render,refreshNotams:()=>notamSnapshots?.refresh()};
+}
+
+// Core dependencies were optional classic scripts. Keep their fallback behavior
+// if a module fails to load; forecast loading must not delay initial cards.
+async function bootstrapDashboard(){
+ const [catalog,reader,snapshots]=await Promise.allSettled([
+  import('./airport-catalog.js'),import('./notam-reader.js'),import('./notam-snapshots.js')
+ ]);
+ for(const [name,result] of [['Airport catalog',catalog],['NOTAM reader',reader],['NOTAM snapshots',snapshots]]){
+  if(result.status==='rejected')console.info(name+' module unavailable:',result.reason?.message);
+ }
+ mountDashboard({
+  AirportCatalog:catalog.value?.AirportCatalog,AirportMetadata:catalog.value?.AirportMetadata,
+  NotamReader:reader.value?.NotamReader,NotamSnapshots:snapshots.value?.NotamSnapshots,enableForecast:true
+ });
+}
+if(typeof document!=='undefined'&&document.querySelector('script[type="module"][data-forecast="true"]')){
+ bootstrapDashboard();
+}

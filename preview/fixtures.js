@@ -1,5 +1,5 @@
 /* Local synthetic fixtures only; never loaded by index.html. */
-const SPATCHIN_SYNTHETIC_PREVIEW={runways:{airports:{MEM:['09','27','18L','36R','18C','36C','18R','36L'].map(id=>({id,true_heading:0}))}},notams:{synthetic:true,retrieved_utc:'2026-11-11T12:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',warning:'Synthetic fixture; coverage and lifecycle unknown. Retrieval timestamp is shown without a production threshold.',notices:[
+export const SPATCHIN_SYNTHETIC_PREVIEW={runways:{airports:{MEM:['09','27','18L','36R','18C','36C','18R','36L'].map(id=>({id,true_heading:0}))}},notams:{synthetic:true,retrieved_utc:'2026-11-11T12:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',warning:'Synthetic fixture; coverage and lifecycle unknown. Retrieval timestamp is shown without a production threshold.',notices:[
 {id:'SYN-1',text:'SYNTHETIC RWY 18L lighting report. Original wording retained.',effectiveStart:'202611111000',effectiveEnd:'PERM',source:'Synthetic test fixture'},
 {id:'SYN-2',text:'SYNTHETIC RWY 18L/36R surface report.',effectiveStart:'2026-11-11T10:00:00Z',effectiveEnd:'2026-11-12T10:00:00Z',source:'Synthetic test fixture'},
 {id:'SYN-3',text:'SYNTHETIC TWY A near RWY 09 work report.',source:'Synthetic test fixture'},
