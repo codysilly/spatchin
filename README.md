@@ -61,9 +61,9 @@ Run this only if those paths and Node are present in the checked-out revision. O
 ### Review and release gate
 
 1. Track one scoped issue in Linear, inspect the latest owner decisions, and work on an isolated issue-linked branch. Preserve any other agent's unfinished work.
-2. Open a **draft** pull request with changed files, exact validation commands/results, commit SHA, outstanding acceptance criteria and any required visual review. Do not merge automatically.
+2. Open a **draft** pull request with changed files, exact validation commands/results, commit SHA, outstanding acceptance criteria and any required visual review. Merge autonomously only when all applicable gates in AGENTS.md pass.
 3. Confirm that code tests, browser/visual checks and source provenance support the specific claim being made. A PR's mergeability metadata alone does not prove its behavior.
-4. Follow the authority levels and merge gates in [AGENTS.md](AGENTS.md). Obtain explicit owner authorization for production releases, provider requests, credentials, budgets, protected staging, or version changes.
-5. Inspect Pages, workflow and collector triggers before merge. A successful code review does not itself authorize a deployment or provider request.
+4. Follow the authority levels and merge gates in [AGENTS.md](AGENTS.md). The owner granted standing authority on November 26, 2026 for routine automatic GitHub Pages deployments from validated merges within approved scope. Other production releases, publication architecture changes, provider requests, credentials, budgets, protected staging and version changes retain their separate authorization requirements.
+5. Inspect Pages, workflow and collector triggers before merge. Verify the actual Pages deployment after merge. A successful code review does not authorize other deployments or provider requests.
 
-Never commit credentials, private FAA captures, tokens, private request ledgers or personal data. Keep raw-NOTAM reading separate from lifecycle, closure or other operational interpretation. A documentation change does **not** authorize any external request or publication.
+Never commit credentials, private FAA captures, tokens, private request ledgers or personal data. Keep raw-NOTAM reading separate from lifecycle, closure or other operational interpretation. A documentation change does **not** authorize any provider request or new publication scope.
