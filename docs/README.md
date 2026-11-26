@@ -23,5 +23,6 @@ Repository policy and contributor entry points remain at the root: [`README.md`]
 - [Shared scheduler implementation](SHARED_SCHEDULERS.md), [ATIS scheduler](CLOUDFLARE_ATIS_SCHEDULER.md), [METAR scheduler](CLOUDFLARE_METAR_SCHEDULER.md), and [TAF scheduler](CLOUDFLARE_TAF_SCHEDULER.md)
 - [System register](SYSTEM_REGISTER.md)
 - [GitHub Pages publication boundary](PUBLICATION_BOUNDARY.md)
+- [Separate data publication investigation](DATA_PUBLICATION_INVESTIGATION.md)
 
 Offline NOTAM/NMS research code and its command map live in [`scripts/notam/`](../scripts/notam/README.md). Routine collectors remain directly under [`scripts/`](../scripts/).
