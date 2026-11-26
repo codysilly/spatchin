@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T18:38:33.952858Z",
+  "updated_utc": "2026-11-26T18:48:33.280699Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -426,20 +426,30 @@
     },
     {
       "icaoId": "KBFI",
-      "rawTAF": "TAF KBFI 261740Z 2618/2718 18013G22KT 6SM -SHRA BR SCT025 OVC035 FM262200 18013G18KT P6SM -SHRA SCT025 OVC050 FM270300 18009KT P6SM BKN050 FM270600 16007KT P6SM OVC050 FM271100 16007KT P6SM OVC030",
-      "issueTime": "2026-11-26T17:40:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KBFI 261837Z 2619/2718 18013G21KT 6SM -SHRA BR SCT025 OVC035 TEMPO 2619/2620 2SM -TSRA OVC025CB FM262200 18013G18KT P6SM -SHRA SCT025 OVC050 FM270300 18009KT P6SM BKN050 FM270600 16007KT P6SM OVC050 FM271100 16007KT P6SM OVC030",
+      "issueTime": "2026-11-26T18:37:00.000Z",
+      "validTimeFrom": 1795719600,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795716000,
+          "timeFrom": 1795719600,
           "timeTo": 1795730400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 180,
           "wspd": 13,
-          "wgst": 22
+          "wgst": 21
+        },
+        {
+          "timeFrom": 1795719600,
+          "timeTo": 1795723200,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
         },
         {
           "timeFrom": 1795730400,
