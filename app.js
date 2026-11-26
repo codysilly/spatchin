@@ -536,7 +536,8 @@ async function loadForecastModules(){
  else console.info('Forecast reader module unavailable:',reader.reason?.message);
  if(timeline.status==='fulfilled')forecastTimeline=timeline.value.TafTimeline;
  else console.info('Forecast timeline module unavailable:',timeline.reason?.message);
- startDashboard();
+ // Forecast availability must not delay the initial cards or the other feeds.
+ if(forecastReader)refreshTafs();
 }
+startDashboard();
 if(document.currentScript?.dataset?.forecast==='true')loadForecastModules();
-else startDashboard();
