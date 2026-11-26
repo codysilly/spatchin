@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T22:28:33.820380Z",
+  "updated_utc": "2026-11-26T22:48:38.448588Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -5090,26 +5090,16 @@
     },
     {
       "icaoId": "KRST",
-      "rawTAF": "TAF KRST 261724Z 2618/2718 03010KT P6SM OVC016 FM262100 36008KT P6SM OVC016 FM271700 29007KT P6SM BKN250",
-      "issueTime": "2026-11-26T17:24:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KRST 262242Z 2623/2718 36008KT P6SM SCT025 FM271700 29007KT P6SM BKN250",
+      "issueTime": "2026-11-26T22:42:00.000Z",
+      "validTimeFrom": 1795734000,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795716000,
-          "timeTo": 1795726800,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 30,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795726800,
+          "timeFrom": 1795734000,
           "timeTo": 1795798800,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 360,
           "wspd": 8,
@@ -5432,20 +5422,20 @@
     },
     {
       "icaoId": "KSEA",
-      "rawTAF": "TAF KSEA 262107Z 2621/2724 21013G22KT P6SM VCSH SCT027 OVC050 FM270000 20010G18KT P6SM VCSH SCT030 BKN050 FM270300 19008KT P6SM SCT030 BKN050 FM271100 18007KT P6SM OVC028 FM271800 19006KT P6SM -RA BKN017 OVC020",
-      "issueTime": "2026-11-26T21:07:00.000Z",
-      "validTimeFrom": 1795726800,
+      "rawTAF": "TAF KSEA 262243Z 2623/2724 21011G20KT P6SM SCT020 SCT050 FM270000 20010G18KT P6SM SCT030 BKN050 FM270300 19008KT P6SM SCT030 BKN050 FM271100 18007KT P6SM OVC028 FM271800 19006KT P6SM -RA BKN017 OVC020",
+      "issueTime": "2026-11-26T22:43:00.000Z",
+      "validTimeFrom": 1795734000,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795726800,
+          "timeFrom": 1795734000,
           "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 210,
-          "wspd": 13,
-          "wgst": 22
+          "wspd": 11,
+          "wgst": 20
         },
         {
           "timeFrom": 1795737600,
