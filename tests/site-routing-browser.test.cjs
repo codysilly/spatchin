@@ -103,3 +103,50 @@ for(const entry of ['/','/dashboard/','/preview/','/preview/snapshot-loader.html
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
+
+test('forecast modules are private dependencies and a missing reader does not stop other feeds',async()=>{
+ const context=await browser.newContext({viewport:{width:1440,height:900}});
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);
+  if(url.pathname==='/taf-reader.js')return route.fulfill({status:404,body:'offline missing module'});
+  return route.continue();
+ });
+ try{
+  await page.goto(origin+'/');
+  await page.waitForSelector('[data-airport="MEM"] .metar-panel');
+  await page.waitForFunction(()=>document.querySelectorAll('[data-airport="MEM"] .runway-row').length===8);
+  assert.match(await page.locator('[data-airport="MEM"] .taf').innerText(),/Forecast reader unavailable/);
+  assert.equal(await page.evaluate(()=>typeof TafReader),'undefined');
+  assert.equal(await page.evaluate(()=>typeof TafTimeline),'undefined');
+  assert.ok(requests.includes('/taf-reader.js'));
+  assert.ok(requests.includes('/taf-timeline.js'));
+  assert.ok(requests.includes('/data/metars.json'));
+  assert.ok(requests.includes('/data/atis.json'));
+  assert.ok(!requests.includes('/data/tafs.json'));
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+test('synthetic previews do not load forecast modules or forecast snapshots',async()=>{
+ const context=await browser.newContext();
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);return route.continue();
+ });
+ try{
+  for(const entry of ['/preview/','/preview/snapshot-loader.html']){
+   await page.goto(origin+entry);
+   await page.waitForSelector('.runway-row');
+   await page.waitForLoadState('networkidle');
+   assert.match(await page.locator('.synthetic-banner').innerText(),/SYNTHETIC/);
+  }
+  assert.ok(!requests.some(path=>['/taf-reader.js','/taf-timeline.js','/data/tafs.json'].includes(path)));
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
