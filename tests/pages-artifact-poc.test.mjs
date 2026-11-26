@@ -29,15 +29,19 @@ async function filesBelow(path, base = path) {
 test('build emits only allowlisted runtime files and a verifiable manifest', async () => {
   const releases = await mkdtemp(join(tmpdir(), 'spatchin-pages-poc-'));
   const manifest = await build(root, releases, 'release-one');
-  assert.deepEqual(
-    manifest.files.map((entry) => entry.path).sort(),
-    await allowlist(),
-  );
+  assert.deepEqual(manifest.files.map((entry) => entry.path).sort(), await allowlist());
   assert.deepEqual(
     await filesBelow(join(releases, 'release-one')),
     [...(await allowlist()), '.nojekyll', '_publication/manifest.json'].sort(),
   );
-  for (const excluded of ['AGENTS.md', 'package-lock.json', 'scripts', 'tests', 'workers', 'docs']) {
+  for (const excluded of [
+    'AGENTS.md',
+    'package-lock.json',
+    'scripts',
+    'tests',
+    'workers',
+    'docs',
+  ]) {
     assert.equal((await filesBelow(join(releases, 'release-one'))).includes(excluded), false);
   }
   await verifyRelease(releases, 'release-one');
@@ -59,5 +63,8 @@ test('activation is reversible and rollback restores the verified prior release'
     current: 'release-one',
     previous: 'release-two',
   });
-  assert.deepEqual(JSON.parse(await readFile(join(releases, 'active.json'), 'utf8')), await readState(releases));
+  assert.deepEqual(
+    JSON.parse(await readFile(join(releases, 'active.json'), 'utf8')),
+    await readState(releases),
+  );
 });

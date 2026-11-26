@@ -23,7 +23,9 @@ async function allowlist() {
 }
 
 async function digest(path) {
-  return createHash('sha256').update(await readFile(path)).digest('hex');
+  return createHash('sha256')
+    .update(await readFile(path))
+    .digest('hex');
 }
 
 async function writeExclusive(path, contents) {
