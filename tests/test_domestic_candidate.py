@@ -1,6 +1,6 @@
 """Offline supervised DOMESTIC candidate gate tests; networking is blocked."""
-import json
-from pathlib import Path
+import os
+from pathlib import Path, PureWindowsPath
 import socket
 import subprocess
 import sys
@@ -38,13 +38,6 @@ class DomesticCandidateGateTests(unittest.TestCase):
         self.assertEqual(OPERATION['data']['nmsResponseFormat'], 'GEOJSON')
         self.assertFalse(OPERATION['retry']); self.assertFalse(OPERATION['publication'])
 
-    def test_windows_default_store_is_the_migrated_private_ledger(self):
-        with patch.dict('os.environ', {'LOCALAPPDATA': r'C:\Users\synthetic\AppData\Local'}, clear=True):
-            self.assertEqual(default_store_path(),
-                             r'C:\Users\synthetic\AppData\Local\Spatchin\private-faa\ledger')
-        with patch.dict('os.environ', {}, clear=True):
-            self.assertIsNone(default_store_path())
-
     def test_cli_wrong_approval_stops_before_credentials_or_network(self):
         child = subprocess.run([sys.executable, '-B', str(SCRIPTS/'capture_domestic_candidate.py'),
             '--store', str(self.store.root), '--account', 'SYNTHETIC-ACCOUNT',
@@ -55,6 +48,23 @@ class DomesticCandidateGateTests(unittest.TestCase):
         self.assertFalse(child.stderr)
         with self.store.connect() as db:
             self.assertEqual(db.execute('SELECT count(*) FROM attempts').fetchone()[0], 0)
+
+
+class DefaultStorePathTests(unittest.TestCase):
+    def test_windows_default_store_is_the_migrated_private_ledger(self):
+        with patch.dict('os.environ', {'LOCALAPPDATA': r'C:\Users\synthetic\AppData\Local'}, clear=True), \
+             patch('capture_domestic_candidate.Path', PureWindowsPath):
+            self.assertEqual(default_store_path(),
+                             r'C:\Users\synthetic\AppData\Local\Spatchin\private-faa\ledger')
+
+    def test_native_default_store_and_missing_environment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.dict('os.environ', {'LOCALAPPDATA': directory}, clear=True):
+                self.assertEqual(default_store_path(),
+                                 os.path.join(directory, 'Spatchin', 'private-faa', 'ledger'))
+        for env in ({}, {'LOCALAPPDATA': ''}):
+            with self.subTest(env=env), patch.dict('os.environ', env, clear=True):
+                self.assertIsNone(default_store_path())
 
 
 if __name__ == '__main__':
