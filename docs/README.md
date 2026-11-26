@@ -20,7 +20,7 @@ Repository policy and contributor entry points remain at the root: [`README.md`]
 
 ## Infrastructure and governance
 
-- [ATIS scheduler](CLOUDFLARE_ATIS_SCHEDULER.md), [METAR scheduler](CLOUDFLARE_METAR_SCHEDULER.md), and [TAF scheduler](CLOUDFLARE_TAF_SCHEDULER.md)
+- [Shared scheduler implementation](SHARED_SCHEDULERS.md), [ATIS scheduler](CLOUDFLARE_ATIS_SCHEDULER.md), [METAR scheduler](CLOUDFLARE_METAR_SCHEDULER.md), and [TAF scheduler](CLOUDFLARE_TAF_SCHEDULER.md)
 - [System register](SYSTEM_REGISTER.md)
 - [GitHub Pages publication boundary](PUBLICATION_BOUNDARY.md)
 
