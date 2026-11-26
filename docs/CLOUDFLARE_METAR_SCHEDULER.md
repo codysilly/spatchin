@@ -1,5 +1,7 @@
 # Cloudflare METAR scheduler
 
+The common dispatch implementation and preserved independent settings are documented in [SHARED_SCHEDULERS.md](SHARED_SCHEDULERS.md).
+
 The `spatchin-metar-scheduler` Worker replaces only the timing source for the
 existing METAR collection workflow. Every ten minutes, Cloudflare invokes the
 Worker, which makes one authenticated `workflow_dispatch` request for

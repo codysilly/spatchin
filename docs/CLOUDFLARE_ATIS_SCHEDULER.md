@@ -1,5 +1,7 @@
 # Cloudflare ATIS scheduler
 
+The common dispatch implementation and preserved independent settings are documented in [SHARED_SCHEDULERS.md](SHARED_SCHEDULERS.md).
+
 The `spatchin-atis-scheduler` Worker is a separate timing source for the existing
 ATIS collection workflow. At minute zero of every UTC hour, Cloudflare invokes
 the Worker, which makes one authenticated `workflow_dispatch` request for

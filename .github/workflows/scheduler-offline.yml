@@ -1,20 +1,30 @@
-name: TAF scheduler offline checks
+name: Scheduler offline checks
 on:
   pull_request:
     paths:
+      - 'workers/shared/**'
+      - 'workers/spatchin-atis-scheduler/**'
+      - 'workers/spatchin-metar-scheduler/**'
       - 'workers/spatchin-taf-scheduler/**'
-      - '.github/workflows/taf-scheduler-offline.yml'
+      - '.github/workflows/scheduler-offline.yml'
+      - 'docs/SHARED_SCHEDULERS.md'
+      - 'docs/CLOUDFLARE_ATIS_SCHEDULER.md'
+      - 'docs/CLOUDFLARE_METAR_SCHEDULER.md'
       - 'docs/CLOUDFLARE_TAF_SCHEDULER.md'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  taf-scheduler:
+  scheduler:
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        scheduler: [atis, metar, taf]
     defaults:
       run:
-        working-directory: workers/spatchin-taf-scheduler
+        working-directory: workers/spatchin-${{ matrix.scheduler }}-scheduler
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

@@ -1,0 +1,5 @@
+{
+  "name": "spatchin-shared-scheduler",
+  "private": true,
+  "type": "module"
+}

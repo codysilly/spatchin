@@ -1,5 +1,7 @@
 # Cloudflare TAF scheduler
 
+The common dispatch implementation and preserved independent settings are documented in [SHARED_SCHEDULERS.md](SHARED_SCHEDULERS.md).
+
 Status: owner reports Worker activation; SPA-80 cutover removes the fallback GitHub TAF cron. Cloudflare is the sole scheduled TAF dispatch source after this change.
 
 The isolated `spatchin-taf-scheduler` Worker uses the existing METAR timing architecture.
