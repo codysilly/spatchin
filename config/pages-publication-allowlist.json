@@ -1,0 +1,24 @@
+{
+  "files": [
+    "CNAME",
+    "index.html",
+    "styles.css",
+    "charcoal-dashboard.css",
+    "airport-catalog.js",
+    "app.js",
+    "notam-reader.js",
+    "notam-snapshots.js",
+    "scan.js",
+    "taf-reader.js",
+    "taf-timeline.js",
+    "assets/branding/logo-16.png",
+    "assets/branding/logo-32.png",
+    "assets/branding/logo-180.png",
+    "assets/branding/logo-cyan-magenta.svg",
+    "data/atis.json",
+    "data/metars.json",
+    "data/notams.json",
+    "data/runways.json",
+    "data/tafs.json"
+  ]
+}
