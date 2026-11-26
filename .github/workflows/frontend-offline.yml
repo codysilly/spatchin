@@ -76,7 +76,7 @@ jobs:
           node --check notam-snapshots.js
       - name: Run offline frontend regressions
         run: |
-          node --test tests/public-pages-config.test.cjs tests/site-routing.test.cjs tests/charcoal-dashboard.test.cjs tests/atis-reader.test.cjs tests/airport-storage.test.cjs tests/c070-metar-dashboard.test.cjs tests/runway-notam-tables.test.cjs tests/notam-reader.test.cjs tests/notam-snapshots.test.cjs tests/notam-snapshot-app.test.cjs tests/real-notam-snapshot.test.cjs tests/branding-assets.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs tests/pages-artifact-poc.test.mjs
+          npm run test:node
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
