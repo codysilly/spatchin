@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const TafReader = require('../taf-reader.js');
+const { TafReader } = require('../taf-reader.js');
 const NOW = Date.parse('2026-11-20T08:00:00Z');
 function report(overrides = {}) {
   return {
