@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T02:38:34.071689Z",
+  "updated_utc": "2026-11-26T02:48:35.219072Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -3220,26 +3220,16 @@
     },
     {
       "icaoId": "KLAS",
-      "rawTAF": "TAF KLAS 252320Z 2600/2706 04006KT P6SM BKN200 FM260200 24005KT P6SM FEW250 FM261700 04006KT P6SM FEW250 FM270200 24006KT P6SM FEW250",
-      "issueTime": "2026-11-25T23:20:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KLAS 260246Z 2603/2706 24005KT P6SM FEW250 FM261700 04006KT P6SM FEW250 FM270200 24006KT P6SM FEW250",
+      "issueTime": "2026-11-26T02:46:00.000Z",
+      "validTimeFrom": 1795662000,
       "validTimeTo": 1795759200,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795658400,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 40,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795658400,
+          "timeFrom": 1795662000,
           "timeTo": 1795712400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 240,
           "wspd": 5,
@@ -4631,26 +4621,16 @@
     },
     {
       "icaoId": "KPHX",
-      "rawTAF": "TAF KPHX 252320Z 2600/2706 03005KT P6SM BKN250 FM260200 VRB04KT P6SM BKN250 FM260500 07006KT P6SM SCT250 TEMPO 2609/2613 23004KT FM262300 30005KT P6SM SKC FM270500 10005KT P6SM SKC",
-      "issueTime": "2026-11-25T23:20:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KPHX 260238Z 2603/2706 VRB04KT P6SM BKN250 FM260500 07006KT P6SM SCT250 TEMPO 2609/2613 23004KT FM262300 30005KT P6SM SKC FM270500 10005KT P6SM SKC",
+      "issueTime": "2026-11-26T02:38:00.000Z",
+      "validTimeFrom": 1795662000,
       "validTimeTo": 1795759200,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795658400,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 30,
-          "wspd": 5,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795658400,
+          "timeFrom": 1795662000,
           "timeTo": 1795669200,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": "VRB",
           "wspd": 4,
