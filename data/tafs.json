@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T16:08:38.673582Z",
+  "updated_utc": "2026-11-26T16:18:44.204078Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2025,13 +2025,13 @@
     },
     {
       "icaoId": "KEWR",
-      "rawTAF": "TAF KEWR 261437Z 2615/2718 04021G36KT P6SM BKN015 OVC100 TEMPO 2615/2617 5SM -RA BR OVC015 FM261700 06025G42KT 2SM RA BR OVC015 FM261900 06029G48KT 1SM +RA BR OVC015 WS020/07055KT FM270300 07022G36KT 1SM -RA BR OVC007 WS020/08055KT FM270600 13010G15KT 5SM -RA BR OVC007 FM270800 18013G22KT 6SM -RA BR OVC015",
-      "issueTime": "2026-11-26T14:37:00.000Z",
-      "validTimeFrom": 1795705200,
+      "rawTAF": "TAF KEWR 261609Z 2616/2718 04021G36KT 6SM -RA BKN015 OVC100 FM261700 06025G42KT 2SM RA BR OVC015 FM261900 06029G48KT 1SM +RA BR OVC015 WS020/07055KT FM270300 07022G36KT 1SM -RA BR OVC007 WS020/08055KT FM270600 13010G15KT 5SM -RA BR OVC007 FM270800 18013G22KT 6SM -RA BR OVC015",
+      "issueTime": "2026-11-26T16:09:00.000Z",
+      "validTimeFrom": 1795708800,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795708800,
           "timeTo": 1795712400,
           "timeBec": null,
           "fcstChange": null,
@@ -2039,16 +2039,6 @@
           "wdir": 40,
           "wspd": 21,
           "wgst": 36
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795712400,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
         },
         {
           "timeFrom": 1795712400,
@@ -3171,14 +3161,14 @@
     },
     {
       "icaoId": "KJFK",
-      "rawTAF": "TAF KJFK 261437Z 2615/2718 06027G38KT P6SM BKN015 OVC100 TEMPO 2615/2616 5SM -RA BR OVC015 FM261600 07029G42KT 2SM RA BR OVC015 FM261900 07035G50KT 1SM +RA BR OVC007 WS020/07060KT FM270300 07024G36KT 1SM -RA BR OVC006 WS020/09060KT FM270500 13016G24KT 5SM -RA BR OVC007 FM270700 19016G24KT 6SM -RA BR OVC025",
-      "issueTime": "2026-11-26T14:37:00.000Z",
-      "validTimeFrom": 1795705200,
+      "rawTAF": "TAF KJFK 261607Z 2616/2718 06027G38KT 6SM -RA BKN015 OVC100 FM261700 07029G42KT 2SM RA BR OVC015 FM261900 07035G50KT 1SM +RA BR OVC007 WS020/07060KT FM270300 07024G36KT 1SM -RA BR OVC006 WS020/09060KT FM270500 13016G24KT 5SM -RA BR OVC007 FM270700 19016G24KT 6SM -RA BR OVC025",
+      "issueTime": "2026-11-26T16:07:00.000Z",
+      "validTimeFrom": 1795708800,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795708800,
+          "timeFrom": 1795708800,
+          "timeTo": 1795712400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -3187,17 +3177,7 @@
           "wgst": 38
         },
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795708800,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
+          "timeFrom": 1795712400,
           "timeTo": 1795719600,
           "timeBec": null,
           "fcstChange": "FM",
