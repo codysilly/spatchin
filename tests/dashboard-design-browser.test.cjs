@@ -1,12 +1,13 @@
 'use strict';
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
+const {pythonCommand}=require('./python-launcher.cjs');
 const {readFileSync,mkdtempSync}=require('node:fs'),{tmpdir}=require('node:os'),{join}=require('node:path'),{createHash}=require('node:crypto');
 const longNotices=require('./fixtures/ui-long-notams.cjs');
 const offlineFont='https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap';
 const base='http://127.0.0.1:8771',screenshots=process.env.SPATCHIN_SCREENSHOTS||mkdtempSync(join(tmpdir(),'spatchin-dashboard-'));let server,browser;
 const hash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
-before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8771','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(pythonCommand(),['-B','-m','http.server','8771','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 test('version-controlled originals match owner-approved fingerprints',()=>{
  assert.equal(hash('assets/branding/spatchin-logo-source.png'),'ad5e051cfbfc48cfd5faf7c7c4f5048adb683039c9a8319a60840fc485a00144');

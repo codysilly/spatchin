@@ -5,6 +5,7 @@
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn,execFileSync}=require('node:child_process');
+const {pythonCommand}=require('./python-launcher.cjs');
 const {PNG}=require('pngjs');
 const pixelmatch=require('pixelmatch');
 const {chromium}=require('playwright');
@@ -19,7 +20,7 @@ const mime={html:'text/html',css:'text/css',js:'text/javascript',json:'applicati
 const freeze=Date.parse('2026-11-20T07:00:00Z');
 let server,browser;
 before(async()=>{
- server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
+ server=spawn(pythonCommand(),['-B','-m','http.server','8798','--bind','127.0.0.1'],{stdio:'ignore'});
  for(let i=0;i<80;i++){
   try{if((await fetch(origin)).ok)break;}catch{}
   await new Promise(r=>setTimeout(r,100));
