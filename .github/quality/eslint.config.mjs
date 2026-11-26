@@ -24,7 +24,7 @@ export default [
     },
   },
   {
-    files: ['app.js', 'notam-reader.js', 'notam-snapshots.js', 'taf-reader.js', 'taf-timeline.js', 'preview/*.js'],
+    files: ['app.js', 'notam-reader.js', 'notam-snapshots.js', 'preview/*.js'],
     languageOptions: { sourceType: 'script' },
   },
 ];
