@@ -43,6 +43,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/quality/**'
+      - '.gitattributes'
       - 'scripts/**/*.py'
       - 'tests/**/*.py'
       - '**/*.js'
