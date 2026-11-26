@@ -29,7 +29,7 @@ GitHub documents custom Pages workflows as checkout/build, `upload-pages-artifac
 
 [`config/pages-publication-allowlist.json`](../config/pages-publication-allowlist.json) contains only the root HTML, runtime JavaScript/CSS, required branding assets, `CNAME`, and the five published JSON snapshots. The proof deliberately excludes documentation, tests, scripts, workers, package manifests, lockfiles, workflow files, research tools, unused branding sources, local archives, caches, screenshots, and staging/preview/dashboard trees.
 
-The allowlist is deny-by-default: a newly required runtime asset causes a test or build failure until it is consciously reviewed and added. Data files must parse as JSON. Every copied file receives a byte count and SHA-256 digest in a release manifest. The generated `.nojekyll` marker makes the proof independent of Jekyll processing; whether to retain it in production is part of the cutover review.
+The allowlist is deny-by-default: unlisted files are not copied. The offline proof verifies the declared file set and digests, not the completeness of runtime dependencies. Before a production cutover, verify all runtime asset references and reject links or unsafe source paths in the build input. Data files must parse as JSON. Every copied file receives a byte count and SHA-256 digest in a release manifest. The generated `.nojekyll` marker makes the proof independent of Jekyll processing; whether to retain it in production is part of the cutover review.
 
 ## Offline proof and rollback
 
