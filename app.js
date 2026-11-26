@@ -453,14 +453,14 @@ const PublishedSnapshots=(()=>{
   }
   return data;
  }
- function tafs(data,previous,stations,reader,now){
+ function tafs(data,previous,stations,reader,clock){
   if(!Array.isArray(data?.tafs))throw new Error('Invalid published TAF snapshot');
   const published=reader.time(data.updated_utc);
-  if(!Number.isFinite(published)||published>now+5*60*1000)throw new Error('Invalid TAF publication time');
+  if(!Number.isFinite(published)||published>clock()+5*60*1000)throw new Error('Invalid TAF publication time');
   const available=new Map((previous?.tafs||[]).map(item=>[item.icaoId,item]));
   let accepted=0;
   for(const item of data.tafs){
-   if(!Object.values(stations).some(a=>a.icao===item?.icaoId)||!reader.valid(item,item.icaoId,now))continue;
+   if(!Object.values(stations).some(a=>a.icao===item?.icaoId)||!reader.valid(item,item.icaoId,clock()))continue;
    accepted++;
    const earlier=available.get(item.icaoId);
    if(!earlier||reader.time(item.issueTime)>reader.time(earlier.issueTime)||
@@ -496,7 +496,7 @@ async function refreshTafs(){
   const response=await fetch(`./data/tafs.json?t=${Date.now()}`,{cache:'no-store'});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
-  tafData=PublishedSnapshots.tafs(data,tafData,airportInfo,TafReader,Date.now());tafFeedError=false;
+  tafData=PublishedSnapshots.tafs(data,tafData,airportInfo,TafReader,Date.now);tafFeedError=false;
  }catch(e){tafFeedError=true;console.info('TAF snapshot unavailable; retaining previous reports:',e.message);}
  render();
 }
