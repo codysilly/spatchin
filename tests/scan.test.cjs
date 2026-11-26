@@ -3,6 +3,7 @@ const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test, before, after, beforeEach, afterEach} = require('node:test');
 const assert = require('node:assert/strict');
 const {spawn} = require('node:child_process');
+const {pythonCommand} = require('./python-launcher.cjs');
 const {mkdtempSync} = require('node:fs');
 const {tmpdir} = require('node:os');
 const {join} = require('node:path');
@@ -11,7 +12,7 @@ const screenshots = mkdtempSync(join(tmpdir(), 'spatchin-scan-'));
 let browser, server, context, page, errors, external;
 const url = 'http://127.0.0.1:8766';
 before(async () => {
-  server = spawn(process.env.PYTHON||'python3', ['-m', 'http.server', '8766', '--bind', '127.0.0.1', '--directory', process.cwd()], {stdio:'ignore'});
+  server = spawn(pythonCommand(), ['-B', '-m', 'http.server', '8766', '--bind', '127.0.0.1', '--directory', process.cwd()], {stdio:'ignore'});
   for (let i=0;i<50;i++) {try {if ((await fetch(url)).ok) break;} catch {} await new Promise(r=>setTimeout(r,100));}
   browser = await chromium.launch({...(process.env.CHROMIUM_PATH ? {executablePath:process.env.CHROMIUM_PATH} : {}), headless:true});
 });
@@ -25,11 +26,31 @@ beforeEach(async () => {
     external.push(route.request().url());return route.abort();
   });
   page.on('pageerror',e=>errors.push(e.message));
+  // Stable, synthetic weather responses: do not depend on changing published observations.
+  const stamp = new Date().toISOString();
+  const stations = ['KORD','KLAX','KJFK','KMEM','KATL'];
+  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{
+    updated_utc:stamp,metars:stations.map(icaoId=>({
+      icaoId,obsTime:Math.floor(Date.parse(stamp)/1000),wdir:180,wspd:12,wgst:20,fltCat:'VFR',
+      rawOb:icaoId+' SYNTHETIC SCAN TEST 18012G20KT'
+    }))
+  }}));
+  await context.route('**/data/atis.json?*',route=>route.fulfill({json:{
+    retrieved_utc:stamp,configured_airports:stations,
+    airports:{KORD:[{airport:'KORD',type:'combined',code:'A',time:'1200',updatedAt:stamp,
+      datis:'SYNTHETIC ORD ATIS. ARR EXP RWY 04L. DEPS EXP RWYS 04R.'}]}
+  }}));
+  // Forecast behavior has its own browser suite; keep this suite independent of live forecast ages.
+  await context.route('**/data/tafs.json?*',route=>route.fulfill({json:{updated_utc:stamp,tafs:[]}}));
   await installDashboardProbe(page,url);await page.goto(url+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');
   // Exercise existing aviation fixtures as a saved selection, independent of defaults.
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
   await page.reload();await page.waitForFunction(()=>typeof render==='function');
-  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 && Object.values(metars).some(m=>m?.wind));
+  await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 &&
+    document.querySelectorAll('.metar-current').length===3 &&
+    document.querySelector('.rw-table td[title]')?.title.startsWith('FAA NASR true alignment') &&
+    document.querySelector('[data-airport="ORD"] .atis-raw'));
+  await page.waitForLoadState('networkidle');
 });
 afterEach(async()=>{await context.close();assert.deepEqual(errors,[]);assert.deepEqual(external,[],'No external requests');});
 async function search(value) {
@@ -53,11 +74,12 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   await page.reload();await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>!loading && metars.MEM?.error==='No valid METAR returned');
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
-  assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
+  assert.equal(await page.locator('[data-airport="MEM"] a.weather-badge').getAttribute('href'),'https://aviationweather.gov/data/metar/?ids=KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
-  assert.equal(await page.evaluate(()=>runwayBearingLabel('MEM')),'FAA NASR true alignment');
+  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .rw-table td[title]')?.title.startsWith('FAA NASR true alignment'));
+  assert.ok((await page.locator('[data-airport="MEM"] .rw-table > tbody > tr.runway-row td:first-child').evaluateAll(cells=>cells.map(cell=>cell.title))).every(title=>title.startsWith('FAA NASR true alignment:')));
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row > td:nth-child(2), .rw-table > tbody > tr.runway-row > td:nth-child(3)').allTextContents(),Array(16).fill('—'));
   assert.equal(await page.locator('[data-airport="MEM"] .airport-diagram a').getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
@@ -161,6 +183,7 @@ test('airport, METAR, ATIS and runway behavior survives highlights and data refr
   await page.waitForFunction(()=>document.querySelectorAll('.airport').length===3 && document.querySelectorAll('#cards mark').length>10);
   assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),32);assert.match(await page.evaluate(()=>windLabel(Object.values(metars).find(m=>m?.wind)?.wind)),/KT/);
   await page.locator('#scan-enabled').uncheck();assert.equal(await page.locator('#cards mark').count(),0);
+  await page.waitForLoadState('networkidle');
   assert.deepEqual(await dashboard(),baseline,'Airport changes and local refreshes preserve original aviation data');
 });
 test('removed airport details and technical metadata are absent from SCAN',async()=>{

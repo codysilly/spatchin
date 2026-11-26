@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test:node": "node scripts/run-node-tests.cjs",
-    "test:browser": "node --test --test-concurrency=1 tests/*browser*.test.cjs",
+    "test:browser": "node --test --test-concurrency=1 tests/*browser*.test.cjs tests/scan.test.cjs",
     "test:scan": "node --test tests/scan.test.cjs",
     "format": "prettier --config .github/quality/prettier.json --ignore-path .github/quality/prettier.ignore --write scripts/run-node-tests.cjs tests/branding-assets.test.cjs tests/charcoal-dashboard.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs && ruff format --config .github/quality/ruff.toml tests/test_update_taf.py scripts/notam",
     "format:check": "prettier --config .github/quality/prettier.json --ignore-path .github/quality/prettier.ignore --check scripts/run-node-tests.cjs tests/branding-assets.test.cjs tests/charcoal-dashboard.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs && ruff format --config .github/quality/ruff.toml --check tests/test_update_taf.py scripts/notam",
