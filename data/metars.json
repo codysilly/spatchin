@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T06:10:38.015670Z",
+  "updated_utc": "2026-11-26T06:20:40.374207Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -164,18 +164,18 @@
     },
     {
       "icaoId": "KATW",
-      "receiptTime": "2026-11-26T05:58:08.401Z",
-      "obsTime": 1795672500,
-      "reportTime": "2026-11-26T06:00:00.000Z",
-      "temp": 2,
+      "receiptTime": "2026-11-26T06:18:16.704Z",
+      "obsTime": 1795673700,
+      "reportTime": "2026-11-26T06:15:00.000Z",
+      "temp": 3,
       "dewp": -1,
-      "wdir": 70,
-      "wspd": 6,
+      "wdir": 80,
+      "wspd": 7,
       "visib": "10+",
       "altim": 1031.9,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KATW 260555Z AUTO 07006KT 10SM OVC023 02/M01 A3047 RMK AO2",
+      "rawOb": "METAR KATW 260615Z AUTO 08007KT 10SM OVC023 03/M01 A3047 RMK AO2",
       "lat": 44.2519,
       "lon": -88.526,
       "elev": 266,
@@ -855,25 +855,21 @@
     },
     {
       "icaoId": "KCLT",
-      "receiptTime": "2026-11-26T05:56:24.426Z",
-      "obsTime": 1795672320,
-      "reportTime": "2026-11-26T06:00:00.000Z",
+      "receiptTime": "2026-11-26T06:16:06.538Z",
+      "obsTime": 1795673580,
+      "reportTime": "2026-11-26T06:13:00.000Z",
       "temp": 8.9,
       "dewp": 7.8,
-      "wdir": 40,
-      "wspd": 12,
-      "wgst": 23,
-      "visib": 7,
-      "altim": 1011.3,
-      "slp": 1012.8,
+      "wdir": 50,
+      "wspd": 18,
+      "wgst": 33,
+      "visib": 3,
+      "altim": 1010.9,
       "qcField": 4,
-      "presTend": -3,
-      "maxT": 8.9,
-      "minT": 7.2,
-      "precip": 0.005,
-      "pcp6hr": 0.45,
-      "metarType": "METAR",
-      "rawOb": "METAR KCLT 260552Z 04012G23KT 7SM OVC009 09/08 A2986 RMK AO2 PK WND 04027/0509 RAE22 SLP128 P0000 60045 T00890078 10089 20072 58030",
+      "wxString": "-RA BR",
+      "precip": 0.02,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KCLT 260613Z 05018G33KT 3SM -RA BR OVC012 09/08 A2985 RMK AO2 PK WND 03033/0610 RAB0555 P0002 T00890078",
       "lat": 35.2225,
       "lon": -80.9543,
       "elev": 223,
@@ -882,10 +878,10 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 900
+          "base": 1200
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KCOS",
@@ -3816,27 +3812,20 @@
     },
     {
       "icaoId": "KSTL",
-      "receiptTime": "2026-11-26T05:56:19.831Z",
-      "obsTime": 1795672260,
-      "reportTime": "2026-11-26T06:00:00.000Z",
+      "receiptTime": "2026-11-26T06:19:39.183Z",
+      "obsTime": 1795673820,
+      "reportTime": "2026-11-26T06:17:00.000Z",
       "temp": 0.6,
       "dewp": 0,
-      "wdir": 350,
+      "wdir": 360,
       "wspd": 8,
-      "altim": 1022.4,
-      "slp": 1023.1,
-      "qcField": 13,
+      "visib": 1.25,
+      "altim": 1022.1,
+      "qcField": 14,
       "wxString": "-SN BR",
-      "presTend": -2.7,
-      "maxT": 0.6,
-      "minT": 0,
-      "maxT24": 2.2,
-      "minT24": -2.2,
-      "precip": 0.09,
-      "pcp6hr": 0.48,
-      "snow": 5,
-      "metarType": "METAR",
-      "rawOb": "METAR KSTL 260551Z COR 35008KT 1 SM R30R/6000VP6000F -SN BR BKN004 OVC011 01/00 A3019 RMK AO2 SLP231 SNINCR 1/5 P0009 60048 4/005 T00060000 10006 20000 400221022 56027 $",
+      "precip": 0.03,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSTL 260617Z AUTO 36008KT 1 1/4SM -SN BR OVC005 01/00 A3018 RMK AO2 P0003 T00060000 $",
       "lat": 38.7525,
       "lon": -90.3734,
       "elev": 163,
@@ -3844,14 +3833,11 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 400
-        },
-        {
           "cover": "OVC",
-          "base": 1100
+          "base": 500
         }
-      ]
+      ],
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KSWF",
