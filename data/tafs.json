@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T10:48:35.163398Z",
+  "updated_utc": "2026-11-26T10:58:34.330658Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -6077,35 +6077,25 @@
     },
     {
       "icaoId": "KSKA",
-      "rawTAF": "TAF KSKA 260300Z 2603/2709 17008KT 9999 FEW100 BKN150 QNH3011INS BECMG 2607/2609 15009KT 8000 -RA BR BKN020 OVC050 620409 QNH3001INS BECMG 2617/2618 21012G22KT 6000 -RA BKN008 OVC012 620409 QNH3004INS BECMG 2622/2623 22020G30KT 9999 NSW BKN010 BKN050 620507 510003 QNH3006INS TX08/2622Z TN04/2611Z",
-      "issueTime": "2026-11-26T03:00:00.000Z",
-      "validTimeFrom": 1795662000,
-      "validTimeTo": 1795770000,
+      "rawTAF": "TAF KSKA 261100Z 2611/2717 15009KT 8000 -RA BR BKN020 OVC050 620409 QNH3005INS BECMG 2616/2617 21012G22KT 6000 -RA BKN008 OVC012 620409 QNH3004INS BECMG 2620/2621 22020G30KT 9999 NSW BKN010 BKN050 620507 510003 QNH3006INS BECMG 2702/2703 22012KT 9999 BKN040 620406 QNH3008INS TX08/2622Z TN04/2611Z",
+      "issueTime": "2026-11-26T11:00:00.000Z",
+      "validTimeFrom": 1795690800,
+      "validTimeTo": 1795798800,
       "fcsts": [
         {
-          "timeFrom": 1795662000,
-          "timeTo": 1795676400,
+          "timeFrom": 1795690800,
+          "timeTo": 1795708800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 170,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795676400,
-          "timeTo": 1795712400,
-          "timeBec": 1795683600,
-          "fcstChange": "BECMG",
           "probability": null,
           "wdir": 150,
           "wspd": 9,
           "wgst": null
         },
         {
-          "timeFrom": 1795712400,
-          "timeTo": 1795730400,
-          "timeBec": 1795716000,
+          "timeFrom": 1795708800,
+          "timeTo": 1795723200,
+          "timeBec": 1795712400,
           "fcstChange": "BECMG",
           "probability": null,
           "wdir": 210,
@@ -6113,14 +6103,24 @@
           "wgst": 22
         },
         {
-          "timeFrom": 1795730400,
-          "timeTo": 1795770000,
-          "timeBec": 1795734000,
+          "timeFrom": 1795723200,
+          "timeTo": 1795744800,
+          "timeBec": 1795726800,
           "fcstChange": "BECMG",
           "probability": null,
           "wdir": 220,
           "wspd": 20,
           "wgst": 30
+        },
+        {
+          "timeFrom": 1795744800,
+          "timeTo": 1795798800,
+          "timeBec": 1795748400,
+          "fcstChange": "BECMG",
+          "probability": null,
+          "wdir": 220,
+          "wspd": 12,
+          "wgst": null
         }
       ]
     },
