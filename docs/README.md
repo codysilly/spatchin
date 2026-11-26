@@ -1,6 +1,6 @@
 # Documentation map
 
-Repository policy and contributor entry points remain at the root: [`README.md`](../README.md), [`AGENTS.md`](../AGENTS.md), and, when added, `CONTRIBUTING.md`. Runtime entry points such as `index.html`, `CNAME`, JavaScript, CSS, assets, and published snapshots also remain at the root or in their runtime directories.
+Repository policy and contributor entry points remain at the root: [`README.md`](../README.md), [`AGENTS.md`](../AGENTS.md), and [`CONTRIBUTING.md`](../CONTRIBUTING.md). Runtime entry points such as `index.html`, `CNAME`, JavaScript, CSS, assets, and published snapshots also remain at the root or in their runtime directories.
 
 ## Product and interface
 
