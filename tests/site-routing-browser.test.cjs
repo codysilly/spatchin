@@ -182,8 +182,59 @@ test('dashboard starts and airport controls work while forecast module is pendin
   const tafResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/data/tafs.json');
   release();
   await tafResponse;
-  await page.waitForFunction(()=>typeof forecastReader!=='undefined');
+  await page.waitForFunction(()=>{const taf=document.querySelector('[data-airport="IND"] .taf');return taf&&!taf.textContent.includes('Forecast reader unavailable');});
   assert.deepEqual(await page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport)),['OAK','IND']);
   assert.deepEqual(errors,[]);
  }finally{release();await context.close();}
+});
+
+for(const entry of ['/','/dashboard/','/preview/','/preview/snapshot-loader.html'])test('native dashboard dependencies stay module-scoped at '+entry,async()=>{
+ const context=await browser.newContext(),page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);return route.continue();
+ });
+ try{
+  await page.goto(origin+entry);
+  await page.waitForSelector('[data-airport="MEM"] .runway-row');
+  await page.waitForLoadState('networkidle');
+  const app=await page.evaluate(async()=>({
+   exports:Object.keys(await import('/app.js')),
+   globals:['AirportCatalog','AirportMetadata','NotamReader','NotamSnapshots','mountDashboard','render','airports','metars','notamTransport','SPATCHIN_SYNTHETIC_PREVIEW'].map(name=>typeof globalThis[name])
+  }));
+  assert.deepEqual(app.exports,['mountDashboard']);
+  assert.ok(app.globals.every(type=>type==='undefined'),app.globals.join(','));
+  const synthetic=entry.startsWith('/preview/');
+  const transportPreview=entry==='/preview/snapshot-loader.html';
+  for(const [path,expected] of [['/app.js',true],['/airport-catalog.js',!transportPreview],['/notam-reader.js',true],['/notam-snapshots.js',!synthetic||transportPreview]]){
+   assert.equal(requests.filter(p=>p===path).length,expected?1:0,path);
+  }
+  if(synthetic)assert.ok(!requests.some(path=>['/taf-reader.js','/taf-timeline.js','/data/tafs.json'].includes(path)));
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
+test('unavailable catalog and NOTAM snapshot modules preserve independent dashboard feeds',async()=>{
+ const context=await browser.newContext(),page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);
+  if(['/airport-catalog.js','/notam-snapshots.js'].includes(url.pathname))return route.fulfill({status:404,body:'offline missing module'});
+  return route.continue();
+ });
+ try{
+  await page.goto(origin+'/');
+  await page.waitForSelector('[data-airport="MEM"] .metar-panel');
+  await page.waitForLoadState('networkidle');
+  assert.deepEqual(await page.locator('#airport-options option').evaluateAll(options=>options.map(option=>option.value)),['MEM','ORD','LAX','JFK']);
+  assert.ok(requests.includes('/data/metars.json'));
+  assert.ok(requests.includes('/data/runways.json'));
+  assert.ok(requests.includes('/data/atis.json'));
+  assert.ok(!requests.includes('/data/notams.json'));
+  assert.equal(await page.locator('[data-notam-reload]').count(),0);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
 });

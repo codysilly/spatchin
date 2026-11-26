@@ -70,7 +70,7 @@ async function launch(width,revision,dataRevision,pagePath='/'){
  await page.goto(origin+pagePath,{waitUntil:'load'});
  await page.waitForSelector('[data-airport="MEM"] .runway-row');
  if(pagePath==='/preview/snapshot-loader.html'){
-  await page.waitForFunction(()=>notamTransport?.snapshot&&!notamTransport.refreshing);
+  await page.waitForFunction(()=>document.querySelector('#coverage-KMEM')?.textContent.includes('Retrieved:')&&document.querySelector('[data-notam-reload="MEM"]')?.getAttribute('aria-disabled')==='false');
   assert.deepEqual(await page.locator('link[rel="stylesheet"]').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),['styles.css']);
  }
  await page.waitForLoadState('networkidle');
@@ -97,7 +97,7 @@ async function render(width,name,revision,dataRevision,pagePath='/'){
  await state(app.page,name==='preview-error'?'reader':name);
  if(name==='preview-error'){
   await app.page.locator('#preview-state').selectOption('error');
-  await app.page.waitForFunction(()=>notamTransport?.error&&notamTransport.snapshot&&!notamTransport.refreshing);
+  await app.page.waitForFunction(()=>document.querySelector('#coverage-KMEM')?.textContent.includes('Showing retained snapshot')&&document.querySelector('[data-notam-reload="MEM"]')?.getAttribute('aria-disabled')==='false');
  }
  const png=await imageOf(app.page);
  const computed=await app.page.evaluate(()=>{

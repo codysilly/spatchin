@@ -1,3 +1,4 @@
+const {loadStandaloneModule}=require('./dashboard-module-support.cjs');
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
@@ -13,7 +14,8 @@ for(const width of [1440,390])test(`collection metadata and visible reload warni
  try{
   await page.setContent('<main id="reader"></main>');
   await page.addStyleTag({content:readFileSync(join(__dirname,'../styles.css'),'utf8')});
-  for(const file of ['notam-reader.js','notam-snapshots.js'])await page.addScriptTag({content:readFileSync(join(__dirname,'..',file),'utf8')});
+  await loadStandaloneModule(page,'notam-reader.js',['NotamReader']);
+  await loadStandaloneModule(page,'notam-snapshots.js',['NotamSnapshots']);
   const result=await page.evaluate(async()=>{
    const warning='Fixed snapshot <unsafe>. Airport coverage UNKNOWN. No automatic updates.';
    const text='SYNTHETIC RWY 18L\r\ntext retained\rverbatim';

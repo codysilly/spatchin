@@ -1,4 +1,5 @@
 'use strict';
+const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const {pythonCommand}=require('./python-launcher.cjs');
@@ -12,7 +13,7 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
  await context.route('**/data/metars.json*',r=>r.fulfill({json:{updated_utc:new Date().toISOString(),metars:[{icaoId:'KIND',obsTime:observed,wdir:180,wspd:8,fltCat:'VFR',rawOb:'KIND SYNTHETIC OFFLINE METAR'}]}}));
  page.on('dialog',async d=>{dialogs.push(d.message());await d.dismiss();});
  try{
-  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>typeof AirportCatalog!=='undefined');
   assert.equal(await page.locator('#airport-options option').count(),130);
   await page.fill('#iata','ZZZ');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/approved C070 catalog/);
   await page.fill('#iata','IND');await page.locator('#add-form button').click();assert.deepEqual(await page.evaluate(()=>airports),['MEM','IND']);
@@ -27,7 +28,7 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
   await page.fill('#iata','MEM');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/Maximum 30/);
   assert.equal(await page.locator('.airport').count(),30);
   await page.evaluate(()=>{airports=['MEM'];render();});await page.locator('[data-remove="MEM"]').click();
-  assert.equal(await page.locator('.airport').count(),0);await page.reload();assert.equal(await page.locator('.airport').count(),0);
+  assert.equal(await page.locator('.airport').count(),0);await page.reload();await page.waitForFunction(()=>typeof render==='function');assert.equal(await page.locator('.airport').count(),0);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'[]');
  }finally{await context.close();}
 });
@@ -41,7 +42,7 @@ for(const width of [1440,390])test(`inline rows, keyboard, exact text, SCAN, ind
  await context.route('**/data/tafs.json*',r=>r.fulfill({status:404,body:''}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const a=page.locator('[data-reader-open="KMEM-18R"]'),b=page.locator('[data-reader-open="KMEM-36L"]');
   await a.focus();await page.keyboard.press('Enter');await b.focus();await page.keyboard.press('Space');
   assert.equal(await a.getAttribute('aria-expanded'),'true');assert.equal(await b.getAttribute('aria-expanded'),'true');
