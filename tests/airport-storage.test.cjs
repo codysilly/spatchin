@@ -130,3 +130,21 @@ test('reorder saves existing airport preference order without changing membershi
  assert.deepEqual(app.airports(),['OAK','IND','MEM']);
  assert.deepEqual(load(Object.fromEntries(app.stored)).airports(),['OAK','IND','MEM']);
 });
+
+test('airport ordering helpers normalize and move without storage or DOM side effects',()=>{
+ const app=load({[NEW]:'["MEM","IND","OAK"]'});
+ const result=JSON.parse(app.run(`JSON.stringify((()=>{
+  const input=['OAK','MEM','OAK','ind',null,'IND'];
+  const normalized=AirportOrder.normalize(input);
+  const changed=AirportOrder.move(normalized,'IND',0);
+  const rejected=[AirportOrder.move(normalized,'IND',0),AirportOrder.move(normalized,'MEM',-1),AirportOrder.move(normalized,'MEM',1.5),AirportOrder.move(normalized,'XXX',0)];
+  return {input,normalized,changed,rejected,invalid:AirportOrder.normalize({})};
+ })())`));
+ assert.deepEqual(result.input,['OAK','MEM','OAK','ind',null,'IND']);
+ assert.deepEqual(result.normalized,['IND','OAK','MEM']);
+ assert.equal(result.changed,true);
+ assert.deepEqual(result.rejected,[false,false,false,false]);
+ assert.equal(result.invalid,null);
+ assert.deepEqual(app.airports(),['MEM','IND','OAK']);
+ assert.deepEqual(app.writes,[]);
+});

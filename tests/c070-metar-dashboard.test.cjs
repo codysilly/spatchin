@@ -166,3 +166,35 @@ test('published TAF selection retains newer and richer reports and rejects inval
  assert.throws(()=>select(null),/Invalid published TAF snapshot/);
  assert.equal(app.run('tafData'),null);
 });
+
+test('airport card markup consumes explicit data and retains warnings and escaping',async()=>{
+ const app=await load([],snapshot([]));
+ const result=JSON.parse(app.run(`JSON.stringify((()=>{
+  const wind={direction:90,speed:12},state={wind,alternatives:[]};
+  const context={airportCount:1,airportInfo:{MEM:{name:'Synthetic <airport>'}},
+   metars:{MEM:{raw:'SYNTHETIC <report>',wind:{direction:180,speed:4}}},
+   ends:()=>['09'],forecastModel:()=>({forecast:true,state}),metarFeedError:true,
+   categoryMarkup:()=>({tag:'<span>Category test</span>'}),esc,diagramHeader:()=>'',
+   metarBadge:()=>'',metarStatus:()=>'<span>METAR TEST</span>',tafBlock:()=>'',
+   atisBlock:()=>'',reader:{summary:()=>'<p>Coverage UNKNOWN</p>',row:()=>'<tr><td>NOTAM test</td></tr>'},
+   icao:()=> 'KMEM',timeControl:()=>'',
+   runwayRow:(code,id,w,s)=>{if(code!=='MEM'||id!=='09'||w!==wind||s!==state)throw Error('Incorrect forecast input');return '<tr><td>09</td></tr>';},
+   notamTransportBlock:()=>''};
+  const forecast=airportCardMarkup('MEM',context);
+  const missing=airportCardMarkup('MEM',{...context,airportCount:2,airportInfo:{},metars:{},ends:()=>[],forecastModel:()=>({forecast:false}),reader:null});
+  return {forecast,missing};
+ })())`));
+ assert.match(result.forecast,/Synthetic &lt;airport&gt;/);
+ assert.match(result.forecast,/SYNTHETIC &lt;report&gt;/);
+ assert.match(result.forecast,/Feed refresh failed; showing retained observation/);
+ assert.match(result.forecast,/Coverage UNKNOWN/);
+ assert.match(result.forecast,/class="rw-table forecast-table"/);
+ assert.match(result.forecast,/NOTAM test/);
+ assert.match(result.forecast,/title="Drag to reorder; arrow keys also work" disabled/);
+ assert.match(result.missing,/Airport not yet configured/);
+ assert.match(result.missing,/Observation unavailable/);
+ assert.match(result.missing,/Runway data pending/);
+ assert.doesNotMatch(result.missing,/Feed refresh failed; showing retained observation/);
+ assert.doesNotMatch(result.missing,/title="Drag to reorder; arrow keys also work" disabled/);
+ assert.equal(app.run('airports.length'),0);
+});
