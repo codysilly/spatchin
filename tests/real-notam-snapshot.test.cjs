@@ -1,7 +1,7 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs'),{join}=require('node:path');
-const snapshots=require('../notam-snapshots.js'),reader=require('../notam-reader.js');
+const snapshots=require('../notam-snapshots.js').NotamSnapshots,reader=require('../notam-reader.js').NotamReader;
 
 test('published KMEM snapshot retains real display data without private capture metadata',()=>{
  const data=snapshots.validate(JSON.parse(readFileSync(join(__dirname,'../data/notams.json'),'utf8')));

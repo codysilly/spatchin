@@ -9,9 +9,8 @@ if (lookup.size!==130 || new Set(entries.map(a=>a.icao)).size!==130 || codes.som
 const metadata = Object.fromEntries(codes.map(c=>[c,{name:lookup.get(c).name,icao:lookup.get(c).icao}]));
 const content = '/* Generated from reviewed C070 registry; run node scripts/build_airport_catalog.mjs. */\n'+
  "'use strict';\n"+
- 'const AirportCatalog=Object.freeze('+JSON.stringify(codes)+');\n'+
- 'const AirportMetadata=Object.freeze('+JSON.stringify(metadata,null,2)+');\n'+
- "if(typeof module!=='undefined')module.exports=AirportCatalog;\n";
+ 'export const AirportCatalog=Object.freeze('+JSON.stringify(codes)+');\n'+
+ 'export const AirportMetadata=Object.freeze('+JSON.stringify(metadata,null,2)+');\n';
 const output=file('airport-catalog.js');
 if(process.argv.includes('--check')){
  if(readFileSync(output,'utf8')!==content)throw Error('Airport catalog differs from reviewed registry');

@@ -1,3 +1,4 @@
+const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
@@ -30,7 +31,7 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:runways}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.checked_utc&&!notamTransport.refreshing&&ends('MEM').length===8);
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.checked_utc&&!notamTransport.refreshing&&ends('MEM').length===8);
   assert.equal(requests,1);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),8);
   await page.locator('[data-reader-open="KMEM-18L"]').click();
   const panel=page.locator('#reader-KMEM-18L');assert.match(await panel.innerText(),/lighting report/);
@@ -56,7 +57,7 @@ test('first-load 404 is unavailable; absent MEM inventory does not fabricate run
  await context.route('**/data/notams.json',route=>route.fulfill({status:404,body:''}));
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));delete legacy.airports.MEM;delete legacy.airport_metadata;
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:legacy}));
- try{await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
+ try{await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
 });
 for(const width of [1440,390])test(`published MEM NASR inventory and source provenance at ${width}px`,async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
@@ -65,7 +66,7 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[]}}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
-  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row > td:nth-child(2), .rw-table > tbody > tr.runway-row > td:nth-child(3)').allTextContents(),Array(16).fill('—'));
   // Bearing tooltips apply to computed components; supply wind only in this test.

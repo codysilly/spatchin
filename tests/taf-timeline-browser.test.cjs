@@ -1,4 +1,5 @@
 'use strict';
+const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
@@ -51,7 +52,7 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
  await context.route('**/data/notams.json*',route=>route.fulfill({json:{retrieved_utc:new Date(now).toISOString(),
   airports:{KMEM:{completeness:'UNKNOWN',notices:[]}}}}));
  try{
-  await page.goto(base+'/dashboard/');
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>typeof forecastTimeline!=='undefined'&&tafData?.tafs?.[0]?.fcsts?.length===4);
   const mem=page.locator('[data-airport="MEM"]');
   assert.match(await mem.locator('.taf-raw').innerText(),/SYNTHETIC 27012KT/);

@@ -15,6 +15,7 @@ test('public homepage shows full dashboard with prominent unvalidated warning',(
  assert.match(homepage,/WORK IN PROGRESS\. Under development and not yet validated\./);
  assert.match(homepage,/src="app\.js"/);
  assert.match(homepage,/src="scan\.js"/);
- assert.match(homepage,/src="notam-snapshots\.js"/);
+ assert.match(readFileSync('app.js','utf8'),/import\('\.\/notam-snapshots\.js'\)/);
+ assert.doesNotMatch(homepage,/src="notam-snapshots\.js"/);
  assert.doesNotMatch(homepage,/Not cleared for takeoff/);
 });

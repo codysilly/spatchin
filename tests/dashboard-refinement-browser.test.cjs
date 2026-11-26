@@ -1,4 +1,5 @@
 'use strict';
+const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
 const {pythonCommand}=require('./python-launcher.cjs');
@@ -16,7 +17,7 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
  let failed=false;
  await context.route('**/data/notams.json',r=>failed?r.fulfill({status:503,body:'suppressed upstream body'}):r.fulfill({json:{retrieved_utc:'2020-01-01T00:00:00Z',airports:{KMEM:{completeness:'UNKNOWN',warning,notices:[...notices,{number:'12/1',text:'SYNTHETIC RWY 18R independent disclosure'}]},KLAX:{completeness:'UNKNOWN',notices:[]}}}}));
  try{
-  await page.goto(base+'/dashboard/');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
+  await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const link=page.locator('[data-airport="MEM"] .airport-head a');
   assert.equal(await link.getAttribute('href'),'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF');
   assert.equal(await link.getAttribute('target'),'_blank');assert.equal(await link.getAttribute('rel'),'noopener');

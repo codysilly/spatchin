@@ -23,8 +23,4 @@ export default [
       'valid-typeof': 'error',
     },
   },
-  {
-    files: ['app.js', 'notam-reader.js', 'notam-snapshots.js', 'preview/*.js'],
-    languageOptions: { sourceType: 'script' },
-  },
 ];

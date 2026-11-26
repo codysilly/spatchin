@@ -1,7 +1,7 @@
 /* Generated from reviewed C070 registry; run node scripts/build_airport_catalog.mjs. */
 'use strict';
-const AirportCatalog=Object.freeze(["ABE","ABQ","AFW","ALB","ATL","ATW","AUS","BDL","BFI","BFM","BGR","BHM","BIL","BMI","BNA","BOI","BOS","BTV","BUF","BUR","BWI","CAE","CHA","CHS","CID","CLE","CLT","COS","CPR","CRP","CVG","DAY","DEN","DFW","DJT","DLH","DSM","DTW","ELP","EWR","FAR","FAT","FLL","FNT","FSD","FWA","GEG","GFK","GJT","GRR","GSO","GSP","GTF","HLN","HRL","HTS","IAD","IAH","ICT","IDA","IND","IWA","JAX","JFK","LAS","LAX","LBB","LCK","LFT","LGB","LIT","LRD","LSV","MCI","MCO","MDT","MEM","MHT","MIA","MKE","MSN","MSO","MSP","MSY","NQA","OAK","OKC","OMA","ONT","ORD","ORF","PAE","PDX","PHL","PHX","PIT","PSM","PVD","PWM","RDU","RFD","RIC","RNO","ROA","ROC","RST","RSW","SAN","SAT","SAV","SBD","SBN","SDF","SEA","SFO","SGF","SHV","SJC","SKA","SLC","SMF","SNA","STL","SWF","SYR","TLH","TPA","TUL","TUS","TYS"]);
-const AirportMetadata=Object.freeze({
+export const AirportCatalog=Object.freeze(["ABE","ABQ","AFW","ALB","ATL","ATW","AUS","BDL","BFI","BFM","BGR","BHM","BIL","BMI","BNA","BOI","BOS","BTV","BUF","BUR","BWI","CAE","CHA","CHS","CID","CLE","CLT","COS","CPR","CRP","CVG","DAY","DEN","DFW","DJT","DLH","DSM","DTW","ELP","EWR","FAR","FAT","FLL","FNT","FSD","FWA","GEG","GFK","GJT","GRR","GSO","GSP","GTF","HLN","HRL","HTS","IAD","IAH","ICT","IDA","IND","IWA","JAX","JFK","LAS","LAX","LBB","LCK","LFT","LGB","LIT","LRD","LSV","MCI","MCO","MDT","MEM","MHT","MIA","MKE","MSN","MSO","MSP","MSY","NQA","OAK","OKC","OMA","ONT","ORD","ORF","PAE","PDX","PHL","PHX","PIT","PSM","PVD","PWM","RDU","RFD","RIC","RNO","ROA","ROC","RST","RSW","SAN","SAT","SAV","SBD","SBN","SDF","SEA","SFO","SGF","SHV","SJC","SKA","SLC","SMF","SNA","STL","SWF","SYR","TLH","TPA","TUL","TUS","TYS"]);
+export const AirportMetadata=Object.freeze({
   "ABE": {
     "name": "LEHIGH VALLEY INTL",
     "icao": "KABE"
@@ -523,4 +523,3 @@ const AirportMetadata=Object.freeze({
     "icao": "KTYS"
   }
 });
-if(typeof module!=='undefined')module.exports=AirportCatalog;

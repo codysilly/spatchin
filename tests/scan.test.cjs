@@ -1,3 +1,4 @@
+const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 // Run: node --test tests/scan.test.cjs (Playwright + installed Chromium required).
 const {test, before, after, beforeEach, afterEach} = require('node:test');
 const assert = require('node:assert/strict');
@@ -24,10 +25,10 @@ beforeEach(async () => {
     external.push(route.request().url());return route.abort();
   });
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(url+'/dashboard/');
+  await installDashboardProbe(page,url);await page.goto(url+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');
   // Exercise existing aviation fixtures as a saved selection, independent of defaults.
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
-  await page.reload();
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 && Object.values(metars).some(m=>m?.wind));
 });
 afterEach(async()=>{await context.close();assert.deepEqual(errors,[]);assert.deepEqual(external,[],'No external requests');});
@@ -49,7 +50,7 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
     localStorage.setItem('spatchin-scan-v1',JSON.stringify({keywords:'MEM',enabled:true,caseSensitive:false,expanded:false,colors:{MEM:'#ffd166'}}));
   });
   const scan=await page.evaluate(()=>localStorage.getItem('spatchin-scan-v1'));
-  await page.reload();
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>!loading && metars.MEM?.error==='No valid METAR returned');
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
   assert.equal(await page.evaluate(()=>icao('MEM')),'KMEM');
@@ -82,7 +83,7 @@ test('KMEM observation loads through refresh and renders on the MEM card',async(
     localStorage.removeItem('spatchin-airports');
     localStorage.removeItem('niltsi-airports');
   });
-  await page.reload();
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');
   const card=page.locator('.airport');
   await page.waitForFunction(()=>windLabel(metars.MEM?.wind)==='180° / 12G20KT');
   assert.ok(requests>0,'Startup refresh fetched same-origin METAR JSON');
@@ -112,11 +113,11 @@ test('literal matching, case toggle, whitespace, duplicates and overlap priority
 test('distinct stable colors, saved keywords/preferences, master switch',async()=>{
   await fixture('<p>Alpha Bravo</p>');await search('Alpha, Bravo');await count(2);
   const colors=await page.locator('#fixture mark').evaluateAll(ms=>ms.map(m=>m.style.backgroundColor));assert.notEqual(colors[0],colors[1]);
-  await page.locator('#scan-case').check();await page.reload();
+  await page.locator('#scan-case').check();await page.reload();await page.waitForFunction(()=>typeof render==='function');
   assert.equal(await page.locator('#scan-terms').inputValue(),'Alpha, Bravo');assert.equal(await page.locator('#scan-case').isChecked(),true);
   assert.deepEqual(await page.locator('.scan-chip').evaluateAll(ms=>ms.map(m=>m.style.backgroundColor)),colors);
   await page.locator('#scan-enabled').uncheck();await count(0,'mark[data-scan-match]');
-  await page.reload();assert.equal(await page.locator('#scan-enabled').isChecked(),false);assert.equal(await page.locator('#scan-terms').inputValue(),'Alpha, Bravo');
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');assert.equal(await page.locator('#scan-enabled').isChecked(),false);assert.equal(await page.locator('#scan-terms').inputValue(),'Alpha, Bravo');
   await page.locator('#scan-enabled').check();await fixture('<p>Alpha Bravo</p>');await count(2);
 });
 test('navigation wraps, counts, reveals native and custom disclosures, preserves keyboard focus',async()=>{
@@ -169,9 +170,9 @@ test('removed airport details and technical metadata are absent from SCAN',async
 });
 
 test('corrupt or denied storage does not prevent operation',async()=>{
-  await page.evaluate(()=>localStorage.setItem('spatchin-scan-v1','{broken'));await page.reload();await search('METAR');assert.ok(await page.locator('mark').count()>0);
+  await page.evaluate(()=>localStorage.setItem('spatchin-scan-v1','{broken'));await page.reload();await page.waitForFunction(()=>typeof render==='function');await search('METAR');assert.ok(await page.locator('mark').count()>0);
   await page.addInitScript(()=>{Storage.prototype.getItem=()=>{throw Error('denied')};Storage.prototype.setItem=()=>{throw Error('denied')};});
-  await page.reload();await search('ATIS');assert.ok(await page.locator('mark').count()>0);
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');await search('ATIS');assert.ok(await page.locator('mark').count()>0);
 });
 test('dark dashboard screenshots and narrow-screen toolbar',async()=>{
   await search('METAR, ATIS, 04L');await page.screenshot({path:join(screenshots,'scan-desktop.png'),fullPage:true});
@@ -218,7 +219,7 @@ test('collapse preserves highlights, selected match, preferences and dashboard c
   await page.locator('#scan-next').click();assert.equal(await page.locator('#scan-count').textContent(),'2 / 2 matches');
   await page.locator('#scan-case').check();assert.equal(await page.locator('#scan-keyword-count').textContent(),'2 active keywords');
   await page.locator('#scan-enabled').uncheck();assert.equal(await page.locator('#scan-keyword-count').textContent(),'0 active keywords');
-  await page.locator('#scan-toggle').click();await page.reload();
+  await page.locator('#scan-toggle').click();await page.reload();await page.waitForFunction(()=>typeof render==='function');
   assert.equal(await page.locator('#scan-panel').isHidden(),true);
   await page.locator('#scan-toggle').click();
   assert.equal(await page.locator('#scan-terms').inputValue(),'ZEBRA, zebra, ,');
@@ -228,11 +229,11 @@ test('collapse preserves highlights, selected match, preferences and dashboard c
 
 test('saved searches highlight while collapsed and older preferences migrate safely',async()=>{
   await page.evaluate(()=>localStorage.setItem('spatchin-scan-v1',JSON.stringify({keywords:'METAR, ATIS',enabled:true,caseSensitive:false,colors:{METAR:'#ffd166'}})));
-  await page.reload();
+  await page.reload();await page.waitForFunction(()=>typeof render==='function');
   assert.equal(await page.locator('#scan-panel').isHidden(),true);
   await page.waitForFunction(()=>document.querySelectorAll('#cards mark').length>3);
   assert.equal(await page.locator('#scan-keyword-count').textContent(),'2 active keywords');
-  await page.locator('#scan-toggle').click();await page.reload();
+  await page.locator('#scan-toggle').click();await page.reload();await page.waitForFunction(()=>typeof render==='function');
   assert.equal(await page.locator('#scan-panel').isVisible(),true);
   assert.equal(await page.locator('#scan-terms').inputValue(),'METAR, ATIS');
 });

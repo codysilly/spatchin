@@ -1,10 +1,8 @@
 // Offline: execute the actual dashboard in a VM with storage/DOM stubs and no network.
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {readFileSync} = require('node:fs');
-const {join} = require('node:path');
+const {mountInVM}=require('./dashboard-module-support.cjs');
 const vm = require('node:vm');
-const source = readFileSync(join(__dirname, '../app.js'), 'utf8');
 const NEW = 'spatchin-airports', OLD = 'niltsi-airports';
 const defaults = ['MEM'];
 test('MEM is the only fallback, maps to KMEM, and does not write preferences', () => {
@@ -44,10 +42,10 @@ function load(values = {}, {readFailures = [], writeFails = false, unavailable =
       },
     };
   }});
-  vm.runInContext(source, context);
+  const {run}=mountInVM(context);
   return {stored, writes, reads,
-    airports: () => JSON.parse(vm.runInContext('JSON.stringify(airports)', context)),
-    run: code => vm.runInContext(code, context),
+    airports: () => JSON.parse(run('JSON.stringify(airports)')),
+    run,
   };
 }
 test('new preferences take precedence and do not read or overwrite legacy or SCAN', () => {

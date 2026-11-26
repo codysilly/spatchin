@@ -1,6 +1,9 @@
 /* Isolated transport simulation. Only snapshot-loader.html loads this file. */
+import {SPATCHIN_SYNTHETIC_PREVIEW} from './fixtures.js';
+export {SPATCHIN_SYNTHETIC_PREVIEW};
 SPATCHIN_SYNTHETIC_PREVIEW.useTransport=true;
 let snapshotPreviewMode='snapshot';
+export function setSnapshotPreviewMode(value){snapshotPreviewMode=value;}
 SPATCHIN_SYNTHETIC_PREVIEW.fetchSnapshot=async()=>{
  if(snapshotPreviewMode==='error')return {ok:false,status:503};
  if(snapshotPreviewMode==='unavailable')return {ok:false,status:404};

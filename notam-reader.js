@@ -1,6 +1,6 @@
 /* Reading only: text references do not establish applicability or availability. */
 'use strict';
-const NotamReader = (() => {
+export const NotamReader = (() => {
  // Character references avoid HTML's CR/CRLF normalization of source text.
  const esc=s=>String(s??'Not supplied').replace(/[&<>"'\r]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\r':'&#13;'}[c]));
  let snapshot=null, error=null;
@@ -67,4 +67,3 @@ const NotamReader = (() => {
  function set(data,problem=null){snapshot=data;error=problem;}
  return {references,records,airportRecords,compare,availability,summary,cell,row,localTexts,before,after,set};
 })();
-if(typeof module!=='undefined')module.exports=NotamReader;
