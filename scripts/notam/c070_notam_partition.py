@@ -14,7 +14,7 @@ from normalize_notam_snapshot import normalize
 DEFAULT_MAX_INPUT_BYTES = 64 * 1024 * 1024
 DEFAULT_MAX_OUTPUT_BYTES = 256 * 1024 * 1024
 VERSIONED_REGISTRY = (
-    Path(__file__).resolve().parents[1] / "docs/reference/c070-airport-registry.json"
+    Path(__file__).resolve().parents[2] / "docs/reference/c070-airport-registry.json"
 )
 
 
@@ -27,7 +27,7 @@ def _encoded_size(value):
 
 
 def c070_codes(path=None):
-    path = path or Path(__file__).resolve().parents[1] / "docs/reference/c070-airports.csv"
+    path = path or Path(__file__).resolve().parents[2] / "docs/reference/c070-airports.csv"
     codes = [
         line.strip() for line in Path(path).read_text(encoding="utf-8").splitlines() if line.strip()
     ]

@@ -13,7 +13,7 @@ fixture is a labeled subset of that example, not a real response capture.
 Run from the repository root, using actual capture provenance:
 
 ```sh
-python3 -B scripts/normalize_notam_snapshot.py /path/to/local-capture.json \
+python3 -B scripts/notam/normalize_notam_snapshot.py /path/to/local-capture.json \
   --airport KMEM --location KMEM --retrieved-utc 'ACTUAL_RETRIEVAL_TIME'
 ```
 

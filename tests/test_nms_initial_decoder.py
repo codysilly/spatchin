@@ -5,7 +5,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts" / "notam"
 sys.path.insert(0, str(SCRIPTS))
 import nms_initial_decoder as decoder
 from nms_initial_decoder import (InitialDecodeError, assemble_synthetic,

@@ -20,7 +20,7 @@ ICAO identifier is constructed by prefixing an IATA code.
 
 Every registry entry explicitly keeps METAR, ATIS, runway, and NOTAM coverage
 `UNKNOWN`. Registry membership does not enable any source or operational claim.
-`scripts/build_c070_registry.py` can reproduce the compact registry and exception
+`scripts/notam/build_c070_registry.py` can reproduce the compact registry and exception
 report from saved public source CSVs; it performs no network activity itself.
 
 The private DOMESTIC response is not an input to this repository and must never

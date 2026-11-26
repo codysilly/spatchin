@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'scripts' / 'notam'))
 
 from build_c070_registry import NASR_COLUMNS, OURAIRPORTS_COLUMNS, build, read_csv
 from c070_notam_partition import c070_codes, load_registry, load_versioned_registry

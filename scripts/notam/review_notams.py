@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from notam_review_helpers import FeedError, assert_public_source
 from notam_review import AIRPORTS, KINDS, build_review
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 MAX_BYTES = 8 * 1024 * 1024
 
 

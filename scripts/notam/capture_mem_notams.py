@@ -18,7 +18,7 @@ from capture_storage import StorageError, persist_receipt, platform_storage
 
 AUTH_URL = "https://api-nms.aim.faa.gov/v1/auth/token"
 DATA_URL = "https://api-nms.aim.faa.gov/nmsapi/v1/notams?location=KMEM"
-REPOSITORY = Path(__file__).resolve().parents[1]
+REPOSITORY = Path(__file__).resolve().parents[2]
 
 
 class CaptureError(Exception):

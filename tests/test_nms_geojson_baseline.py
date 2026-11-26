@@ -2,12 +2,14 @@
 import gzip
 import json
 import socket
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.nms_geojson_baseline import (CandidateError, ORDER, assemble_candidate,
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "notam"))
+from nms_geojson_baseline import (CandidateError, ORDER, assemble_candidate,
     inspect_bytes, read_bounded, signature_report)
 
 

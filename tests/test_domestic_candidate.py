@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'
+SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'/'notam'
 sys.path.insert(0, str(SCRIPTS))
 from capture_domestic_candidate import (OPERATION, default_store_path, operation_digest,
                                         review)

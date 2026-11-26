@@ -9,7 +9,7 @@ import tempfile
 import unittest
 import urllib.request
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts' / 'notam'))
 from capture_mem_notams import (AUTH_URL, DATA_URL, CaptureError, NoRedirect,
                                 capture, check_reservation)
 from capture_storage import platform_storage

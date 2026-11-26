@@ -11,7 +11,7 @@ from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
 
-SCRIPTS = Path(__file__).resolve().parents[1] / 'scripts'
+SCRIPTS = Path(__file__).resolve().parents[1] / 'scripts' / 'notam'
 sys.path.insert(0, str(SCRIPTS))
 
 from capture_global_delta import (STORAGE_REQUIRED_BYTES, execute, operation, operation_digest,

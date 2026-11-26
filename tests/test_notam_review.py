@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'scripts'))
+sys.path.insert(0,str(ROOT/'scripts'/'notam'))
 from notam_review_helpers import FeedError
 from notam_review import build_review, interpret
 from review_notams import load_json, main, render_html, render_text
@@ -26,7 +26,7 @@ class ReviewTests(unittest.TestCase):
                    'notam_rules', 'notam_review'}
         for name in ('review_notams.py', 'notam_review.py',
                      'notam_review_helpers.py', 'notam_rules.py'):
-            module = ast.parse((ROOT/'scripts'/name).read_bytes())
+            module = ast.parse((ROOT/'scripts'/'notam'/name).read_bytes())
             for node in ast.walk(module):
                 if isinstance(node, ast.Import):
                     self.assertTrue(all(alias.name in allowed for alias in node.names))

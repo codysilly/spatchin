@@ -11,7 +11,7 @@ import threading
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts' / 'notam'))
 from capture_storage import PosixStorage, StorageError, persist_receipt
 from test_mem_capture import ENV, NOW
 from capture_mem_notams import capture, CaptureError
