@@ -71,3 +71,35 @@ test('synthetic preview loads current stylesheet without external requests',asyn
   assert.deepEqual(external,[]);
  }finally{await context.close();}
 });
+
+for(const entry of ['/','/dashboard/','/preview/','/preview/snapshot-loader.html'])test('SCAN module starts and highlights literal text at '+entry,async()=>{
+ const context=await browser.newContext({viewport:{width:1440,height:900}});
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);return route.continue();
+ });
+ try{
+  await page.goto(origin+entry);
+  await page.waitForFunction(()=>document.querySelector('#scan-keyword-count')?.textContent==='0 active keywords');
+  const moduleResult=await page.evaluate(async()=>{
+   const mod=await import('/scan.js');
+   const fixture=document.createElement('p');
+   fixture.id='scan-module-test';
+   fixture.textContent='ZQModule+123 zqmodule+123 ZQModule123';
+   document.querySelector('main').append(fixture);
+   return {exports:Object.keys(mod).sort(),global:typeof window.literalPattern};
+  });
+  assert.deepEqual(moduleResult,{exports:['literalPattern','matchingKeyword'],global:'undefined'});
+  await page.locator('#scan-toggle').click();
+  await page.locator('#scan-terms').fill('ZQModule+123');
+  await page.waitForFunction(()=>document.querySelectorAll('#scan-module-test mark').length===2);
+  await page.locator('#scan-case').check();
+  await page.waitForFunction(()=>document.querySelectorAll('#scan-module-test mark').length===1);
+  assert.equal(await page.locator('#scan-module-test mark').textContent(),'ZQModule+123');
+  assert.equal(requests.filter(path=>path==='/scan.js').length,1);
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+});
