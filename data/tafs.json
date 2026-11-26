@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T15:38:34.891327Z",
+  "updated_utc": "2026-11-26T15:48:37.876263Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -1094,30 +1094,20 @@
     },
     {
       "icaoId": "KBWI",
-      "rawTAF": "TAF KBWI 261120Z 2612/2718 05020G39KT 4SM RA FEW009 OVC012 WS020/06050KT FM261400 06030G49KT 1SM RA BKN007 OVC015 WS020/07065KT FM262100 07019G37KT 3SM -RA BKN005 OVC013 WS015/10045KT FM262300 07018G35KT 3SM -RA BKN005 OVC013 FM270200 15011G21KT 4SM BR BKN005 OVC010 FM270700 20014G27KT P6SM BKN015 OVC020 FM271400 23015G29KT P6SM SCT015 BKN020",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
+      "rawTAF": "TAF KBWI 261541Z 2616/2718 06029G40KT 2SM BR OVC015 WS020/07065KT FM262100 07019G37KT 3SM -RA BKN005 OVC013 WS015/10045KT FM262300 07018G35KT 3SM -RA BKN005 OVC013 FM270200 15011G21KT 4SM BR BKN005 OVC010 FM270700 20014G27KT P6SM BKN015 OVC020 FM271400 23015G29KT P6SM SCT015 BKN020",
+      "issueTime": "2026-11-26T15:41:00.000Z",
+      "validTimeFrom": 1795708800,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795708800,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 50,
-          "wspd": 20,
-          "wgst": 39
-        },
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795726800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
           "wdir": 60,
-          "wspd": 30,
-          "wgst": 49
+          "wspd": 29,
+          "wgst": 40
         },
         {
           "timeFrom": 1795726800,
@@ -2868,30 +2858,20 @@
     },
     {
       "icaoId": "KIAD",
-      "rawTAF": "TAF KIAD 261120Z 2612/2718 04017G31KT 6SM -RA BKN013 OVC019 WS020/07050KT FM261300 05026G47KT 1SM RA BKN007 OVC015 WS020/07060KT FM261800 05023G42KT 2SM RA BKN007 OVC012 WS020/08050KT FM262100 07018G32KT 3SM -RA BR OVC005 FM270200 16011G22KT 4SM BR BKN005 OVC008 FM270700 21016G29KT P6SM BKN010 OVC015 FM271400 24015G28KT P6SM FEW015 SCT025",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
+      "rawTAF": "TAF KIAD 261538Z 2616/2718 06022G37KT 4SM -RA BKN007 OVC015 WS020/07060KT FM261800 05023G42KT 2SM RA BKN007 OVC012 WS020/08050KT FM262100 07018G32KT 3SM -RA BR OVC005 FM270200 16011G22KT 4SM BR BKN005 OVC008 FM270700 21016G29KT P6SM BKN010 OVC015 FM271400 24015G28KT P6SM FEW015 SCT025",
+      "issueTime": "2026-11-26T15:38:00.000Z",
+      "validTimeFrom": 1795708800,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795698000,
+          "timeFrom": 1795708800,
+          "timeTo": 1795716000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 40,
-          "wspd": 17,
-          "wgst": 31
-        },
-        {
-          "timeFrom": 1795698000,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 50,
-          "wspd": 26,
-          "wgst": 47
+          "wdir": 60,
+          "wspd": 22,
+          "wgst": 37
         },
         {
           "timeFrom": 1795716000,
