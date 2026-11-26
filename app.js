@@ -416,23 +416,7 @@ async function refresh(){
   const response=await fetch(`./data/metars.json?t=${Date.now()}`,{cache:'no-store'});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
-  if(!Array.isArray(data.metars))throw new Error('Unexpected METAR response');
-  const updated=Date.parse(data.updated_utc||'');
-  if(!Number.isFinite(updated)||updated>Date.now()+5*60*1000)throw new Error('Invalid METAR retrieval timestamp');
-  const found=new Set();
-  for(const m of data.metars){
-   if(!m||typeof m!=='object'||typeof m.icaoId!=='string'||typeof m.rawOb!=='string'||!m.rawOb.trim())continue;
-   if(typeof m.obsTime==='number'&&!Number.isFinite(new Date(m.obsTime*1000).getTime()))continue;
-   const code=targets.find(c=>icao(c)===m.icaoId);
-   if(!code)continue;
-   const parsed=parseMetar(m);
-   if(!parsed.wind||!Number.isFinite(Date.parse(parsed.observed||'')))continue;
-   const previous=metars[code];
-   if(!previous?.observed || Date.parse(parsed.observed)>=Date.parse(previous.observed))metars[code]=parsed;
-   found.add(code);
-  }
-  for(const code of targets){if(!found.has(code)&&!metars[code])metars[code]={error:'No valid METAR returned',wind:null};}
-  if(!lastFetch || updated>=Date.parse(lastFetch))lastFetch=data.updated_utc;
+  lastFetch=PublishedSnapshots.metars(data,targets,metars,lastFetch,icao,parseMetar,Date.now);
   metarFeedError=false;
  }catch(e){
   metarFeedError=true;
@@ -443,6 +427,29 @@ async function refresh(){
 document.getElementById('add-form').addEventListener('submit',e=>{e.preventDefault();const f=document.getElementById('iata'),code=f.value.trim().toUpperCase();if(!approvedCatalog.includes(code)){alert('Choose an IATA code from the approved C070 catalog.');return;}if(airports.includes(code)){alert(code+' is already displayed.');return;}if(airports.length>=30){alert('Maximum 30 airports.');return;}airports.push(code);save();render();f.value='';refresh();});
 // Published snapshot validation and selection; no fetch, DOM, or application state.
 const PublishedSnapshots=(()=>{
+ function metars(data,targets,records,previousFetch,stationFor,parse,clock){
+  if(!Array.isArray(data.metars))throw new Error('Unexpected METAR response');
+  const updated=Date.parse(data.updated_utc||'');
+  if(!Number.isFinite(updated)||updated>clock()+5*60*1000)throw new Error('Invalid METAR retrieval timestamp');
+  const found=new Set();
+  for(const m of data.metars){
+   if(!m||typeof m!=='object'||typeof m.icaoId!=='string'||typeof m.rawOb!=='string'||!m.rawOb.trim())continue;
+   if(typeof m.obsTime==='number'&&!Number.isFinite(new Date(m.obsTime*1000).getTime()))continue;
+   const code=targets.find(c=>stationFor(c)===m.icaoId);
+   if(!code)continue;
+   const parsed=parse(m);
+   if(!parsed.wind||!Number.isFinite(Date.parse(parsed.observed||'')))continue;
+   const previous=records[code];
+   if(!previous?.observed || Date.parse(parsed.observed)>=Date.parse(previous.observed))records[code]=parsed;
+   found.add(code);
+  }
+  for(const code of targets){if(!found.has(code)&&!records[code])records[code]={error:'No valid METAR returned',wind:null};}
+  return !previousFetch || updated>=Date.parse(previousFetch)?data.updated_utc:previousFetch;
+ }
+ function atis(data){
+  if(!data.airports||!data.retrieved_utc)throw new Error('Invalid ATIS snapshot');
+  return data;
+ }
  function runways(data,catalog){
   if(data.heading_reference!=='TRUE'||!data.airports||!data.effective_date)throw new Error('Invalid FAA runway data');
   const eligible=new Set(catalog);
@@ -487,7 +494,7 @@ const PublishedSnapshots=(()=>{
   if(!accepted)throw new Error('No valid TAFs in published snapshot');
   return {tafs:[...available.values()],updated_utc:data.updated_utc};
  }
- return {runways,tafs};
+ return {metars,atis,runways,tafs};
 })();
 async function refreshRunways(){
  if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
@@ -503,8 +510,7 @@ async function refreshAtis(){
   const response=await fetch(`./data/atis.json?t=${Date.now()}`,{cache:'no-store'});
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const data=await response.json();
-  if(!data.airports||!data.retrieved_utc)throw new Error('Invalid ATIS snapshot');
-  atisData=data;atisRetrieved=data.retrieved_utc;render();
+  atisData=PublishedSnapshots.atis(data);atisRetrieved=data.retrieved_utc;render();
  }catch(e){console.info('ATIS snapshot unavailable:',e.message);}
 }
 async function refreshTafs(){
