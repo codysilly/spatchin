@@ -1,6 +1,6 @@
 'use strict';
 // Pure display helper. The dashboard reads published JSON, never the live AWC API.
-const TafReader=(()=>{
+export const TafReader=(()=>{
   const HOUR=3600000,STALE_MS=6*HOUR;
   function time(value){
     if(typeof value==='number')return Number.isFinite(value)?value*1000:NaN;
@@ -49,4 +49,3 @@ const TafReader=(()=>{
   }
   return {valid,render,time,formatRaw,STALE_MS};
 })();
-if(typeof module!=='undefined'&&module.exports)module.exports=TafReader;

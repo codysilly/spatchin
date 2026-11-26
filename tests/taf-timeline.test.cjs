@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const T = require('../taf-timeline.js');
+const { TafTimeline: T } = require('../taf-timeline.js');
 const Z = (t) => Date.parse('2026-11-' + t + 'Z') / 1000;
 const NOW = Z('20T08:00:00') * 1000;
 function period(kind, from, to, wind = {}, extra = {}) {
