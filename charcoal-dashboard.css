@@ -27,9 +27,9 @@ input,select,button{border-radius:0!important;box-shadow:none!important;backgrou
 a,.atis-full summary,.airport-notam-list>summary{color:var(--blue)}
 a:hover{color:#8deaff}
 .wip-banner{background:#332817;color:#ffe3a4;border:0;border-bottom:2px solid #ffb000;font:800 clamp(16px,1.65vw,21px)/1.3 var(--font-ui);letter-spacing:.01em;padding:15px 18px;text-align:center}
-header{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 28px;min-height:69px}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 28px;}
 .brand{gap:12px}
-.brand-logo{width:30px;height:30px;object-fit:contain}
+.brand-logo{object-fit:contain}
 .brand h1{font:700 32px/1 var(--font-data,"Inconsolata",monospace);letter-spacing:.13em}
 .brand-wordmark{font-family:var(--font-data,"Inconsolata",monospace);font-size:inherit;font-weight:700;letter-spacing:.13em;color:var(--text)}
 .brand h1 .version{font:400 13px/1 var(--font-data,"Inconsolata",monospace);margin-left:0;letter-spacing:0;color:var(--muted)}
@@ -55,15 +55,15 @@ button{background:transparent;border:1px solid var(--blue);color:var(--blue);pad
 button:hover{background:#243034}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
 .airport{min-width:0;overflow:hidden;background:var(--bg);border:1px solid var(--line);padding:20px 22px 22px}
-.airport-head{display:block;position:relative;padding:0 0 20px;border:0;min-height:0}
+.airport-head{border:0;}
 .airport-head>div:first-child{min-width:0;flex:none}
-.icao{font:800 clamp(70px,7.4vw,96px)/.95 var(--font-ui,"Overpass",sans-serif);letter-spacing:-.055em;color:var(--text);white-space:nowrap}
-.category-tag{display:inline-block;flex:none;align-self:flex-end;margin-bottom:3px;border:1px solid var(--line);padding:3px 10px 1px;font:800 22px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.08em;white-space:nowrap}
+.icao{font:800 clamp(70px,7.4vw,96px)/.95 var(--font-ui,"Overpass",sans-serif);color:var(--text);}
+.category-tag{display:inline-block;flex:none;margin-bottom:3px;border:1px solid var(--line);font:800 22px/1.1 var(--font-ui,"Overpass",sans-serif);white-space:nowrap}
 .category-vfr{background:var(--flight-vfr);border-color:var(--flight-vfr);color:#111}
 .category-mvfr{background:var(--flight-mvfr);border-color:var(--flight-mvfr);color:#111}
 .category-ifr{background:var(--flight-ifr);border-color:var(--flight-ifr);color:#111}
 .category-lifr{background:var(--flight-lifr);border-color:var(--flight-lifr);color:#111}
-.category-unavailable{font-size:21px;color:var(--muted);background:transparent;border-color:var(--muted)}
+.category-unavailable{color:var(--muted);background:transparent;border-color:var(--muted)}
 .name{font:600 20px/1.2 var(--font-ui,"Overpass",sans-serif);color:var(--text);margin-top:12px;overflow-wrap:anywhere}
 .airport-diagram{position:absolute;top:4px;right:0;width:82px;max-width:26%;text-align:left;padding:0;font:600 14px/1.12 var(--font-ui,"Overpass",sans-serif)}
 .airport-diagram a{display:inline;color:var(--blue);text-decoration:underline;text-underline-offset:2px}
@@ -150,8 +150,8 @@ footer{border-color:var(--line);color:var(--muted)}
   .category-tag{font-size:18px}
 }
 @media(max-width:760px){
-  header{padding:12px 16px;min-height:56px;gap:10px}
-  .brand-logo{width:26px;height:26px}
+  header{padding:12px 16px;gap:10px}
+  
   .brand h1{font-size:25px}
   .brand h1 .version{font-size:12px}
   .clock{font-size:12px}
@@ -164,7 +164,7 @@ footer{border-color:var(--line);color:var(--muted)}
   .cards{grid-template-columns:minmax(0,1fr);gap:14px}
   .airport{padding:16px}
   .airport-head{padding-bottom:20px}
-.icao{font-size:clamp(62px,18vw,80px)}
+
   .category-tag{font-size:17px;padding:3px 7px 2px}
   .airport-diagram{width:80px;top:2px;font-size:12px}
   .name{font-size:17px;margin-top:9px}
@@ -184,14 +184,14 @@ footer{border-color:var(--line);color:var(--muted)}
 @media(max-width:400px){
   header{padding:10px 10px;gap:6px}
   .brand{gap:7px}
-  .brand-logo{width:23px;height:23px}
+  
   .brand h1{font-size:21px;letter-spacing:.07em}
   .brand-wordmark{letter-spacing:.07em}
   .brand h1 .version{font-size:10px}
   .clock{font-size:10px}
   .airport{padding:12px}
-  .icao{font-size:62px}
-  .category-tag{font-size:15px}
+  
+  
   .airport-diagram{width:68px}
   .rw-table>thead>tr>th:nth-child(2){width:31%}
   .rw-table>thead>tr>th:nth-child(3){width:18%}
