@@ -1,4 +1,5 @@
 """Single supervised MEM capture. No scheduler, retries, redirects, or publication."""
+
 import argparse
 import base64
 import hashlib
@@ -15,8 +16,8 @@ import uuid
 from normalize_notam_snapshot import normalize
 from capture_storage import StorageError, persist_receipt, platform_storage
 
-AUTH_URL = 'https://api-nms.aim.faa.gov/v1/auth/token'
-DATA_URL = 'https://api-nms.aim.faa.gov/nmsapi/v1/notams?location=KMEM'
+AUTH_URL = "https://api-nms.aim.faa.gov/v1/auth/token"
+DATA_URL = "https://api-nms.aim.faa.gov/nmsapi/v1/notams?location=KMEM"
 REPOSITORY = Path(__file__).resolve().parents[1]
 
 
@@ -25,17 +26,30 @@ class CaptureError(Exception):
 
     def __init__(self, code):
         allowed = {
-            'INVALID_RESERVATION_TIME', 'INVALID_RESERVATION', 'INVALID_RESERVATION_ID',
-            'INVALID_RESERVATION_WINDOW', 'QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE',
-            'RESERVATION_EXPIRED', 'PRIVATE_ABSOLUTE_OUTPUT_REQUIRED',
-            'OUTPUT_MUST_BE_OUTSIDE_REPOSITORY', 'REDIRECT_BLOCKED', 'UNAPPROVED_ENDPOINT',
-            'RESPONSE_TOO_LARGE', 'TRANSPORT_FAILED_ATTEMPT_CONSUMED', 'CREDENTIALS_MISSING',
-            'ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY', 'PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY',
-            'AUTH_HTTP_FAILURE', 'AUTH_RESPONSE_INVALID', 'DATA_HTTP_FAILURE',
-            'INLINE_RESPONSE_OR_NORMALIZATION_REJECTED', 'PRIVATE_STORAGE_FAILED_DO_NOT_RETRY',
-            'FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY', 'LOCAL_FAILURE_ATTEMPT_CONSUMED',
+            "INVALID_RESERVATION_TIME",
+            "INVALID_RESERVATION",
+            "INVALID_RESERVATION_ID",
+            "INVALID_RESERVATION_WINDOW",
+            "QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE",
+            "RESERVATION_EXPIRED",
+            "PRIVATE_ABSOLUTE_OUTPUT_REQUIRED",
+            "OUTPUT_MUST_BE_OUTSIDE_REPOSITORY",
+            "REDIRECT_BLOCKED",
+            "UNAPPROVED_ENDPOINT",
+            "RESPONSE_TOO_LARGE",
+            "TRANSPORT_FAILED_ATTEMPT_CONSUMED",
+            "CREDENTIALS_MISSING",
+            "ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY",
+            "PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY",
+            "AUTH_HTTP_FAILURE",
+            "AUTH_RESPONSE_INVALID",
+            "DATA_HTTP_FAILURE",
+            "INLINE_RESPONSE_OR_NORMALIZATION_REJECTED",
+            "PRIVATE_STORAGE_FAILED_DO_NOT_RETRY",
+            "FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY",
+            "LOCAL_FAILURE_ATTEMPT_CONSUMED",
         }
-        super().__init__(code if code in allowed else 'LOCAL_FAILURE_ATTEMPT_CONSUMED')
+        super().__init__(code if code in allowed else "LOCAL_FAILURE_ATTEMPT_CONSUMED")
 
 
 def utc_now():
@@ -44,70 +58,76 @@ def utc_now():
 
 def timestamp(value):
     try:
-        result = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if result.tzinfo is None:
             raise ValueError()
         return result.astimezone(timezone.utc)
     except (ValueError, TypeError, AttributeError):
-        raise CaptureError('INVALID_RESERVATION_TIME') from None
+        raise CaptureError("INVALID_RESERVATION_TIME") from None
 
 
 def check_reservation(reservation, now):
     if not isinstance(reservation, dict):
-        raise CaptureError('INVALID_RESERVATION')
-    required = {'schema_version': 1, 'ledger': 'SPA-26', 'state': 'RESERVED',
-                'airport': 'KMEM', 'collector': 'mem-budget',
-                'auth_attempt_limit': 1, 'data_attempt_limit': 1}
+        raise CaptureError("INVALID_RESERVATION")
+    required = {
+        "schema_version": 1,
+        "ledger": "SPA-26",
+        "state": "RESERVED",
+        "airport": "KMEM",
+        "collector": "mem-budget",
+        "auth_attempt_limit": 1,
+        "data_attempt_limit": 1,
+    }
     if any(reservation.get(key) != value for key, value in required.items()):
-        raise CaptureError('INVALID_RESERVATION')
+        raise CaptureError("INVALID_RESERVATION")
     try:
-        uuid.UUID(reservation['reservation_id'])
+        uuid.UUID(reservation["reservation_id"])
     except (KeyError, TypeError, ValueError, AttributeError):
-        raise CaptureError('INVALID_RESERVATION_ID') from None
-    not_before = timestamp(reservation.get('not_before_utc'))
-    reserved = timestamp(reservation.get('reserved_utc'))
-    expires = timestamp(reservation.get('expires_utc'))
+        raise CaptureError("INVALID_RESERVATION_ID") from None
+    not_before = timestamp(reservation.get("not_before_utc"))
+    reserved = timestamp(reservation.get("reserved_utc"))
+    expires = timestamp(reservation.get("expires_utc"))
     if reserved < not_before or expires <= reserved:
-        raise CaptureError('INVALID_RESERVATION_WINDOW')
+        raise CaptureError("INVALID_RESERVATION_WINDOW")
     if now < not_before or now < reserved:
-        raise CaptureError('QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE')
+        raise CaptureError("QUARANTINE_OR_RESERVATION_NOT_YET_ELIGIBLE")
     if now >= expires:
-        raise CaptureError('RESERVATION_EXPIRED')
-    value = reservation.get('output_dir')
+        raise CaptureError("RESERVATION_EXPIRED")
+    value = reservation.get("output_dir")
     if not isinstance(value, str) or not Path(value).is_absolute():
-        raise CaptureError('PRIVATE_ABSOLUTE_OUTPUT_REQUIRED')
+        raise CaptureError("PRIVATE_ABSOLUTE_OUTPUT_REQUIRED")
     # Preserve the lexical path so the storage backend can reject junctions and
     # symlinks instead of silently following them during resolve().
     output = Path(value).absolute()
     resolved = output.resolve()
     if resolved == REPOSITORY or REPOSITORY in resolved.parents:
-        raise CaptureError('OUTPUT_MUST_BE_OUTSIDE_REPOSITORY')
+        raise CaptureError("OUTPUT_MUST_BE_OUTSIDE_REPOSITORY")
     return output
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise CaptureError('REDIRECT_BLOCKED')
+        raise CaptureError("REDIRECT_BLOCKED")
 
 
 def send_once(request, limit):
     """One urllib request, with default proxy/CA settings; never a retry loop."""
     if request.full_url not in (AUTH_URL, DATA_URL):
-        raise CaptureError('UNAPPROVED_ENDPOINT')
+        raise CaptureError("UNAPPROVED_ENDPOINT")
     opener = urllib.request.build_opener(NoRedirect())
     try:
         with opener.open(request, timeout=30) as response:
             body = response.read(limit + 1)
             if len(body) > limit:
-                raise CaptureError('RESPONSE_TOO_LARGE')
+                raise CaptureError("RESPONSE_TOO_LARGE")
             return response.status, dict(response.headers), body
     except urllib.error.HTTPError as error:
         # Do not read or disclose error bodies, locations, credentials or headers.
-        return error.code, {}, b''
+        return error.code, {}, b""
     except CaptureError:
         raise
     except Exception:
-        raise CaptureError('TRANSPORT_FAILED_ATTEMPT_CONSUMED') from None
+        raise CaptureError("TRANSPORT_FAILED_ATTEMPT_CONSUMED") from None
 
 
 def private_write(path, content, storage=None):
@@ -121,104 +141,139 @@ def receipt_write(output, receipt, storage=None):
 def capture(reservation, *, env=None, send=send_once, clock=utc_now, storage=None):
     output = check_reservation(reservation, clock())
     env = os.environ if env is None else env
-    client_id, secret = env.get('FAA_NMS_CLIENT_ID'), env.get('FAA_NMS_CLIENT_SECRET')
+    client_id, secret = env.get("FAA_NMS_CLIENT_ID"), env.get("FAA_NMS_CLIENT_SECRET")
     if not client_id or not secret:
-        raise CaptureError('CREDENTIALS_MISSING')
+        raise CaptureError("CREDENTIALS_MISSING")
     try:
         # A used or failed attempt directory is never overwritten or reused.
         storage = storage or platform_storage()
         storage.create_attempt(output)
     except FileExistsError:
-        raise CaptureError('ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY') from None
+        raise CaptureError("ATTEMPT_DIRECTORY_EXISTS_DO_NOT_RETRY") from None
     except Exception:
-        raise CaptureError('PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY') from None
-    receipt = {'ledger': 'SPA-26', 'reservation_id': reservation['reservation_id'],
-               'auth_attempts': 0, 'data_attempts': 0, 'state': 'RESERVED',
-               'storage_backend': storage.name}
+        raise CaptureError("PRIVATE_STORAGE_SETUP_FAILED_DO_NOT_RETRY") from None
+    receipt = {
+        "ledger": "SPA-26",
+        "reservation_id": reservation["reservation_id"],
+        "auth_attempts": 0,
+        "data_attempts": 0,
+        "state": "RESERVED",
+        "storage_backend": storage.name,
+    }
     try:
         # Exercise both initial publication and replacement with zero-attempt
         # receipts before auth. The reserved directory is never removed on failure.
         receipt_write(output, receipt, storage)
         receipt_write(output, receipt, storage)
-        receipt['auth_attempts'] = 1
-        receipt['state'] = 'AUTH_ATTEMPT_RESERVED'
+        receipt["auth_attempts"] = 1
+        receipt["state"] = "AUTH_ATTEMPT_RESERVED"
         receipt_write(output, receipt, storage)
-        credentials = base64.b64encode((client_id + ':' + secret).encode()).decode()
-        request = urllib.request.Request(AUTH_URL, data=b'grant_type=client_credentials',
-                  headers={'Authorization': 'Basic ' + credentials,
-                           'Content-Type': 'application/x-www-form-urlencoded'}, method='POST')
+        credentials = base64.b64encode((client_id + ":" + secret).encode()).decode()
+        request = urllib.request.Request(
+            AUTH_URL,
+            data=b"grant_type=client_credentials",
+            headers={
+                "Authorization": "Basic " + credentials,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            method="POST",
+        )
         status, _, body = send(request, 65536)
         receipt["auth_http_status"] = status
         if status != 200:
-            raise CaptureError('AUTH_HTTP_FAILURE')
+            raise CaptureError("AUTH_HTTP_FAILURE")
         try:
-            token = json.loads(body)['access_token']
-            if not isinstance(token, str) or not token or '\n' in token or '\r' in token:
+            token = json.loads(body)["access_token"]
+            if not isinstance(token, str) or not token or "\n" in token or "\r" in token:
                 raise ValueError()
         except (ValueError, KeyError, TypeError):
-            raise CaptureError('AUTH_RESPONSE_INVALID') from None
+            raise CaptureError("AUTH_RESPONSE_INVALID") from None
         check_reservation(reservation, clock())
-        receipt['data_attempts'] = 1
-        receipt['state'] = 'DATA_ATTEMPT_RESERVED'
+        receipt["data_attempts"] = 1
+        receipt["state"] = "DATA_ATTEMPT_RESERVED"
         receipt_write(output, receipt, storage)
-        request = urllib.request.Request(DATA_URL, headers={
-            'Authorization': 'Bearer ' + token, 'nmsResponseFormat': 'GEOJSON',
-            'Accept': 'application/json'}, method='GET')
+        request = urllib.request.Request(
+            DATA_URL,
+            headers={
+                "Authorization": "Bearer " + token,
+                "nmsResponseFormat": "GEOJSON",
+                "Accept": "application/json",
+            },
+            method="GET",
+        )
         status, headers, body = send(request, 8 * 1024 * 1024)
         retrieved = clock().isoformat()
-        receipt.update(http_status=status, retrieved_utc=retrieved,
-                       query_context={'location': 'KMEM'})
-        request_id = next((v for k, v in headers.items() if k.lower() == 'x-request-id'), '')
-        if isinstance(request_id, str) and re.fullmatch(r'[0-9a-fA-F-]{36}', request_id):
-            receipt['request_id'] = request_id
+        receipt.update(
+            http_status=status, retrieved_utc=retrieved, query_context={"location": "KMEM"}
+        )
+        request_id = next((v for k, v in headers.items() if k.lower() == "x-request-id"), "")
+        if isinstance(request_id, str) and re.fullmatch(r"[0-9a-fA-F-]{36}", request_id):
+            receipt["request_id"] = request_id
         if status != 200:
-            raise CaptureError('DATA_HTTP_FAILURE')
-        private_write(output / 'response.json', body, storage)
-        receipt['sha256'] = hashlib.sha256(body).hexdigest()
+            raise CaptureError("DATA_HTTP_FAILURE")
+        private_write(output / "response.json", body, storage)
+        receipt["sha256"] = hashlib.sha256(body).hexdigest()
         try:
             payload = json.loads(body)
-            normalized = normalize(payload, airport='KMEM', retrieved_utc=retrieved,
-                                   query_context={'location': 'KMEM'})
+            normalized = normalize(
+                payload, airport="KMEM", retrieved_utc=retrieved, query_context={"location": "KMEM"}
+            )
         except (ValueError, TypeError, KeyError):
-            raise CaptureError('INLINE_RESPONSE_OR_NORMALIZATION_REJECTED') from None
-        private_write(output / 'normalized.private.json', json.dumps(normalized, ensure_ascii=False).encode(), storage)
-        receipt.update(state='CAPTURED_UNVERIFIED', record_count=len(payload['data']['geojson']))
+            raise CaptureError("INLINE_RESPONSE_OR_NORMALIZATION_REJECTED") from None
+        private_write(
+            output / "normalized.private.json",
+            json.dumps(normalized, ensure_ascii=False).encode(),
+            storage,
+        )
+        receipt.update(state="CAPTURED_UNVERIFIED", record_count=len(payload["data"]["geojson"]))
         receipt_write(output, receipt, storage)
         return receipt
     except Exception as error:
         if isinstance(error, (StorageError, OSError)):
             # Do not retry a failed persistence operation or pretend a failure
             # receipt was durable. Local replay guard and SPA-26 remain consumed.
-            raise CaptureError('PRIVATE_STORAGE_FAILED_DO_NOT_RETRY') from None
-        code = str(error) if isinstance(error, CaptureError) else 'LOCAL_FAILURE_ATTEMPT_CONSUMED'
-        receipt.update(state='STOPPED_DO_NOT_RETRY', error_code=code)
+            raise CaptureError("PRIVATE_STORAGE_FAILED_DO_NOT_RETRY") from None
+        code = str(error) if isinstance(error, CaptureError) else "LOCAL_FAILURE_ATTEMPT_CONSUMED"
+        receipt.update(state="STOPPED_DO_NOT_RETRY", error_code=code)
         try:
             receipt_write(output, receipt, storage)
         except Exception:
-            raise CaptureError('FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY') from None
+            raise CaptureError("FAILURE_RECEIPT_PERSISTENCE_FAILED_DO_NOT_RETRY") from None
         raise CaptureError(code) from None
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--reservation', required=True, help='private local reservation recorded and read back in SPA-26')
-    parser.add_argument('--execute', action='store_true', help='explicit one-shot execution; never use during quarantine')
+    parser.add_argument(
+        "--reservation",
+        required=True,
+        help="private local reservation recorded and read back in SPA-26",
+    )
+    parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="explicit one-shot execution; never use during quarantine",
+    )
     args = parser.parse_args()
     try:
         reservation = json.loads(Path(args.reservation).read_text())
         check_reservation(reservation, utc_now())
         if not args.execute:
-            print('Reservation shape/time eligible. No requests made; no Linear verification performed by this script.')
+            print(
+                "Reservation shape/time eligible. No requests made; no Linear verification performed by this script."
+            )
             return
         receipt = capture(reservation)
         print(json.dumps(receipt))
     except CaptureError as error:
-        print('Capture stopped: ' + str(error))
+        print("Capture stopped: " + str(error))
         raise SystemExit(1) from None
     except Exception:
-        print('Capture stopped: LOCAL_INPUT_OR_STORAGE_FAILURE. Do not retry a possibly consumed reservation.')
+        print(
+            "Capture stopped: LOCAL_INPUT_OR_STORAGE_FAILURE. Do not retry a possibly consumed reservation."
+        )
         raise SystemExit(1) from None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
