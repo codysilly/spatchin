@@ -68,6 +68,43 @@ jobs:
           python-version: '3.12'
       - name: Test TAF collector using synthetic responses
         run: python -m unittest discover -s tests -p 'test_update_taf.py'
+      # Temporary branch-only lockfile preparation; remove before merge.
+      - name: Resolve pinned SPA-103 quality tools
+        if: github.event_name == 'pull_request' && github.head_ref == 'cleanup/spa-103-formatting-test-prep'
+        shell: bash
+        run: |
+          set -euo pipefail
+          quality_dir="$(mktemp -d "$RUNNER_TEMP/spatchin-quality.XXXXXX")"
+          cp package.json package-lock.json "$quality_dir/"
+          npm --prefix "$quality_dir" install --package-lock-only --ignore-scripts --no-audit --no-fund --save-dev --save-exact --registry=https://registry.npmjs.org prettier@3.6.2 eslint@9.39.1
+          npm --prefix "$quality_dir" ci --ignore-scripts --no-audit --no-fund --registry=https://registry.npmjs.org
+          "$quality_dir/node_modules/.bin/prettier" --version
+          "$quality_dir/node_modules/.bin/eslint" --version
+          "$quality_dir/node_modules/.bin/eslint" --config .github/quality/eslint.config.mjs --print-config app.js > /dev/null
+          "$quality_dir/node_modules/.bin/prettier" --config .github/quality/prettier.json --check .github/quality/prettier.json
+          python -m venv "$quality_dir/ruff-env"
+          "$quality_dir/ruff-env/bin/python" -m pip install --disable-pip-version-check --no-input ruff==0.11.13
+          "$quality_dir/ruff-env/bin/ruff" --version
+          "$quality_dir/ruff-env/bin/ruff" check --config .github/quality/ruff.toml --show-settings scripts/update_taf.py > /dev/null
+          # Only public npm package metadata may be emitted; never print environment variables.
+          node - "$quality_dir" <<'NODE'
+          const fs = require('node:fs');
+          const dir = process.argv[2];
+          const manifest = JSON.parse(fs.readFileSync(dir + '/package.json', 'utf8'));
+          const lock = JSON.parse(fs.readFileSync(dir + '/package-lock.json', 'utf8'));
+          for (const entry of Object.values(lock.packages)) {
+            if (!entry.resolved) continue;
+            const url = new URL(entry.resolved);
+            if (url.protocol !== 'https:' || url.hostname !== 'registry.npmjs.org' || url.username || url.password || url.search || url.hash) {
+              throw new Error('Unexpected npm package registry');
+            }
+          }
+          for (const [label, value] of [['MANIFEST', manifest], ['LOCK', lock]]) {
+            console.log('SPA103_' + label + '_BEGIN');
+            console.log(JSON.stringify(value, null, 2));
+            console.log('SPA103_' + label + '_END');
+          }
+          NODE
       - name: Install local browser test harness
         run: npm install --no-save --no-package-lock playwright@1.56.1 pngjs@7.0.0 pixelmatch@5.3.0
       - name: Run synthetic desktop and mobile checks
