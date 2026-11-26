@@ -1,14 +1,10 @@
 /* SCAN: DOM-only global search. No dependency on aviation panel markup. */
 // Export the literal search rules without exposing browser state.
 export function literalPattern(ordered, caseSensitive) {
-  return new RegExp(ordered.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\/* SCAN: DOM-only global search. No dependency on aviation panel markup. */
-(() => {
-  'use strict';')).join('|'), caseSensitive ? 'gu' : 'giu');
+  return new RegExp(ordered.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), caseSensitive ? 'gu' : 'giu');
 }
 export function matchingKeyword(ordered, text, caseSensitive) {
-  return ordered.find(k => new RegExp(`^(?:${k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\/* SCAN: DOM-only global search. No dependency on aviation panel markup. */
-(() => {
-  'use strict';')}), caseSensitive ? 'u' : 'iu').test(text));
+  return ordered.find(k => new RegExp(`^(?:${k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})$`, caseSensitive ? 'u' : 'iu').test(text));
 }
 function startScan() {
   const KEY = 'spatchin-scan-v1';
