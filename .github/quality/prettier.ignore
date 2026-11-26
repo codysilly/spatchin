@@ -1,0 +1,13 @@
+# Preserve generated data, lockfiles, historical evidence and synthetic fixtures.
+airport-catalog.js
+data/
+docs/reference/
+tests/fixtures/
+preview/*fixtures.js
+**/package-lock.json
+**/node_modules/
+**/dist/
+**/.wrangler/
+.notam-review/
+.test-output/
+screenshots/
