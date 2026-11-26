@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T21:28:34.964949Z",
+  "updated_utc": "2026-11-26T21:38:43.455695Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2387,29 +2387,29 @@
     },
     {
       "icaoId": "KGFK",
-      "rawTAF": "TAF KGFK 261740Z 2618/2718 18014G23KT P6SM FEW250 FM262200 18011KT P6SM SCT250",
-      "issueTime": "2026-11-26T17:40:00.000Z",
-      "validTimeFrom": 1795716000,
+      "rawTAF": "TAF KGFK 262136Z 2622/2718 18013KT P6SM FEW250 PROB30 2712/2715 5SM -FZRA BKN050",
+      "issueTime": "2026-11-26T21:36:00.000Z",
+      "validTimeFrom": 1795730400,
       "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795716000,
-          "timeTo": 1795730400,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 180,
-          "wspd": 14,
-          "wgst": 23
-        },
         {
           "timeFrom": 1795730400,
           "timeTo": 1795802400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 180,
-          "wspd": 11,
+          "wspd": 13,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795780800,
+          "timeTo": 1795791600,
+          "timeBec": null,
+          "fcstChange": "PROB",
+          "probability": 30,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         }
       ]
