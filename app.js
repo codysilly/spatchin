@@ -31,10 +31,24 @@ let tafData=null,tafFeedError=false;
 const initial=['MEM'];let airports=initial.slice();const metars={};let lastFetch=null,loading=false,metarFeedError=false;
 const METAR_STALE_MS=70*60*1000;
 const AIRPORT_STORAGE_KEY='spatchin-airports';
+// Airport preference normalization and order changes without storage or DOM access.
+const AirportOrder=(()=>{
+ function normalize(saved){
+  return Array.isArray(saved)?[...new Set(saved.filter(x=>typeof x==='string'&&/^[A-Z]{3}$/.test(x)))].slice(0,30):null;
+ }
+ function move(order,code,targetIndex){
+  const from=order.indexOf(code);
+  if(from<0||!Number.isInteger(targetIndex)||targetIndex<0||targetIndex>=order.length||from===targetIndex)return false;
+  order.splice(from,1);
+  order.splice(targetIndex,0,code);
+  return true;
+ }
+ return {normalize,move};
+})();
 function readAirports(key){
  try{
   const saved=JSON.parse(localStorage.getItem(key));
-  if(Array.isArray(saved))return [...new Set(saved.filter(x=>typeof x==='string'&&/^[A-Z]{3}$/.test(x)))].slice(0,30);
+  return AirportOrder.normalize(saved);
  }catch{}
  return null;
 }
@@ -278,14 +292,20 @@ function timeControl(code,m,model){
 }
 
 const observedSelection=new Map();
-function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
- const atisOpen=new Set([...document.querySelectorAll('.atis-full[open]')].map(el=>el.closest('[data-airport]')?.dataset.airport));
- reader?.before();document.getElementById('cards').innerHTML=airports.map(code=>{const a=airportInfo[code],m=metars[code],r=ends(code),model=forecastModel(code,m),w=model.forecast?model.state?.wind:m?.wind;
+// Build one airport card from explicit inputs and existing section renderers.
+function airportCardMarkup(code,{airportCount,airportInfo,metars,ends,forecastModel,metarFeedError,categoryMarkup,esc,diagramHeader,metarBadge,metarStatus,tafBlock,atisBlock,reader,icao,timeControl,runwayRow,notamTransportBlock}){
+ const a=airportInfo[code],m=metars[code],r=ends(code),model=forecastModel(code,m),w=model.forecast?model.state?.wind:m?.wind;
 
  const observation=m?.raw||m?.error||'Observation unavailable';
  const retained=metarFeedError&&m?.raw?'<span class="metar-retained">Feed refresh failed; showing retained observation.</span>':'';
  const category=categoryMarkup(m);
- return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-top-row"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airports.length<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="icao">${esc(code)}</div>${category.tag}<div class="airport-head-spacer"></div>${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></section>${tafBlock(code)}${atisBlock(code)}${reader?.summary(icao(code))||''}${timeControl(code,m,model)}<div class="runways">${r.length?`<table class="rw-table${model.forecast?' forecast-table':''}"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w,model.forecast?model.state:null)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}</footer></article>`;}).join('');
+ return `<article class="airport" data-airport="${code}"><div class="airport-head"><div class="airport-top-row"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airportCount<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="icao">${esc(code)}</div>${category.tag}<div class="airport-head-spacer"></div>${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><div class="name">${esc(a?.name||'Airport not yet configured')}</div></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-source">${metarBadge(code)}</div><div class="weather-copy">${metarStatus(m)}<div class="metar-raw">${esc(observation)}</div>${retained}</div></section>${tafBlock(code)}${atisBlock(code)}${reader?.summary(icao(code))||''}${timeControl(code,m,model)}<div class="runways">${r.length?`<table class="rw-table${model.forecast?' forecast-table':''}"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w,model.forecast?model.state:null)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}</footer></article>`;
+}
+function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
+ const atisOpen=new Set([...document.querySelectorAll('.atis-full[open]')].map(el=>el.closest('[data-airport]')?.dataset.airport));
+ reader?.before();
+ const cardContext={airportCount:airports.length,airportInfo,metars,ends,forecastModel,metarFeedError,categoryMarkup,esc,diagramHeader,metarBadge,metarStatus,tafBlock,atisBlock,reader,icao,timeControl,runwayRow,notamTransportBlock};
+ document.getElementById('cards').innerHTML=airports.map(code=>airportCardMarkup(code,cardContext)).join('');
  document.querySelectorAll('[data-airport]').forEach(el=>{const details=el.querySelector('.atis-full');if(details)details.open=atisOpen.has(el.dataset.airport);});
  document.querySelectorAll('[data-observed-time]').forEach(el=>el.addEventListener('change',()=>{
   observedSelection.set(el.dataset.observedTime,el.value);render();
@@ -324,10 +344,7 @@ function render(){const reloadFocus=document.activeElement?.dataset?.notamReload
 }
 // Airport order is the existing spatchin-airports array, including on reload.
 function moveAirport(code,targetIndex){
- const from=airports.indexOf(code);
- if(from<0||!Number.isInteger(targetIndex)||targetIndex<0||targetIndex>=airports.length||from===targetIndex)return false;
- airports.splice(from,1);
- airports.splice(targetIndex,0,code);
+ if(!AirportOrder.move(airports,code,targetIndex))return false;
  save();
  render();
  document.querySelector?.('[data-airport-drag="'+code+'"]')?.focus({preventScroll:true});
