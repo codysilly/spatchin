@@ -83,22 +83,6 @@ jobs:
           python -m venv "$RUNNER_TEMP/spatchin-ruff"
           "$RUNNER_TEMP/spatchin-ruff/bin/python" -m pip install --disable-pip-version-check --no-input --only-binary=:all: ruff==0.11.13
           echo "$RUNNER_TEMP/spatchin-ruff/bin" >> "$GITHUB_PATH"
-      # Temporary, branch-only mechanical formatting evidence. Remove before merge.
-      - name: Generate initial mechanical formatting baseline
-        if: github.event_name == 'pull_request' && github.head_ref == 'cleanup/spa-103-formatting-test-prep'
-        run: |
-          npm run format
-          node <<'NODE'
-          const fs = require('node:fs');
-          const paths = ["scripts/run-node-tests.cjs","tests/branding-assets.test.cjs","tests/charcoal-dashboard.test.cjs","tests/taf-reader.test.cjs","tests/taf-timeline.test.cjs","tests/test_update_taf.py"];
-          // Only listed test/helper sources; never aviation data, captures or environment variables.
-          console.log('SPA103_FORMAT_BEGIN');
-          for (const path of paths) {
-            const content = fs.readFileSync(path, 'utf8');
-            for (let i = 0; i < content.length; i += 1000) console.log(JSON.stringify([path, content.slice(i, i + 1000)]));
-          }
-          console.log('SPA103_FORMAT_END');
-          NODE
       - name: Verify formatting and lint baseline
         run: |
           npm run format:check
