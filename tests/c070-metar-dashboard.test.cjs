@@ -198,3 +198,46 @@ test('airport card markup consumes explicit data and retains warnings and escapi
  assert.doesNotMatch(result.missing,/title="Drag to reorder; arrow keys also work" disabled/);
  assert.equal(app.run('airports.length'),0);
 });
+
+test('published METAR processing retains newer observations and retrieval time independently',async()=>{
+ const app=await load([],snapshot([]));
+ const old={...report('KMEM',10),rawOb:'SYNTHETIC RETAINED'};
+ const previousFetch=new Date(now).toISOString();
+ const incoming={updated_utc:new Date(now-60000).toISOString(),metars:[report('KMEM',20),report('KIND',5),report('KORD',5),{...report('KOAK'),obsTime:1e40}]};
+ const result=JSON.parse(app.run(`JSON.stringify((()=>{
+  const records={MEM:parseMetar(${JSON.stringify(old)})};
+  const previous=records.MEM;
+  const updated=PublishedSnapshots.metars(${JSON.stringify(incoming)},['MEM','IND','OAK'],records,${JSON.stringify(previousFetch)},icao,parseMetar,Date.now);
+  return {records,updated,same:records.MEM===previous};
+ })())`));
+ assert.equal(result.same,true);
+ assert.equal(result.records.MEM.raw,'SYNTHETIC RETAINED');
+ assert.equal(result.records.IND.raw,'KIND SYNTHETIC OFFLINE METAR');
+ assert.deepEqual(result.records.OAK,{error:'No valid METAR returned',wind:null});
+ assert.equal(result.records.ORD,undefined);
+ assert.equal(result.updated,previousFetch);
+ assert.equal(app.run('Object.keys(metars).length'),0);
+ const latest=snapshot([report('KMEM',1)]);
+ const updated=JSON.parse(app.run(`JSON.stringify((()=>{
+  const records={MEM:parseMetar(${JSON.stringify(old)})};
+  const updated=PublishedSnapshots.metars(${JSON.stringify(latest)},['MEM'],records,null,icao,parseMetar,Date.now);
+  return {records,updated};
+ })())`));
+ assert.equal(updated.records.MEM.raw,'KMEM SYNTHETIC OFFLINE METAR');
+ assert.equal(updated.updated,latest.updated_utc);
+});
+test('invalid METAR publication and missing ATIS fields fail before state assignment',async()=>{
+ const app=await load([],snapshot([]));
+ const invalid=[{metars:null,updated_utc:new Date(now).toISOString()},{metars:[],updated_utc:'bad'},{metars:[],updated_utc:new Date(now+360001).toISOString()}];
+ for(const value of invalid){
+  assert.throws(()=>app.run('PublishedSnapshots.metars('+JSON.stringify(value)+',["MEM"],metars,lastFetch,icao,parseMetar,Date.now)'),/Unexpected METAR response|Invalid METAR retrieval timestamp/);
+  assert.equal(app.run('Object.keys(metars).length'),0);
+  assert.equal(app.run('lastFetch'),null);
+ }
+ const atis={airports:{},retrieved_utc:new Date(now).toISOString()};
+ assert.deepEqual(JSON.parse(app.run('JSON.stringify(PublishedSnapshots.atis('+JSON.stringify(atis)+'))')),atis);
+ for(const value of [{},{airports:{}},{retrieved_utc:atis.retrieved_utc}]){
+  assert.throws(()=>app.run('PublishedSnapshots.atis('+JSON.stringify(value)+')'),/Invalid ATIS snapshot/);
+ }
+ assert.equal(app.run('atisData'),null);
+});
