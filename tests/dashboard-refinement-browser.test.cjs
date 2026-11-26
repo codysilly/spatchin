@@ -1,10 +1,11 @@
 'use strict';
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
+const {pythonCommand}=require('./python-launcher.cjs');
 const longNotices=require('./fixtures/ui-long-notams.cjs');
 const offlineFont='https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap';
 const base='http://127.0.0.1:8773';let server,browser;
-before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8773','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(pythonCommand(),['-B','-m','http.server','8773','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram provenance and consolidated warnings at ${width}px`,async()=>{
  const context=await browser.newContext({viewport:{width,height:900}}),page=await context.newPage(),external=[],errors=[];

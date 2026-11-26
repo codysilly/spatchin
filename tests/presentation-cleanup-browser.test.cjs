@@ -1,9 +1,10 @@
 'use strict';
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
 const {spawn}=require('node:child_process'),{chromium}=require('playwright');
+const {pythonCommand}=require('./python-launcher.cjs');
 const offlineFont='https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Overpass:wght@400;600;700;800&display=swap';
 const base='http://127.0.0.1:8774';let server,browser;
-before(async()=>{server=spawn(process.env.PYTHON||'python3',['-B','-m','http.server','8774','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
+before(async()=>{server=spawn(pythonCommand(),['-B','-m','http.server','8774','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 async function localPage(width){const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),external=[],errors=[];await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(r.request().url()===offlineFont)return r.fulfill({status:200,contentType:'text/css',body:''});external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}
 for(const width of [1440,390])test(`verified muted AWC source links, footer removal/focus and empty preference at ${width}px`,async()=>{
