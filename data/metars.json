@@ -1,24 +1,24 @@
 {
-  "updated_utc": "2026-11-26T16:10:38.928031Z",
+  "updated_utc": "2026-11-26T16:20:41.088860Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
       "icaoId": "KABE",
-      "receiptTime": "2026-11-26T15:54:10.774Z",
-      "obsTime": 1795708260,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:14:12.483Z",
+      "obsTime": 1795709400,
+      "reportTime": "2026-11-26T16:10:00.000Z",
       "temp": 2.8,
       "dewp": 1.1,
       "wdir": 60,
       "wspd": 16,
-      "visib": 7,
-      "altim": 1022.8,
-      "slp": 1022.9,
+      "wgst": 24,
+      "visib": 6,
+      "altim": 1022.1,
       "qcField": 4,
-      "wxString": "RA",
-      "precip": 0.09,
-      "metarType": "METAR",
-      "rawOb": "METAR KABE 261551Z 06016KT 7SM RA FEW065 OVC095 03/01 A3020 RMK AO2 PK WND 05030/1512 SLP229 P0009 T00280011",
+      "wxString": "RA BR",
+      "precip": 0.02,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KABE 261610Z 06016G24KT 6SM RA BR BKN026 BKN034 OVC090 03/01 A3018 RMK AO2 P0002 T00280011",
       "lat": 40.658,
       "lon": -75.4347,
       "elev": 117,
@@ -26,15 +26,19 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 6500
+          "cover": "BKN",
+          "base": 2600
+        },
+        {
+          "cover": "BKN",
+          "base": 3400
         },
         {
           "cover": "OVC",
-          "base": 9500
+          "base": 9000
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KABQ",
@@ -615,22 +619,21 @@
     },
     {
       "icaoId": "KBWI",
-      "receiptTime": "2026-11-26T15:58:20.312Z",
-      "obsTime": 1795708440,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:10:09.667Z",
+      "obsTime": 1795709220,
+      "reportTime": "2026-11-26T16:07:00.000Z",
       "temp": 8.9,
       "dewp": 7.8,
       "wdir": 60,
-      "wspd": 27,
-      "wgst": 37,
-      "visib": 3,
-      "altim": 1011.6,
-      "slp": 1011.6,
+      "wspd": 24,
+      "wgst": 38,
+      "visib": 2,
+      "altim": 1011.3,
       "qcField": 4,
       "wxString": "RA BR",
-      "precip": 0.23,
-      "metarType": "METAR",
-      "rawOb": "METAR KBWI 261554Z 06027G37KT 3SM RA BR OVC010 09/08 A2987 RMK AO2 PK WND 06043/1524 PRESFR SLP116 P0023 T00890078",
+      "precip": 0.04,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KBWI 261607Z 06024G38KT 2SM RA BR BKN010 OVC015 09/08 A2986 RMK AO2 PK WND 06038/1603 PRESFR P0004 T00890078",
       "lat": 39.1733,
       "lon": -76.684,
       "elev": 42,
@@ -638,11 +641,15 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "OVC",
+          "cover": "BKN",
           "base": 1000
+        },
+        {
+          "cover": "OVC",
+          "base": 1500
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KCAE",
@@ -709,7 +716,7 @@
     },
     {
       "icaoId": "KCHS",
-      "receiptTime": "2026-11-26T16:08:41.231Z",
+      "receiptTime": "2026-11-26T16:10:06.695Z",
       "obsTime": 1795709160,
       "reportTime": "2026-11-26T16:06:00.000Z",
       "temp": 13.3,
@@ -950,22 +957,20 @@
     },
     {
       "icaoId": "KDAY",
-      "receiptTime": "2026-11-26T16:00:06.348Z",
-      "obsTime": 1795708560,
-      "reportTime": "2026-11-26T16:00:00.000Z",
-      "temp": 4.4,
+      "receiptTime": "2026-11-26T16:18:16.044Z",
+      "obsTime": 1795709640,
+      "reportTime": "2026-11-26T16:14:00.000Z",
+      "temp": 5,
       "dewp": 3.9,
-      "wdir": 30,
-      "wspd": 13,
-      "wgst": 22,
-      "visib": 2,
-      "altim": 1010.9,
-      "slp": 1011.2,
+      "wdir": 40,
+      "wspd": 16,
+      "visib": 4,
+      "altim": 1010.2,
       "qcField": 4,
       "wxString": "RA BR",
-      "precip": 0.12,
-      "metarType": "METAR",
-      "rawOb": "METAR KDAY 261556Z 03013G22KT 2SM RA BR OVC010 04/04 A2985 RMK AO2 SLP112 P0012 T00440039",
+      "precip": 0.05,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KDAY 261614Z 04016KT 4SM RA BR OVC010 05/04 A2983 RMK AO2 P0005 T00500039",
       "lat": 39.9064,
       "lon": -84.2185,
       "elev": 303,
@@ -977,7 +982,7 @@
           "base": 1000
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KDEN",
@@ -2223,22 +2228,21 @@
     },
     {
       "icaoId": "KMDT",
-      "receiptTime": "2026-11-26T16:00:08.111Z",
-      "obsTime": 1795708560,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:18:16.125Z",
+      "obsTime": 1795709700,
+      "reportTime": "2026-11-26T16:15:00.000Z",
       "temp": 3.9,
       "dewp": 2.2,
-      "wdir": 70,
-      "wspd": 15,
-      "wgst": 24,
-      "visib": 6,
-      "altim": 1018,
-      "slp": 1018.2,
+      "wdir": 80,
+      "wspd": 14,
+      "wgst": 28,
+      "visib": 5,
+      "altim": 1017,
       "qcField": 4,
       "wxString": "-RA BR",
-      "precip": 0.07,
-      "metarType": "METAR",
-      "rawOb": "METAR KMDT 261556Z 07015G24KT 6SM -RA BR OVC015 04/02 A3006 RMK AO2 PK WND 05031/1526 SLP182 P0007 T00390022",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KMDT 261615Z 08014G28KT 5SM -RA BR OVC014 04/02 A3003 RMK AO2 PK WND 07028/1611 PRESFR P0001 T00390022",
       "lat": 40.1962,
       "lon": -76.7725,
       "elev": 91,
@@ -2247,7 +2251,7 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 1500
+          "base": 1400
         }
       ],
       "fltCat": "MVFR"
@@ -2641,20 +2645,19 @@
     },
     {
       "icaoId": "KORD",
-      "receiptTime": "2026-11-26T15:54:09.807Z",
-      "obsTime": 1795708260,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:16:04.368Z",
+      "obsTime": 1795709520,
+      "reportTime": "2026-11-26T16:12:00.000Z",
       "temp": 6.7,
-      "dewp": 2.8,
-      "wdir": 60,
-      "wspd": 19,
+      "dewp": 3.3,
+      "wdir": 50,
+      "wspd": 18,
       "wgst": 25,
       "visib": "10+",
       "altim": 1019.4,
-      "slp": 1019.5,
       "qcField": 12,
-      "metarType": "METAR",
-      "rawOb": "METAR KORD 261551Z 06019G25KT 10SM OVC015 07/03 A3010 RMK AO2 PK WND 05027/1513 SLP195 T00670028 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KORD 261612Z 05018G25KT 10SM OVC014 07/03 A3010 RMK AO2 PK WND 05029/1602 T00670033 $",
       "lat": 41.9602,
       "lon": -87.9316,
       "elev": 202,
@@ -2663,7 +2666,7 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 1500
+          "base": 1400
         }
       ],
       "fltCat": "MVFR"
@@ -2775,22 +2778,21 @@
     },
     {
       "icaoId": "KPHL",
-      "receiptTime": "2026-11-26T15:58:19.365Z",
-      "obsTime": 1795708440,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:16:15.241Z",
+      "obsTime": 1795709580,
+      "reportTime": "2026-11-26T16:13:00.000Z",
       "temp": 8.3,
       "dewp": 6.1,
       "wdir": 60,
       "wspd": 20,
-      "wgst": 36,
-      "visib": 7,
-      "altim": 1019,
-      "slp": 1018.9,
+      "wgst": 43,
+      "visib": 6,
+      "altim": 1018,
       "qcField": 12,
-      "wxString": "-RA",
+      "wxString": "-RA BR",
       "precip": 0.005,
-      "metarType": "METAR",
-      "rawOb": "METAR KPHL 261554Z 06020G36KT 7SM -RA OVC014 08/06 A3009 RMK AO2 PK WND 07037/1535 RAB26 PRESFR SLP189 CIG 013V017 P0000 T00830061 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KPHL 261613Z 06020G43KT 6SM -RA BR OVC014 08/06 A3006 RMK AO2 PK WND 05043/1610 PRESFR CIG 012V019 P0000 T00830061 $",
       "lat": 39.8733,
       "lon": -75.2268,
       "elev": 2,
@@ -2966,21 +2968,20 @@
     },
     {
       "icaoId": "KRDU",
-      "receiptTime": "2026-11-26T15:54:09.981Z",
-      "obsTime": 1795708260,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:19:35.366Z",
+      "obsTime": 1795709820,
+      "reportTime": "2026-11-26T16:17:00.000Z",
       "temp": 14.4,
       "dewp": 13.3,
-      "wdir": 20,
-      "wspd": 4,
-      "visib": 5,
-      "altim": 999.7,
-      "slp": 999.3,
+      "wdir": "VRB",
+      "wspd": 5,
+      "visib": 1.5,
+      "altim": 1000.1,
       "qcField": 12,
-      "wxString": "-DZ BR",
-      "precip": 0.07,
-      "metarType": "METAR",
-      "rawOb": "METAR KRDU 261551Z 02004KT 5SM -DZ BR BKN006 OVC015 14/13 A2952 RMK AO2 RAE42DZB42 SLP993 P0007 T01440133 $",
+      "wxString": "-RA BR",
+      "precip": 0.005,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KRDU 261617Z VRB05KT 1 1/2SM -RA BR BKN006 OVC010 14/13 A2953 RMK AO2 TWR VIS 2 DZE17RAB17 P0000 T01440133 $",
       "lat": 35.8923,
       "lon": -78.782,
       "elev": 121,
@@ -2993,7 +2994,7 @@
         },
         {
           "cover": "OVC",
-          "base": 1500
+          "base": 1000
         }
       ],
       "fltCat": "IFR"
@@ -3376,21 +3377,20 @@
     },
     {
       "icaoId": "KSDF",
-      "receiptTime": "2026-11-26T16:00:13.926Z",
-      "obsTime": 1795708560,
-      "reportTime": "2026-11-26T16:00:00.000Z",
-      "temp": 7.2,
+      "receiptTime": "2026-11-26T16:19:11.854Z",
+      "obsTime": 1795709760,
+      "reportTime": "2026-11-26T16:16:00.000Z",
+      "temp": 7.8,
       "dewp": 6.1,
-      "wdir": 50,
+      "wdir": 60,
       "wspd": 9,
-      "visib": 4,
-      "altim": 1005.5,
-      "slp": 1005.6,
+      "visib": 2.5,
+      "altim": 1005.2,
       "qcField": 4,
       "wxString": "-RA BR",
-      "precip": 0.04,
-      "metarType": "METAR",
-      "rawOb": "METAR KSDF 261556Z 05009KT 4SM -RA BR OVC012 07/06 A2969 RMK AO2 SLP056 P0004 T00720061",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSDF 261616Z 06009KT 2 1/2SM -RA BR OVC011 08/06 A2968 RMK AO2 P0001 T00780061",
       "lat": 38.1774,
       "lon": -85.7308,
       "elev": 146,
@@ -3399,29 +3399,28 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 1200
+          "base": 1100
         }
       ],
-      "fltCat": "MVFR"
+      "fltCat": "IFR"
     },
     {
       "icaoId": "KSEA",
-      "receiptTime": "2026-11-26T15:56:58.079Z",
-      "obsTime": 1795708380,
-      "reportTime": "2026-11-26T16:00:00.000Z",
+      "receiptTime": "2026-11-26T16:12:06.575Z",
+      "obsTime": 1795709340,
+      "reportTime": "2026-11-26T16:09:00.000Z",
       "temp": 11.1,
       "dewp": 8.3,
       "wdir": 180,
       "wspd": 15,
-      "wgst": 21,
-      "visib": "10+",
-      "altim": 1014,
-      "slp": 1014.6,
+      "wgst": 23,
+      "visib": 5,
+      "altim": 1014.3,
       "qcField": 12,
-      "wxString": "-RA",
+      "wxString": "RA",
       "precip": 0.01,
-      "metarType": "METAR",
-      "rawOb": "METAR KSEA 261553Z 18015G21KT 10SM -RA FEW026 BKN040 OVC075 11/08 A2994 RMK AO2 PK WND 18028/1459 RAB21 SLP146 P0001 T01110083 $",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSEA 261609Z 18015G23KT 5SM RA BKN025 BKN035 OVC044 11/08 A2995 RMK AO2 P0001 T01110083 $",
       "lat": 47.4447,
       "lon": -122.3144,
       "elev": 115,
@@ -3429,19 +3428,19 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 2600
+          "cover": "BKN",
+          "base": 2500
         },
         {
           "cover": "BKN",
-          "base": 4000
+          "base": 3500
         },
         {
           "cover": "OVC",
-          "base": 7500
+          "base": 4400
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KSFO",
@@ -3481,21 +3480,21 @@
     },
     {
       "icaoId": "KSGF",
-      "receiptTime": "2026-11-26T16:10:09.826Z",
-      "obsTime": 1795709220,
-      "reportTime": "2026-11-26T16:07:00.000Z",
+      "receiptTime": "2026-11-26T16:14:12.450Z",
+      "obsTime": 1795709460,
+      "reportTime": "2026-11-26T16:11:00.000Z",
       "temp": 0,
       "dewp": -2.2,
       "wdir": 320,
       "wspd": 17,
-      "wgst": 24,
-      "visib": 3,
+      "wgst": 23,
+      "visib": 2.5,
       "altim": 1020.1,
       "qcField": 4,
       "wxString": "-SN BR",
       "precip": 0.005,
       "metarType": "SPECI",
-      "rawOb": "SPECI KSGF 261607Z 32017G24KT 3SM -SN BR OVC008 00/M02 A3012 RMK AO2 CIG 007V012 P0000 T00001022",
+      "rawOb": "SPECI KSGF 261611Z 32017G23KT 2 1/2SM -SN BR OVC010 00/M02 A3012 RMK AO2 CIG 007V012 P0000 T00001022",
       "lat": 37.2398,
       "lon": -93.3899,
       "elev": 387,
@@ -3504,7 +3503,7 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 800
+          "base": 1000
         }
       ],
       "fltCat": "IFR"
@@ -3687,21 +3686,20 @@
     },
     {
       "icaoId": "KSTL",
-      "receiptTime": "2026-11-26T15:57:02.829Z",
-      "obsTime": 1795708260,
-      "reportTime": "2026-11-26T16:00:00.000Z",
-      "temp": 1.7,
+      "receiptTime": "2026-11-26T16:16:15.268Z",
+      "obsTime": 1795709580,
+      "reportTime": "2026-11-26T16:13:00.000Z",
+      "temp": 2.2,
       "dewp": 1.1,
       "wdir": 340,
-      "wspd": 15,
-      "visib": 5,
-      "altim": 1015,
-      "slp": 1015.9,
-      "qcField": 13,
+      "wspd": 14,
+      "visib": 4,
+      "altim": 1014.6,
+      "qcField": 14,
       "wxString": "-RA BR",
-      "precip": 0.05,
-      "metarType": "METAR",
-      "rawOb": "METAR KSTL 261551Z COR 34015KT 5SM -RA BR OVC009 02/01 A2997 RMK AO2 SLP159 P0005 T00170011 $",
+      "precip": 0.02,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSTL 261613Z AUTO 34014KT 4SM -RA BR OVC011 02/01 A2996 RMK AO2 P0002 T00220011 $",
       "lat": 38.7525,
       "lon": -90.3734,
       "elev": 163,
@@ -3710,10 +3708,10 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 900
+          "base": 1100
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KSWF",
