@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T04:28:33.427652Z",
+  "updated_utc": "2026-11-26T04:38:33.046494Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -1092,33 +1092,33 @@
     },
     {
       "icaoId": "KCHA",
-      "rawTAF": "TAF KCHA 252338Z 2600/2624 01008KT P6SM -SHRA SCT035 BKN040 FM260300 36005KT P6SM -SHRA BKN025 OVC035 FM260700 33005KT 4SM SHRA BR SCT002 OVC005 FM261300 28006KT 4SM -SHRA BR OVC005 FM261800 25012G22KT 6SM -SHRA BR BKN006 OVC010",
-      "issueTime": "2026-11-25T23:38:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KCHA 260428Z 2604/2624 36005KT 6SM -SHRA BR BKN040 OVC080 FM260600 35005KT 5SM -SHRA BR BKN025 OVC035 FM260900 33005KT 4SM -SHRA BR SCT002 OVC005 FM261300 28006KT 4SM -SHRA BR OVC005 FM261800 25012G22KT 6SM -SHRA BR BKN006 OVC010",
+      "issueTime": "2026-11-26T04:28:00.000Z",
+      "validTimeFrom": 1795665600,
       "validTimeTo": 1795737600,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795662000,
+          "timeFrom": 1795665600,
+          "timeTo": 1795672800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 10,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795662000,
-          "timeTo": 1795676400,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 360,
           "wspd": 5,
           "wgst": null
         },
         {
-          "timeFrom": 1795676400,
+          "timeFrom": 1795672800,
+          "timeTo": 1795683600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 350,
+          "wspd": 5,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795683600,
           "timeTo": 1795698000,
           "timeBec": null,
           "fcstChange": "FM",
@@ -1544,14 +1544,14 @@
     },
     {
       "icaoId": "KCVG",
-      "rawTAF": "TAF KCVG 252334Z 2600/2706 06015KT P6SM SCT060 OVC090 FM260900 04016KT P6SM -RA BKN028 OVC050 FM261200 04018KT 2SM -RA BR OVC007 FM262000 03018KT 1SM -RA BR OVC004 FM270100 35012KT 2SM -RA BR OVC004",
-      "issueTime": "2026-11-25T23:34:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KCVG 260433Z 2605/2706 06015KT P6SM SCT060 OVC090 FM260800 05014KT P6SM -RA BKN035 FM261100 04018KT 2SM RA BR OVC008 FM262000 03014KT 1SM -RA BR OVC005 FM270100 35010KT 2SM -RA BR OVC004",
+      "issueTime": "2026-11-26T04:33:00.000Z",
+      "validTimeFrom": 1795669200,
       "validTimeTo": 1795759200,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795683600,
+          "timeFrom": 1795669200,
+          "timeTo": 1795680000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -1560,17 +1560,17 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795683600,
-          "timeTo": 1795694400,
+          "timeFrom": 1795680000,
+          "timeTo": 1795690800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 40,
-          "wspd": 16,
+          "wdir": 50,
+          "wspd": 14,
           "wgst": null
         },
         {
-          "timeFrom": 1795694400,
+          "timeFrom": 1795690800,
           "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": "FM",
@@ -1586,7 +1586,7 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
-          "wspd": 18,
+          "wspd": 14,
           "wgst": null
         },
         {
@@ -1596,20 +1596,20 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 350,
-          "wspd": 12,
+          "wspd": 10,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KDAY",
-      "rawTAF": "TAF KDAY 252334Z 2600/2624 06010KT P6SM BKN080 FM261100 05015KT P6SM -RA SCT015 OVC035 FM261500 03018KT 2SM -RA BR OVC006 FM262100 04018KT 1SM -RA BR OVC004",
-      "issueTime": "2026-11-25T23:34:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KDAY 260433Z 2605/2624 06010KT P6SM BKN080 FM261100 05016KT P6SM -RA BKN025 FM261500 04018G28KT 2SM -RA BR OVC006 FM262100 04016KT 1SM -RA BR OVC004",
+      "issueTime": "2026-11-26T04:33:00.000Z",
+      "validTimeFrom": 1795669200,
       "validTimeTo": 1795737600,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
+          "timeFrom": 1795669200,
           "timeTo": 1795690800,
           "timeBec": null,
           "fcstChange": null,
@@ -1625,7 +1625,7 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 50,
-          "wspd": 15,
+          "wspd": 16,
           "wgst": null
         },
         {
@@ -1634,9 +1634,9 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 30,
+          "wdir": 40,
           "wspd": 18,
-          "wgst": null
+          "wgst": 28
         },
         {
           "timeFrom": 1795726800,
@@ -1645,7 +1645,7 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
-          "wspd": 18,
+          "wspd": 16,
           "wgst": null
         }
       ]
@@ -3287,14 +3287,14 @@
     },
     {
       "icaoId": "KLCK",
-      "rawTAF": "TAF KLCK 252334Z 2600/2624 06009KT P6SM BKN100 FM261100 04016KT 5SM -RA BR SCT015 OVC045 WS020/07050KT FM261500 03017KT 1SM RA BR OVC007 WS020/06055KT FM262100 03014KT 1SM -RA BR OVC005",
-      "issueTime": "2026-11-25T23:34:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KLCK 260433Z 2605/2624 06009KT P6SM BKN100 FM261000 05016KT P6SM -RA BKN025 WS020/07050KT FM261400 05018G28KT 1SM RA BR OVC006 WS020/06050KT FM262100 04016KT 1SM -RA BR OVC005",
+      "issueTime": "2026-11-26T04:33:00.000Z",
+      "validTimeFrom": 1795669200,
       "validTimeTo": 1795737600,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795690800,
+          "timeFrom": 1795669200,
+          "timeTo": 1795687200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -3303,24 +3303,24 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795690800,
-          "timeTo": 1795705200,
+          "timeFrom": 1795687200,
+          "timeTo": 1795701600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 40,
+          "wdir": 50,
           "wspd": 16,
           "wgst": null
         },
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795701600,
           "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 30,
-          "wspd": 17,
-          "wgst": null
+          "wdir": 50,
+          "wspd": 18,
+          "wgst": 28
         },
         {
           "timeFrom": 1795726800,
@@ -3328,8 +3328,8 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 30,
-          "wspd": 14,
+          "wdir": 40,
+          "wspd": 16,
           "wgst": null
         }
       ]
@@ -6326,14 +6326,14 @@
     },
     {
       "icaoId": "KTYS",
-      "rawTAF": "TAF KTYS 252338Z 2600/2624 04010KT P6SM -DZ BKN050 OVC100 FM260300 04008KT P6SM -SHRA BKN025 OVC035 TEMPO 2603/2607 4SM SHRA BR OVC015 FM260700 03008KT 4SM -SHRA BR SCT002 OVC005 WS020/09030KT FM261400 02006KT 4SM -SHRA BR OVC005 FM261800 24015G25KT 6SM -SHRA BR BKN006 OVC010",
-      "issueTime": "2026-11-25T23:38:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KTYS 260433Z 2605/2624 04010KT P6SM -SHRA SCT025 OVC060 FM260600 04008KT P6SM -SHRA SCT010 BKN020 OVC030 FM260800 03008KT 4SM -SHRA BR SCT002 OVC005 WS020/09030KT FM261400 02006KT 4SM -SHRA BR OVC005 FM261800 24015G25KT 6SM -SHRA BR BKN006 OVC010",
+      "issueTime": "2026-11-26T04:33:00.000Z",
+      "validTimeFrom": 1795669200,
       "validTimeTo": 1795737600,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
-          "timeTo": 1795662000,
+          "timeFrom": 1795669200,
+          "timeTo": 1795672800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -6342,8 +6342,8 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795662000,
-          "timeTo": 1795676400,
+          "timeFrom": 1795672800,
+          "timeTo": 1795680000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -6352,17 +6352,7 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795662000,
-          "timeTo": 1795676400,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795676400,
+          "timeFrom": 1795680000,
           "timeTo": 1795701600,
           "timeBec": null,
           "fcstChange": "FM",
