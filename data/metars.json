@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T01:10:37.465977Z",
+  "updated_utc": "2026-11-26T01:20:38.896120Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1112,7 +1112,7 @@
     },
     {
       "icaoId": "KELP",
-      "receiptTime": "2026-11-26T01:09:22.131Z",
+      "receiptTime": "2026-11-26T01:10:09.522Z",
       "obsTime": 1795654260,
       "reportTime": "2026-11-26T01:00:00.000Z",
       "temp": 12.2,
@@ -3561,21 +3561,20 @@
     },
     {
       "icaoId": "KSTL",
-      "receiptTime": "2026-11-26T00:56:26.073Z",
-      "obsTime": 1795654260,
-      "reportTime": "2026-11-26T01:00:00.000Z",
+      "receiptTime": "2026-11-26T01:16:06.416Z",
+      "obsTime": 1795655640,
+      "reportTime": "2026-11-26T01:14:00.000Z",
       "temp": 0.6,
       "dewp": 0,
       "wdir": 350,
       "wspd": 8,
-      "visib": 1,
-      "altim": 1025.5,
-      "slp": 1026.6,
+      "visib": 0.75,
+      "altim": 1025.8,
       "qcField": 13,
       "wxString": "-SN BR",
-      "precip": 0.06,
-      "metarType": "METAR",
-      "rawOb": "METAR KSTL 260051Z COR 35008KT 1SM R30R/P6000FT -SN BR OVC007 01/00 A3028 RMK AO2 SLP266 P0006 T00060000 $",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSTL 260114Z COR 35008KT 3/4SM R30R/P6000FT -SN BR BKN005 OVC009 01/00 A3029 RMK AO2 P0001 T00060000 $",
       "lat": 38.7525,
       "lon": -90.3734,
       "elev": 163,
@@ -3583,11 +3582,15 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "BKN",
+          "base": 500
+        },
+        {
           "cover": "OVC",
-          "base": 700
+          "base": 900
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "LIFR"
     },
     {
       "icaoId": "KSWF",
