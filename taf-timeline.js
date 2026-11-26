@@ -1,7 +1,7 @@
 'use strict';
 // SPA-13: interpretation of saved AWC decoded TAF periods. No provider calls.
 // All times are UTC. Uncertain changes remain distinct from prevailing winds.
-const TafTimeline=(()=>{
+export const TafTimeline=(()=>{
   const STEP=30*60000,HOUR=3600000,STALE_MS=6*HOUR;
   function time(value){
     // AWC fields use Unix seconds; internal slider/Date values use milliseconds.
@@ -117,4 +117,3 @@ const TafTimeline=(()=>{
   }
   return {time,bounds,stamp,localInput,windOf,periods,select,steps,stepTime,stepIndex,initialTime,STEP,STALE_MS};
 })();
-if(typeof module!=='undefined'&&module.exports)module.exports=TafTimeline;
