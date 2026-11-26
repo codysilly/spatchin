@@ -34,7 +34,7 @@ REQUIRED_NOTICE_FIELDS = (
     "effectiveEnd",
     "lastUpdated",
 )
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MAX_OUTPUT_BYTES = 256 * 1024 * 1024
 HISTORICAL_CAPTURE_FEATURE_COUNT = 21024
 HISTORICAL_C070_MATCH_COUNT = 3084

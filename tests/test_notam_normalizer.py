@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "notam"))
 from normalize_notam_snapshot import normalize
 
 FIXTURE = Path(__file__).parent / "fixtures/nms_reader_documentation.json"

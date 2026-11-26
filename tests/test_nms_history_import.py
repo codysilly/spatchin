@@ -11,7 +11,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-SCRIPTS=Path(__file__).resolve().parents[1]/'scripts'
+SCRIPTS=Path(__file__).resolve().parents[1]/'scripts'/'notam'
 sys.path.insert(0,str(SCRIPTS))
 from capture_storage import platform_storage
 from import_nms_history import (review, import_history, review_uncertainty_release,

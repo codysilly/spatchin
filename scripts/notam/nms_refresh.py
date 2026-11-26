@@ -54,7 +54,7 @@ def reject_json_constant(_value):
 class Store:
     def __init__(self, root, *, account, storage=None):
         self.root = Path(root)
-        repository = Path(__file__).resolve().parents[1]
+        repository = Path(__file__).resolve().parents[2]
         resolved = self.root.resolve()
         if (
             not self.root.is_absolute()

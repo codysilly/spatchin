@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'/'notam'))
 from nms_http import HTTPAdapter, HTTPAdapterError
 from nms_refresh import collect
 from nms_refresh_contract import (Request, auth_request, initial_request, delta_request,
@@ -66,7 +66,7 @@ class HTTPTests(unittest.TestCase):
         factory=Factory([]);adapter=HTTPAdapter(connection_factory=factory)
         self.assertFalse(factory.calls)
         script='''import sys\nsys.path.insert(0,sys.argv[1])\ndef block(event,args):\n if event.startswith("socket."):raise RuntimeError("Network forbidden")\nsys.addaudithook(block)\nimport nms_http\nnms_http.HTTPAdapter()\nprint("NO NETWORK")\n'''
-        child=subprocess.run([sys.executable,'-B','-c',script,str(Path(__file__).resolve().parents[1]/'scripts')],capture_output=True,timeout=15)
+        child=subprocess.run([sys.executable,'-B','-c',script,str(Path(__file__).resolve().parents[1]/'scripts'/'notam')],capture_output=True,timeout=15)
         self.assertEqual(child.returncode,0);self.assertEqual(child.stdout.strip(),b'NO NETWORK');self.assertFalse(child.stderr)
 
     def test_prepared_endpoints_tls_and_exact_bounded_bytes(self):

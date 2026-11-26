@@ -4,7 +4,7 @@ from collections import namedtuple
 from datetime import timedelta
 from pathlib import Path
 from unittest.mock import patch
-SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'
+SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'/'notam'
 sys.path.insert(0, str(SCRIPTS))
 from capture_initial_load import OPERATION, execute, operation_digest, review
 from nms_refresh_contract import RefreshError

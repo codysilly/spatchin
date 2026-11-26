@@ -12,7 +12,7 @@ import tracemalloc
 import unittest
 from unittest.mock import patch
 
-SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts" / "notam"
 sys.path.insert(0, str(SCRIPTS))
 import inspect_initial_load_stream as inspector
 from inspect_initial_load_stream import InspectionError, InspectionLimits, inspect_evidence

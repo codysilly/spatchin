@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'scripts'))
+sys.path.insert(0, str(ROOT / 'scripts' / 'notam'))
 from c070_notam_partition import c070_codes
 import reconcile_c070_domestic as reconciler
 from reconcile_c070_domestic import (main, reconcile, validate_private_candidate,

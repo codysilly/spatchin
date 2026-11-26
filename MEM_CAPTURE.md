@@ -56,7 +56,7 @@ Reservation JSON fields (the values below are deliberately non-executable):
 After these steps, run only in the designated task:
 
 ```sh
-python3 -B scripts/capture_mem_notams.py --reservation /private/path/reservation.json
+python3 -B scripts/notam/capture_mem_notams.py --reservation /private/path/reservation.json
 ```
 
 That checks local reservation shape/time only; it does not authenticate, reserve a

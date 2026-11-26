@@ -2,7 +2,7 @@
 
 ## SPA-62 supervised global delta probe (not authorized to run)
 
-`scripts/capture_global_delta.py` prepares one evidence-only global GeoJSON delta.
+`scripts/notam/capture_global_delta.py` prepares one evidence-only global GeoJSON delta.
 Its default mode is read-only: it opens only the existing protected ledger and
 bounded Initial Load receipt, reports the exact UTC `lastUpdatedDate`, request
 shape, account-wide three-minute gate, local pending/ambiguous state, 24-hour
@@ -69,7 +69,7 @@ it does not retroactively establish continuity with an older Initial Load.
 
 ## SPA-56 supervised opaque Initial Load capture (not authorized to run)
 
-`scripts/capture_initial_load.py` is a separate, capture-only procedure for the
+`scripts/notam/capture_initial_load.py` is a separate, capture-only procedure for the
 documented all-classification `GET /nmsapi/v1/notams/il?allowRedirect=false`.
 Its default invocation is a read-only review: it opens the existing migrated
 Spatchin private ledger read-only, reports the account-wide bulk gate and a
@@ -224,7 +224,7 @@ hours, stop with `DELTA_GAP`; do not query a shorter interval or claim recovery.
 
 ## SPA-52 bounded initial-content inspection (not a production decoder)
 
-`scripts/nms_initial_decoder.py` adds independently useful, offline inspection
+`scripts/notam/nms_initial_decoder.py` adds independently useful, offline inspection
 without activating collection or claiming production wire compatibility. Its
 evidence-to-implementation mapping is deliberately narrow:
 
@@ -292,7 +292,7 @@ are supplied and reviewed, the production seam intentionally does not assemble a
 
 ## SPA-56 offline streaming inspection of preserved Initial Load evidence
 
-`scripts/inspect_initial_load_stream.py` is a separate forensic inspector for the
+`scripts/notam/inspect_initial_load_stream.py` is a separate forensic inspector for the
 verified production specimen shape: one gzip member containing UTF-8 SOAP 1.1,
 a WFS 2.0 FeatureCollection, and one AIXM Basic Message per WFS member. It has no
 collector, decoder, credential, HTTP, SQLite, baseline, cursor, outbox, public
@@ -351,7 +351,7 @@ are not provider-wide invariants and do not authorize another request or baselin
 
 ## SPA-58 offline C070 airport association candidate
 
-`scripts/associate_initial_load_airports.py` adds a bounded, read-only association
+`scripts/notam/associate_initial_load_airports.py` adds a bounded, read-only association
 pass over the verified Initial Load container. It reuses the SPA-56 evidence,
 receipt, permission, mutation, gzip and XML safety checks and streams one WFS
 member at a time. It neither loads the decompressed document as a tree nor changes
@@ -417,7 +417,7 @@ for exact comparison with GeoJSON `notam.id`; delta reconciliation, replay,
 cancellation preservation, conflict handling, baseline state, and watermark
 behavior are unchanged.
 
-`scripts/nms_baseline_candidate.py` connects the SPA-58 streaming record sink to
+`scripts/notam/nms_baseline_candidate.py` connects the SPA-58 streaming record sink to
 the existing `nms_refresh.Store` model without adding a collector, scheduler,
 cache, public writer or production decoder. `InitialCandidateSink` receives one
 Initial Load record at a time and retains bounded private candidate state. It
@@ -489,7 +489,7 @@ Public conversion, live collection and activation each require separate review.
 
 ## SPA-52 classification-wide GeoJSON candidate (offline only)
 
-`scripts/nms_geojson_baseline.py` implements a second, independent evidence path
+`scripts/notam/nms_geojson_baseline.py` implements a second, independent evidence path
 for five saved classification-only responses. The supplied OpenAPI 1.0.18 defines
 `GET /nmsapi/v1/notams`, header `nmsResponseFormat: GEOJSON`, and request labels
 `INTERNATIONAL`, `MILITARY`, `LOCAL_MILITARY`, `DOMESTIC`, and `FDC`. It also says
@@ -779,10 +779,10 @@ After separate operator approval, PowerShell usage is:
 
 ```powershell
 # Read-only: no target is created, no SQLite connection is opened.
-py -B scripts/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account'
+py -B scripts/notam/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account'
 
 # Only after reviewing the full report and separately authorizing this import:
-py -B scripts/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account' --write --approve '<approval_digest from the reviewed dry run>'
+py -B scripts/notam/import_nms_history.py --manifest 'C:/NmsReview/reviewed-history.json' --target 'C:/NmsPrivate/approved-account' --write --approve '<approval_digest from the reviewed dry run>'
 ```
 
 The digest binds manifest bytes, referenced snapshot/receipt hashes and the exact

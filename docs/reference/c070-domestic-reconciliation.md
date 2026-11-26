@@ -1,6 +1,6 @@
 # C070 DOMESTIC offline reconciliation
 
-`scripts/reconcile_c070_domestic.py` is a bounded, local-only review tool for
+`scripts/notam/reconcile_c070_domestic.py` is a bounded, local-only review tool for
 one already-saved NMS DOMESTIC GeoJSON capture. It does not fetch, authenticate,
 schedule, publish, mutate the public snapshot, or make operational inferences.
 
@@ -10,7 +10,7 @@ full private evidence file. The tool refuses existing files and repository outpu
 paths. It prints no source records.
 
 ```powershell
-python -B scripts/reconcile_c070_domestic.py `
+python -B scripts/notam/reconcile_c070_domestic.py `
   --capture C:\private\saved-domestic.json `
   --retrieved-utc 2026-11-16T12:00:00Z `
   --summary C:\private\spa19-summary.json `

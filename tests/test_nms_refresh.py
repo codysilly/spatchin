@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 
-SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'
+SCRIPTS = Path(__file__).resolve().parents[1]/'scripts'/'notam'
 sys.path.insert(0, str(SCRIPTS))
 from capture_storage import platform_storage
 from nms_refresh import (Store, SCHEMA, collect, collect_classification_candidate,

@@ -13,12 +13,12 @@ Adapted from the uncommitted `feature/notam-integration` prototype based on
 `126e3e575d1bbdbf6c32ccf3032a0e575aa8450e`. The prototype checkout is preserved.
 Only these offline components are reused:
 
-- `scripts/review_notams.py`: local JSON CLI, text/JSON and standalone HTML output.
-- `scripts/notam_review.py`: proposals, quoted evidence offsets, validity windows,
+- `scripts/notam/review_notams.py`: local JSON CLI, text/JSON and standalone HTML output.
+- `scripts/notam/notam_review.py`: proposals, quoted evidence offsets, validity windows,
   schedules/reference hints, source/provenance preservation and UNKNOWN coverage.
-- `scripts/notam_rules.py`: conservative baseline text classifier, used only for
+- `scripts/notam/notam_rules.py`: conservative baseline text classifier, used only for
   review here; it does not establish real FAA semantics or availability.
-- `scripts/notam_review_helpers.py`: only the exception, nested-path lookup,
+- `scripts/notam/notam_review_helpers.py`: only the exception, nested-path lookup,
   syntactic UTC normalization and credential-looking-input rejection extracted
   from the prototype adapter. No adapter, URLs, contract configuration, HTTP client,
   request-budget code, authentication or environment inspection is included.
@@ -36,9 +36,9 @@ pagination, completeness, or FAA semantics. No real examples are bundled.
 Python 3.12+; standard library only. From the repository root:
 
 ```sh
-python -B scripts/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z
-python -B scripts/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z --json
-python -B scripts/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z --html /path/outside-checkout/synthetic-notam-review.html
+python -B scripts/notam/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z
+python -B scripts/notam/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z --json
+python -B scripts/notam/review_notams.py tests/fixtures/notam_review.json --at 2026-11-11T12:00:00Z --html /path/outside-checkout/synthetic-notam-review.html
 ```
 
 Choose a **new** local HTML filename. Existing output is never overwritten; the
@@ -66,7 +66,7 @@ Automatic rejection of credential-looking keys is **not** sanitization certifica
 For a single response, explicitly supply both airport context and declared kind:
 
 ```sh
-python -B scripts/review_notams.py /private/sanitized.json --airport KORD --kind sanitized-real-unverified --at 2026-11-11T12:00:00Z
+python -B scripts/notam/review_notams.py /private/sanitized.json --airport KORD --kind sanitized-real-unverified --at 2026-11-11T12:00:00Z
 ```
 
 For multiple airports, use the fixture's `review_input_version: 1` bundle shape

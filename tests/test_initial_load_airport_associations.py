@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 
-SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts" / "notam"
 sys.path.insert(0, str(SCRIPTS))
 from associate_initial_load_airports import InspectionError, associate_evidence
 from c070_notam_partition import load_versioned_registry
