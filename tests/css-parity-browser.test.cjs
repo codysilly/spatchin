@@ -1,6 +1,7 @@
 'use strict';
 // Preserve SPA-68's historical zero-difference proof, independently of later features.
-// Also compare this worktree to the pre-SPA-96 main, using identical pinned data.
+// Preserve the SPA-96 proof and compare this worktree with the pre-SPA-106 main.
+// Each comparison uses identical pinned data on both sides.
 // No external provider or font requests are allowed.
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
@@ -12,7 +13,8 @@ const {chromium}=require('playwright');
 const origin='http://127.0.0.1:8798';
 const baseline='5120d81945787a5c80da738bf5e086a4105e0a1c';
 const refactored='7a33c2f7ac021cb77b3e118d33a777297c76c868';
-const currentBaseline='defc13157003499d36c0223eff4729e0410ab23e';
+const spa96Baseline='defc13157003499d36c0223eff4729e0410ab23e';
+const currentBaseline='0c72c300182ff7185da8654300d765e16f2dc83c';
 const trees=new Map(),blobs=new Map();
 function paths(sha){if(!trees.has(sha))trees.set(sha,new Set(execFileSync('git',['ls-tree','-r','--name-only',sha],{encoding:'utf8'}).trim().split(/\r?\n/)));return trees.get(sha);}
 function blob(sha,file){const key=sha+':'+file;if(!blobs.has(key))blobs.set(key,execFileSync('git',['show',key],{maxBuffer:32*1024*1024}));return blobs.get(key);}
@@ -51,7 +53,7 @@ async function launch(width,revision,dataRevision){
   if(!paths(sha).has(file))return route.fulfill({status:404,body:''});
   return route.fulfill({status:200,contentType:mime[file.split('.').at(-1)]||'application/octet-stream',body:(()=>{
     const original=blob(sha,file);
-    if(sha!==currentBaseline||file!=='charcoal-dashboard.css')return original;
+    if(sha!==spa96Baseline||file!=='charcoal-dashboard.css')return original;
     let css=original.toString('utf8');
     const changes=[
      ['.reader-note{font-size:11px}','.reader-note{font-size:12px}'],
@@ -108,8 +110,8 @@ async function render(width,name,revision,dataRevision){
 }
 for(const width of [1440,1120,760,390,320]){
  for(const scene of width===1440||width===390?['default','scan','reader']:['default']){
-  test('SPA-68 CSS parity '+width+'px '+scene,async()=>{
-   for(const [label,left,right,data] of [['SPA-68 historical',baseline,refactored,baseline],['SPA-96 unchanged UI',currentBaseline,null,currentBaseline]]){
+  test('CSS parity '+width+'px '+scene,async()=>{
+   for(const [label,left,right,data] of [['SPA-68 historical',baseline,refactored,baseline],['SPA-96 unchanged UI',spa96Baseline,currentBaseline,spa96Baseline],['SPA-106 unchanged UI',currentBaseline,null,currentBaseline]]){
    const before=await render(width,scene,left,data),after=await render(width,scene,right,data);
    assert.deepEqual(before.errors,[]);assert.deepEqual(after.errors,[]);
    assert.deepEqual(after.computed,before.computed,label+': computed style differs at '+width+' '+scene);
