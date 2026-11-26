@@ -102,6 +102,8 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
  await context.addInitScript(()=>{if(localStorage.getItem('spatchin-airports')===null)localStorage.setItem('spatchin-airports','["MEM","IND","OAK"]');});
  try{
   await page.goto(base+'/dashboard/');
+  await page.waitForSelector('.airport-grip',{state:'visible'});
+  await page.waitForLoadState('networkidle');
   const order=()=>page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport));
   assert.deepEqual(await order(),['MEM','IND','OAK']);
   const mem=page.locator('[data-airport="MEM"] .airport-grip');
@@ -115,6 +117,8 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   assert.equal(await page.locator('#airport-order-status').textContent(),'MEM moved to position 2 of 3');
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'["IND","MEM","OAK"]');
   await page.reload();
+  await page.waitForSelector('.airport-grip',{state:'visible'});
+  await page.waitForLoadState('networkidle');
   assert.deepEqual(await order(),['IND','MEM','OAK']);
   const src=await page.locator('[data-airport="MEM"] .airport-grip').boundingBox();
   const dst=await page.locator('[data-airport="OAK"] .airport-grip').boundingBox();
@@ -125,6 +129,8 @@ test('airport order persists through keyboard and pointer dragging',async()=>{
   assert.deepEqual(await order(),['IND','OAK','MEM']);
   assert.equal(await page.evaluate(()=>localStorage.getItem('spatchin-airports')),'["IND","OAK","MEM"]');
   await page.reload();
+  await page.waitForSelector('.airport-grip',{state:'visible'});
+  await page.waitForLoadState('networkidle');
   assert.deepEqual(await order(),['IND','OAK','MEM']);
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
@@ -138,6 +144,8 @@ test('touch pointer drag reorders a single-column mobile dashboard',async()=>{
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["IND","OAK"]'));
  try{
   await page.goto(base+'/dashboard/');
+  await page.waitForSelector('.airport-grip',{state:'visible'});
+  await page.waitForLoadState('networkidle');
   const src=await page.locator('[data-airport="IND"] .airport-grip').boundingBox();
   const dst=await page.locator('[data-airport="OAK"] .airport-grip').boundingBox();
   assert.ok(src&&dst,'both mobile grips must be visible');
