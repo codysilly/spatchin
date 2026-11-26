@@ -4,11 +4,18 @@
   "scripts": {
     "test:node": "node scripts/run-node-tests.cjs",
     "test:browser": "node --test --test-concurrency=1 tests/*browser*.test.cjs",
-    "test:scan": "node --test tests/scan.test.cjs"
+    "test:scan": "node --test tests/scan.test.cjs",
+    "format": "prettier --config .github/quality/prettier.json --ignore-path .github/quality/prettier.ignore --write scripts/run-node-tests.cjs tests/branding-assets.test.cjs tests/charcoal-dashboard.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs && ruff format --config .github/quality/ruff.toml tests/test_update_taf.py",
+    "format:check": "prettier --config .github/quality/prettier.json --ignore-path .github/quality/prettier.ignore --check scripts/run-node-tests.cjs tests/branding-assets.test.cjs tests/charcoal-dashboard.test.cjs tests/taf-reader.test.cjs tests/taf-timeline.test.cjs && ruff format --config .github/quality/ruff.toml --check tests/test_update_taf.py",
+    "lint:js": "eslint --config .github/quality/eslint.config.mjs .",
+    "lint:py": "ruff check --config .github/quality/ruff.toml scripts tests",
+    "lint": "npm run lint:js && npm run lint:py"
   },
   "devDependencies": {
+    "eslint": "9.39.1",
     "pixelmatch": "5.3.0",
     "playwright": "1.65.0",
-    "pngjs": "7.0.0"
+    "pngjs": "7.0.0",
+    "prettier": "3.6.2"
   }
 }

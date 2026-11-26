@@ -1,0 +1,7 @@
+target-version = "py312"
+line-length = 100
+extend-exclude = ["data", "docs/reference", "tests/fixtures", ".notam-review", ".test-output"]
+
+[lint]
+# Initial correctness rules; add broader lint rules only after baseline validation.
+select = ["E9", "F63", "F7", "F82"]

@@ -1,4 +1,5 @@
 """Offline synthetic TAF collector tests. Never contact AWC."""
+
 import importlib.util
 import io
 import json
@@ -35,8 +36,11 @@ class Response:
 class TafCollectorTests(unittest.TestCase):
     def setUp(self):
         self.module = load()
-        guard = mock.patch.object(self.module.urllib.request, "urlopen",
-                                  side_effect=AssertionError("Unexpected network access"))
+        guard = mock.patch.object(
+            self.module.urllib.request,
+            "urlopen",
+            side_effect=AssertionError("Unexpected network access"),
+        )
         guard.start()
         self.addCleanup(guard.stop)
         self.directory = tempfile.TemporaryDirectory()
@@ -48,7 +52,9 @@ class TafCollectorTests(unittest.TestCase):
         issued = self.now - issue_hours * 3600
         return {
             "icaoId": code,
-            "issueTime": datetime.fromtimestamp(issued, timezone.utc).isoformat().replace("+00:00", "Z"),
+            "issueTime": datetime.fromtimestamp(issued, timezone.utc)
+            .isoformat()
+            .replace("+00:00", "Z"),
             "validTimeFrom": int(issued - 600),
             "validTimeTo": int(issued + 24 * 3600),
             "rawTAF": text or f"TAF {code} SYNTHETIC",
@@ -57,8 +63,12 @@ class TafCollectorTests(unittest.TestCase):
     def previous(self, reports):
         path = self.module.DEST
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({"updated_utc": "2026-01-01T00:00:00Z",
-                                    "source": self.module.URL, "tafs": reports}), encoding="utf-8")
+        path.write_text(
+            json.dumps(
+                {"updated_utc": "2026-01-01T00:00:00Z", "source": self.module.URL, "tafs": reports}
+            ),
+            encoding="utf-8",
+        )
         return path.read_bytes()
 
     def collect(self, response):
@@ -81,10 +91,12 @@ class TafCollectorTests(unittest.TestCase):
         self.assertEqual(len(stations), 130)
         self.assertEqual(self.module.AIRPORTS, stations)
         url = urlsplit(self.module.URL)
-        self.assertEqual((url.scheme, url.netloc, url.path),
-                         ("https", "aviationweather.gov", "/api/data/taf"))
-        self.assertEqual(parse_qs(url.query),
-                         {"ids": [",".join(sorted(stations))], "format": ["json"]})
+        self.assertEqual(
+            (url.scheme, url.netloc, url.path), ("https", "aviationweather.gov", "/api/data/taf")
+        )
+        self.assertEqual(
+            parse_qs(url.query), {"ids": [",".join(sorted(stations))], "format": ["json"]}
+        )
         self.collect([self.report("KIWA")])
         self.assertEqual([item["icaoId"] for item in self.snapshot()["tafs"]], ["KIWA"])
 
@@ -96,28 +108,45 @@ class TafCollectorTests(unittest.TestCase):
         valid_new = self.report("KIWA")
         bad = dict(self.report("KAFW"), rawTAF=" ")
         with mock.patch("builtins.print") as log:
-            self.collect([self.report("KABE", issue_hours=3), bad, valid_new,
-                          None, {"icaoId": ["KABE"]}, {"icaoId": {}},
-                          self.report("ZZZZ")])
+            self.collect(
+                [
+                    self.report("KABE", issue_hours=3),
+                    bad,
+                    valid_new,
+                    None,
+                    {"icaoId": ["KABE"]},
+                    {"icaoId": {}},
+                    self.report("ZZZZ"),
+                ]
+            )
         result = {x["icaoId"]: x for x in self.snapshot()["tafs"]}
-        self.assertEqual(result, {"KABE": current, "KABQ": absent,
-                                  "KAFW": rejected, "KIWA": valid_new})
-        self.assertTrue(any("2 valid station reports of 130" in str(call)
-                            for call in log.call_args_list))
+        self.assertEqual(
+            result, {"KABE": current, "KABQ": absent, "KAFW": rejected, "KIWA": valid_new}
+        )
+        self.assertTrue(
+            any("2 valid station reports of 130" in str(call) for call in log.call_args_list)
+        )
 
     def test_equal_issue_duplicate_does_not_erase_decoded_periods(self):
         item = self.report("KIWA")
         start = item["validTimeFrom"]
-        detailed = dict(item, fcsts=[{"timeFrom": start, "timeTo": start + 3600,
-                                      "wdir": "VRB", "wspd": 5}])
+        detailed = dict(
+            item, fcsts=[{"timeFrom": start, "timeTo": start + 3600, "wdir": "VRB", "wspd": 5}]
+        )
         self.assertEqual(self.module.select([detailed, item])["KIWA"], detailed)
         self.assertEqual(self.module.select([item, detailed])["KIWA"], detailed)
 
     def test_malformed_station_and_timestamp_do_not_abort_other_records(self):
         good = self.report("KIND")
-        for changes in ({"icaoId": []}, {"icaoId": {}}, {"icaoId": None},
-                        {"issueTime": True}, {"issueTime": float("nan")},
-                        {"validTimeTo": "invalid"}, {"rawTAF": 42}):
+        for changes in (
+            {"icaoId": []},
+            {"icaoId": {}},
+            {"icaoId": None},
+            {"issueTime": True},
+            {"issueTime": float("nan")},
+            {"validTimeTo": "invalid"},
+            {"rawTAF": 42},
+        ):
             with self.subTest(changes=changes):
                 self.assertFalse(self.module.valid(dict(good, **changes)))
         self.assertEqual(self.module.select([dict(good, icaoId=[]), good]), {"KIND": good})
@@ -131,8 +160,10 @@ class TafCollectorTests(unittest.TestCase):
         self.assertEqual(snapshot["source"], self.module.URL)
         self.assertTrue(snapshot["updated_utc"].endswith("Z"))
         self.assertEqual(snapshot["tafs"][0]["rawTAF"], items[0]["rawTAF"])
-        self.assertEqual(set(snapshot["tafs"][0]), {
-            "icaoId", "rawTAF", "issueTime", "validTimeFrom", "validTimeTo"})
+        self.assertEqual(
+            set(snapshot["tafs"][0]),
+            {"icaoId", "rawTAF", "issueTime", "validTimeFrom", "validTimeTo"},
+        )
 
     def test_partial_outage_retains_previous_reports(self):
         old = self.report("KORD", issue_hours=4)
@@ -191,16 +222,27 @@ class TafCollectorTests(unittest.TestCase):
         item["issueTime"] = item["issueTime"].replace("Z", "")
         self.assertTrue(self.module.valid(item, now=self.now))
 
-
     def test_awc_decoded_forecast_periods_saved_with_raw_text(self):
         item = self.report("KMEM")
         start = item["validTimeFrom"]
         item["fcsts"] = [
-            {"timeFrom": start, "timeTo": start + 3600,
-             "fcstChange": None, "wdir": 270, "wspd": 18, "wgst": 26,
-             "clouds": [{"cover": "BKN", "base": 1000}]},
-            {"timeFrom": start + 3600, "timeTo": start + 7200,
-             "fcstChange": "TEMPO", "wdir": "VRB", "wspd": 12, "wgst": 22},
+            {
+                "timeFrom": start,
+                "timeTo": start + 3600,
+                "fcstChange": None,
+                "wdir": 270,
+                "wspd": 18,
+                "wgst": 26,
+                "clouds": [{"cover": "BKN", "base": 1000}],
+            },
+            {
+                "timeFrom": start + 3600,
+                "timeTo": start + 7200,
+                "fcstChange": "TEMPO",
+                "wdir": "VRB",
+                "wspd": 12,
+                "wgst": 22,
+            },
         ]
         self.collect([item])
         saved = self.snapshot()["tafs"][0]
@@ -214,8 +256,18 @@ class TafCollectorTests(unittest.TestCase):
         item = self.report("KJFK")
         self.previous([item])
         start = item["validTimeFrom"]
-        incoming = dict(item, fcsts=[{"timeFrom": start, "timeTo": start + 3600,
-                                     "fcstChange": "FM", "wdir": 80, "wspd": 10}])
+        incoming = dict(
+            item,
+            fcsts=[
+                {
+                    "timeFrom": start,
+                    "timeTo": start + 3600,
+                    "fcstChange": "FM",
+                    "wdir": 80,
+                    "wspd": 10,
+                }
+            ],
+        )
         self.collect([incoming])
         self.assertEqual(len(self.snapshot()["tafs"][0]["fcsts"]), 1)
         before = self.module.DEST.read_bytes()
@@ -225,9 +277,11 @@ class TafCollectorTests(unittest.TestCase):
     def test_bad_periods_not_used_for_wind_projection(self):
         item = self.report("KMEM")
         start = item["validTimeFrom"]
-        item["fcsts"] = [{"timeFrom": start + 3600, "timeTo": start, "wdir": 90, "wspd": 8},
-                         {"timeFrom": "bad", "timeTo": start + 3600, "wdir": 90, "wspd": 8},
-                         {"timeFrom": start, "timeTo": start + 3600, "wdir": 210, "wspd": 15}]
+        item["fcsts"] = [
+            {"timeFrom": start + 3600, "timeTo": start, "wdir": 90, "wspd": 8},
+            {"timeFrom": "bad", "timeTo": start + 3600, "wdir": 90, "wspd": 8},
+            {"timeFrom": start, "timeTo": start + 3600, "wdir": 210, "wspd": 15},
+        ]
         self.collect([item])
         self.assertEqual(len(self.snapshot()["tafs"][0]["fcsts"]), 1)
         self.assertEqual(self.snapshot()["tafs"][0]["fcsts"][0]["wdir"], 210)
