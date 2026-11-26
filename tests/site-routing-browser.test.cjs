@@ -23,8 +23,10 @@ for(const width of [1440,390])test('public homepage serves live WIP UI '+width+'
   return route.continue();
  });
  try{
+  const tafResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/data/tafs.json');
   await page.goto(origin+'/');
   await page.waitForSelector('[data-airport="MEM"] .metar-panel');
+  await tafResponse;
   await page.waitForFunction(()=>document.querySelectorAll('[data-airport="MEM"] .runway-row').length===8);
   assert.equal((await page.locator('.wip-banner').innerText()).trim(),'WORK IN PROGRESS. Under development and not yet validated.');
   assert.equal(await page.locator('.wip-banner').getAttribute('role'),'note');
@@ -149,4 +151,39 @@ test('synthetic previews do not load forecast modules or forecast snapshots',asy
   assert.ok(!requests.some(path=>['/taf-reader.js','/taf-timeline.js','/data/tafs.json'].includes(path)));
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
+});
+
+test('dashboard starts and airport controls work while forecast module is pending',async()=>{
+ const context=await browser.newContext({viewport:{width:390,height:2200},hasTouch:true,isMobile:true});
+ const page=await context.newPage(),errors=[],requests=[];
+ let release;
+ const pending=new Promise(resolve=>{release=resolve;});
+ page.on('pageerror',error=>errors.push(error.message));
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["IND","OAK"]'));
+ await context.route('**/*',async route=>{
+  const url=new URL(route.request().url());
+  if(url.origin!==origin)return route.abort();
+  requests.push(url.pathname);
+  if(url.pathname==='/taf-reader.js')await pending;
+  return route.continue();
+ });
+ try{
+  await page.goto(origin+'/dashboard/',{waitUntil:'domcontentloaded'});
+  const grip=page.locator('[data-airport="IND"] .airport-grip');
+  await grip.waitFor({state:'visible'});
+  await page.waitForFunction(()=>document.querySelector('[data-airport="IND"] .metar-raw')?.textContent.includes('KIND')||document.querySelector('[data-airport="IND"] .metar-status')?.textContent==='METAR UNAVAILABLE');
+  assert.ok(requests.includes('/data/metars.json'));
+  assert.ok(requests.includes('/data/runways.json'));
+  assert.ok(requests.includes('/taf-reader.js'));
+  assert.ok(!requests.includes('/data/tafs.json'));
+  assert.deepEqual(await page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport)),['IND','OAK']);
+  await grip.press('ArrowDown');
+  assert.deepEqual(await page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport)),['OAK','IND']);
+  const tafResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/data/tafs.json');
+  release();
+  await tafResponse;
+  await page.waitForFunction(()=>typeof forecastReader!=='undefined');
+  assert.deepEqual(await page.locator('.airport').evaluateAll(els=>els.map(el=>el.dataset.airport)),['OAK','IND']);
+  assert.deepEqual(errors,[]);
+ }finally{release();await context.close();}
 });
