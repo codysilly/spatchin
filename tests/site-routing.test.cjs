@@ -32,3 +32,22 @@ test('preview stylesheet paths resolve to existing local files',()=>{
   for(const href of links)assert.ok(existsSync(href),'missing '+href+' in '+path);
  }
 });
+
+test('all dashboard entry points load SCAN as one ES module',()=>{
+ for(const path of ['index.html','dashboard/index.html','preview/index.html','preview/snapshot-loader.html']){
+  const html=readFileSync(path,'utf8');
+  assert.equal((html.match(/<script type="module" src="scan\.js">/g)||[]).length,1,path);
+  assert.equal((html.match(/src="scan\.js"/g)||[]).length,1,path);
+ }
+});
+test('SCAN exports literal search rules without requiring browser state',async()=>{
+ const {literalPattern,matchingKeyword}=await import('../scan.js');
+ const ordered=[{term:'runway',index:0},{term:'run',index:1},{term:'a+b',index:2},{term:'[x]',index:3},{term:'Ångström',index:4}];
+ const text='RUNWAY run a+b aab [x] Ångström ångström';
+ assert.deepEqual([...text.matchAll(literalPattern(ordered,false))].map(m=>m[0]),['RUNWAY','run','a+b','[x]','Ångström','ångström']);
+ assert.deepEqual([...text.matchAll(literalPattern(ordered,true))].map(m=>m[0]),['run','a+b','[x]','Ångström']);
+ assert.equal(matchingKeyword(ordered,'RUNWAY',false),ordered[0]);
+ assert.equal(matchingKeyword(ordered,'aab',false),undefined);
+ assert.equal(matchingKeyword(ordered,'[x]',true),ordered[3]);
+ assert.equal(matchingKeyword(ordered,'ångström',true),undefined);
+});

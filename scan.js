@@ -1,6 +1,12 @@
 /* SCAN: DOM-only global search. No dependency on aviation panel markup. */
-(() => {
-  'use strict';
+// Export the literal search rules without exposing browser state.
+export function literalPattern(ordered, caseSensitive) {
+  return new RegExp(ordered.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), caseSensitive ? 'gu' : 'giu');
+}
+export function matchingKeyword(ordered, text, caseSensitive) {
+  return ordered.find(k => new RegExp(`^(?:${k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})$`, caseSensitive ? 'u' : 'iu').test(text));
+}
+function startScan() {
   const KEY = 'spatchin-scan-v1';
   const palette = ['#ffd166', '#70d6ff', '#c5a3ff', '#95e6a4', '#ffabc7', '#ffb480'];
   const ui = Object.fromEntries(['terms', 'enabled', 'case', 'prev', 'next', 'count', 'legend', 'toggle', 'panel', 'indicator', 'keyword-count'].map(id => [id, document.getElementById(`scan-${id}`)]));
@@ -85,7 +91,7 @@
       if (settings.enabled && keywords.length) {
         // Escape every keyword: searches are literal, never user-provided regex or HTML.
         const ordered = [...keywords].sort((a, b) => b.term.length - a.term.length || a.index - b.index);
-        const pattern = new RegExp(ordered.map(k => k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), settings.caseSensitive ? 'gu' : 'giu');
+        const pattern = literalPattern(ordered, settings.caseSensitive);
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
           acceptNode: node => node.nodeValue.trim() && !node.parentElement.closest(excluded) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
         });
@@ -98,7 +104,7 @@
           const fragment = document.createDocumentFragment();
           let offset = 0;
           for (const match of found) {
-            const keyword = ordered.find(k => new RegExp(`^(?:${k.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})$`, settings.caseSensitive ? 'u' : 'iu').test(match[0]));
+            const keyword = matchingKeyword(ordered, match[0], settings.caseSensitive);
             fragment.append(document.createTextNode(text.slice(offset, match.index)));
             const mark = document.createElement('mark');
             mark.dataset.scanMatch = ''; paint(mark, keyword.color);
@@ -166,4 +172,7 @@
     if (event.key === 'Enter') { event.preventDefault(); navigate(event.shiftKey ? -1 : 1); }
   });
   disclosure(); apply();
-})();
+}
+
+// Node can import and test the pure helpers without a browser.
+if (typeof document !== 'undefined') startScan();
