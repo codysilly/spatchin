@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T00:38:36.252909Z",
+  "updated_utc": "2026-11-26T01:28:35.184620Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2475,20 +2475,20 @@
     },
     {
       "icaoId": "KGRR",
-      "rawTAF": "TAF KGRR 252325Z 2600/2624 05012KT P6SM SCT030 SCT140 BKN250 FM260600 06011KT P6SM BKN130 WS020/08040KT FM261300 06011G22KT P6SM BKN250 FM262200 05014G30KT P6SM OVC035 PROB30 2622/2624 4SM -SHRA OVC025",
-      "issueTime": "2026-11-25T23:25:00.000Z",
-      "validTimeFrom": 1795651200,
+      "rawTAF": "TAF KGRR 260123Z 2601/2624 05012G22KT P6SM BKN030 FM260600 06011KT P6SM SCT030 BKN130 WS020/08040KT FM261300 06011G22KT P6SM BKN250 FM262200 05014G30KT P6SM OVC035 PROB30 2622/2624 4SM -SHRA OVC025",
+      "issueTime": "2026-11-26T01:23:00.000Z",
+      "validTimeFrom": 1795654800,
       "validTimeTo": 1795737600,
       "fcsts": [
         {
-          "timeFrom": 1795651200,
+          "timeFrom": 1795654800,
           "timeTo": 1795672800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 50,
           "wspd": 12,
-          "wgst": null
+          "wgst": 22
         },
         {
           "timeFrom": 1795672800,
@@ -3592,14 +3592,14 @@
     },
     {
       "icaoId": "KLSV",
-      "rawTAF": "TAF KLSV 251500Z 2515/2621 VRB06KT 9999 BKN220 QNH3012INS BECMG 2518/2519 03009KT 9999 SCT200 QNH3014INS BECMG 2606/2607 22009KT 9999 FEW200 QNH3018INS TX19/2522Z TN06/2515Z",
-      "issueTime": "2026-11-25T15:00:00.000Z",
-      "validTimeFrom": 1795618800,
-      "validTimeTo": 1795726800,
+      "rawTAF": "TAF KLSV 252300Z 2523/2705 VRB06KT 9999 FEW250 QNH3014INS BECMG 2618/2619 03009KT 9999 SKC QNH3027INS TX23/2622Z TN05/2614Z LAST NO AMDS AFT 2523 NEXT 2815",
+      "issueTime": "2026-11-25T23:00:00.000Z",
+      "validTimeFrom": 1795647600,
+      "validTimeTo": 1795755600,
       "fcsts": [
         {
-          "timeFrom": 1795618800,
-          "timeTo": 1795629600,
+          "timeFrom": 1795647600,
+          "timeTo": 1795716000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -3608,22 +3608,12 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795629600,
-          "timeTo": 1795672800,
-          "timeBec": 1795633200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795755600,
+          "timeBec": 1795719600,
           "fcstChange": "BECMG",
           "probability": null,
           "wdir": 30,
-          "wspd": 9,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795672800,
-          "timeTo": 1795726800,
-          "timeBec": 1795676400,
-          "fcstChange": "BECMG",
-          "probability": null,
-          "wdir": 220,
           "wspd": 9,
           "wgst": null
         }
