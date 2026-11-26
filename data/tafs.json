@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T16:48:38.532179Z",
+  "updated_utc": "2026-11-26T16:58:33.629733Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -269,26 +269,16 @@
     },
     {
       "icaoId": "KATW",
-      "rawTAF": "TAF KATW 261125Z 2612/2712 03007KT P6SM BKN023 FM261500 03009G16KT P6SM BKN022 FM261800 04012G20KT P6SM BKN022 FM270000 03012G20KT P6SM BKN018 FM270300 01010G17KT P6SM BKN250",
-      "issueTime": "2026-11-26T11:25:00.000Z",
-      "validTimeFrom": 1795694400,
+      "rawTAF": "TAF KATW 261652Z 2617/2712 03009G16KT P6SM OVC015 FM261800 04012G20KT P6SM BKN022 FM270000 03012G20KT P6SM BKN018 FM270300 01010G17KT P6SM BKN250",
+      "issueTime": "2026-11-26T16:52:00.000Z",
+      "validTimeFrom": 1795712400,
       "validTimeTo": 1795780800,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 30,
-          "wspd": 7,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795712400,
           "timeTo": 1795716000,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 30,
           "wspd": 9,
