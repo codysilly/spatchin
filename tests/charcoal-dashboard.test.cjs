@@ -89,15 +89,11 @@ test('approved palette and fonts are attached after original styles', () => {
   assert.match(html, /v0\.9/);
 });
 
-test('existing SCAN and NOTAM markup remain available', () => {
+// SCAN, NOTAM disclosures and reload, and airport limit/persistence are exercised by
+// charcoal-dashboard-browser, notam-snapshot-browser and c070-metar-dashboard.
+test('SCAN controls and responsive layout retain their configuration', () => {
   assert.ok(html.includes('id="scan-toggle"'));
   assert.ok(html.includes('id="scan-terms"'));
-  assert.match(app, /reader\?\.summary\(\s*icao\(\s*code\s*\)\s*\)/);
-  assert.match(app, /reader\?\.row\(\s*icao\(\s*code\s*\)\s*,\s*id\s*,\s*r\s*\)/);
-  assert.match(app, /notamSnapshots\?\.refresh\(\s*\)/);
-  assert.match(app, /airports\.length\s*>=\s*30\b/);
-  assert.match(app, /localStorage\.setItem\(\s*AIRPORT_STORAGE_KEY\b/);
-  assert.match(app, /class="airport-footer">\$\{notamTransportBlock\(code\)\}/);
   assert.match(
     css,
     /\.cards\s*\{\s*display\s*:\s*grid\s*;\s*grid-template-columns\s*:\s*repeat\(\s*3\s*,\s*minmax\(\s*0\s*,\s*1fr\s*\)\s*\)/,
@@ -105,13 +101,13 @@ test('existing SCAN and NOTAM markup remain available', () => {
   assert.match(css, /@media\s*\(\s*max-width\s*:\s*760px\s*\)/);
 });
 
-test('compact row and raw METAR markup preserve source links', () => {
+// Keyboard, pointer and touch reordering, and absence of the flight strip, are
+// verified against the rendered dashboard by charcoal-dashboard-browser.
+test('compact airport and METAR markup retain their structural and font contracts', () => {
   assert.match(app, /class="airport-top-row"/);
   assert.match(app, /data-airport-drag="/);
   assert.match(app, /data-remove="/);
   assert.match(app, /class="weather-row metar-panel"/);
-  assert.match(app, /function\s+moveAirport\(\s*code\s*,\s*targetIndex\s*\)/);
-  assert.ok(!app.includes('${category.strip}'));
   assert.match(css, /\.icao\s*\{\s*font\s*:\s*700\s+60px\s*\/\s*0?\.95\s+var\(\s*--font-data/);
   assert.match(css, /font\s*:\s*400\s+21px\s*\/\s*1\.6\s+var\(\s*--font-data/);
   assert.match(html, /id="airport-order-status"/);
