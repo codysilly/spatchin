@@ -15,6 +15,7 @@ async function load(selected,initial){
  let payload=initial,requests=[],alerts=[],stored=new Map(),elements=new Map();
  if(selected!==undefined)stored.set('spatchin-airports',JSON.stringify(selected));
  const context=vm.createContext({
+  testTafReader:require('../taf-reader.js').TafReader,
   Date:FixedDate,console:{error(){},info(){}},alert:msg=>alerts.push(msg),setInterval(){},
   document:{getElementById(id){if(!elements.has(id))elements.set(id,{innerHTML:'',textContent:'',value:'',addEventListener(event,fn){this[event]=fn;}});return elements.get(id);},querySelectorAll:()=>[]},
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,val)=>stored.set(key,val)},
@@ -150,12 +151,11 @@ test('published runway validator preserves reviewed inventory and rejects invali
 });
 test('published TAF selection retains newer and richer reports and rejects invalid publications',async()=>{
  const app=await load([],snapshot([]));
- app.run(source('taf-reader.js'));
  const issue=minutes=>new Date(now-minutes*60000).toISOString();
  const report=(icaoId,age,groups=1)=>({icaoId,issueTime:issue(age),validTimeFrom:Math.floor((now-3600000)/1000),validTimeTo:Math.floor((now+3600000)/1000),rawTAF:'SYNTHETIC '+icaoId+' '+age+' '+groups,fcsts:Array.from({length:groups},()=>({}))});
  const current=report('KMEM',30,2),other=report('KORD',30);
  const previous={tafs:[current,other],updated_utc:issue(5)};
- const select=(tafs,updated_utc=issue(1))=>JSON.parse(app.run('JSON.stringify(PublishedSnapshots.tafs('+JSON.stringify({tafs,updated_utc})+','+JSON.stringify(previous)+',airportInfo,TafReader,Date.now))'));
+ const select=(tafs,updated_utc=issue(1))=>JSON.parse(app.run('JSON.stringify(PublishedSnapshots.tafs('+JSON.stringify({tafs,updated_utc})+','+JSON.stringify(previous)+',airportInfo,testTafReader,Date.now))'));
  const retained=select([report('KMEM',45,3),report('KMEM',30,1)]);
  assert.deepEqual(retained.tafs,[current,other]);
  const richer=report('KMEM',30,3),newer=report('KMEM',10,1);
