@@ -1,0 +1,30 @@
+name: NOTAM ledger path offline checks
+on:
+  pull_request:
+    paths:
+      - 'scripts/notam/capture_domestic_candidate.py'
+      - 'tests/test_domestic_candidate.py'
+      - '.github/workflows/notam-path-offline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-path:
+    if: ${{ !github.event.repository.private }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test synthetic ledger path contracts only
+        run: python -B -m unittest discover -s tests -p test_domestic_candidate.py -k DefaultStorePathTests -v
