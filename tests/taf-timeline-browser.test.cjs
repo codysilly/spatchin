@@ -52,7 +52,7 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
   airports:{KMEM:{completeness:'UNKNOWN',notices:[]}}}}));
  try{
   await page.goto(base+'/dashboard/');
-  await page.waitForFunction(()=>typeof TafTimeline!=='undefined'&&tafData?.tafs?.[0]?.fcsts?.length===4);
+  await page.waitForFunction(()=>typeof forecastTimeline!=='undefined'&&tafData?.tafs?.[0]?.fcsts?.length===4);
   const mem=page.locator('[data-airport="MEM"]');
   assert.match(await mem.locator('.taf-raw').innerText(),/SYNTHETIC 27012KT/);
   assert.match(await mem.locator('.taf-meta').innerText(),/Issued/);
