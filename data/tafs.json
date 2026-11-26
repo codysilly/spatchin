@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-26T17:18:34.986568Z",
+  "updated_utc": "2026-11-26T17:28:36.790882Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -93,26 +93,16 @@
     },
     {
       "icaoId": "KABQ",
-      "rawTAF": "TAF KABQ 261120Z 2612/2712 36008KT P6SM SCT250 FM261600 VRB05KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KABQ 261723Z 2618/2718 VRB05KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:23:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 360,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795780800,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": "VRB",
           "wspd": 5,
@@ -151,29 +141,19 @@
     },
     {
       "icaoId": "KALB",
-      "rawTAF": "TAF KALB 261130Z 2612/2712 01003KT P6SM OVC250 FM261800 02009KT P6SM SCT100 OVC150 FM262200 02011KT 6SM -RA BR OVC050 FM270000 01012G22KT 4SM -RA BR OVC025 FM270200 01015G27KT 3SM RA BR OVC015 FM270800 36012G22KT 5SM -RA BR OVC009",
-      "issueTime": "2026-11-26T11:30:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KALB 261720Z 2618/2718 02007KT P6SM OVC150 FM262200 02011G17KT 6SM -RA BR OVC050 TEMPO 2622/2624 5SM -RA BR BKN030 OVC050 FM270000 01016G25KT 3SM RA BR BKN015 OVC025 TEMPO 2701/2705 2SM RA BR OVC010 FM270700 01013G20KT P6SM VCSH OVC012 FM271400 16007KT P6SM OVC015",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 10,
-          "wspd": 3,
-          "wgst": null
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795730400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 20,
-          "wspd": 9,
+          "wspd": 7,
           "wgst": null
         },
         {
@@ -184,70 +164,100 @@
           "probability": null,
           "wdir": 20,
           "wspd": 11,
+          "wgst": 17
+        },
+        {
+          "timeFrom": 1795730400,
+          "timeTo": 1795737600,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         },
         {
           "timeFrom": 1795737600,
-          "timeTo": 1795744800,
+          "timeTo": 1795762800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 10,
-          "wspd": 12,
-          "wgst": 22
+          "wspd": 16,
+          "wgst": 25
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795766400,
+          "timeFrom": 1795741200,
+          "timeTo": 1795755600,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795762800,
+          "timeTo": 1795788000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 10,
-          "wspd": 15,
-          "wgst": 27
+          "wspd": 13,
+          "wgst": 20
         },
         {
-          "timeFrom": 1795766400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795788000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 360,
-          "wspd": 12,
-          "wgst": 22
+          "wdir": 160,
+          "wspd": 7,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KATL",
-      "rawTAF": "TAF KATL 261603Z 2616/2718 27010G20KT 6SM -DZ BR BKN006 OVC025 FM262200 26014G26KT P6SM BKN008 OVC012 FM271200 26012G22KT P6SM OVC008 FM271700 27013G24KT P6SM BKN012 OVC025",
-      "issueTime": "2026-11-26T16:03:00.000Z",
-      "validTimeFrom": 1795708800,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KATL 261722Z 2618/2724 27012G24KT 6SM -DZ BR BKN007 OVC025 FM270000 26012G24KT P6SM BKN015 OVC025 FM271400 26012G24KT P6SM BKN008 OVC015 FM271800 26012G22KT P6SM BKN015 OVC025 FM272000 26012KT P6SM SCT050 SCT120",
+      "issueTime": "2026-11-26T17:22:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795730400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 270,
-          "wspd": 10,
-          "wgst": 20
+          "wspd": 12,
+          "wgst": 24
         },
         {
-          "timeFrom": 1795730400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795737600,
+          "timeTo": 1795788000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 260,
-          "wspd": 14,
-          "wgst": 26
+          "wspd": 12,
+          "wgst": 24
         },
         {
-          "timeFrom": 1795780800,
-          "timeTo": 1795798800,
+          "timeFrom": 1795788000,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 260,
+          "wspd": 12,
+          "wgst": 24
+        },
+        {
+          "timeFrom": 1795802400,
+          "timeTo": 1795809600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -256,14 +266,14 @@
           "wgst": 22
         },
         {
-          "timeFrom": 1795798800,
-          "timeTo": 1795802400,
+          "timeFrom": 1795809600,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 270,
-          "wspd": 13,
-          "wgst": 24
+          "wdir": 260,
+          "wspd": 12,
+          "wgst": null
         }
       ]
     },
@@ -318,29 +328,39 @@
     },
     {
       "icaoId": "KAUS",
-      "rawTAF": "TAF KAUS 261455Z 2615/2718 34009KT P6SM SKC FM262300 24002KT P6SM FEW250",
-      "issueTime": "2026-11-26T14:55:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KAUS 261720Z 2618/2724 35009KT P6SM SKC FM270000 24002KT P6SM SCT250 FM271700 21010KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795734000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 340,
+          "wdir": 350,
           "wspd": 9,
           "wgst": null
         },
         {
-          "timeFrom": 1795734000,
-          "timeTo": 1795802400,
+          "timeFrom": 1795737600,
+          "timeTo": 1795798800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 240,
           "wspd": 2,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795798800,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 210,
+          "wspd": 10,
           "wgst": null
         }
       ]
@@ -583,128 +603,108 @@
     },
     {
       "icaoId": "KBHM",
-      "rawTAF": "TAF KBHM 261130Z 2612/2712 30011KT 2SM BR OVC005 FM261400 28012G22KT 4SM BR OVC007 FM262200 27010G23KT P6SM OVC007 FM270000 27012G22KT P6SM BKN015",
-      "issueTime": "2026-11-26T11:30:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KBHM 261720Z 2618/2718 26013G23KT 6SM BR OVC006 FM270100 26015G25KT 6SM BR SCT007 OVC012 FM271000 26009KT P6SM OVC015 TEMPO 2710/2714 BKN007 OVC015",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 300,
-          "wspd": 11,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795730400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 280,
-          "wspd": 12,
-          "wgst": 22
-        },
-        {
-          "timeFrom": 1795730400,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 270,
-          "wspd": 10,
+          "wdir": 260,
+          "wspd": 13,
           "wgst": 23
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795741200,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 270,
-          "wspd": 12,
-          "wgst": 22
+          "wdir": 260,
+          "wspd": 15,
+          "wgst": 25
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 260,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795788000,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KBIL",
-      "rawTAF": "TAF KBIL 261127Z 2612/2712 23013KT P6SM BKN250 FM270000 25011KT P6SM SCT080 BKN150 FM270900 28015KT P6SM FEW100 BKN150",
-      "issueTime": "2026-11-26T11:27:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KBIL 261724Z 2618/2718 24012KT P6SM BKN250 FM262200 26010G20KT P6SM SCT080 BKN150 FM270600 29012G22KT P6SM FEW100 BKN150",
+      "issueTime": "2026-11-26T17:24:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795737600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795730400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 230,
-          "wspd": 13,
+          "wdir": 240,
+          "wspd": 12,
           "wgst": null
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795770000,
+          "timeFrom": 1795730400,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 250,
-          "wspd": 11,
-          "wgst": null
+          "wdir": 260,
+          "wspd": 10,
+          "wgst": 20
         },
         {
-          "timeFrom": 1795770000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795759200,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 280,
-          "wspd": 15,
-          "wgst": null
+          "wdir": 290,
+          "wspd": 12,
+          "wgst": 22
         }
       ]
     },
     {
       "icaoId": "KBMI",
-      "rawTAF": "TAF KBMI 261532Z 2616/2712 02015G25KT P6SM -RA SCT011 BKN070 PROB30 2616/2617 6SM -RA BKN013 FM261700 02016G27KT 6SM -RA OVC013 FM262000 01018G26KT 3SM -RA BR OVC008 FM270600 33016G24KT 3SM -RA BR OVC008",
-      "issueTime": "2026-11-26T15:32:00.000Z",
-      "validTimeFrom": 1795708800,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KBMI 261720Z 2618/2718 02018G26KT P6SM -RA OVC011 FM262000 01018G28KT 3SM -RA BR OVC008 FM270600 33016G24KT 3SM -RA BR OVC008 FM271300 32014KT 5SM BR VCSH OVC012 FM271600 31013KT P6SM BKN060",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 20,
-          "wspd": 15,
-          "wgst": 25
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795712400,
-          "timeBec": null,
-          "fcstChange": "PROB",
-          "probability": 30,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795723200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 20,
-          "wspd": 16,
-          "wgst": 27
+          "wspd": 18,
+          "wgst": 26
         },
         {
           "timeFrom": 1795723200,
@@ -714,17 +714,37 @@
           "probability": null,
           "wdir": 10,
           "wspd": 18,
-          "wgst": 26
+          "wgst": 28
         },
         {
           "timeFrom": 1795759200,
-          "timeTo": 1795780800,
+          "timeTo": 1795784400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 330,
           "wspd": 16,
           "wgst": 24
+        },
+        {
+          "timeFrom": 1795784400,
+          "timeTo": 1795795200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 320,
+          "wspd": 14,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 310,
+          "wspd": 13,
+          "wgst": null
         }
       ]
     },
@@ -779,14 +799,14 @@
     },
     {
       "icaoId": "KBOI",
-      "rawTAF": "TAF KBOI 261330Z 2614/2712 14008KT P6SM SCT200 TEMPO 2622/2701 P6SM -SHRA OVC050 FM270500 VRB05KT 5SM -RA OVC040 FM270900 VRB03KT P6SM OVC035",
-      "issueTime": "2026-11-26T13:30:00.000Z",
-      "validTimeFrom": 1795701600,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KBOI 261721Z 2618/2718 14008KT P6SM BKN080 OVC120 FM262300 VRB06KT P6SM -SHRA OVC040 FM270400 VRB05KT P6SM VCSH OVC030 TEMPO 2711/2715 -SHRA",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795755600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -795,18 +815,18 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795730400,
-          "timeTo": 1795741200,
+          "timeFrom": 1795734000,
+          "timeTo": 1795752000,
           "timeBec": null,
-          "fcstChange": "TEMPO",
+          "fcstChange": "FM",
           "probability": null,
-          "wdir": null,
-          "wspd": null,
+          "wdir": "VRB",
+          "wspd": 6,
           "wgst": null
         },
         {
-          "timeFrom": 1795755600,
-          "timeTo": 1795770000,
+          "timeFrom": 1795752000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -815,13 +835,13 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795770000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795777200,
+          "timeTo": 1795791600,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": "TEMPO",
           "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         }
       ]
@@ -946,40 +966,20 @@
     },
     {
       "icaoId": "KBUF",
-      "rawTAF": "TAF KBUF 261120Z 2612/2712 07009KT P6SM BKN250 FM261400 07012G22KT P6SM OVC250 FM261700 07018G30KT P6SM OVC250 FM262000 06021G38KT 6SM -RA OVC060 FM262200 06021G38KT 4SM RA OVC025 FM270000 06018G32KT 2SM RA OVC007 WS020/08045KT FM270300 07015G25KT 2SM RA OVC007",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KBUF 261721Z 2618/2718 06018G28KT P6SM OVC150 FM262000 06020G35KT 6SM -RA OVC090 WS020/08045KT FM262200 05018G30KT 3SM RA BR OVC012 WS020/07050KT FM270000 05016G27KT 2SM +RA BR OVC007 WS020/08050KT FM270400 05015G25KT 4SM -RA BR OVC007 FM271100 06011G20KT 6SM -SHRA BR OVC007",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 70,
-          "wspd": 9,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795712400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 12,
-          "wgst": 22
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795723200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
+          "wdir": 60,
           "wspd": 18,
-          "wgst": 30
+          "wgst": 28
         },
         {
           "timeFrom": 1795723200,
@@ -988,8 +988,8 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 60,
-          "wspd": 21,
-          "wgst": 38
+          "wspd": 20,
+          "wgst": 35
         },
         {
           "timeFrom": 1795730400,
@@ -997,29 +997,39 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 60,
-          "wspd": 21,
-          "wgst": 38
+          "wdir": 50,
+          "wspd": 18,
+          "wgst": 30
         },
         {
           "timeFrom": 1795737600,
-          "timeTo": 1795748400,
+          "timeTo": 1795752000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 50,
+          "wspd": 16,
+          "wgst": 27
+        },
+        {
+          "timeFrom": 1795752000,
+          "timeTo": 1795777200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 50,
+          "wspd": 15,
+          "wgst": 25
+        },
+        {
+          "timeFrom": 1795777200,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 60,
-          "wspd": 18,
-          "wgst": 32
-        },
-        {
-          "timeFrom": 1795748400,
-          "timeTo": 1795780800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 15,
-          "wgst": 25
+          "wspd": 11,
+          "wgst": 20
         }
       ]
     },
@@ -1074,70 +1084,60 @@
     },
     {
       "icaoId": "KBWI",
-      "rawTAF": "TAF KBWI 261541Z 2616/2718 06029G40KT 2SM BR OVC015 WS020/07065KT FM262100 07019G37KT 3SM -RA BKN005 OVC013 WS015/10045KT FM262300 07018G35KT 3SM -RA BKN005 OVC013 FM270200 15011G21KT 4SM BR BKN005 OVC010 FM270700 20014G27KT P6SM BKN015 OVC020 FM271400 23015G29KT P6SM SCT015 BKN020",
-      "issueTime": "2026-11-26T15:41:00.000Z",
-      "validTimeFrom": 1795708800,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KBWI 261721Z 2618/2724 06034G46KT 1SM +RA OVC009 WS020/07065KT FM270000 07015G30KT 1 1/2SM -SHRA OVC004 WS020/09045KT FM270300 18009KT 5SM BR OVC005 FM271000 21014G27KT P6SM OVC022 FM272200 25012G25KT P6SM BKN035",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795726800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 60,
-          "wspd": 29,
-          "wgst": 40
+          "wspd": 34,
+          "wgst": 46
         },
         {
-          "timeFrom": 1795726800,
-          "timeTo": 1795734000,
+          "timeFrom": 1795737600,
+          "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
-          "wspd": 19,
-          "wgst": 37
+          "wspd": 15,
+          "wgst": 30
         },
         {
-          "timeFrom": 1795734000,
-          "timeTo": 1795744800,
+          "timeFrom": 1795748400,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 70,
-          "wspd": 18,
-          "wgst": 35
+          "wdir": 180,
+          "wspd": 9,
+          "wgst": null
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795762800,
+          "timeFrom": 1795773600,
+          "timeTo": 1795816800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 150,
-          "wspd": 11,
-          "wgst": 21
-        },
-        {
-          "timeFrom": 1795762800,
-          "timeTo": 1795788000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 200,
+          "wdir": 210,
           "wspd": 14,
           "wgst": 27
         },
         {
-          "timeFrom": 1795788000,
-          "timeTo": 1795802400,
+          "timeFrom": 1795816800,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 230,
-          "wspd": 15,
-          "wgst": 29
+          "wdir": 250,
+          "wspd": 12,
+          "wgst": 25
         }
       ]
     },
@@ -1192,40 +1192,20 @@
     },
     {
       "icaoId": "KCHA",
-      "rawTAF": "TAF KCHA 261146Z 2612/2712 26004KT 4SM -SHRA BR SCT006 OVC015 FM261300 28006KT 4SM -SHRA BR OVC005 FM261800 25014G25KT 6SM -SHRA BR BKN006 OVC010 PROB30 2618/2624 4SM SHRA BR OVC004 FM270300 24012KT P6SM VCSH SCT004 OVC007",
-      "issueTime": "2026-11-26T11:46:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KCHA 261720Z 2618/2718 24013G23KT 4SM -SHRA BR BKN015 PROB30 2618/2624 RA OVC005 FM270300 24012G20KT 4SM -RA BR OVC007",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795698000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 260,
-          "wspd": 4,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795698000,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 280,
-          "wspd": 6,
-          "wgst": null
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795748400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
-          "wdir": 250,
-          "wspd": 14,
-          "wgst": 25
+          "wdir": 240,
+          "wspd": 13,
+          "wgst": 23
         },
         {
           "timeFrom": 1795716000,
@@ -1239,13 +1219,13 @@
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 240,
           "wspd": 12,
-          "wgst": null
+          "wgst": 20
         }
       ]
     },
@@ -1428,24 +1408,24 @@
     },
     {
       "icaoId": "KCLT",
-      "rawTAF": "TAF KCLT 261601Z 2616/2718 31007KT 5SM BR SCT005 BKN008 OVC012 TEMPO 2616/2618 2SM -RA BR BKN005 OVC008 FM262000 22012G21KT 6SM BR OVC007 FM270100 22017G27KT P6SM OVC016 FM270900 23015G24KT P6SM BKN040",
-      "issueTime": "2026-11-26T16:01:00.000Z",
-      "validTimeFrom": 1795708800,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KCLT 261727Z 2618/2724 VRB04KT 4SM BR SCT005 BKN008 OVC012 TEMPO 2618/2620 2SM -RADZ BR BKN005 OVC008 FM262100 22013G22KT 6SM BR BKN006 OVC012 FM262300 22015G30KT P6SM OVC013 FM270600 22016G26KT P6SM BKN021 FM271500 24017G26KT P6SM SCT035",
+      "issueTime": "2026-11-26T17:27:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795723200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 310,
-          "wspd": 7,
+          "wdir": "VRB",
+          "wspd": 4,
           "wgst": null
         },
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795716000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": "TEMPO",
           "probability": null,
@@ -1454,34 +1434,44 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795723200,
-          "timeTo": 1795741200,
+          "timeFrom": 1795726800,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 220,
-          "wspd": 12,
-          "wgst": 21
+          "wspd": 13,
+          "wgst": 22
         },
         {
-          "timeFrom": 1795741200,
-          "timeTo": 1795770000,
+          "timeFrom": 1795734000,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 220,
-          "wspd": 17,
-          "wgst": 27
-        },
-        {
-          "timeFrom": 1795770000,
-          "timeTo": 1795802400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 230,
           "wspd": 15,
-          "wgst": 24
+          "wgst": 30
+        },
+        {
+          "timeFrom": 1795759200,
+          "timeTo": 1795791600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 220,
+          "wspd": 16,
+          "wgst": 26
+        },
+        {
+          "timeFrom": 1795791600,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 240,
+          "wspd": 17,
+          "wgst": 26
         }
       ]
     },
@@ -1546,52 +1536,42 @@
     },
     {
       "icaoId": "KCPR",
-      "rawTAF": "TAF KCPR 261327Z 2613/2712 23013KT P6SM BKN150 FM261600 21020G30KT P6SM SCT200 FM270900 23011KT P6SM BKN200",
-      "issueTime": "2026-11-26T13:27:00.000Z",
-      "validTimeFrom": 1795698000,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KCPR 261720Z 2618/2718 22020G30KT P6SM SCT200 FM270900 23012G18KT P6SM SCT100 BKN150",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795698000,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795770000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 230,
-          "wspd": 13,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795770000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 210,
+          "wdir": 220,
           "wspd": 20,
           "wgst": 30
         },
         {
           "timeFrom": 1795770000,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 230,
-          "wspd": 11,
-          "wgst": null
+          "wspd": 12,
+          "wgst": 18
         }
       ]
     },
     {
       "icaoId": "KCRP",
-      "rawTAF": "TAF KCRP 261121Z 2612/2712 35009KT P6SM SKC FM270100 VRB03KT P6SM FEW100 SCT250",
-      "issueTime": "2026-11-26T11:21:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KCRP 261720Z 2618/2718 35009KT P6SM FEW250 FM270100 VRB03KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
+          "timeFrom": 1795716000,
           "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
@@ -1602,7 +1582,7 @@
         },
         {
           "timeFrom": 1795741200,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -1614,39 +1594,128 @@
     },
     {
       "icaoId": "KCVG",
-      "rawTAF": "TAF KCVG 261451Z 2615/2718 04016KT 2SM RA BR OVC008 FM262000 03014KT 1SM -RA BR OVC005 FM270100 34010KT 1SM -RA BR OVC004 FM271000 30012KT 2SM -RA BR OVC006 FM271500 27014KT 2SM -RA BR OVC006",
-      "issueTime": "2026-11-26T14:51:00.000Z",
-      "validTimeFrom": 1795705200,
+      "rawTAF": "TAF KCVG 261723Z 2618/2724 04017KT 3SM -RA BR OVC008 FM262200 03013KT 3SM -RA BR OVC006 FM270100 35009KT 2SM -RA BR OVC005 FM270800 30011KT 2SM -RA BR OVC005 FM271300 27014KT 3SM -RA BR OVC006 FM271800 27015G22KT 3SM BR OVC008 TEMPO 2718/2722 2SM -RA OVC007",
+      "issueTime": "2026-11-26T17:23:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
+      "fcsts": [
+        {
+          "timeFrom": 1795716000,
+          "timeTo": 1795730400,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 40,
+          "wspd": 17,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795730400,
+          "timeTo": 1795741200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 30,
+          "wspd": 13,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795741200,
+          "timeTo": 1795766400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 350,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795766400,
+          "timeTo": 1795784400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 300,
+          "wspd": 11,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795784400,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 270,
+          "wspd": 14,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795802400,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 270,
+          "wspd": 15,
+          "wgst": 22
+        },
+        {
+          "timeFrom": 1795802400,
+          "timeTo": 1795816800,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
+        }
+      ]
+    },
+    {
+      "icaoId": "KDAY",
+      "rawTAF": "TAF KDAY 261723Z 2618/2718 04018G28KT 3SM -RA BR OVC007 FM262300 04016KT 3SM -RA BR OVC005 FM270200 01010KT 2SM -RA BR OVC004 FM270500 33008KT 2SM -RA BR OVC004 FM271000 30011KT 2SM -RA BR OVC004 FM271500 27014KT 2SM -RA BR OVC005",
+      "issueTime": "2026-11-26T17:23:00.000Z",
+      "validTimeFrom": 1795716000,
       "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795723200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
+          "probability": null,
+          "wdir": 40,
+          "wspd": 18,
+          "wgst": 28
+        },
+        {
+          "timeFrom": 1795734000,
+          "timeTo": 1795744800,
+          "timeBec": null,
+          "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
           "wspd": 16,
           "wgst": null
         },
         {
-          "timeFrom": 1795723200,
-          "timeTo": 1795741200,
+          "timeFrom": 1795744800,
+          "timeTo": 1795755600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 30,
-          "wspd": 14,
+          "wdir": 10,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795741200,
+          "timeFrom": 1795755600,
           "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 340,
-          "wspd": 10,
+          "wdir": 330,
+          "wspd": 8,
           "wgst": null
         },
         {
@@ -1656,7 +1725,7 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 300,
-          "wspd": 12,
+          "wspd": 11,
           "wgst": null
         },
         {
@@ -1672,73 +1741,14 @@
       ]
     },
     {
-      "icaoId": "KDAY",
-      "rawTAF": "TAF KDAY 261136Z 2612/2712 05016KT P6SM -RA BKN025 FM261500 04018G28KT 2SM -RA BR OVC006 FM262100 04016KT 1SM -RA BR OVC004 FM270400 01010KT 1SM -RA BR OVC004 FM270900 32014KT 1SM -RA BR OVC004",
-      "issueTime": "2026-11-26T11:36:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
-      "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 50,
-          "wspd": 16,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795726800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 40,
-          "wspd": 18,
-          "wgst": 28
-        },
-        {
-          "timeFrom": 1795726800,
-          "timeTo": 1795752000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 40,
-          "wspd": 16,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795752000,
-          "timeTo": 1795770000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 10,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795770000,
-          "timeTo": 1795780800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 320,
-          "wspd": 14,
-          "wgst": null
-        }
-      ]
-    },
-    {
       "icaoId": "KDEN",
-      "rawTAF": "TAF KDEN 261503Z 2615/2718 VRB06KT P6SM SCT220 FM262100 06006KT P6SM SCT220 FM270000 14007KT P6SM FEW100 SCT200 FM270200 19008KT P6SM FEW100 SCT200 FM270500 21008KT P6SM FEW100 SCT200 FM271700 29010KT P6SM SCT100 BKN200",
-      "issueTime": "2026-11-26T15:03:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KDEN 261721Z 2618/2724 VRB06KT P6SM SCT220 FM262100 06006KT P6SM BKN220 FM270000 14009KT P6SM BKN200 FM270300 20008KT P6SM FEW140 BKN200 FM270900 24009KT P6SM FEW140 BKN200 FM271700 29013KT P6SM SCT100 BKN200 FM272200 03009KT P6SM SCT100 BKN200",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
@@ -1759,42 +1769,52 @@
         },
         {
           "timeFrom": 1795737600,
-          "timeTo": 1795744800,
+          "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 140,
-          "wspd": 7,
+          "wspd": 9,
           "wgst": null
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795755600,
+          "timeFrom": 1795748400,
+          "timeTo": 1795770000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 190,
+          "wdir": 200,
           "wspd": 8,
           "wgst": null
         },
         {
-          "timeFrom": 1795755600,
+          "timeFrom": 1795770000,
           "timeTo": 1795798800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 210,
-          "wspd": 8,
+          "wdir": 240,
+          "wspd": 9,
           "wgst": null
         },
         {
           "timeFrom": 1795798800,
-          "timeTo": 1795802400,
+          "timeTo": 1795816800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 290,
-          "wspd": 10,
+          "wspd": 13,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795816800,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 30,
+          "wspd": 9,
           "wgst": null
         }
       ]
@@ -1830,13 +1850,13 @@
     },
     {
       "icaoId": "KDJT",
-      "rawTAF": "TAF KDJT 261458Z 2615/2712 28010G20KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030",
-      "issueTime": "2026-11-26T14:58:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KDJT 261726Z 2618/2718 28010G20KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030 FM271500 31007KT P6SM FEW030",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
@@ -1847,12 +1867,22 @@
         },
         {
           "timeFrom": 1795741200,
-          "timeTo": 1795780800,
+          "timeTo": 1795791600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": "VRB",
           "wspd": 4,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795791600,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 310,
+          "wspd": 7,
           "wgst": null
         }
       ]
@@ -1878,59 +1908,69 @@
     },
     {
       "icaoId": "KDSM",
-      "rawTAF": "TAF KDSM 261137Z 2612/2712 01007KT P6SM BKN060 FM261500 36010G18KT P6SM OVC022 FM270100 34008KT P6SM OVC027",
-      "issueTime": "2026-11-26T11:37:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KDSM 261720Z 2618/2718 36010KT P6SM SCT045 FM262100 36010KT P6SM BKN028 FM270700 33006KT P6SM SCT035 FM271600 28004KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 10,
-          "wspd": 7,
+          "wdir": 360,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795741200,
+          "timeFrom": 1795726800,
+          "timeTo": 1795762800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 360,
           "wspd": 10,
-          "wgst": 18
+          "wgst": null
         },
         {
-          "timeFrom": 1795741200,
-          "timeTo": 1795780800,
+          "timeFrom": 1795762800,
+          "timeTo": 1795795200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 340,
-          "wspd": 8,
+          "wdir": 330,
+          "wspd": 6,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 280,
+          "wspd": 4,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KDTW",
-      "rawTAF": "TAF KDTW 261507Z 2615/2718 04014G26KT P6SM SCT025 OVC120 FM262000 04018G29KT 6SM -RA SCT025 OVC040 FM262100 04020G31KT 3SM RA OVC009 TEMPO 2621/2624 1 1/2SM RA BR OVC006 FM270000 04018G30KT 2SM RA BR OVC008 FM270600 03013G25KT 3SM RA BR OVC006",
-      "issueTime": "2026-11-26T15:07:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KDTW 261720Z 2618/2724 04015G27KT P6SM SCT025 OVC080 FM262000 04018G29KT 6SM -RA SCT020 OVC040 FM262100 04020G32KT 3SM RA OVC009 TEMPO 2621/2701 1 1/2SM RA BR OVC006 FM270100 04018G30KT 2SM RA BR OVC008 FM270600 03014G25KT 3SM RA BR OVC006 FM271300 35009KT 2SM -RA BR OVC006 FM271600 31011KT 5SM -RA OVC010",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 40,
-          "wspd": 14,
-          "wgst": 26
+          "wspd": 15,
+          "wgst": 27
         },
         {
           "timeFrom": 1795723200,
@@ -1944,17 +1984,17 @@
         },
         {
           "timeFrom": 1795726800,
-          "timeTo": 1795737600,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
           "wspd": 20,
-          "wgst": 31
+          "wgst": 32
         },
         {
           "timeFrom": 1795726800,
-          "timeTo": 1795737600,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "TEMPO",
           "probability": null,
@@ -1963,7 +2003,7 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795737600,
+          "timeFrom": 1795741200,
           "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
@@ -1974,40 +2014,60 @@
         },
         {
           "timeFrom": 1795759200,
-          "timeTo": 1795802400,
+          "timeTo": 1795784400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
-          "wspd": 13,
+          "wspd": 14,
           "wgst": 25
+        },
+        {
+          "timeFrom": 1795784400,
+          "timeTo": 1795795200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 350,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 310,
+          "wspd": 11,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KELP",
-      "rawTAF": "TAF KELP 261138Z 2612/2712 01004KT P6SM BKN250 FM261900 05004KT P6SM SCT250",
-      "issueTime": "2026-11-26T11:38:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KELP 261723Z 2618/2718 04005KT P6SM SCT250 FM270200 VRB04KT P6SM SKC",
+      "issueTime": "2026-11-26T17:23:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795719600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 10,
-          "wspd": 4,
+          "wdir": 40,
+          "wspd": 5,
           "wgst": null
         },
         {
-          "timeFrom": 1795719600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795744800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 50,
+          "wdir": "VRB",
           "wspd": 4,
           "wgst": null
         }
@@ -2202,13 +2262,13 @@
     },
     {
       "icaoId": "KFLL",
-      "rawTAF": "TAF KFLL 261458Z 2615/2718 28012G22KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030 FM271500 31007KT P6SM FEW030",
-      "issueTime": "2026-11-26T14:58:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KFLL 261726Z 2618/2724 28012G22KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030 FM271500 31007KT P6SM FEW030",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
@@ -2229,7 +2289,7 @@
         },
         {
           "timeFrom": 1795791600,
-          "timeTo": 1795802400,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -2241,54 +2301,44 @@
     },
     {
       "icaoId": "KFNT",
-      "rawTAF": "TAF KFNT 261132Z 2612/2712 07012KT P6SM SCT025 BKN250 FM261400 07015G25KT P6SM SCT040 OVC120 FM262200 04020G30KT 6SM -RA SCT025 OVC040 FM270100 04015G25KT 3SM RA OVC015 TEMPO 2702/2705 1 1/2SM RA OVC006 FM270600 03017G25KT 3SM -RA HZ OVC005",
-      "issueTime": "2026-11-26T11:32:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KFNT 261720Z 2618/2718 06014G25KT P6SM SCT025 OVC080 FM262300 05016G27KT 6SM -RA SCT020 OVC040 FM270000 04017G29KT 3SM RA OVC009 TEMPO 2700/2704 2SM RA BR OVC006 FM270600 03014G25KT 3SM RA BR OVC007 FM271000 01009KT 2SM -RA BR OVC006 FM271600 34011KT 5SM -RA OVC010",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 70,
-          "wspd": 12,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795730400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 15,
+          "wdir": 60,
+          "wspd": 14,
           "wgst": 25
         },
         {
-          "timeFrom": 1795730400,
-          "timeTo": 1795741200,
+          "timeFrom": 1795734000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 40,
-          "wspd": 20,
-          "wgst": 30
+          "wdir": 50,
+          "wspd": 16,
+          "wgst": 27
         },
         {
-          "timeFrom": 1795741200,
+          "timeFrom": 1795737600,
           "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
-          "wspd": 15,
-          "wgst": 25
+          "wspd": 17,
+          "wgst": 29
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795755600,
+          "timeFrom": 1795737600,
+          "timeTo": 1795752000,
           "timeBec": null,
           "fcstChange": "TEMPO",
           "probability": null,
@@ -2298,71 +2348,111 @@
         },
         {
           "timeFrom": 1795759200,
-          "timeTo": 1795780800,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
-          "wspd": 17,
+          "wspd": 14,
           "wgst": 25
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795795200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 10,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 340,
+          "wspd": 11,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KFSD",
-      "rawTAF": "TAF KFSD 261128Z 2612/2712 VRB04KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:28:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KFSD 261722Z 2618/2718 VRB04KT P6SM FEW250 FM271700 24005KT P6SM BKN180",
+      "issueTime": "2026-11-26T17:22:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795798800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": "VRB",
           "wspd": 4,
           "wgst": null
+        },
+        {
+          "timeFrom": 1795798800,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 240,
+          "wspd": 5,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KFWA",
-      "rawTAF": "TAF KFWA 261641Z 2617/2712 05015G26KT 6SM -RA BR BKN010 FM261800 04015G30KT 4SM -RA BR BKN009 FM270500 01018G26KT 2SM -RA BR BKN004",
-      "issueTime": "2026-11-26T16:41:00.000Z",
-      "validTimeFrom": 1795712400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KFWA 261720Z 2618/2718 04018G28KT 4SM -RA BR BKN010 FM262100 04018G33KT 2SM RA BR BKN007 FM270200 01015G26KT 4SM -RA BR BKN005 FM271200 32010G20KT 4SM -RA BR BKN005",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795712400,
-          "timeTo": 1795716000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 50,
-          "wspd": 15,
-          "wgst": 26
+          "wdir": 40,
+          "wspd": 18,
+          "wgst": 28
         },
         {
-          "timeFrom": 1795716000,
-          "timeTo": 1795755600,
+          "timeFrom": 1795726800,
+          "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
-          "wspd": 15,
-          "wgst": 30
+          "wspd": 18,
+          "wgst": 33
         },
         {
-          "timeFrom": 1795755600,
+          "timeFrom": 1795744800,
           "timeTo": 1795780800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 10,
-          "wspd": 18,
+          "wspd": 15,
           "wgst": 26
+        },
+        {
+          "timeFrom": 1795780800,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 320,
+          "wspd": 10,
+          "wgst": 20
         }
       ]
     },
@@ -2720,24 +2810,24 @@
     },
     {
       "icaoId": "KHRL",
-      "rawTAF": "TAF KHRL 261127Z 2612/2712 33008KT P6SM SKC FM270100 00000KT P6SM BKN070",
-      "issueTime": "2026-11-26T11:27:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KHRL 261720Z 2618/2718 34010KT P6SM BKN250 FM270000 00000KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795741200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 330,
-          "wspd": 8,
+          "wdir": 340,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795741200,
-          "timeTo": 1795780800,
+          "timeFrom": 1795737600,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -2808,95 +2898,85 @@
     },
     {
       "icaoId": "KIAD",
-      "rawTAF": "TAF KIAD 261538Z 2616/2718 06022G37KT 4SM -RA BKN007 OVC015 WS020/07060KT FM261800 05023G42KT 2SM RA BKN007 OVC012 WS020/08050KT FM262100 07018G32KT 3SM -RA BR OVC005 FM270200 16011G22KT 4SM BR BKN005 OVC008 FM270700 21016G29KT P6SM BKN010 OVC015 FM271400 24015G28KT P6SM FEW015 SCT025",
-      "issueTime": "2026-11-26T15:38:00.000Z",
-      "validTimeFrom": 1795708800,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KIAD 261721Z 2618/2724 06024G38KT 3SM -RA OVC015 WS020/07055KT FM262300 07016G32KT 3SM -RA OVC005 WS020/09050KT FM270000 07014G27KT 3SM BR OVC005 FM270200 14011G20KT 2SM BR OVC003 FM270500 19012G22KT 5SM BR OVC005 FM271700 23014G27KT P6SM BKN018",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795716000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 60,
-          "wspd": 22,
-          "wgst": 37
+          "wspd": 24,
+          "wgst": 38
         },
         {
-          "timeFrom": 1795716000,
-          "timeTo": 1795726800,
+          "timeFrom": 1795734000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 50,
-          "wspd": 23,
-          "wgst": 42
+          "wdir": 70,
+          "wspd": 16,
+          "wgst": 32
         },
         {
-          "timeFrom": 1795726800,
+          "timeFrom": 1795737600,
           "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
-          "wspd": 18,
-          "wgst": 32
+          "wspd": 14,
+          "wgst": 27
         },
         {
           "timeFrom": 1795744800,
-          "timeTo": 1795762800,
+          "timeTo": 1795755600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 160,
+          "wdir": 140,
           "wspd": 11,
+          "wgst": 20
+        },
+        {
+          "timeFrom": 1795755600,
+          "timeTo": 1795798800,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 190,
+          "wspd": 12,
           "wgst": 22
         },
         {
-          "timeFrom": 1795762800,
-          "timeTo": 1795788000,
+          "timeFrom": 1795798800,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 210,
-          "wspd": 16,
-          "wgst": 29
-        },
-        {
-          "timeFrom": 1795788000,
-          "timeTo": 1795802400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 240,
-          "wspd": 15,
-          "wgst": 28
+          "wdir": 230,
+          "wspd": 14,
+          "wgst": 27
         }
       ]
     },
     {
       "icaoId": "KIAH",
-      "rawTAF": "TAF KIAH 261502Z 2615/2718 33006KT P6SM SKC FM261600 33012G20KT P6SM SKC FM270000 VRB05KT P6SM FEW250",
-      "issueTime": "2026-11-26T15:02:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KIAH 261720Z 2618/2724 33012G20KT P6SM SKC FM270000 VRB05KT P6SM FEW250 FM271800 24005KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795708800,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 330,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
+          "timeFrom": 1795716000,
           "timeTo": 1795737600,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 330,
           "wspd": 12,
@@ -2911,57 +2991,67 @@
           "wdir": "VRB",
           "wspd": 5,
           "wgst": null
+        },
+        {
+          "timeFrom": 1795802400,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 240,
+          "wspd": 5,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KICT",
-      "rawTAF": "TAF KICT 261120Z 2612/2712 34005KT P6SM SKC FM261600 35010KT P6SM SKC FM262300 VRB03KT P6SM SKC",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KICT 261727Z 2618/2718 35013G20KT P6SM SKC FM270000 34005KT P6SM SKC FM271500 20005KT P6SM SKC",
+      "issueTime": "2026-11-26T17:27:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
+          "probability": null,
+          "wdir": 350,
+          "wspd": 13,
+          "wgst": 20
+        },
+        {
+          "timeFrom": 1795737600,
+          "timeTo": 1795791600,
+          "timeBec": null,
+          "fcstChange": "FM",
           "probability": null,
           "wdir": 340,
           "wspd": 5,
           "wgst": null
         },
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795734000,
+          "timeFrom": 1795791600,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 350,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795734000,
-          "timeTo": 1795780800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
+          "wdir": 200,
+          "wspd": 5,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KIDA",
-      "rawTAF": "TAF KIDA 261120Z 2612/2712 VRB05KT P6SM SCT150 BKN250 FM270200 21006KT P6SM BKN060",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KIDA 261720Z 2618/2718 VRB05KT P6SM OVC120 FM270200 21009KT P6SM BKN060 OVC120 FM271300 22011KT P6SM VCSH OVC020",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
+          "timeFrom": 1795716000,
           "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": null,
@@ -2972,12 +3062,22 @@
         },
         {
           "timeFrom": 1795744800,
-          "timeTo": 1795780800,
+          "timeTo": 1795784400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 210,
-          "wspd": 6,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795784400,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 220,
+          "wspd": 11,
           "wgst": null
         }
       ]
@@ -3053,23 +3153,23 @@
     },
     {
       "icaoId": "KIWA",
-      "rawTAF": "TAF KIWA 261120Z 2612/2712 10004KT P6SM SKC FM262300 34004KT P6SM SKC FM270300 11006KT P6SM SKC",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KIWA 261720Z 2618/2718 08007KT P6SM SKC FM270000 34004KT P6SM SKC FM270300 10005KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795734000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 100,
-          "wspd": 4,
+          "wdir": 80,
+          "wspd": 7,
           "wgst": null
         },
         {
-          "timeFrom": 1795734000,
+          "timeFrom": 1795737600,
           "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": "FM",
@@ -3080,62 +3180,72 @@
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 110,
-          "wspd": 6,
+          "wdir": 100,
+          "wspd": 5,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KJAX",
-      "rawTAF": "TAF KJAX 261301Z 2613/2712 26014G23KT 6SM -DZ BR OVC006 FM261700 26014G26KT P6SM OVC012 FM262200 25010G20KT P6SM SCT025 BKN035 FM270300 26008KT P6SM FEW030",
-      "issueTime": "2026-11-26T13:01:00.000Z",
-      "validTimeFrom": 1795698000,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KJAX 261720Z 2618/2718 26015G25KT P6SM OVC015 FM262100 25014G23KT P6SM SCT015 BKN025 FM270000 25012G18KT P6SM SCT020 FM270600 25010G15KT P6SM SCT020 FM271400 26014G23KT P6SM SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795698000,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 260,
+          "wspd": 15,
+          "wgst": 25
+        },
+        {
+          "timeFrom": 1795726800,
+          "timeTo": 1795737600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 250,
           "wspd": 14,
           "wgst": 23
         },
         {
-          "timeFrom": 1795712400,
-          "timeTo": 1795730400,
+          "timeFrom": 1795737600,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 260,
-          "wspd": 14,
-          "wgst": 26
+          "wdir": 250,
+          "wspd": 12,
+          "wgst": 18
         },
         {
-          "timeFrom": 1795730400,
-          "timeTo": 1795748400,
+          "timeFrom": 1795759200,
+          "timeTo": 1795788000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 250,
           "wspd": 10,
-          "wgst": 20
+          "wgst": 15
         },
         {
-          "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795788000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 260,
-          "wspd": 8,
-          "wgst": null
+          "wspd": 14,
+          "wgst": 23
         }
       ]
     },
@@ -3210,26 +3320,16 @@
     },
     {
       "icaoId": "KLAS",
-      "rawTAF": "TAF KLAS 261431Z 2615/2718 24005KT P6SM FEW250 FM261800 04006KT P6SM FEW250 FM270200 24006KT P6SM SCT250",
-      "issueTime": "2026-11-26T14:31:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KLAS 261720Z 2618/2724 04006KT P6SM FEW250 FM270200 24006KT P6SM SCT250 FM271800 04005KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 240,
-          "wspd": 5,
-          "wgst": null
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795744800,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 40,
           "wspd": 6,
@@ -3243,6 +3343,16 @@
           "probability": null,
           "wdir": 240,
           "wspd": 6,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795802400,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 40,
+          "wspd": 5,
           "wgst": null
         }
       ]
@@ -3288,14 +3398,14 @@
     },
     {
       "icaoId": "KLBB",
-      "rawTAF": "TAF KLBB 261120Z 2612/2712 VRB06KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KLBB 261720Z 2618/2718 VRB06KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -3307,48 +3417,58 @@
     },
     {
       "icaoId": "KLCK",
-      "rawTAF": "TAF KLCK 261420Z 2614/2712 05018G28KT 2SM RA BR OVC012 WS020/06045KT FM261800 04017G26KT 1SM -RA BR OVC005 FM270100 04010KT 1SM -RA BR OVC003 FM270800 26012KT 1SM -RA BR OVC004",
-      "issueTime": "2026-11-26T14:20:00.000Z",
-      "validTimeFrom": 1795701600,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KLCK 261723Z 2618/2718 05017G26KT 3SM -RA BR OVC008 FM270100 05010KT 3SM -RA BR OVC006 FM270500 VRB05KT 2SM -RA BR OVC005 FM271000 24007KT 2SM -RA BR OVC004 FM271600 27012KT 2SM -RA BR OVC004",
+      "issueTime": "2026-11-26T17:23:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 50,
-          "wspd": 18,
-          "wgst": 28
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795741200,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
-          "wdir": 40,
+          "wdir": 50,
           "wspd": 17,
           "wgst": 26
         },
         {
           "timeFrom": 1795741200,
-          "timeTo": 1795766400,
+          "timeTo": 1795755600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 40,
+          "wdir": 50,
           "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795766400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795755600,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 260,
+          "wdir": "VRB",
+          "wspd": 5,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795795200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 240,
+          "wspd": 7,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 270,
           "wspd": 12,
           "wgst": null
         }
@@ -3356,34 +3476,24 @@
     },
     {
       "icaoId": "KLFT",
-      "rawTAF": "TAF KLFT 261120Z 2612/2712 33008KT P6SM SKC FM261500 32014G22KT P6SM SKC FM270000 30005KT P6SM SCT250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KLFT 261720Z 2618/2718 31013G21KT P6SM SKC FM270000 30005KT P6SM SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 330,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 320,
-          "wspd": 14,
-          "wgst": 22
+          "wdir": 310,
+          "wspd": 13,
+          "wgst": 21
         },
         {
           "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -3424,34 +3534,34 @@
     },
     {
       "icaoId": "KLIT",
-      "rawTAF": "TAF KLIT 261120Z 2612/2712 33012G21KT P6SM SKC FM261600 31018G27KT P6SM OVC050 FM270400 28010KT P6SM OVC060",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KLIT 261726Z 2618/2718 31018G27KT P6SM SCT030 SCT150 FM262000 30019G25KT P6SM BKN050 FM270300 28010KT P6SM BKN100",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 330,
-          "wspd": 12,
-          "wgst": 21
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795752000,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 310,
           "wspd": 18,
           "wgst": 27
         },
         {
-          "timeFrom": 1795752000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795723200,
+          "timeTo": 1795748400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 300,
+          "wspd": 19,
+          "wgst": 25
+        },
+        {
+          "timeFrom": 1795748400,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -3463,14 +3573,14 @@
     },
     {
       "icaoId": "KLRD",
-      "rawTAF": "TAF KLRD 261121Z 2612/2712 VRB04KT P6SM SKC FM270000 VRB04KT P6SM SCT100",
-      "issueTime": "2026-11-26T11:21:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KLRD 261720Z 2618/2718 VRB04KT P6SM SCT250 FM270100 VRB04KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795737600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -3479,8 +3589,8 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795741200,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -3521,39 +3631,39 @@
     },
     {
       "icaoId": "KMCI",
-      "rawTAF": "TAF KMCI 261120Z 2612/2712 34010KT P6SM BKN035 OVC100 FM261900 34011KT P6SM BKN200 FM270400 31007KT P6SM SCT250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KMCI 261721Z 2618/2718 33012G19KT P6SM OVC040 FM262300 33009KT P6SM BKN230 FM271400 VRB03KT P6SM SCT250",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795719600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 340,
-          "wspd": 10,
-          "wgst": null
+          "wdir": 330,
+          "wspd": 12,
+          "wgst": 19
         },
         {
-          "timeFrom": 1795719600,
-          "timeTo": 1795752000,
+          "timeFrom": 1795734000,
+          "timeTo": 1795788000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 340,
-          "wspd": 11,
+          "wdir": 330,
+          "wspd": 9,
           "wgst": null
         },
         {
-          "timeFrom": 1795752000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795788000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 310,
-          "wspd": 7,
+          "wdir": "VRB",
+          "wspd": 3,
           "wgst": null
         }
       ]
@@ -3727,77 +3837,67 @@
     },
     {
       "icaoId": "KMHT",
-      "rawTAF": "TAF KMHT 261120Z 2612/2712 35004KT P6SM OVC250 FM261300 02005KT P6SM BKN250 FM261600 07008G15KT P6SM BKN050 FM262200 06008G15KT P6SM OVC020 FM270000 03018G23KT 4SM -RA OVC010",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KMHT 261720Z 2618/2718 05006KT P6SM BKN025 OVC200 FM262200 05015G25KT P6SM OVC015 FM270100 03020G28KT 3SM RA OVC008 FM271000 01010KT 2SM BR OVC007",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795698000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795730400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 350,
-          "wspd": 4,
+          "wdir": 50,
+          "wspd": 6,
           "wgst": null
-        },
-        {
-          "timeFrom": 1795698000,
-          "timeTo": 1795708800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 20,
-          "wspd": 5,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795730400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 8,
-          "wgst": 15
         },
         {
           "timeFrom": 1795730400,
-          "timeTo": 1795737600,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 60,
-          "wspd": 8,
-          "wgst": 15
+          "wdir": 50,
+          "wspd": 15,
+          "wgst": 25
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795741200,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
-          "wspd": 18,
-          "wgst": 23
+          "wspd": 20,
+          "wgst": 28
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 10,
+          "wspd": 10,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KMIA",
-      "rawTAF": "TAF KMIA 261458Z 2615/2718 28011G20KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030 FM271500 31007KT P6SM FEW030",
-      "issueTime": "2026-11-26T14:58:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KMIA 261726Z 2618/2724 27011G20KT P6SM FEW030 SCT100 FM270100 VRB04KT P6SM FEW030 FM271500 31007KT P6SM FEW030",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 280,
+          "wdir": 270,
           "wspd": 11,
           "wgst": 20
         },
@@ -3813,7 +3913,7 @@
         },
         {
           "timeFrom": 1795791600,
-          "timeTo": 1795802400,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -3825,44 +3925,64 @@
     },
     {
       "icaoId": "KMKE",
-      "rawTAF": "TAF KMKE 261505Z 2615/2718 05013G21KT P6SM OVC015 FM261700 05014G24KT P6SM OVC020 FM261900 04016G25KT P6SM OVC035 PROB30 2702/2706 6SM -RA OVC035 FM270600 01015G28KT P6SM OVC035 PROB30 2706/2710 6SM -RA OVC035 FM271400 33013G22KT P6SM OVC100",
-      "issueTime": "2026-11-26T15:05:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KMKE 261726Z 2618/2724 04015G26KT P6SM OVC017 FM261900 04016G26KT P6SM OVC027 FM262100 02016G26KT P6SM OVC100 PROB30 2704/2708 -RA FM270800 36014G25KT P6SM OVC035 PROB30 2708/2711 -RA FM271300 34013G22KT P6SM OVC060 FM272000 32011G18KT P6SM BKN190",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795719600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 50,
-          "wspd": 13,
-          "wgst": 21
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795719600,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 50,
-          "wspd": 14,
-          "wgst": 24
+          "wdir": 40,
+          "wspd": 15,
+          "wgst": 26
         },
         {
           "timeFrom": 1795719600,
-          "timeTo": 1795759200,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
           "wspd": 16,
+          "wgst": 26
+        },
+        {
+          "timeFrom": 1795726800,
+          "timeTo": 1795766400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 20,
+          "wspd": 16,
+          "wgst": 26
+        },
+        {
+          "timeFrom": 1795752000,
+          "timeTo": 1795766400,
+          "timeBec": null,
+          "fcstChange": "PROB",
+          "probability": 30,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795766400,
+          "timeTo": 1795784400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 360,
+          "wspd": 14,
           "wgst": 25
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795759200,
+          "timeFrom": 1795766400,
+          "timeTo": 1795777200,
           "timeBec": null,
           "fcstChange": "PROB",
           "probability": 30,
@@ -3871,149 +3991,110 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795759200,
-          "timeTo": 1795788000,
+          "timeFrom": 1795784400,
+          "timeTo": 1795809600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 10,
-          "wspd": 15,
-          "wgst": 28
-        },
-        {
-          "timeFrom": 1795759200,
-          "timeTo": 1795773600,
-          "timeBec": null,
-          "fcstChange": "PROB",
-          "probability": 30,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795788000,
-          "timeTo": 1795802400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 330,
+          "wdir": 340,
           "wspd": 13,
           "wgst": 22
+        },
+        {
+          "timeFrom": 1795809600,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 320,
+          "wspd": 11,
+          "wgst": 18
         }
       ]
     },
     {
       "icaoId": "KMSN",
-      "rawTAF": "TAF KMSN 261505Z 2615/2712 03012G18KT P6SM OVC015 FM262000 02012G18KT P6SM OVC020 FM270500 36010G15KT P6SM OVC040",
-      "issueTime": "2026-11-26T15:05:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KMSN 261726Z 2618/2718 02013G21KT P6SM OVC013 FM262200 02012G21KT P6SM OVC021 FM270100 02012G22KT P6SM OVC019 FM270700 36010G18KT P6SM OVC022 FM271000 35009KT P6SM OVC035 FM271500 33008KT P6SM BKN220",
+      "issueTime": "2026-11-26T17:26:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795723200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795730400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 30,
-          "wspd": 12,
-          "wgst": 18
+          "wdir": 20,
+          "wspd": 13,
+          "wgst": 21
         },
         {
-          "timeFrom": 1795723200,
-          "timeTo": 1795755600,
+          "timeFrom": 1795730400,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 20,
           "wspd": 12,
-          "wgst": 18
+          "wgst": 21
         },
         {
-          "timeFrom": 1795755600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795741200,
+          "timeTo": 1795762800,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 20,
+          "wspd": 12,
+          "wgst": 22
+        },
+        {
+          "timeFrom": 1795762800,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 360,
           "wspd": 10,
-          "wgst": 15
+          "wgst": 18
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795791600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 350,
+          "wspd": 9,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795791600,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 330,
+          "wspd": 8,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KMSO",
-      "rawTAF": "TAF KMSO 261511Z 2615/2712 00000KT 6SM BR SCT002 OVC060 TEMPO 2615/2617 3SM BR FM261800 24012KT P6SM VCSH OVC050 PROB30 2620/2624 6SM -SHRA OVC050 FM270000 33010KT P6SM -SHRA BKN050",
-      "issueTime": "2026-11-26T15:11:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KMSO 261720Z 2618/2718 34004KT 6SM -RA BR SCT030 OVC050 FM270000 28006KT 6SM -SHRA BR BKN050",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 0,
-          "wspd": 0,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795712400,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795737600,
           "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 240,
-          "wspd": 12,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795723200,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": "PROB",
-          "probability": 30,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795737600,
-          "timeTo": 1795780800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 330,
-          "wspd": 10,
-          "wgst": null
-        }
-      ]
-    },
-    {
-      "icaoId": "KMSP",
-      "rawTAF": "TAF KMSP 261442Z 2615/2718 04004KT P6SM SCT250 FM270000 36005KT P6SM SCT250",
-      "issueTime": "2026-11-26T14:42:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
-      "fcsts": [
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795737600,
-          "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 40,
+          "wdir": 340,
           "wspd": 4,
           "wgst": null
         },
@@ -4023,7 +4104,36 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 360,
+          "wdir": 280,
+          "wspd": 6,
+          "wgst": null
+        }
+      ]
+    },
+    {
+      "icaoId": "KMSP",
+      "rawTAF": "TAF KMSP 261720Z 2618/2724 02004KT P6SM SCT250 FM271700 22005KT P6SM BKN100",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
+      "fcsts": [
+        {
+          "timeFrom": 1795716000,
+          "timeTo": 1795798800,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 20,
+          "wspd": 4,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795798800,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 220,
           "wspd": 5,
           "wgst": null
         }
@@ -4031,58 +4141,28 @@
     },
     {
       "icaoId": "KMSY",
-      "rawTAF": "TAF KMSY 261124Z 2612/2718 32010KT P6SM FEW020 FM261400 31015G24KT P6SM SKC FM262000 28013G24KT P6SM SKC FM270000 29010KT P6SM FEW250 FM270800 30007KT P6SM BKN250",
-      "issueTime": "2026-11-26T11:24:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KMSY 261720Z 2618/2724 30012G20KT P6SM SKC FM271000 28007KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 320,
-          "wspd": 10,
-          "wgst": null
+          "wdir": 300,
+          "wspd": 12,
+          "wgst": 20
         },
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795723200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 310,
-          "wspd": 15,
-          "wgst": 24
-        },
-        {
-          "timeFrom": 1795723200,
-          "timeTo": 1795737600,
+          "timeFrom": 1795773600,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 280,
-          "wspd": 13,
-          "wgst": 24
-        },
-        {
-          "timeFrom": 1795737600,
-          "timeTo": 1795766400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 290,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795766400,
-          "timeTo": 1795802400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 300,
           "wspd": 7,
           "wgst": null
         }
@@ -4129,29 +4209,29 @@
     },
     {
       "icaoId": "KOKC",
-      "rawTAF": "TAF KOKC 261125Z 2612/2712 35011KT P6SM SKC FM270100 30005KT P6SM SKC FM270600 26005KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:25:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KOKC 261720Z 2618/2718 34012G21KT P6SM SKC FM270000 31006KT P6SM SKC FM270600 26004KT P6SM FEW250 FM271200 20007KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795741200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 350,
-          "wspd": 11,
-          "wgst": null
+          "wdir": 340,
+          "wspd": 12,
+          "wgst": 21
         },
         {
-          "timeFrom": 1795741200,
+          "timeFrom": 1795737600,
           "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 300,
-          "wspd": 5,
+          "wdir": 310,
+          "wspd": 6,
           "wgst": null
         },
         {
@@ -4161,7 +4241,17 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 260,
-          "wspd": 5,
+          "wspd": 4,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795780800,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 200,
+          "wspd": 7,
           "wgst": null
         }
       ]
@@ -4197,14 +4287,14 @@
     },
     {
       "icaoId": "KONT",
-      "rawTAF": "TAF KONT 261120Z 2612/2718 VRB05KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KONT 261720Z 2618/2724 VRB05KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795802400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -4216,23 +4306,23 @@
     },
     {
       "icaoId": "KORD",
-      "rawTAF": "TAF KORD 261506Z 2615/2718 05015G25KT P6SM BKN014 OVC020 FM261900 03017G27KT P6SM VCSH SCT020 BKN035 OVC100 FM270100 02019G29KT 6SM -SHRA OVC020 TEMPO 2701/2705 02020G32KT 4SM -RA BR OVC015 FM270800 35016G26KT P6SM -SHRA SCT015 BKN025 OVC050 FM271500 32013G21KT P6SM FEW025 SCT100 SCT250",
-      "issueTime": "2026-11-26T15:06:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KORD 261720Z 2618/2724 04015G25KT P6SM VCSH OVC014 FM261930 03017G27KT 6SM -SHRA SCT015 BKN025 OVC080 FM270100 02019G29KT 6SM -SHRA OVC020 TEMPO 2701/2705 02020G32KT 4SM -RA BR OVC015 FM270800 35016G26KT P6SM -SHRA SCT015 BKN025 OVC050 FM271500 32013G21KT P6SM FEW025 SCT100 SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795719600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795721400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 50,
+          "wdir": 40,
           "wspd": 15,
           "wgst": 25
         },
         {
-          "timeFrom": 1795719600,
+          "timeFrom": 1795721400,
           "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "FM",
@@ -4273,7 +4363,7 @@
         },
         {
           "timeFrom": 1795791600,
-          "timeTo": 1795802400,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -4285,60 +4375,60 @@
     },
     {
       "icaoId": "KORF",
-      "rawTAF": "TAF KORF 261159Z 2612/2712 08026G42KT 2SM RA BR OVC004 WS020/09065KT TEMPO 2613/2617 VRB35G50KT 1SM +TSRA BR OVC006CB FM261700 17034G43KT 3SM RA BR OVC008 FM262100 20018G26KT P6SM BKN010 FM270000 21015G23KT P6SM BKN020",
-      "issueTime": "2026-11-26T11:59:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KORF 261720Z 2618/2718 15012G19KT 5SM -SHRA BR OVC008 FM261900 17012G20KT P6SM VCSH OVC010 FM262100 20011G17KT P6SM BKN015 FM270500 21015G23KT P6SM BKN020 FM270700 21015G24KT P6SM BKN040",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795719600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 80,
-          "wspd": 26,
-          "wgst": 42
+          "wdir": 150,
+          "wspd": 12,
+          "wgst": 19
         },
         {
-          "timeFrom": 1795698000,
-          "timeTo": 1795712400,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": "VRB",
-          "wspd": 35,
-          "wgst": 50
-        },
-        {
-          "timeFrom": 1795712400,
+          "timeFrom": 1795719600,
           "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 170,
-          "wspd": 34,
-          "wgst": 43
+          "wspd": 12,
+          "wgst": 20
         },
         {
           "timeFrom": 1795726800,
-          "timeTo": 1795737600,
+          "timeTo": 1795755600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 200,
-          "wspd": 18,
-          "wgst": 26
+          "wspd": 11,
+          "wgst": 17
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeFrom": 1795755600,
+          "timeTo": 1795762800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 210,
           "wspd": 15,
           "wgst": 23
+        },
+        {
+          "timeFrom": 1795762800,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 210,
+          "wspd": 15,
+          "wgst": 24
         }
       ]
     },
@@ -4501,44 +4591,34 @@
     },
     {
       "icaoId": "KPHX",
-      "rawTAF": "TAF KPHX 261442Z 2615/2718 VRB04KT P6SM SKC FM261600 07007KT P6SM SKC FM262300 30004KT P6SM SKC FM270500 10005KT P6SM SKC",
-      "issueTime": "2026-11-26T14:42:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KPHX 261720Z 2618/2724 07008KT P6SM SKC FM270000 33004KT P6SM SKC FM270600 10005KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": "VRB",
-          "wspd": 4,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795734000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
           "wdir": 70,
-          "wspd": 7,
+          "wspd": 8,
           "wgst": null
         },
         {
-          "timeFrom": 1795734000,
-          "timeTo": 1795755600,
+          "timeFrom": 1795737600,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 300,
+          "wdir": 330,
           "wspd": 4,
           "wgst": null
         },
         {
-          "timeFrom": 1795755600,
-          "timeTo": 1795802400,
+          "timeFrom": 1795759200,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -4550,89 +4630,79 @@
     },
     {
       "icaoId": "KPIT",
-      "rawTAF": "TAF KPIT 261512Z 2615/2718 06015G25KT 3SM -RA OVC008 FM261700 07020G35KT 2SM RA OVC008 FM262200 06015G30KT P6SM -SHRA OVC010 FM270200 06010KT 4SM -SHRA BR OVC007 FM271200 21010G18KT 4SM -SHRA BR SCT007 OVC010",
-      "issueTime": "2026-11-26T15:12:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KPIT 261720Z 2618/2724 06015G30KT 3SM -RA OVC008 FM262100 07015G25KT P6SM -RA OVC015 FM270300 07010KT 5SM -RA BR OVC008 FM270900 21010G20KT 6SM -RA OVC006 FM272100 25012G22KT 6SM -SHRA OVC008",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 60,
-          "wspd": 15,
-          "wgst": 25
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795730400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 20,
-          "wgst": 35
-        },
-        {
-          "timeFrom": 1795730400,
-          "timeTo": 1795744800,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 60,
           "wspd": 15,
           "wgst": 30
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795780800,
+          "timeFrom": 1795726800,
+          "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 60,
-          "wspd": 10,
-          "wgst": null
+          "wdir": 70,
+          "wspd": 15,
+          "wgst": 25
         },
         {
-          "timeFrom": 1795780800,
-          "timeTo": 1795802400,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 210,
-          "wspd": 10,
-          "wgst": 18
-        }
-      ]
-    },
-    {
-      "icaoId": "KPSM",
-      "rawTAF": "TAF KPSM 261120Z 2612/2712 VRB03KT P6SM OVC200 FM261600 07010G20KT P6SM BKN035 FM262200 07014G25KT P6SM OVC025 FM270100 05017G25KT 4SM -RA OVC015 FM270400 05020G30KT 4SM RA OVC008",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
-      "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795708800,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795708800,
-          "timeTo": 1795730400,
+          "timeFrom": 1795748400,
+          "timeTo": 1795770000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
           "wspd": 10,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795770000,
+          "timeTo": 1795813200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 210,
+          "wspd": 10,
           "wgst": 20
+        },
+        {
+          "timeFrom": 1795813200,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 250,
+          "wspd": 12,
+          "wgst": 22
+        }
+      ]
+    },
+    {
+      "icaoId": "KPSM",
+      "rawTAF": "TAF KPSM 261720Z 2618/2718 03009KT P6SM BKN025 OVC200 FM262200 04015G25KT P6SM OVC015 FM270100 05020G29KT 3SM RA OVC009 FM271000 01009KT 2SM BR OVC005",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
+      "fcsts": [
+        {
+          "timeFrom": 1795716000,
+          "timeTo": 1795730400,
+          "timeBec": null,
+          "fcstChange": null,
+          "probability": null,
+          "wdir": 30,
+          "wspd": 9,
+          "wgst": null
         },
         {
           "timeFrom": 1795730400,
@@ -4640,29 +4710,29 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 70,
-          "wspd": 14,
+          "wdir": 40,
+          "wspd": 15,
           "wgst": 25
         },
         {
           "timeFrom": 1795741200,
-          "timeTo": 1795752000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 50,
-          "wspd": 17,
-          "wgst": 25
-        },
-        {
-          "timeFrom": 1795752000,
-          "timeTo": 1795780800,
+          "timeTo": 1795773600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 50,
           "wspd": 20,
-          "wgst": 30
+          "wgst": 29
+        },
+        {
+          "timeFrom": 1795773600,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 10,
+          "wspd": 9,
+          "wgst": null
         }
       ]
     },
@@ -4747,60 +4817,50 @@
     },
     {
       "icaoId": "KPWM",
-      "rawTAF": "TAF KPWM 261120Z 2612/2712 VRB03KT P6SM OVC250 FM261400 04007KT P6SM BKN250 FM262200 08013G21KT P6SM BKN040 FM270200 06017G26KT 4SM -RA OVC015 FM270600 05021G28KT 4SM RA OVC008",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KPWM 261720Z 2618/2718 03010KT P6SM OVC250 FM270200 04017G26KT 6SM -RA OVC025 FM270400 05020G28KT 3SM RA OVC006 FM271100 02012G23KT 2SM BR OVC004",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
+          "timeFrom": 1795716000,
+          "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": "VRB",
-          "wspd": 3,
+          "wdir": 30,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795730400,
+          "timeFrom": 1795744800,
+          "timeTo": 1795752000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
-          "wspd": 7,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795730400,
-          "timeTo": 1795744800,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 80,
-          "wspd": 13,
-          "wgst": 21
-        },
-        {
-          "timeFrom": 1795744800,
-          "timeTo": 1795759200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 60,
           "wspd": 17,
           "wgst": 26
         },
         {
-          "timeFrom": 1795759200,
-          "timeTo": 1795780800,
+          "timeFrom": 1795752000,
+          "timeTo": 1795777200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 50,
-          "wspd": 21,
+          "wspd": 20,
           "wgst": 28
+        },
+        {
+          "timeFrom": 1795777200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 20,
+          "wspd": 12,
+          "wgst": 23
         }
       ]
     },
@@ -4855,14 +4915,14 @@
     },
     {
       "icaoId": "KRFD",
-      "rawTAF": "TAF KRFD 261512Z 2615/2712 02015G23KT P6SM BKN017 OVC020 FM262000 02016G25KT P6SM SCT020 OVC100 FM270200 36014G24KT P6SM BKN025 OVC050 PROB30 2704/2709 6SM -SHRA",
-      "issueTime": "2026-11-26T15:12:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KRFD 261720Z 2618/2718 02015G23KT P6SM OVC014 FM262100 01016G25KT P6SM VCSH SCT015 BKN025 OVC080 FM270200 36014G24KT P6SM -SHRA BKN025 OVC050 FM271200 33013G21KT P6SM FEW025 SCT100 SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795723200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -4871,12 +4931,12 @@
           "wgst": 23
         },
         {
-          "timeFrom": 1795723200,
+          "timeFrom": 1795726800,
           "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 20,
+          "wdir": 10,
           "wspd": 16,
           "wgst": 25
         },
@@ -4891,96 +4951,96 @@
           "wgst": 24
         },
         {
-          "timeFrom": 1795752000,
-          "timeTo": 1795770000,
+          "timeFrom": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
-          "fcstChange": "PROB",
-          "probability": 30,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 330,
+          "wspd": 13,
+          "wgst": 21
         }
       ]
     },
     {
       "icaoId": "KRIC",
-      "rawTAF": "TAF KRIC 261159Z 2612/2712 05020G35KT 4SM +RA BR BKN009 OVC016 WS020/07065KT TEMPO 2614/2617 VRB31G45KT 1SM +TSRA BR OVC007CB FM261700 10022G30KT 4SM -RA BR OVC008 WS020/09055KT FM262000 15011G20KT 5SM -RA BR OVC006 FM270000 20012G21KT 6SM BR OVC008 FM270200 20013G24KT P6SM BKN010",
-      "issueTime": "2026-11-26T11:59:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KRIC 261720Z 2618/2718 06015G25KT 3SM -SHRA BR SCT008 OVC015 TEMPO 2618/2620 BKN008 OVC015 FM262000 VRB06KT P6SM VCSH OVC006 FM262300 20012G20KT P6SM BKN007 FM270900 21016G26KT P6SM BKN020 FM271600 23016G27KT P6SM SCT030",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 50,
-          "wspd": 20,
-          "wgst": 35
+          "wdir": 60,
+          "wspd": 15,
+          "wgst": 25
         },
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": "TEMPO",
           "probability": null,
-          "wdir": "VRB",
-          "wspd": 31,
-          "wgst": 45
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795723200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 100,
-          "wspd": 22,
-          "wgst": 30
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
         },
         {
           "timeFrom": 1795723200,
-          "timeTo": 1795737600,
+          "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 150,
-          "wspd": 11,
-          "wgst": 20
+          "wdir": "VRB",
+          "wspd": 6,
+          "wgst": null
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795744800,
+          "timeFrom": 1795734000,
+          "timeTo": 1795770000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 200,
           "wspd": 12,
-          "wgst": 21
+          "wgst": 20
         },
         {
-          "timeFrom": 1795744800,
-          "timeTo": 1795780800,
+          "timeFrom": 1795770000,
+          "timeTo": 1795795200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 200,
-          "wspd": 13,
-          "wgst": 24
+          "wdir": 210,
+          "wspd": 16,
+          "wgst": 26
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 230,
+          "wspd": 16,
+          "wgst": 27
         }
       ]
     },
     {
       "icaoId": "KRNO",
-      "rawTAF": "TAF KRNO 261135Z 2612/2712 VRB04KT P6SM SCT150 BKN250",
-      "issueTime": "2026-11-26T11:35:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KRNO 261720Z 2618/2718 VRB04KT P6SM SCT150 BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -4992,99 +5052,79 @@
     },
     {
       "icaoId": "KROA",
-      "rawTAF": "TAF KROA 261403Z 2614/2712 03012G22KT 3SM RA BR SCT012 OVC025 FM261800 03010KT 5SM -RA BR OVC025 FM262000 03005KT 4SM -RA BR OVC009 FM270400 19011G19KT 3SM -RA BR OVC004 FM270900 23011G20KT P6SM SCT011 OVC050",
-      "issueTime": "2026-11-26T14:03:00.000Z",
-      "validTimeFrom": 1795701600,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KROA 261720Z 2618/2718 03010KT 5SM BR OVC025 TEMPO 2618/2620 2SM RA BR OVC012 FM262100 VRB05KT 5SM BR OVC012 FM270400 19010KT P6SM OVC007 FM270800 22012G22KT P6SM BKN025",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795716000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 30,
-          "wspd": 12,
-          "wgst": 22
-        },
-        {
-          "timeFrom": 1795716000,
-          "timeTo": 1795723200,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
           "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795723200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795723200,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795726800,
           "timeTo": 1795752000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 30,
+          "wdir": "VRB",
           "wspd": 5,
           "wgst": null
         },
         {
           "timeFrom": 1795752000,
-          "timeTo": 1795770000,
+          "timeTo": 1795766400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 190,
-          "wspd": 11,
-          "wgst": 19
+          "wspd": 10,
+          "wgst": null
         },
         {
-          "timeFrom": 1795770000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795766400,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 230,
-          "wspd": 11,
-          "wgst": 20
+          "wdir": 220,
+          "wspd": 12,
+          "wgst": 22
         }
       ]
     },
     {
       "icaoId": "KROC",
-      "rawTAF": "TAF KROC 261120Z 2612/2712 10006KT P6SM BKN250 FM261500 08011G20KT P6SM OVC250 FM261800 07017G32KT P6SM OVC200 FM262100 07017G32KT 6SM -RA OVC060 FM262300 07016G30KT 4SM RA OVC025 FM270000 07016G26KT 2SM RA OVC007 WS020/08045KT FM270300 07014G24KT 2SM RA OVC007",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KROC 261721Z 2618/2718 08013G22KT P6SM OVC150 FM262100 07018G30KT 6SM -RA OVC080 WS020/09045KT FM262300 07018G30KT 3SM RA BR OVC015 WS020/09045KT FM270100 07015G26KT 2SM +RA BR OVC007 WS020/09045KT FM270500 07014G23KT 5SM -RA BR OVC007 FM271200 08010KT 6SM -SHRA BR OVC007",
+      "issueTime": "2026-11-26T17:21:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 100,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 80,
-          "wspd": 11,
-          "wgst": 20
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795726800,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
-          "wdir": 70,
-          "wspd": 17,
-          "wgst": 32
+          "wdir": 80,
+          "wspd": 13,
+          "wgst": 22
         },
         {
           "timeFrom": 1795726800,
@@ -5093,128 +5133,138 @@
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
-          "wspd": 17,
-          "wgst": 32
-        },
-        {
-          "timeFrom": 1795734000,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 70,
-          "wspd": 16,
+          "wspd": 18,
           "wgst": 30
         },
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795748400,
+          "timeFrom": 1795734000,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
-          "wspd": 16,
+          "wspd": 18,
+          "wgst": 30
+        },
+        {
+          "timeFrom": 1795741200,
+          "timeTo": 1795755600,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 70,
+          "wspd": 15,
           "wgst": 26
         },
         {
-          "timeFrom": 1795748400,
+          "timeFrom": 1795755600,
           "timeTo": 1795780800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 70,
           "wspd": 14,
-          "wgst": 24
+          "wgst": 23
+        },
+        {
+          "timeFrom": 1795780800,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 80,
+          "wspd": 10,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KRST",
-      "rawTAF": "TAF KRST 261428Z 2614/2712 02005KT P6SM BKN019 FM262300 35006KT P6SM SCT025 BKN035 FM270300 33005KT P6SM BKN100",
-      "issueTime": "2026-11-26T14:28:00.000Z",
-      "validTimeFrom": 1795701600,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KRST 261724Z 2618/2718 03010KT P6SM OVC016 FM262100 36008KT P6SM OVC016 FM271700 29007KT P6SM BKN250",
+      "issueTime": "2026-11-26T17:24:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795701600,
-          "timeTo": 1795734000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 20,
-          "wspd": 5,
+          "wdir": 30,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795734000,
-          "timeTo": 1795748400,
+          "timeFrom": 1795726800,
+          "timeTo": 1795798800,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 350,
-          "wspd": 6,
+          "wdir": 360,
+          "wspd": 8,
           "wgst": null
         },
         {
-          "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795798800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 330,
-          "wspd": 5,
+          "wdir": 290,
+          "wspd": 7,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KRSW",
-      "rawTAF": "TAF KRSW 261120Z 2612/2712 31006KT P6SM VCSH FEW015 BKN040 FM261600 28012G22KT P6SM BKN050 FM270100 27004KT P6SM SCT040",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KRSW 261720Z 2618/2718 29010KT P6SM SCT025 SCT060 FM270100 28005KT P6SM SCT040 SCT250 FM271500 29008KT P6SM FEW040 SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795708800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795741200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 310,
-          "wspd": 6,
+          "wdir": 290,
+          "wspd": 10,
           "wgst": null
         },
         {
-          "timeFrom": 1795708800,
-          "timeTo": 1795741200,
+          "timeFrom": 1795741200,
+          "timeTo": 1795791600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 280,
-          "wspd": 12,
-          "wgst": 22
+          "wspd": 5,
+          "wgst": null
         },
         {
-          "timeFrom": 1795741200,
-          "timeTo": 1795780800,
+          "timeFrom": 1795791600,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 270,
-          "wspd": 4,
+          "wdir": 290,
+          "wspd": 8,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KSAN",
-      "rawTAF": "TAF KSAN 261504Z 2615/2718 VRB03KT P6SM SKC FM262000 32008KT P6SM FEW250 FM270200 VRB04KT P6SM SCT250",
-      "issueTime": "2026-11-26T15:04:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KSAN 261720Z 2618/2724 VRB03KT P6SM SKC FM262000 32008KT P6SM FEW250 FM270200 VRB04KT P6SM FEW250 FM272000 28008KT P6SM SCT250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
@@ -5235,25 +5285,35 @@
         },
         {
           "timeFrom": 1795744800,
-          "timeTo": 1795802400,
+          "timeTo": 1795809600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": "VRB",
           "wspd": 4,
           "wgst": null
+        },
+        {
+          "timeFrom": 1795809600,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 280,
+          "wspd": 8,
+          "wgst": null
         }
       ]
     },
     {
       "icaoId": "KSAT",
-      "rawTAF": "TAF KSAT 261455Z 2615/2718 35012KT P6SM SKC FM262300 23001KT P6SM FEW250",
-      "issueTime": "2026-11-26T14:55:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KSAT 261720Z 2618/2724 35012KT P6SM SKC FM262300 VRB02KT P6SM BKN250 FM271600 23010KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795734000,
           "timeBec": null,
           "fcstChange": null,
@@ -5264,12 +5324,22 @@
         },
         {
           "timeFrom": 1795734000,
-          "timeTo": 1795802400,
+          "timeTo": 1795795200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": "VRB",
+          "wspd": 2,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795795200,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 230,
-          "wspd": 1,
+          "wspd": 10,
           "wgst": null
         }
       ]
@@ -5345,14 +5415,14 @@
     },
     {
       "icaoId": "KSBD",
-      "rawTAF": "TAF KSBD 261120Z 2612/2712 VRB05KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KSBD 261720Z 2618/2718 VRB05KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -5364,40 +5434,50 @@
     },
     {
       "icaoId": "KSBN",
-      "rawTAF": "TAF KSBN 261640Z 2617/2712 04012G21KT 6SM -RA BR OVC015 FM261800 04014G26KT 4SM -RA BR OVC015 FM262300 03014G24KT 4SM -RA BR BKN007",
-      "issueTime": "2026-11-26T16:40:00.000Z",
-      "validTimeFrom": 1795712400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KSBN 261720Z 2618/2718 04014G26KT 4SM -RA BR OVC015 TEMPO 2622/2702 2SM RA BR BKN008 FM270200 03015G24KT 4SM -RA BR BKN008 FM270600 01012G20KT 4SM -RA BR BKN005",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795712400,
-          "timeTo": 1795716000,
+          "timeFrom": 1795716000,
+          "timeTo": 1795744800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 40,
-          "wspd": 12,
-          "wgst": 21
-        },
-        {
-          "timeFrom": 1795716000,
-          "timeTo": 1795734000,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 40,
           "wspd": 14,
           "wgst": 26
         },
         {
-          "timeFrom": 1795734000,
-          "timeTo": 1795780800,
+          "timeFrom": 1795730400,
+          "timeTo": 1795744800,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795744800,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 30,
-          "wspd": 14,
+          "wspd": 15,
           "wgst": 24
+        },
+        {
+          "timeFrom": 1795759200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 10,
+          "wspd": 12,
+          "wgst": 20
         }
       ]
     },
@@ -5649,26 +5729,16 @@
     },
     {
       "icaoId": "KSHV",
-      "rawTAF": "TAF KSHV 261136Z 2612/2712 30008KT P6SM SKC FM261500 32015G23KT P6SM SKC FM270000 30008KT P6SM SKC",
-      "issueTime": "2026-11-26T11:36:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KSHV 261720Z 2618/2718 32015G23KT P6SM SKC FM270000 30010KT P6SM SKC FM270600 29005KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 300,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795737600,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 320,
           "wspd": 15,
@@ -5676,12 +5746,22 @@
         },
         {
           "timeFrom": 1795737600,
-          "timeTo": 1795780800,
+          "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 300,
-          "wspd": 8,
+          "wspd": 10,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795759200,
+          "timeTo": 1795802400,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 290,
+          "wspd": 5,
           "wgst": null
         }
       ]
@@ -5786,28 +5866,18 @@
     },
     {
       "icaoId": "KSLC",
-      "rawTAF": "TAF KSLC 261458Z 2615/2718 15006KT P6SM BKN200 TEMPO 2615/2616 32006KT P6SM BKN200 FM262000 35005KT P6SM SCT200 FM270300 15005KT P6SM FEW090 SCT200",
-      "issueTime": "2026-11-26T14:58:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KSLC 261724Z 2618/2724 15006KT P6SM BKN200 FM262000 35005KT P6SM SCT200 FM270300 15005KT P6SM FEW090 SCT200",
+      "issueTime": "2026-11-26T17:24:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
+          "timeFrom": 1795716000,
           "timeTo": 1795723200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 150,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795708800,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": 320,
           "wspd": 6,
           "wgst": null
         },
@@ -5823,7 +5893,7 @@
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795802400,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -5894,14 +5964,14 @@
     },
     {
       "icaoId": "KSNA",
-      "rawTAF": "TAF KSNA 261120Z 2612/2712 VRB04KT P6SM FEW250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KSNA 261720Z 2618/2718 VRB04KT P6SM FEW250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795716000,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -6159,82 +6229,62 @@
     },
     {
       "icaoId": "KTPA",
-      "rawTAF": "TAF KTPA 261458Z 2615/2718 31006KT P6SM SCT025 BKN040 FM261700 29014G24KT P6SM BKN040 FM270100 26010KT P6SM FEW050 SCT250 FM271400 30009KT P6SM FEW040 BKN250",
-      "issueTime": "2026-11-26T14:58:00.000Z",
-      "validTimeFrom": 1795705200,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KTPA 261720Z 2618/2724 29012G20KT P6SM BKN040 FM270000 26008KT P6SM FEW050 SCT250 FM271400 29010KT P6SM FEW040 BKN250",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795705200,
-          "timeTo": 1795712400,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 310,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795712400,
-          "timeTo": 1795741200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
           "wdir": 290,
-          "wspd": 14,
-          "wgst": 24
+          "wspd": 12,
+          "wgst": 20
         },
         {
-          "timeFrom": 1795741200,
+          "timeFrom": 1795737600,
           "timeTo": 1795788000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 260,
-          "wspd": 10,
+          "wspd": 8,
           "wgst": null
         },
         {
           "timeFrom": 1795788000,
-          "timeTo": 1795802400,
+          "timeTo": 1795824000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 300,
-          "wspd": 9,
+          "wdir": 290,
+          "wspd": 10,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KTUL",
-      "rawTAF": "TAF KTUL 261120Z 2612/2712 32010KT P6SM SKC FM261500 33013G23KT P6SM FEW100 SCT200 FM262300 31006KT P6SM SCT080 BKN250 FM270600 28005KT P6SM SCT250",
-      "issueTime": "2026-11-26T11:20:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KTUL 261724Z 2618/2718 33013G23KT P6SM FEW050 FEW100 SCT200 FM270000 31006KT P6SM SCT060 BKN100 BKN250 FM270600 VRB04KT P6SM FEW120 SCT250",
+      "issueTime": "2026-11-26T17:24:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
-          "timeTo": 1795705200,
+          "timeFrom": 1795716000,
+          "timeTo": 1795737600,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 320,
-          "wspd": 10,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795705200,
-          "timeTo": 1795734000,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 330,
           "wspd": 13,
           "wgst": 23
         },
         {
-          "timeFrom": 1795734000,
+          "timeFrom": 1795737600,
           "timeTo": 1795759200,
           "timeBec": null,
           "fcstChange": "FM",
@@ -6245,25 +6295,25 @@
         },
         {
           "timeFrom": 1795759200,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 280,
-          "wspd": 5,
+          "wdir": "VRB",
+          "wspd": 4,
           "wgst": null
         }
       ]
     },
     {
       "icaoId": "KTUS",
-      "rawTAF": "TAF KTUS 261125Z 2612/2712 11010KT P6SM SCT250 FM262100 09007KT P6SM SKC FM270300 13006KT P6SM SKC",
-      "issueTime": "2026-11-26T11:25:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KTUS 261720Z 2618/2718 11010KT P6SM SKC FM262100 09007KT P6SM SKC FM270300 13006KT P6SM SKC",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
         {
-          "timeFrom": 1795694400,
+          "timeFrom": 1795716000,
           "timeTo": 1795726800,
           "timeBec": null,
           "fcstChange": null,
@@ -6284,7 +6334,7 @@
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -6296,40 +6346,20 @@
     },
     {
       "icaoId": "KTYS",
-      "rawTAF": "TAF KTYS 261146Z 2612/2712 05008KT 5SM SHRA BR FEW007 OVC015 WS020/09030KT FM261400 02006KT 4SM -SHRA BR OVC005 FM261800 24015G20KT 6SM -SHRA BR BKN006 OVC010 FM262000 23016G26KT 6SM -SHRA BR OVC005 FM270000 22018G31KT 6SM BR VCSH BKN007 FM270300 23016G26KT 4SM -RASN BR OVC007",
-      "issueTime": "2026-11-26T11:46:00.000Z",
-      "validTimeFrom": 1795694400,
-      "validTimeTo": 1795780800,
+      "rawTAF": "TAF KTYS 261720Z 2618/2718 22012KT 3SM -RA BR BKN015 FM262000 22015G25KT 4SM -RA BR BKN015 FM270000 22018G34KT 5SM BR VCSH BKN015 FM270300 22018G34KT 4SM -RASN BR OVC007 FM271100 23016G30KT 4SM BR OVC010",
+      "issueTime": "2026-11-26T17:20:00.000Z",
+      "validTimeFrom": 1795716000,
+      "validTimeTo": 1795802400,
       "fcsts": [
-        {
-          "timeFrom": 1795694400,
-          "timeTo": 1795701600,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 50,
-          "wspd": 8,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795701600,
-          "timeTo": 1795716000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 20,
-          "wspd": 6,
-          "wgst": null
-        },
         {
           "timeFrom": 1795716000,
           "timeTo": 1795723200,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
-          "wdir": 240,
-          "wspd": 15,
-          "wgst": 20
+          "wdir": 220,
+          "wspd": 12,
+          "wgst": null
         },
         {
           "timeFrom": 1795723200,
@@ -6337,9 +6367,9 @@
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 230,
-          "wspd": 16,
-          "wgst": 26
+          "wdir": 220,
+          "wspd": 15,
+          "wgst": 25
         },
         {
           "timeFrom": 1795737600,
@@ -6349,17 +6379,27 @@
           "probability": null,
           "wdir": 220,
           "wspd": 18,
-          "wgst": 31
+          "wgst": 34
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeTo": 1795777200,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": 220,
+          "wspd": 18,
+          "wgst": 34
+        },
+        {
+          "timeFrom": 1795777200,
+          "timeTo": 1795802400,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 230,
           "wspd": 16,
-          "wgst": 26
+          "wgst": 30
         }
       ]
     }
