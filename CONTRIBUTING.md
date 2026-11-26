@@ -26,6 +26,6 @@ The browser suite requires Chromium and a Python HTTP server. `PYTHON` may selec
 
 ## Pull requests and merge
 
-Open an issue-linked PR that identifies changed systems, replacement/removal decisions, exact validation evidence, and remaining acceptance work. Before merge, apply every gate in `AGENTS.md`, including exact-head CI/review checks and inspection of Pages, collector, deployment, and billing triggers. Never merge if doing so would initiate a production deployment or provider request that lacks its required authorization.
+Open an issue-linked PR that identifies changed systems, replacement/removal decisions, exact validation evidence, and remaining acceptance work. Before merge, apply every gate in `AGENTS.md`, including exact-head CI/review checks and inspection of Pages, collector, deployment, and billing triggers. Routine automatic GitHub Pages deployment following a validated in-scope merge is authorized under the November 26, 2026 standing authority in AGENTS.md. Never merge if doing so would initiate another production deployment, provider request, or other restricted operation that lacks its required authorization.
 
 After an authorized merge, verify the resulting commit and applicable deployment without making provider requests, then reconcile Linear with evidence. Documentation, preparation, implementation, validation, merge, deployment, and operational acceptance remain distinct states.

@@ -19,10 +19,12 @@ Level 3 — obtain explicit owner authorization before:
 - Costs, paid APIs, subscriptions, billable infrastructure, secrets, keys, credentials or protected tokens.
 - Account login, OAuth consent, MFA, expanded permissions, access-control or security-policy changes, sensitive personal information.
 - Destructive operations, permanent deletion, irreversible migrations.
-- Production deployments or public releases; aviation-provider access, request budgets, polling frequency or provider-policy changes.
+- Production deployments or public releases except the routine automatic GitHub Pages deployment expressly authorized below; aviation-provider access, request budgets, polling frequency or provider-policy changes.
 - Major changes to purpose, branding or core design; version increments; expansion of agent authority.
 
-Do not circumvent a restriction using a different tool or environment. The authority to merge is not authority to deploy or consume provider budgets. Keep Spatchin at v0.9 until an owner-approved version change.
+Standing authority, effective 2026-11-26: The owner authorizes routine GitHub Pages deployments that automatically result from validated Spatchin PR merges within approved development scope, including PRs #93–#96. This applies to ChatGPT, Codex and scheduled development agents. No separate owner approval is required for that automatic Pages deployment. All existing merge, testing, security, trigger inspection and deployment verification gates remain in effect. Changes to production publication architecture (including Pages source, workflow permissions, environment protection and public allowlists), access controls, credentials, provider acquisition, request budgets, costs and application version still require separate applicable authorization. Other production deployments, including Cloudflare Workers, remain subject to Level 3 authorization. The SPA-105 cutover is not authorized.
+
+Do not circumvent a restriction using a different tool or environment. The authority to merge is not unrestricted authority to deploy or consume provider budgets. Keep Spatchin at v0.9 until an owner-approved version change.
 
 ## Merge gates
 
@@ -36,7 +38,7 @@ Before a merge, verify all applicable conditions:
 7. No Level 3 category is implicated without explicit authorization.
 8. Inspect Actions, Pages and other deployment/collector triggers. A merge must not initiate an unauthorized production deployment, provider request or billable operation. If it would, stop until authorized or a separately controlled deployment path exists.
 
-Prefer squash for focused changes. Pin the expected head when supported. Never bypass branch protection or required checks. Never push feature changes directly to main. Verify the merge result, reconcile Linear, and continue eligible work. A merge does not establish deployment or operational acceptance.
+Prefer squash for focused changes. Pin the expected head when supported. Never bypass branch protection or required checks. Never push feature changes directly to main. Verify the merge result, reconcile Linear, and continue eligible work. Verify the resulting Pages deployment when triggered. A merge does not establish deployment or operational acceptance.
 
 ## Engineering and coordination
 
