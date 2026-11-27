@@ -19,8 +19,8 @@ from tests.test_nms_refresh import (
     synthetic_store,
 )
 from tests.test_nms_baseline_candidate import initial
-from nms_baseline_candidate import REQUIRED_ACTIVATION_GATES
-from nms_engine import execute_offline_cycle
+from nms_baseline_candidate import CandidateError, REQUIRED_ACTIVATION_GATES
+from nms_engine import accepted_candidate, execute_offline_cycle
 from nms_operations import EMPTY, Operations
 from nms_pages_delivery import PagesDelivery, PublicationError, sha256
 from nms_refresh_contract import RefreshError, instant
@@ -269,6 +269,82 @@ class OperationsTests(unittest.TestCase):
             s.collect(s.transport(notice("NEW", text="SYNTHETIC CONFLICT")))
         self.assertEqual(s.operations.status()["watermark"], accepted)
         self.assertEqual(s.operations.status()["ledger_recovery"], "CONFLICT")
+
+    def test_retained_conflict_requires_exact_preservation_and_commits_once(self):
+        s = self.scenario
+        prior = notice("SYNTHETIC-UNRESOLVED")
+        incoming = notice("SYNTHETIC-UNRESOLVED", local=False)
+        for item, cancelled in ((prior, "00:02:00Z"), (incoming, "00:01:00Z")):
+            record = item["properties"]["coreNOTAMData"]["notam"]
+            record.update(location="TEST", icaoLocation="ZZZZ", cancelationDate="2026-01-02T" + cancelled)
+        incoming["geometry"] = {"type": "Point", "coordinates": [0, 0]}
+        incoming["properties"]["coreNOTAMData"]["notam"]["lastUpdated"] = (
+            "2026-01-02T11:59:00.000Z"
+        )
+        execute_offline_cycle(
+            s.store, mode="delta", now=s.now, delta_payload=envelope([prior])
+        )
+        s.watermark = s.operations.status()["watermark"]
+        s.now += timedelta(minutes=3)
+        reserved = s.now
+        t = s.transport(incoming, notice("SYNTHETIC-NEW"))
+        with self.assertRaisesRegex(RefreshError, "CONFLICT"):
+            s.collect(t)
+
+        def read():
+            with s.store.review_connect() as db:
+                return s.store.load(db), tuple(
+                    db.execute(f"SELECT * FROM {table}").fetchall()
+                    for table in ("attempts", "calls", "responses")
+                )
+
+        before, rows = read()
+        args = (rows[0][0][0], sha256(rows[2][0][3]), s.watermark)
+        self.assertEqual(rows[0][0][-2:], ("FAILED_ACCOUNTED", "CONFLICT"))
+        decision = s.operations.review_retained_delta(*args)
+        self.assertEqual((decision["status"], decision["error"]),
+                         ("OWNER_DECISION_REQUIRED", "CONFLICTING_UPDATE"))
+        with self.assertRaisesRegex(CandidateError, "CONFLICTING_UPDATE"):
+            s.operations.review_retained_delta(*args, "0" * 64)
+        with self.assertRaisesRegex(PublicationError, "APPROVAL_MISMATCH"):
+            s.operations.review_retained_delta(args[0], "0" * 64, args[2])
+        with self.assertRaisesRegex(PublicationError, "RECOVERY_ATTEMPT_MISMATCH"):
+            s.operations.review_retained_delta("wrong-attempt", *args[1:])
+        with self.assertRaisesRegex(PublicationError, "RECOVERY_BASELINE_OR_HOLD_CHANGED"):
+            s.operations.review_retained_delta(*args[:2], "2026-01-02T11:58:00Z")
+        args += (decision["unresolved_pair_sha256"],)
+        review = s.operations.review_retained_delta(*args)
+        self.assertEqual(review["status"], "REVIEW_ONLY")
+        self.assertEqual(review["watermark"], (reserved - timedelta(seconds=1)).isoformat())
+        self.assertEqual(review["audit"]["unresolved_revision_conflicts_preserved"], 1)
+        self.assertEqual(read(), (before, rows))
+        with self.assertRaisesRegex(PublicationError, "APPROVAL_MISMATCH"):
+            s.operations.recover_retained_delta(*args, "0" * 64)
+
+        def interrupted(db, state):
+            save(db, state)
+            raise KeyboardInterrupt()
+
+        save = s.store.save
+        with patch.object(s.store, "save", side_effect=interrupted), self.assertRaises(KeyboardInterrupt):
+            s.operations.recover_retained_delta(*args, review["approval_sha256"])
+        self.assertEqual(read(), (before, rows))
+        s.now += timedelta(hours=8)
+        s.reopen()
+        recovery = s.operations.recover_retained_delta(*args, review["approval_sha256"])
+        self.assertEqual(recovery["status"], "ACCEPTED_PRIVATE_NOT_PUBLISHED")
+        after, unchanged_rows = read()
+        candidate = accepted_candidate(after)
+        self.assertIsNone(after["recovery"])
+        self.assertEqual(rows, unchanged_rows)
+        self.assertEqual(candidate["unresolved_records"][0]["original_feature"], prior)
+        self.assertEqual(candidate["unresolved_revision_conflicts"][0]["incoming"]["original_feature"], incoming)
+        self.assertNotIn("SYNTHETIC-UNRESOLVED", after["catalog"])
+        self.assertIn("SYNTHETIC-NEW", after["catalog"])
+        self.assertEqual(s.operations.review_publication()["manifest"], review["manifest"])
+        self.assertEqual(s.operations.recover_retained_delta(*args, review["approval_sha256"])["status"], "ALREADY_RECOVERED")
+        self.assertEqual(read(), (after, rows))
+        self.assertEqual(s.delivery.pushes, 0)
 
     def test_initial_snapshot_conflict_and_approval_bind_exact_bytes(self):
         s = self.scenario
