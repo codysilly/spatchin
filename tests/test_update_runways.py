@@ -86,6 +86,43 @@ class NasrC070RunwayTests(unittest.TestCase):
         self.assertEqual(result['heading_reference'], 'TRUE')
         self.assertEqual(result['effective_date'], '2026-10-29')
 
+    def test_confirmed_ord_auxiliary_records_do_not_reject_physical_runways(self):
+        rows = make_rows()
+        for rid in ('10X', 'H1'):
+            rows.append({'SITE_NO': SITES['ORD'], 'ARPT_ID': 'ORD',
+                         'RWY_END_ID': rid, 'RWY_ID': rid, 'TRUE_ALIGNMENT': ''})
+        result = self.run_generate(rows)
+        self.assertEqual(len(result['airports']), 130)
+        self.assertEqual(len(result['airports']['ORD']), 16)
+        self.assertEqual(result['airport_coverage']['ORD']['excluded_non_runway_records'],
+                         [{'id': '10X', 'reason': 'alternate_ils_for_10R'},
+                          {'id': 'H1', 'reason': 'helipad'}])
+
+    def test_ambiguous_auxiliary_records_still_rejected(self):
+        for rid, pair, alignment in [('11X', '11X', ''), ('H1', 'H1/19', ''),
+                                     ('10X', '10X', '090')]:
+            with self.subTest(rid=rid, pair=pair, alignment=alignment):
+                rows = make_rows()
+                rows.append({'SITE_NO': SITES['ORD'], 'ARPT_ID': 'ORD',
+                             'RWY_END_ID': rid, 'RWY_ID': pair, 'TRUE_ALIGNMENT': alignment})
+                with self.assertRaisesRegex(ValueError, 'ORD: invalid_or_duplicate_runway_end'):
+                    self.run_generate(rows)
+
+    def test_duplicate_auxiliary_records_still_rejected(self):
+        rows = make_rows()
+        row = {'SITE_NO': SITES['ORD'], 'ARPT_ID': 'ORD', 'RWY_END_ID': 'H1',
+               'RWY_ID': 'H1', 'TRUE_ALIGNMENT': ''}
+        with self.assertRaisesRegex(ValueError, 'ORD: invalid_or_duplicate_runway_end'):
+            self.run_generate(rows + [row, row.copy()])
+
+    def test_unknown_ils_record_at_other_airport_is_not_excluded(self):
+        code = next(code for code in ALL_CODES if code not in LEGACY_PAIRS)
+        rows = make_rows() + [{'SITE_NO': SITES[code], 'ARPT_ID': code,
+                              'RWY_END_ID': '10X', 'RWY_ID': '10X', 'TRUE_ALIGNMENT': ''}]
+        result = self.run_generate(rows)
+        self.assertNotIn(code, result['airports'])
+        self.assertEqual(result['airport_coverage'][code]['reason'], 'invalid_or_duplicate_runway_end')
+
     def test_missing_true_alignment_keeps_end_without_inventing_bearing(self):
         rows = make_rows()
         target = next(row for row in rows if row['ARPT_ID'] == 'ORD')
