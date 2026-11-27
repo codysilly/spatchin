@@ -1,4 +1,5 @@
 'use strict';
+import {currentDiagramMarkup} from './airport-diagrams.js';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
 // User-initiated FAA search, not evidence of an available/current PDF.
 export function diagramSearchMarkup(icao,esc){
@@ -16,8 +17,9 @@ const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’H
 // Previously verified chart metadata, preserved from a986cedf13bcde536987848b16bf91d2d1213eff.
 // This is a fixed chart link, not a current-cycle lookup or the NASR bearing source.
 const verifiedDiagrams={MEM:{url:'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF',effective_date:'2026-10-29',valid_through:'2026-11-26'}};
+let diagramIndex=null;
 function diagramHeader(code){
- const search=diagramSearchMarkup(airportInfo[code]?.icao,esc);
+ const search=currentDiagramMarkup(diagramIndex,code,airportInfo[code]?.icao,esc)||diagramSearchMarkup(airportInfo[code]?.icao,esc);
  const metadata=runwayData?.airport_metadata?.[code];
  const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
  if(!diagram||!/^https:\/\/aeronav\.faa\.gov\/d-tpp\/[0-9]{4}\/[A-Za-z0-9_-]+\.pdf$/i.test(diagram.url||''))return search;
@@ -509,6 +511,16 @@ const PublishedSnapshots=(()=>{
  }
  return {metars,atis,runways,tafs};
 })();
+async function refreshDiagrams(){
+ if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
+ try{
+  const response=await fetch('./data/airport-diagrams.json',{cache:'no-store'});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  if(data?.schema_version!==1||!data.airports)throw new Error('Invalid diagram index');
+  diagramIndex=data;render();
+ }catch(e){console.info('FAA diagram index unavailable; check current edition at FAA:',e.message);}
+}
 async function refreshRunways(){
  if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
  try{
@@ -538,8 +550,8 @@ async function refreshTafs(){
 }
 function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}
 function startDashboard(){
- clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();refreshTafs();notamSnapshots?.refresh();
- setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
+ clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshDiagrams();refreshAtis();refreshTafs();notamSnapshots?.refresh();
+ setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshDiagrams,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
 }
 async function loadForecastModules(){
  const [reader,timeline]=await Promise.allSettled([import('./taf-reader.js'),import('./taf-timeline.js')]);
