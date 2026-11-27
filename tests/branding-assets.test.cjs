@@ -1,28 +1,30 @@
 'use strict';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { readFileSync } = require('node:fs');
+const { readFileSync, existsSync } = require('node:fs');
 const { inflateSync } = require('node:zlib');
 
-const svg = readFileSync('assets/branding/logo-cyan-magenta.svg', 'utf8');
+const svg = readFileSync('assets/branding/paperplane-cyan-magenta-fade.svg', 'utf8');
 const html = readFileSync('index.html', 'utf8');
 const css = readFileSync('charcoal-dashboard.css', 'utf8');
 const spec = readFileSync('docs/BRANDING.md', 'utf8');
 
 test('approved vector and wordmark remain the single canonical brand', () => {
   assert.match(svg, /id="tailToNose"/);
-  assert.match(svg, /<path fill="url\(#tailToNose\)" d="M 1192 151/);
+  assert.match(svg, /<path fill="url\(#bodyFade\)" fill-rule="evenodd"/);
+  assert.match(svg, /<path fill="url\(#tailToNose\)" fill-rule="evenodd"/);
+  assert.equal((svg.match(/<path /g) || []).length, 2, 'preserve both owner-supplied filled paths');
   assert.match(svg, /x1="356" y1="1039" x2="1179" y2="154"/);
   for (const color of ['#04e3ed', '#31bafc', '#8979fe', '#c837f2', '#f312d9'])
     assert.ok(svg.includes(color), color);
-  assert.match(html, /class="brand-logo" src="assets\/branding\/logo-cyan-magenta\.svg"/);
+  assert.match(html, /class="brand-logo" src="assets\/branding\/paperplane-cyan-magenta-fade\.svg" width="18" height="18"/);
   assert.match(
     html,
-    /rel="icon" type="image\/svg\+xml" href="assets\/branding\/logo-cyan-magenta\.svg"/,
+    /rel="icon" type="image\/svg\+xml" href="assets\/branding\/paperplane-cyan-magenta-fade\.svg"/,
   );
   assert.match(
     html,
-    /rel="apple-touch-icon" sizes="180x180" href="assets\/branding\/logo-180\.png\?rev=20261127"/,
+    /rel="apple-touch-icon" sizes="180x180" href="assets\/branding\/paperplane-180\.png"/,
   );
   assert.match(
     css,
@@ -32,7 +34,7 @@ test('approved vector and wordmark remain the single canonical brand', () => {
     css,
     /\.brand\s+h1\s*,\s*\.brand-wordmark\s*\{\s*letter-spacing\s*:\s*0?\.0175em\s*;?\s*\}/,
   );
-  assert.match(spec, /original\/historical source/);
+  assert.match(spec, /owner.*original source material/);
   assert.match(html, /v0\.9/);
 });
 
@@ -103,8 +105,8 @@ function pngPixels(filename, size) {
   return pixels;
 }
 test('all icon sizes are valid transparent PNGs from the current gradient', () => {
-  for (const size of [16, 32, 64, 128, 180]) {
-    const pixels = pngPixels('assets/branding/logo-' + size + '.png', size);
+  for (const size of [16, 32, 180]) {
+    const pixels = pngPixels('assets/branding/paperplane-' + size + '.png', size);
     assert.ok(
       pixels.some((x) => x.a === 0),
       'transparent background ' + size,
@@ -126,5 +128,23 @@ test('all icon sizes are valid transparent PNGs from the current gradient', () =
       avg(cyan, 'y') > avg(magenta, 'y') + size * 0.1,
       'cyan tail below magenta nose at ' + size,
     );
+  }
+});
+
+test('only the new paperplane files remain in the branding directory', () => {
+  const expected = [
+    'paperplane-cyan-magenta-fade.svg',
+    'paperplane-16.png',
+    'paperplane-32.png',
+    'paperplane-180.png',
+  ];
+  const { readdirSync } = require('node:fs');
+  assert.deepEqual(readdirSync('assets/branding').sort(), expected.sort());
+  for (const old of ['logo-cyan-magenta.svg', 'spatchin-logo-source.png', ...[16, 32, 64, 128, 180].map((n) => 'logo-' + n + '.png')])
+    assert.equal(existsSync('assets/branding/' + old), false, 'legacy asset must be retired: ' + old);
+  for (const page of ['index.html', 'dashboard/index.html']) {
+    const markup = readFileSync(page, 'utf8');
+    assert.doesNotMatch(markup, /assets\\/branding\\/logo-/);
+    assert.match(markup, /paperplane-cyan-magenta-fade\\.svg/);
   }
 });
