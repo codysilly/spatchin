@@ -449,7 +449,7 @@ def reconcile_delta(
                 continue
             raise CandidateError("CONFLICTING_UPDATE")
         old_airports = set(previous.get("airport_associations", []))
-        if old_airports and airports and old_airports != set(airports):
+        if old_airports and old_airports != set(airports):
             raise CandidateError("CONFLICTING_UPDATE")
         prior["versions"].append(copy.deepcopy(current))
         prior["current"] = current
@@ -671,6 +671,12 @@ def accept_production_candidate(
                 raise CandidateError("STORE_STATE_INVALID")
             db.execute("UPDATE attempts SET status=? WHERE id=?", ("ACCEPTED", attempt))
             state["active"] = None
+            if state.pop("production_active_attempt", None) == attempt:
+                state["last_production_delta"] = {
+                    "attempt": attempt,
+                    "approval_sha256": state.pop("production_active_approval", None),
+                    "watermark": candidate["watermark"],
+                }
         store.save(db, state)
     return {
         "status": "ACCEPTED_PRIVATE_NOT_PUBLISHED",

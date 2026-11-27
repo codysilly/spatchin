@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'scripts/notam/capture_domestic_candidate.py'
+      - 'scripts/notam/nms_*.py'
+      - 'scripts/notam/promote_nms_baseline.py'
+      - 'tests/test_nms_*.py'
       - 'tests/test_domestic_candidate.py'
       - '.github/workflows/notam-path-offline.yml'
   workflow_dispatch:
@@ -18,7 +21,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,3 +31,5 @@ jobs:
           python-version: '3.12'
       - name: Test synthetic ledger path contracts only
         run: python -B -m unittest discover -s tests -p test_domestic_candidate.py -k DefaultStorePathTests -v
+      - name: Test isolated NMS accounting, source publication and recovery
+        run: python -B -m unittest discover -s tests -p 'test_nms_*.py' -v

@@ -1,5 +1,9 @@
 # NOTAM/NMS research tools
 
+The guarded production entry point is `nms_operations.py`. Use the
+[operator runbook](../../docs/NOTAM_OPERATIONS.md) for read-only preflight,
+explicit catch-up approval, publication, and Windows Task Scheduler setup.
+
 This directory contains the offline review, normalization, evidence-capture and
 NMS research toolchain. It is intentionally separate from the scheduled routine
 collectors in the parent `scripts/` directory.

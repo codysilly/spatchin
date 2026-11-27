@@ -20,11 +20,6 @@ class PublicationError(ValueError):
     pass
 
 
-PRIVATE_KEYS = frozenset(
-    {"original_feature", "received_utc", "transport", "receipt", "ledger", "credentials"}
-)
-
-
 def _instant(value):
     try:
         parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -58,7 +53,7 @@ def _replace_file(final, data):
         temporary.unlink(missing_ok=True)
 
 
-def _retrieval_evidence(candidate):
+def retrieval_evidence(candidate):
     """Use accepted acquisition evidence, never publication generation time."""
     delta = candidate.get("delta_candidate")
     value = delta.get("received_utc") if isinstance(delta, dict) else None
@@ -99,7 +94,7 @@ def _representations(value):
     return output
 
 
-def project(candidate, registry, *, generated_utc):
+def project(candidate, registry, *, generated_utc, stale_after_hours=None):
     """Create the public reader contract for the complete reviewed C070 registry."""
     registry = load_registry(registry)
     codes = [entry["icao"] for entry in registry.values()]
@@ -108,7 +103,7 @@ def project(candidate, registry, *, generated_utc):
     if candidate.get("baseline_established") is not True or not candidate.get("watermark"):
         raise PublicationError("BASELINE_NOT_ACCEPTED")
     generated = _instant(generated_utc).isoformat().replace("+00:00", "Z")
-    retrieved = _retrieval_evidence(candidate)
+    retrieved = retrieval_evidence(candidate)
     airports = {
         code: {
             "completeness": "UNKNOWN",
@@ -143,7 +138,7 @@ def project(candidate, registry, *, generated_utc):
         notice["source"] = "NMS-API snapshot"
         notice["retrieved_utc"] = retrieved
         notice["formatted_texts"] = _representations(current.get("representations", []))
-        notice["classifications"] = copy.deepcopy(current.get("classifications", []))
+        notice["classifications"] = _strings(current.get("classifications", []))
         notice["provider_lifecycle"] = {
             key: _display_value(record[key]) for key in ("type", "cancelationDate") if key in record
         }
@@ -159,20 +154,26 @@ def project(candidate, registry, *, generated_utc):
         "publication": {
             "source": "NMS-API snapshot",
             "coverage": "UNKNOWN",
-            "automatic_updates": False,
-            "freshness_policy": "NOT_ESTABLISHED",
+            "automatic_updates": stale_after_hours is not None,
+            "freshness_policy": "NOT_ESTABLISHED" if stale_after_hours is None else "AGE_LIMIT",
             "generated_utc": generated,
         },
         "airports": airports,
     }
-    if any(key in json.dumps(snapshot) for key in PRIVATE_KEYS):
-        raise PublicationError("PRIVATE_DATA_LEAK")
+    if stale_after_hours is not None:
+        if type(stale_after_hours) is not int or not 1 <= stale_after_hours <= 24:
+            raise PublicationError("INVALID_FRESHNESS_POLICY")
+        snapshot["publication"]["stale_after_hours"] = stale_after_hours
     return snapshot
 
 
-def build_candidate(candidate, registry, *, generated_utc):
-    snapshot = project(candidate, registry, generated_utc=generated_utc)
-    body = _encoded(snapshot)
+def build_candidate(candidate, registry, *, generated_utc, stale_after_hours=None):
+    snapshot = project(
+        candidate, registry, generated_utc=generated_utc, stale_after_hours=stale_after_hours
+    )
+    body = (
+        json.dumps(snapshot, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n"
+    ).encode()
     return (
         snapshot,
         {
@@ -198,6 +199,10 @@ def publish_atomic(
         prior = json.loads(state_path.read_text(encoding="utf-8"))
         if incoming < _instant(prior.get("retrieved_utc")):
             raise PublicationError("OLDER_SNAPSHOT_REJECTED")
+        if incoming == _instant(prior.get("retrieved_utc")) and manifest["sha256"] != prior.get(
+            "sha256"
+        ):
+            raise PublicationError("CONFLICTING_SNAPSHOT")
     if target.exists() and prior is not None:
         target_digest = _digest(target.read_bytes())
         if target_digest != prior.get("sha256"):
