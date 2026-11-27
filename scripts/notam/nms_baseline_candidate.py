@@ -1,10 +1,11 @@
-"""Offline-only Initial Load candidate and synthetic global-delta reconciliation.
+"""Bounded NMS baseline, reconciliation, and private publication contracts.
 
-This module has no collector, transport, credential, scheduler, production decoder,
-public writer, or live-baseline integration. It adapts SPA-58 private records into
+This module has no collector, transport, credential, scheduler, or public writer.
+It adapts SPA-58 private records into
 an explicitly non-activated candidate, reconciles supplied GeoJSON deltas, and can
 store candidate bytes transactionally in the existing NMS Store state without
-changing the accepted snapshot, baseline flag, or watermark.
+changing the accepted snapshot, baseline flag, or watermark unless the caller
+explicitly supplies and passes the production cutover gates.
 """
 
 from __future__ import annotations
@@ -38,6 +39,7 @@ class CandidateError(Exception):
             "BASELINE_CUTOVER_REQUIRED",
             "STORE_STATE_INVALID",
             "LOCAL_FAILURE",
+            "VALIDATION_REQUIRED",
         )
     )
 
@@ -204,6 +206,58 @@ def build_initial_candidate(
     return sink.finish()
 
 
+REQUIRED_ACTIVATION_GATES = frozenset(
+    (
+        "initial_load_validated",
+        "all_classifications_requested",
+        "c070_registry_validated",
+        "message_identity_validated",
+        "airport_association_validated",
+        "account_history_validated",
+        "capture_start_recorded",
+    )
+)
+
+
+def promote_baseline(candidate, *, gates, accepted_utc, max_bytes=MAX_CANDIDATE_BYTES):
+    """Return an activated baseline after explicit, auditable validation gates.
+
+    This pure function never opens a Store.  The first delta lower bound is the
+    capture start floored to a whole second and moved back one second.  That is a
+    client replay overlap, not a statement about provider snapshot semantics.
+    """
+    if (
+        not isinstance(candidate, dict)
+        or candidate.get("schema") != 1
+        or candidate.get("baseline_established") is not False
+        or candidate.get("watermark") is not None
+        or not isinstance(gates, dict)
+        or any(gates.get(name) is not True for name in REQUIRED_ACTIVATION_GATES)
+        or set(gates) != REQUIRED_ACTIVATION_GATES
+    ):
+        raise CandidateError("VALIDATION_REQUIRED")
+    accepted = instant(accepted_utc)
+    started = instant(candidate.get("capture_started_utc"))
+    if accepted < started or accepted - started > timedelta(hours=24):
+        raise CandidateError("DELTA_GAP")
+    result = copy.deepcopy(candidate)
+    watermark = started.replace(microsecond=0) - timedelta(seconds=1)
+    result.update(
+        {
+            "kind": "NMS_PRIVATE_ACCEPTED_BASELINE",
+            "baseline_established": True,
+            "watermark": stamp(watermark),
+            "coverage": "UNKNOWN",
+            "activation_diagnostic": "ACCEPTED_PRIVATE_BASELINE",
+            "accepted_utc": stamp(accepted),
+            "activation_gates": copy.deepcopy(gates),
+        }
+    )
+    if _size(result) > max_bytes:
+        raise CandidateError("OUTPUT_LIMIT")
+    return result
+
+
 def _delta_airports(record, codes):
     values = [
         record.get(name)
@@ -266,12 +320,16 @@ def reconcile_delta(
     max_records=MAX_RECORDS,
     max_bytes=MAX_CANDIDATE_BYTES,
 ):
-    """Reconcile supplied global GeoJSON without deleting absent records or activating."""
+    """Reconcile a global GeoJSON delta without deleting absent records."""
     if (
         not isinstance(candidate, dict)
         or candidate.get("schema") != 1
-        or candidate.get("baseline_established") is not False
-        or candidate.get("watermark") is not None
+        or type(candidate.get("baseline_established")) is not bool
+        or (candidate.get("baseline_established") is True and candidate.get("watermark") is None)
+        or (
+            candidate.get("baseline_established") is False
+            and candidate.get("watermark") is not None
+        )
         or not isinstance(candidate.get("catalog"), dict)
         or not isinstance(candidate.get("unresolved_records"), list)
     ):
@@ -295,6 +353,7 @@ def reconcile_delta(
         "replayed": 0,
         "cancellation_signals_preserved": 0,
         "unresolved": 0,
+        "stale_ignored": 0,
         "missing_prior_records_preserved": 0,
     }
     touched = set()
@@ -325,8 +384,18 @@ def reconcile_delta(
             audit["cancellation_signals_preserved"] += 1
         prior = catalog.get(identity)
         if prior is None:
-            result["unresolved_records"].append(current)
-            audit["unresolved"] += 1
+            if association_status == "associated":
+                catalog[identity] = {
+                    "identity": identity,
+                    "current": current,
+                    "versions": [copy.deepcopy(current)],
+                    "lifecycle": "UNINTERPRETED",
+                }
+                audit["inserted"] += 1
+                touched.add(identity)
+            else:
+                result["unresolved_records"].append(current)
+                audit["unresolved"] += 1
             continue
         previous = prior["current"]
         previous_updated = _one(previous.get("last_updated", []))
@@ -335,7 +404,9 @@ def reconcile_delta(
         new_time = instant(record["lastUpdated"])
         old_time = instant(previous_updated)
         if new_time < old_time:
-            raise CandidateError("CONFLICTING_UPDATE")
+            audit["stale_ignored"] += 1
+            touched.add(identity)
+            continue
         if new_time == old_time:
             if (
                 previous["format"] == "NMS_GEOJSON_DELTA"
@@ -362,9 +433,12 @@ def reconcile_delta(
         "proposed_replay_cursor_utc": stamp(received.replace(microsecond=0) - timedelta(seconds=1)),
         "audit": audit,
     }
-    result["baseline_established"] = False
-    result["watermark"] = None
-    result["activation_diagnostic"] = "BASELINE_CUTOVER_REQUIRED"
+    if result["baseline_established"]:
+        result["watermark"] = result["delta_candidate"]["proposed_replay_cursor_utc"]
+        result["activation_diagnostic"] = "ACCEPTED_PRIVATE_BASELINE"
+    else:
+        result["watermark"] = None
+        result["activation_diagnostic"] = "BASELINE_CUTOVER_REQUIRED"
     if _size(result) > max_bytes:
         raise CandidateError("OUTPUT_LIMIT")
     return result
@@ -440,6 +514,129 @@ def accept_private_candidate(store, candidate, *, before_accept=None):
         "bytes": len(body),
         "baseline_established": False,
         "watermark": None,
+    }
+
+
+def publication_snapshot(candidate, *, generated_utc, registry=None):
+    """Build the private Task-2 handoff for all 130 C070 airports.
+
+    Browser selection is intentionally absent.  Representation objects retain
+    their provider type and field name; no ICAO or formatted text is relabelled
+    as LOCAL_FORMAT.
+    """
+    _, _, by_icao = _registry_indexes(registry)
+    if not isinstance(candidate, dict) or not isinstance(candidate.get("catalog"), dict):
+        raise CandidateError("INVALID_CANDIDATE")
+    generated = stamp(instant(generated_utc))
+    airports = {
+        code: {
+            "completeness": "UNKNOWN",
+            "notices": [],
+            "warning": "NMS coverage and current operational applicability are UNKNOWN.",
+        }
+        for code in sorted(by_icao)
+    }
+    for entry in candidate["catalog"].values():
+        current = entry["current"]
+        for code in current.get("airport_associations", []):
+            if code not in airports:
+                raise CandidateError("INVALID_RECORD")
+            fields = current["notam"]
+            if current["format"] == "AIXM_5_1_INITIAL_LOAD":
+                notice = {
+                    name: _one(fields.get(name, []))
+                    for name in (
+                        "number",
+                        "text",
+                        "issued",
+                        "effectiveStart",
+                        "effectiveEnd",
+                        "type",
+                    )
+                }
+                notice["id"] = current["source_identity"]
+            else:
+                notice = {
+                    name: fields.get(name)
+                    for name in (
+                        "id",
+                        "number",
+                        "text",
+                        "issued",
+                        "effectiveStart",
+                        "effectiveEnd",
+                        "type",
+                    )
+                }
+            notice.update(
+                {
+                    "representations": copy.deepcopy(current.get("representations", [])),
+                    "classifications": copy.deepcopy(current.get("classifications", [])),
+                    "retrieved_utc": current.get("received_utc", generated),
+                    "source": "FAA NMS service response",
+                    "warnings": ["Lifecycle and runway status are not inferred."],
+                }
+            )
+            airports[code]["notices"].append(notice)
+    return {
+        "schema": 1,
+        "retrieved_utc": generated,
+        "coverage": candidate.get("coverage", "UNKNOWN"),
+        "watermark_utc": candidate.get("watermark"),
+        "publication": {
+            "automatic_updates": False,
+            "status": "PRIVATE_CANDIDATE_NOT_PUBLISHED",
+            "source": "FAA NMS service response",
+            "provider_notice": "FAA data is supplementary; verify against operational sources.",
+            "missing_unknown_stale_zero_distinct": True,
+            "runway_matching_behavior": "UNCHANGED",
+        },
+        "unresolved_record_count": len(candidate.get("unresolved_records", [])),
+        "airports": airports,
+    }
+
+
+def accept_production_candidate(
+    store, candidate, *, generated_utc, before_accept=None, attempt=None
+):
+    """Atomically accept catalog, cursor, and private publication handoff."""
+    if candidate.get("baseline_established") is not True or candidate.get("watermark") is None:
+        raise CandidateError("VALIDATION_REQUIRED")
+    snapshot = publication_snapshot(candidate, generated_utc=generated_utc)
+    candidate_body = encode(candidate)
+    snapshot_body = encode(snapshot)
+    if before_accept is not None:
+        try:
+            before_accept(snapshot_body)
+        except Exception:
+            raise CandidateError("LOCAL_FAILURE") from None
+    with store.connect() as db, store.transaction(db):
+        state = store.load(db)
+        if state["recovery"] is not None or state["active"] != attempt:
+            raise CandidateError("STORE_STATE_INVALID")
+        state.update(
+            {
+                "baseline": True,
+                "watermark": candidate["watermark"],
+                "catalog": copy.deepcopy(candidate["catalog"]),
+                "published_b64": base64.b64encode(snapshot_body).decode(),
+                "production_candidate_b64": base64.b64encode(candidate_body).decode(),
+                "publication_candidate_status": "ACCEPTED_PRIVATE_NOT_PUBLISHED",
+            }
+        )
+        if attempt is not None:
+            row = db.execute("SELECT status FROM attempts WHERE id=?", (attempt,)).fetchone()
+            if row is None or row[0] not in ("RESERVED", "IO_RESERVED"):
+                raise CandidateError("STORE_STATE_INVALID")
+            db.execute("UPDATE attempts SET status=? WHERE id=?", ("ACCEPTED", attempt))
+            state["active"] = None
+        store.save(db, state)
+    return {
+        "status": "ACCEPTED_PRIVATE_NOT_PUBLISHED",
+        "baseline_established": True,
+        "watermark": candidate["watermark"],
+        "catalog_records": len(candidate["catalog"]),
+        "airports": len(snapshot["airports"]),
     }
 
 

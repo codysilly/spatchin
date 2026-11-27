@@ -1,5 +1,36 @@
 # SPA-10: one-PC, offline-tested refresh engine (not activated)
 
+## SPA-18 production-state engine (implemented; live execution disabled)
+
+`scripts/notam/nms_engine.py` now provides the single guarded acceptance path for
+an Initial Load baseline and recurring global deltas. It has no HTTP client,
+credential lookup, retry loop, scheduler, or public writer. Offline validation
+injects synthetic records, a bounded gzip Initial Load response, or GeoJSON delta
+responses into isolated SQLite stores. A later authorized live adapter must use
+the existing account-bound `Store` reservation, call, and response ledger before
+passing persisted response bytes into the same decoder and acceptance functions.
+
+The Initial Load path streams the existing bounded AIXM association parser into
+the persistent catalog. Baseline promotion requires every named validation gate;
+there is no implicit promotion. The first delta cursor is the recorded capture
+start floored to a whole second and moved back one second. This remains a client
+replay overlap and is not a provider snapshot-boundary claim.
+
+Delta reconciliation accepts associated new message identities, retains
+unassociated or contradictory records privately, appends newer revisions,
+preserves cancellation/replacement fields without interpreting them, ignores
+older revisions, and freezes on ambiguous equal-version conflicts. Missing IDs
+are never treated as deletions. Catalog, watermark, and the private publication
+candidate commit in one SQLite transaction; validation or publication-preflight
+failure preserves the last accepted state.
+
+The private publication contract covers all 130 reviewed C070 airports regardless
+of the browser's 30-airport selection limit. It keeps provider representation
+types and fields intact, including `LOCAL_FORMAT`; other representations are not
+relabeled. Coverage remains `UNKNOWN`, automatic updates remain false, and
+missing, unknown, stale, and verified-zero states remain distinct. No real
+baseline was promoted and no public data or publication architecture changed.
+
 ## SPA-62 supervised global delta probe (not authorized to run)
 
 `scripts/notam/capture_global_delta.py` prepares one evidence-only global GeoJSON delta.
