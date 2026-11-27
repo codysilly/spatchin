@@ -34,18 +34,22 @@ export const TafReader=(()=>{
   }
   function stamp(ms){return new Date(ms).toISOString().slice(0,16).replace('T',' ')+'Z';}
   function render({code,station,report,feedError=false,now=Date.now()}){
-    const source=station?`<a href="https://aviationweather.gov/api/data/taf?ids=${encodeURIComponent(station)}&amp;format=raw" target="_blank" rel="noopener noreferrer">AWC TAF source</a>`:'';
+    const source=label=>station?`<a class="report-source" href="https://aviationweather.gov/api/data/taf?ids=${encodeURIComponent(station)}&amp;format=raw" target="_blank" rel="noopener noreferrer" aria-label="TAF source for ${esc(code)} (${esc(station)}), opens in a new tab">${esc(label)}</a>`:esc(label);
     const usable=valid(report,station,now);
     let content;
     if(!usable){
-      content=`<div class="taf-status taf-unavailable">TAF UNAVAILABLE</div><div>${station?'No verified published forecast.':'Station mapping not verified.'}</div>${source}`;
+      content=`<div class="taf-status taf-unavailable">${source('TAF UNAVAILABLE')}</div><div>${station?'No verified published forecast.':'Station mapping not verified.'}</div>`;
     }else{
       const issued=time(report.issueTime),from=time(report.validTimeFrom),to=time(report.validTimeTo);
       const state=now>=to?'NO LONGER VALID':now<from?'TAF NOT YET VALID':now-issued>STALE_MS||now<issued-300000?'TAF STALE':'TAF CURRENT';
       const statusClass=state==='NO LONGER VALID'?' taf-expired':'';
-      content=`<div class="taf-status${statusClass}">${state}</div><pre class="taf-raw">${esc(formatRaw(report.rawTAF))}</pre><div class="taf-meta">Issued ${stamp(issued)} · Valid ${stamp(from)}–${stamp(to)}</div>${feedError?'<div class="taf-retained">Snapshot refresh failed; retained previous TAF.</div>':''}${source}`;
+      const formatted=formatRaw(report.rawTAF);
+      const prefix=/^[A-Z]{4}$/.test(station)?formatted.match(new RegExp('^(TAF(?:\\s+(?:AMD|COR))?\\s+'+station+'|'+station+')(?=\\s|$)')):null;
+      const raw=prefix?source(prefix[0])+esc(formatted.slice(prefix[0].length)):esc(formatted);
+      const status=state==='TAF CURRENT'?'':`<div class="taf-status${statusClass}">${state}</div>`;
+      content=`${status}<pre class="taf-raw" data-scan-flow>${raw}</pre><div class="taf-meta">Issued ${stamp(issued)} · Valid ${stamp(from)}–${stamp(to)}</div>${feedError?'<div class="taf-retained">Snapshot refresh failed; retained previous TAF.</div>':''}${prefix?'':`<div class="report-fallback">${source('TAF source')}</div>`}`;
     }
-    return `<section class="taf" aria-label="${esc(code)} TAF"><strong>TAF</strong><div class="taf-copy">${content}</div></section>`;
+    return `<section class="taf" aria-label="${esc(code)} TAF"><div class="taf-copy">${content}</div></section>`;
   }
   return {valid,render,time,formatRaw,STALE_MS};
 })();

@@ -14,13 +14,13 @@ for(const width of [1440,390])test(`verified muted AWC source links, footer remo
   await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport&&!notamTransport.refreshing);
   await page.evaluate(()=>{airports=['MEM','ORD','LAX','JFK','IND'];save();render();});
   for(const [code,station] of [['MEM','KMEM'],['ORD','KORD'],['LAX','KLAX'],['JFK','KJFK'],['IND','KIND']]){
-   const card=page.locator(`[data-airport="${code}"]`),badge=card.locator('a.weather-badge');
+   const card=page.locator(`[data-airport="${code}"]`),badge=card.locator('.metar-panel a.report-source');
    assert.equal(await badge.getAttribute('href'),`https://aviationweather.gov/data/metar/?ids=${station}`);assert.equal(await badge.getAttribute('target'),'_blank');assert.equal(await badge.getAttribute('rel'),'noopener noreferrer');assert.match(await badge.getAttribute('aria-label'),new RegExp(`${station}.*new tab`));
-   assert.equal(await card.locator('a[href^="https://aviationweather.gov/data/metar/"]').count(),1);assert.equal(await card.locator('.taf a').getAttribute('href'),`https://aviationweather.gov/api/data/taf?ids=${station}&format=raw`);assert.deepEqual(await badge.evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color})),{background:'rgba(0, 0, 0, 0)',color:'rgb(163, 166, 168)'});
+   assert.equal(await card.locator('a[href^="https://aviationweather.gov/data/metar/"]').count(),1);assert.equal(await card.locator('.taf a').getAttribute('href'),`https://aviationweather.gov/api/data/taf?ids=${station}&format=raw`);assert.deepEqual(await badge.evaluate(el=>({background:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color})),{background:'rgba(0, 0, 0, 0)',color:'rgb(79, 209, 230)'});
    await badge.focus();assert.equal(await badge.evaluate(el=>el===document.activeElement),true);assert.notEqual(await badge.evaluate(el=>getComputedStyle(el).outlineStyle),'none');
   }
   // Unknown mappings cannot be added through the catalog. Exercise the helper without creating a real airport.
-  const unknown=await page.evaluate(()=>{const container=document.createElement('div');container.innerHTML=metarBadge('ZZZ');return {links:container.querySelectorAll('a').length,label:container.querySelector('span.weather-badge').getAttribute('aria-label')};});assert.equal(unknown.links,0);assert.match(unknown.label,/unavailable.*unverified/);
+  const unknown=await page.evaluate(()=>metarBadge('ZZZ','Observation unavailable',false));assert.deepEqual(unknown,{raw:'Observation unavailable',fallback:''});
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);assert.equal(await page.locator('.airport-head [data-remove]').count(),5);
   assert.doesNotMatch(await page.locator('#cards').innerText(),/Last check:|Last successful check:|Show details|Original METAR/);assert.match(await page.locator('.notam-transport').first().innerText(),/Published snapshot · No live provider request/);
   await page.locator('[data-remove="MEM"]').click();assert.equal(await page.evaluate(()=>document.activeElement.dataset.remove),'ORD');assert.equal(await page.locator('[data-airport="MEM"]').count(),0);

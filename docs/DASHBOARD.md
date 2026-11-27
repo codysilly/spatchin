@@ -134,3 +134,7 @@ No change to aviation data, acquisition cadence, evidence/NOTAM safeguards or th
 ## SPA-116 compact UI first pass
 
 METAR and TAF raw text use 15 px Inconsolata, weight 400, line-height 1.3. The ordinary current METAR status is omitted; stale/unavailable/retained-data warnings and the existing threshold remain. ATIS omits the routine unofficial label and arrow glyphs while retaining noncurrent statuses, source links and expanded source warnings. Sources is closed by default and retains five separate entries: ATIS, METAR, TAF, UTC forecast selector and NOTAM reader.
+
+## SPA-117 second UI pass
+
+Uniform METAR, TAF and ATIS inset panels replace the former standalone report labels and asymmetric layout. Verified source links are embedded in the report's existing prefix (METAR/SPECI/TAF plus station, or station alone when the report omits the type). If no recognizable prefix is present, source access remains available separately. TAF CURRENT is omitted; stale, future, expired, unavailable and failed-refresh warnings are unchanged. SCAN literal phrases continue across inline source links. All acquisition and forecast calculations are unchanged.

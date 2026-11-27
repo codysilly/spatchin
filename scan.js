@@ -27,6 +27,10 @@ function startScan() {
   ui.enabled.checked = settings.enabled;
   ui.case.checked = settings.caseSensitive;
   let matches = [], active = -1, timer;
+  const fragments = new WeakMap();
+  function selectMatch(mark, selected) {
+    for (const part of fragments.get(mark) || [mark]) part.classList.toggle('scan-current', selected);
+  }
   const excluded = 'script, style, noscript, input, textarea, select, option, [contenteditable]:not([contenteditable="false"]), [data-scan-ignore], #clock';
   function persist() {
     try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch { /* SCAN still works without storage. */ }
@@ -93,30 +97,51 @@ function startScan() {
         const ordered = [...keywords].sort((a, b) => b.term.length - a.term.length || a.index - b.index);
         const pattern = literalPattern(ordered, settings.caseSensitive);
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-          acceptNode: node => node.nodeValue.trim() && !node.parentElement.closest(excluded) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+          acceptNode: node => (node.nodeValue.trim() || (node.nodeValue && node.parentElement.closest('[data-scan-flow]'))) && !node.parentElement.closest(excluded) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
         });
-        const nodes = [];
-        while (walker.nextNode()) nodes.push(walker.currentNode);
-        for (const node of nodes) {
-          const text = node.nodeValue;
-          const found = [...text.matchAll(pattern)];
+        // Explicit report flows retain one logical text stream across source links.
+        const groups = [], flows = new Map();
+        while (walker.nextNode()) {
+          const node = walker.currentNode, flow = node.parentElement.closest('[data-scan-flow]');
+          if (!flow) { groups.push([node]); continue; }
+          if (!flows.has(flow)) { const group = []; flows.set(flow, group); groups.push(group); }
+          flows.get(flow).push(node);
+        }
+        for (const nodes of groups) {
+          const text = nodes.map(node => node.nodeValue).join('');
+          const found = [...text.matchAll(pattern)].map(match => ({
+            start: match.index, end: match.index + match[0].length,
+            keyword: matchingKeyword(ordered, match[0], settings.caseSensitive), parts: []
+          }));
           if (!found.length) continue;
-          const fragment = document.createDocumentFragment();
-          let offset = 0;
-          for (const match of found) {
-            const keyword = matchingKeyword(ordered, match[0], settings.caseSensitive);
-            fragment.append(document.createTextNode(text.slice(offset, match.index)));
-            const mark = document.createElement('mark');
-            mark.dataset.scanMatch = ''; paint(mark, keyword.color);
-            mark.textContent = match[0]; fragment.append(mark); matches.push(mark);
-            offset = match.index + match[0].length;
+          let base = 0;
+          for (const node of nodes) {
+            const value = node.nodeValue, end = base + value.length;
+            const local = found.filter(match => match.start < end && match.end > base);
+            if (local.length) {
+              const fragment = document.createDocumentFragment();
+              let offset = 0;
+              for (const match of local) {
+                const start = Math.max(0, match.start - base), stop = Math.min(value.length, match.end - base);
+                fragment.append(document.createTextNode(value.slice(offset, start)));
+                const mark = document.createElement('mark');
+                mark.dataset.scanMatch = ''; paint(mark, match.keyword.color);
+                mark.textContent = value.slice(start, stop); fragment.append(mark); match.parts.push(mark);
+                offset = stop;
+              }
+              fragment.append(document.createTextNode(value.slice(offset)));
+              node.replaceWith(fragment);
+            }
+            base = end;
           }
-          fragment.append(document.createTextNode(text.slice(offset)));
-          node.replaceWith(fragment);
+          for (const match of found) {
+            const first = match.parts[0];
+            fragments.set(first, match.parts); matches.push(first);
+          }
         }
       }
       active = oldActive < 0 || !matches.length ? -1 : Math.min(oldActive, matches.length - 1);
-      if (active >= 0) matches[active].classList.add('scan-current');
+      if (active >= 0) selectMatch(matches[active], true);
       persist(); status();
     } finally {
       observer.observe(document.body, {subtree: true, childList: true, characterData: true});
@@ -126,7 +151,7 @@ function startScan() {
     // Flush a pending refresh before selecting a match in replaced content.
     if (timer) { clearTimeout(timer); timer = null; apply(); }
     if (!matches.length) return;
-    if (active >= 0) matches[active].classList.remove('scan-current');
+    if (active >= 0) selectMatch(matches[active], false);
     active = active < 0 ? (direction > 0 ? 0 : matches.length - 1) : (active + direction + matches.length) % matches.length;
     const target = matches[active];
     // Standard disclosure mechanisms; custom panels can also handle scan:reveal.
@@ -143,7 +168,7 @@ function startScan() {
       }
     }
     target.dispatchEvent(new CustomEvent('scan:reveal', {bubbles: true}));
-    target.classList.add('scan-current');
+    selectMatch(target, true);
     target.scrollIntoView({block: 'center', behavior: 'instant'});
     status();
   }
