@@ -17,7 +17,10 @@ test('approved vector and wordmark remain the single canonical brand', () => {
   assert.match(svg, /x1="356" y1="1039" x2="1179" y2="154"/);
   for (const color of ['#04e3ed', '#31bafc', '#8979fe', '#c837f2', '#f312d9'])
     assert.ok(svg.includes(color), color);
-  assert.match(html, /class="brand-logo" src="assets\/branding\/paperplane-cyan-magenta-fade\.svg" width="18" height="18"/);
+  assert.match(
+    html,
+    /class="brand-logo" src="assets\/branding\/paperplane-cyan-magenta-fade\.svg" width="18" height="18"/,
+  );
   assert.match(
     html,
     /rel="icon" type="image\/svg\+xml" href="assets\/branding\/paperplane-cyan-magenta-fade\.svg"/,
