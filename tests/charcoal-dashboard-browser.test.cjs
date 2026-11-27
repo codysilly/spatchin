@@ -89,6 +89,8 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   assert.equal(await sources.locator('p').first().isVisible(),true);
   assert.deepEqual(await sources.locator('p strong').allTextContents(),['ATIS:','METAR:','TAF:','UTC forecast selector:','NOTAM reader:']);
   assert.equal(await sources.locator('a').count(),3);
+  mkdirSync('screenshots',{recursive:true});
+  await sources.screenshot({path:'screenshots/sources-expanded-'+width+'.png'});
   await sources.locator('summary').click();
   assert.equal(await sources.getAttribute('open'),null);
   await page.locator('#scan-toggle').click();
