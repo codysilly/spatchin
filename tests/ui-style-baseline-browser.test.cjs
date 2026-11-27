@@ -69,6 +69,10 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
     metarSize:parseFloat(prop('.metar-raw','fontSize')),
     metarLine:parseFloat(prop('.metar-raw','lineHeight')),
     metarSide:prop('.metar-panel','paddingLeft'),
+    headerHeight:rect('header').height,
+    logoSize:rect('.brand-logo').height,
+    tafSize:document.querySelector('.taf-raw')?parseFloat(prop('.taf-raw','fontSize')):null,
+    tafLine:document.querySelector('.taf-raw')?parseFloat(prop('.taf-raw','lineHeight')):null,
     scanLabelColor:prop('.scan-title','color'),
     sourceLinkColor:prop('.airport-diagram a','color'),
     grip:{width:rect('.airport-grip').width,height:rect('.airport-grip').height},
@@ -102,12 +106,15 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.match(ui.icaoFont,/Inconsolata/);
   assert.match(ui.metarFont,/Inconsolata/);
   assert.match(ui.bodyFont,/Overpass/);
-  assert.equal(ui.icaoSize,width>1300?60:width>760?56:width>400?54:48);
+  assert.equal(ui.icaoSize,20);
   assert.equal(ui.nameSize,width>400?18:17);
   assert.equal(ui.nameColor,'rgb(163, 166, 168)');
-  assert.equal(ui.metarSize,width>400?21:20);
-  assert.ok(Math.abs(ui.metarLine/ui.metarSize-1.6)<.01);
+  assert.equal(ui.metarSize,15);
+  assert.ok(Math.abs(ui.metarLine/ui.metarSize-1.3)<.01);
   assert.equal(ui.metarSide,width>760?'14px':'12px');
+  assert.equal(ui.logoSize,18);
+  if(width>340)assert.equal(ui.headerHeight,22);
+  if(ui.tafSize!==null){assert.equal(ui.tafSize,15);assert.ok(Math.abs(ui.tafLine/ui.tafSize-1.3)<.01);}
   assert.equal(ui.scanLabelColor,'rgb(255, 176, 0)');
   assert.equal(ui.sourceLinkColor,'rgb(79, 209, 230)');
   assert.deepEqual(ui.grip,{width:44,height:44});

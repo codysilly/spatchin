@@ -28,17 +28,17 @@ function render(reports,retrieved=stamp(1),configured=['KMEM']){
 
 test('fresh arrival cannot conceal stale departure and the inverse is independent',()=>{
  let html=render([arrival(5),departure(60)]);
- assert.match(html,/↘ LANDING · CURRENT/);assert.match(html,/↗ DEPARTING · STALE/);
+ assert.match(html,/LANDING · CURRENT/);assert.match(html,/DEPARTING · STALE/);
  html=render([arrival(60),departure(5)]);
- assert.match(html,/↘ LANDING · STALE/);assert.match(html,/↗ DEPARTING · CURRENT/);
+ assert.match(html,/LANDING · STALE/);assert.match(html,/DEPARTING · CURRENT/);
 });
 
 test('both stale, missing sides, and stale retrieval are distinguished',()=>{
  let html=render([arrival(60),departure(70)]);
- assert.match(html,/↘ LANDING · STALE/);assert.match(html,/↗ DEPARTING · STALE/);
- html=render([arrival(5)]);assert.match(html,/↗ DEPARTING · UNAVAILABLE/);
+ assert.match(html,/LANDING · STALE/);assert.match(html,/DEPARTING · STALE/);
+ html=render([arrival(5)]);assert.match(html,/DEPARTING · UNAVAILABLE/);
  html=render([arrival(5),departure(6)],stamp(60));
- assert.match(html,/↘ LANDING · STALE/);assert.match(html,/↗ DEPARTING · STALE/);
+ assert.match(html,/LANDING · STALE/);assert.match(html,/DEPARTING · STALE/);
 });
 
 test('newer combined and newer split reports win by source timestamp',()=>{
@@ -51,7 +51,7 @@ test('newer combined and newer split reports win by source timestamp',()=>{
 test('invalid source timestamps are unavailable and never replaced by retrieval time',()=>{
  const invalid=arrival(5);delete invalid.updatedAt;
  const html=render([invalid]);
- assert.match(html,/↘ LANDING · UNAVAILABLE/);assert.match(html,/INFO — · ISSUED <strong>—/);
+ assert.match(html,/LANDING · UNAVAILABLE/);assert.match(html,/INFO — · ISSUED <strong>—/);
  assert.match(html,/Landing source update: —/);
 });
 
@@ -67,7 +67,7 @@ test('original issue times, raw text, timestamps, and source link remain visible
 test('unsupported report content is preserved but does not infer runway use',()=>{
  const vague=report('arr',2,'V','1210','RWY 18R MENTIONED WITHOUT AN ARRIVAL CLAUSE');
  const html=render([vague]);
- assert.match(html,/↘ LANDING · UNAVAILABLE/);assert.match(html,/RWY 18R MENTIONED/);
+ assert.match(html,/LANDING · UNAVAILABLE/);assert.match(html,/RWY 18R MENTIONED/);
  assert.doesNotMatch(html,/class="atis-value">18R/);
 });
 
@@ -75,47 +75,47 @@ test('newer report without a runway clause supersedes older runway text',()=>{
  const vagueArr=report('arr',2,'V','1210','NO EXPLICIT RUNWAY CONFIGURATION');
  const vagueDep=report('dep',2,'V','1210','NO EXPLICIT RUNWAY CONFIGURATION');
  let html=render([combined(10),vagueArr]);
- assert.match(html,/↘ LANDING · UNAVAILABLE/);
+ assert.match(html,/LANDING · UNAVAILABLE/);
  assert.doesNotMatch(html,/class="atis-value">18R/);
- assert.match(html,/↗ DEPARTING · CURRENT/);assert.match(html,/>36L</);
+ assert.match(html,/DEPARTING · CURRENT/);assert.match(html,/>36L</);
  assert.match(html,/RAW COMBINED/);
  html=render([combined(10),vagueDep]);
- assert.match(html,/↗ DEPARTING · UNAVAILABLE/);
+ assert.match(html,/DEPARTING · UNAVAILABLE/);
  assert.doesNotMatch(html,/class="atis-value">36L/);
- assert.match(html,/↘ LANDING · CURRENT/);
+ assert.match(html,/LANDING · CURRENT/);
  const vagueCombined=report('combined',1,'N','1211','NO EXPLICIT RUNWAY CONFIGURATION');
  html=render([arrival(5),departure(5),vagueCombined]);
- assert.match(html,/↘ LANDING · UNAVAILABLE/);assert.match(html,/↗ DEPARTING · UNAVAILABLE/);
+ assert.match(html,/LANDING · UNAVAILABLE/);assert.match(html,/DEPARTING · UNAVAILABLE/);
  assert.doesNotMatch(html,/class="atis-value">(?:09|27)/);
 });
 
 test('source times require explicit timezone and valid calendar values',()=>{
  for(const updatedAt of [stamp(5).slice(0,-1),'2026-02-30T12:00:00Z','2026-11-24T24:00:00Z',stamp(-10)]){
   const html=render([{...arrival(5),updatedAt}]);
-  assert.match(html,/↘ LANDING · UNAVAILABLE/);
+  assert.match(html,/LANDING · UNAVAILABLE/);
   assert.match(html,/INFO — · ISSUED <strong>—/);
  }
  const offset=stamp(5).replace(/Z$/,'+00:00');
  const html=render([{...arrival(5),updatedAt:offset}]);
- assert.match(html,/↘ LANDING · CURRENT/);
- assert.match(render([{...arrival(5),updatedAt:stamp(5).replace(/Z$/,'1234Z')}]),/↘ LANDING · CURRENT/);
+ assert.match(html,/LANDING · CURRENT/);
+ assert.match(render([{...arrival(5),updatedAt:stamp(5).replace(/Z$/,'1234Z')}]),/LANDING · CURRENT/);
 });
 
 test('timezone-less snapshot retrieval cannot mark report current',()=>{
  const html=render([arrival(5)],stamp(1).slice(0,-1));
- assert.match(html,/↘ LANDING · STALE/);
+ assert.match(html,/LANDING · STALE/);
  assert.match(html,/Snapshot retrieved: —/);
 });
 
 test('configured missing MEM differs from explicitly excluded MEM',()=>{
  let html=render(null,stamp(1),['KMEM','KORD']);
  assert.match(html,/atis.info · UNAVAILABLE/);
- assert.match(html,/↘ LANDING · UNAVAILABLE/);
+ assert.match(html,/LANDING · UNAVAILABLE/);
  assert.match(html,/Configured airport; no usable ATIS report/);
  html=render(null,stamp(1),['KORD']);
  assert.match(html,/atis.info · NOT CONFIGURED/);
- assert.match(html,/↘ LANDING · NOT CONFIGURED/);
- assert.match(html,/↗ DEPARTING · NOT CONFIGURED/);
+ assert.match(html,/LANDING · NOT CONFIGURED/);
+ assert.match(html,/DEPARTING · NOT CONFIGURED/);
  assert.match(html,/outside collection coverage/);
 });
 
@@ -126,10 +126,10 @@ test('legacy or malformed coverage is unknown, not excluded',()=>{
   assert.doesNotMatch(html,/NOT CONFIGURED/);
  }
  const html=render([arrival(5)],stamp(1),null);
- assert.match(html,/↘ LANDING · CURRENT/);
+ assert.match(html,/LANDING · CURRENT/);
  assert.match(html,/ATIS collection coverage is unknown/);
  const inconsistent=render([arrival(5)],stamp(1),['KORD']);
- assert.match(inconsistent,/↘ LANDING · CURRENT/);
+ assert.match(inconsistent,/LANDING · CURRENT/);
  assert.doesNotMatch(inconsistent,/NOT CONFIGURED/);
 });
 

@@ -1,6 +1,7 @@
 'use strict';
 // Preserve SPA-68's historical zero-difference proof, independently of later features.
-// Preserve the SPA-96 proof and compare this worktree with the pre-SPA-106 main.
+// Preserve SPA-96 and SPA-106 proofs against pinned revisions. SPA-116 intentionally changes UI;
+// current rendering is tested by the computed UI and actual dashboard browser suites.
 // Each comparison uses identical pinned data on both sides.
 // SPA-115 intentionally changes the diagram header. For the CSS-only comparison,
 // use the pinned diagram renderer on the current side; all other app code and CSS
@@ -18,6 +19,7 @@ const baseline='5120d81945787a5c80da738bf5e086a4105e0a1c';
 const refactored='7a33c2f7ac021cb77b3e118d33a777297c76c868';
 const spa96Baseline='defc13157003499d36c0223eff4729e0410ab23e';
 const currentBaseline='0c72c300182ff7185da8654300d765e16f2dc83c';
+const preCompact='bb9cf20b102706577beac211c80335065b297350';
 const trees=new Map(),blobs=new Map();
 function paths(sha){if(!trees.has(sha))trees.set(sha,new Set(execFileSync('git',['ls-tree','-r','--name-only',sha],{encoding:'utf8'}).trim().split(/\r?\n/)));return trees.get(sha);}
 function blob(sha,file){const key=sha+':'+file;if(!blobs.has(key))blobs.set(key,execFileSync('git',['show',key],{maxBuffer:32*1024*1024}));return blobs.get(key);}
@@ -52,22 +54,19 @@ async function launch(width,revision,dataRevision,pagePath='/'){
   if(u.origin!==origin)return route.abort();
   const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
   const sha=file.startsWith('data/')?dataRevision:revision;
-  if(!sha){
-   if(file==='app.js'&&dataRevision===currentBaseline){
-    const {readFileSync}=require('node:fs');
+  if(file==='app.js'&&revision===preCompact&&dataRevision===currentBaseline){
     const extract=source=>{
      const start=source.indexOf('function diagramHeader(code){'),end=source.indexOf('\nlet runwayData=null;',start);
      assert.ok(start>=0&&end>start,'diagram renderer boundary');
      return {start,end};
     };
-    const current=readFileSync('app.js','utf8'),old=blob(currentBaseline,'app.js').toString('utf8');
+    const current=blob(preCompact,'app.js').toString('utf8'),old=blob(currentBaseline,'app.js').toString('utf8');
     const a=extract(current),z=extract(old);
     const oldData=old.match(/^const verifiedDiagrams=.*;$/m);
     assert.ok(oldData,'pinned historical diagram metadata');
     return route.fulfill({status:200,contentType:'text/javascript',body:current.slice(0,a.start)+oldData[0]+'\n'+old.slice(z.start,z.end)+current.slice(a.end)});
-   }
-   return route.continue();
   }
+  if(!sha)return route.continue();
   if(!paths(sha).has(file))return route.fulfill({status:404,body:''});
   return route.fulfill({status:200,contentType:mime[file.split('.').at(-1)]||'application/octet-stream',body:(()=>{
     const original=blob(sha,file);
@@ -137,7 +136,7 @@ async function render(width,name,revision,dataRevision,pagePath='/'){
 for(const width of [1440,1120,760,390,320]){
  for(const scene of width===1440||width===390?['default','scan','reader']:['default']){
   test('CSS parity '+width+'px '+scene,async()=>{
-   for(const [label,left,right,data] of [['SPA-68 historical',baseline,refactored,baseline],['SPA-96 unchanged UI',spa96Baseline,currentBaseline,spa96Baseline],['SPA-106 unchanged UI',currentBaseline,null,currentBaseline]]){
+   for(const [label,left,right,data] of [['SPA-68 historical',baseline,refactored,baseline],['SPA-96 unchanged UI',spa96Baseline,currentBaseline,spa96Baseline],['SPA-106 historical unchanged UI',currentBaseline,preCompact,currentBaseline]]){
    const before=await render(width,scene,left,data),after=await render(width,scene,right,data);
    assert.deepEqual(before.errors,[]);assert.deepEqual(after.errors,[]);
    assert.deepEqual(after.computed,before.computed,label+': computed style differs at '+width+' '+scene);
@@ -156,7 +155,7 @@ for(const width of [1440,390]){
   test('SPA-106 standalone snapshot preview parity '+width+'px '+scene,async()=>{
    const pagePath='/preview/snapshot-loader.html';
    const before=await render(width,scene,currentBaseline,currentBaseline,pagePath);
-   const after=await render(width,scene,null,currentBaseline,pagePath);
+   const after=await render(width,scene,preCompact,currentBaseline,pagePath);
    assert.deepEqual(before.errors,[]);assert.deepEqual(after.errors,[]);
    assert.deepEqual(after.computed,before.computed,'Standalone preview computed styles differ');
    assert.equal(after.png.width,before.png.width,'Standalone preview screenshot width differs');

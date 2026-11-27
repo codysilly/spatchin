@@ -200,7 +200,7 @@ function atisBlock(code){
  const info=report?.code?esc(report.code):'—';
  const issue=report?.time&&/^\d{4}$/.test(String(report.time))?esc(report.time)+'Z':'—';
  const full=list.map(r=>`<p><strong>${esc(r.type.toUpperCase())} · INFO ${esc(r.code||'—')} · ${esc(r.time||'—')}Z</strong></p><p class="atis-raw">${esc(r.datis)}</p>`).join('');
- return `<section class="atis"><div class="atis-top"><div><h3>ATIS</h3><div class="atis-provider">atis.info · ${providerState}</div></div><div class="atis-meta">INFO ${info} · ISSUED <strong>${issue}</strong></div></div><div class="atis-runways"><div class="atis-box"><div class="atis-label">↘ LANDING · ${arrState.toUpperCase()}</div><div class="atis-value">${esc(label(landing))}</div></div><div class="atis-box"><div class="atis-label">↗ DEPARTING · ${depState.toUpperCase()}</div><div class="atis-value">${esc(label(departing))}</div></div></div><details class="atis-full"><summary>Full ATIS information</summary>${full}<p>${esc(coverageNote+runwayNote)}</p><p>Landing source update: ${esc(atisSourceTime(arr)!==null?utc(atisSourceTime(arr)):'—')} · Departure source update: ${esc(atisSourceTime(dep)!==null?utc(atisSourceTime(dep)):'—')} · Snapshot retrieved: ${esc(utc(atisTimestamp(atisRetrieved)))}</p><p><a href="https://atis.info/api/${encodeURIComponent(icao(code))}" target="_blank" rel="noopener">Original ATIS source</a></p><p>Do not use for real world flight planning or navigation. Advertised runway extraction is automated and may be incomplete.</p></details></section>`;
+ return `<section class="atis"><div class="atis-top"><div><h3>ATIS</h3>${providerState==='UNOFFICIAL'?'':`<div class="atis-provider">atis.info · ${providerState}</div>`}</div><div class="atis-meta">INFO ${info} · ISSUED <strong>${issue}</strong></div></div><div class="atis-runways"><div class="atis-box"><div class="atis-label">LANDING · ${arrState.toUpperCase()}</div><div class="atis-value">${esc(label(landing))}</div></div><div class="atis-box"><div class="atis-label">DEPARTING · ${depState.toUpperCase()}</div><div class="atis-value">${esc(label(departing))}</div></div></div><details class="atis-full"><summary>Full ATIS information</summary>${full}<p>${esc(coverageNote+runwayNote)}</p><p>Landing source update: ${esc(atisSourceTime(arr)!==null?utc(atisSourceTime(arr)):'—')} · Departure source update: ${esc(atisSourceTime(dep)!==null?utc(atisSourceTime(dep)):'—')} · Snapshot retrieved: ${esc(utc(atisTimestamp(atisRetrieved)))}</p><p><a href="https://atis.info/api/${encodeURIComponent(icao(code))}" target="_blank" rel="noopener">Original ATIS source</a></p><p>Do not use for real world flight planning or navigation. Advertised runway extraction is automated and may be incomplete.</p></details></section>`;
 }
 function tafBlock(code){
  const station=airportInfo[code]?.icao;
@@ -227,7 +227,7 @@ function metarStatus(m){
  const state=metarState(m);
  if(state==='unavailable')return '<span class="metar-status metar-unavailable">METAR UNAVAILABLE</span>';
  if(state==='stale')return '<span class="metar-status metar-stale">METAR STALE · 70+ MIN</span>';
- return '<span class="metar-status metar-current">METAR CURRENT</span>';
+ return '';
 }
 
 function forecastModel(code,m){

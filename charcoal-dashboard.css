@@ -27,13 +27,13 @@ input,select,button{border-radius:0!important;box-shadow:none!important;backgrou
 a,.atis-full summary,.airport-notam-list>summary{color:var(--blue)}
 a:hover{color:#8deaff}
 .wip-banner{background:#332817;color:#ffe3a4;border:0;border-bottom:2px solid #ffb000;font:800 clamp(16px,1.65vw,21px)/1.3 var(--font-ui);letter-spacing:.01em;padding:15px 18px;text-align:center}
-header{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 28px;}
-.brand{gap:12px}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:1px 28px;}
+.brand{gap:6px}
 .brand-logo{object-fit:contain}
-.brand h1{font:700 32px/1 var(--font-data,"Inconsolata",monospace);letter-spacing:.13em}
+.brand h1{font:700 14px/1 var(--font-data,"Inconsolata",monospace);letter-spacing:.13em}
 .brand-wordmark{font-family:var(--font-data,"Inconsolata",monospace);font-size:inherit;font-weight:700;letter-spacing:.13em;color:var(--text)}
-.brand h1 .version{font:400 13px/1 var(--font-data,"Inconsolata",monospace);margin-left:0;letter-spacing:0;color:var(--muted)}
-.clock{font:400 16px/1.2 var(--font-data,"Inconsolata",monospace);white-space:nowrap;color:var(--text)}
+.brand h1 .version{font:400 10px/1 var(--font-data,"Inconsolata",monospace);margin-left:0;letter-spacing:0;color:var(--muted)}
+.clock{font:400 13px/1.2 var(--font-data,"Inconsolata",monospace);white-space:nowrap;color:var(--text)}
 main{max-width:none;width:100%;padding:14px 28px 36px}
 .dashboard-controls{gap:16px;margin:0 0 40px;align-items:flex-start}
 .dashboard-controls .scan-toolbar{padding:10px 16px;min-height:42px;border:1px solid var(--line);background:transparent}
@@ -82,7 +82,7 @@ button:hover{background:#243034}
 .taf .taf-copy{min-width:0;overflow-wrap:anywhere}
 .taf .taf-status{color:var(--text);font:700 11px/1.3 var(--font-ui,"Overpass",sans-serif)}
 .taf .taf-status.taf-expired{color:var(--red)}
-.taf .taf-raw{margin:4px 0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text);font:400 13px/1.4 Inconsolata,Consolas,monospace}
+.taf .taf-raw{margin:4px 0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text);font:400 15px/1.3 var(--font-data,"Inconsolata",monospace)}
 .taf .taf-meta{color:var(--muted);font-size:11px;margin-top:4px}
 .taf .taf-retained{color:var(--amber);font-size:11px;margin-top:4px}
 .taf .taf-copy a{display:inline-block;margin-top:4px;font-size:11px}
@@ -141,7 +141,9 @@ button:hover{background:#243034}
 .notam-transport button{font:600 13px/1.2 var(--font-ui,"Overpass",sans-serif);padding:6px 12px;min-height:31px}
 .notam-transport button{border-color:var(--blue);color:var(--blue)}
 .sources{background:transparent;border-color:var(--line);color:var(--muted);margin-top:24px}
-.sources h3{font-size:14px}
+.sources>summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--text)}
+.sources>p{margin:6px 0 0;line-height:1.4}
+.sources:not([open]){padding:6px 12px}
 footer{border-color:var(--line);color:var(--muted)}
 @media(max-width:1120px){
   .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -150,11 +152,11 @@ footer{border-color:var(--line);color:var(--muted)}
   .category-tag{font-size:18px}
 }
 @media(max-width:760px){
-  header{padding:12px 16px;gap:10px}
+  header{padding:1px 16px;gap:6px}
 
-  .brand h1{font-size:25px}
-  .brand h1 .version{font-size:12px}
-  .clock{font-size:12px}
+  .brand h1{font-size:14px}
+  .brand h1 .version{font-size:10px}
+  .clock{font-size:13px}
   main{padding:12px 14px 28px}
   .dashboard-controls{flex-direction:column;gap:8px;margin-bottom:22px}
   .dashboard-controls .scan-toolbar{width:100%;padding:10px 12px}
@@ -182,13 +184,13 @@ footer{border-color:var(--line);color:var(--muted)}
   .notam-transport button{min-height:36px}
 }
 @media(max-width:400px){
-  header{padding:10px 10px;gap:6px}
+  header{padding:1px 10px;gap:6px}
   .brand{gap:7px}
 
-  .brand h1{font-size:21px;letter-spacing:.07em}
+  .brand h1{font-size:14px;letter-spacing:.07em}
   .brand-wordmark{letter-spacing:.07em}
   .brand h1 .version{font-size:10px}
-  .clock{font-size:10px}
+  .clock{font-size:12px}
   .airport{padding:12px}
 
 
@@ -198,17 +200,11 @@ footer{border-color:var(--line);color:var(--muted)}
   .rw-table>thead>tr>th:nth-child(4){width:39%}
 }
 
-/* SPA-64 correction: approved thin-line mark; wordmark tracking halved once more. */
-header{min-height:84px;padding-top:10px;padding-bottom:10px}
-.brand-logo{width:60px;height:60px}
+/* Compact header; preserve approved wordmark tracking. */
+header{min-height:22px;padding-top:1px;padding-bottom:1px}
+.brand-logo{width:18px;height:18px}
 .brand h1,.brand-wordmark{letter-spacing:.0325em}
-@media(max-width:760px){
-  header{min-height:72px;padding-top:8px;padding-bottom:8px}
-  .brand-logo{width:52px;height:52px}
-}
 @media(max-width:400px){
-  header{min-height:62px;padding-top:8px;padding-bottom:8px}
-  .brand-logo{width:46px;height:46px}
   .brand h1,.brand-wordmark{letter-spacing:.0175em}
 }
 
@@ -228,7 +224,7 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
 .airport-grip:disabled{opacity:.4;cursor:default}
 .airport-grip:hover,.airport-remove:hover{background:#292c2e;border-color:var(--line);color:var(--text)}
 .airport-remove{font:400 30px/1 var(--font-ui,"Overpass",sans-serif);cursor:pointer}
-.icao{font:700 60px/.95 var(--font-data,"Inconsolata",monospace);letter-spacing:-.045em;white-space:nowrap;flex:none}
+.icao{font:700 20px/.95 var(--font-data,"Inconsolata",monospace);letter-spacing:-.045em;white-space:nowrap;flex:none}
 .category-tag{align-self:center;margin:0;padding:4px 7px 3px;font:800 14px/1.15 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
 .category-unavailable{font-size:12px;font-weight:700}
 .airport-head .airport-diagram{
@@ -255,7 +251,7 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
 .metar-panel .metar-status{display:inline-block;margin:0 0 0 12px;font-size:11px;letter-spacing:.05em;vertical-align:middle}
 .metar-panel .metar-raw{
   display:block;margin-top:8px;color:var(--text);
-  font:400 21px/1.6 var(--font-data,"Inconsolata",monospace);
+  font:400 15px/1.3 var(--font-data,"Inconsolata",monospace);
   white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;
 }
 .metar-panel .metar-retained{display:block;margin-top:6px}
@@ -264,14 +260,11 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
 @media(max-width:1300px){
   .airport-top-row{gap:4px}
   .airport-head .airport-diagram{flex-basis:76px;max-width:76px;font-size:11px}
-  .icao{font-size:56px}
 }
 @media(max-width:760px){
   .airport-head{padding:0 0 12px}
-  .icao{font-size:54px}
   .airport-head .name{margin-left:48px;font-size:18px}
   .metar-panel{padding:10px 12px 13px}
-  .metar-panel .metar-raw{font-size:21px;line-height:1.6}
 }
 @media(max-width:600px){
   .airport-head .airport-diagram{flex:0 0 auto;max-width:none}
@@ -279,14 +272,12 @@ header{min-height:84px;padding-top:10px;padding-bottom:10px}
   .airport-top-row{gap:4px}
 }
 @media(max-width:400px){
-  .icao{font-size:48px}
   .category-tag{font-size:12px;padding:4px 5px 3px}
   .category-unavailable{font-size:10px}
   .airport-head .name{margin-left:48px;font-size:17px}
-  .metar-panel .metar-raw{font-size:20px}
 }
 
-/* SPA-67: keep the full UTC clock readable when the 46px logo fills a 320px header. */
+/* Keep the full UTC clock readable at very narrow widths. */
 @media(max-width:340px){
   header{flex-wrap:wrap;row-gap:2px}
   .header-right{flex:0 0 100%;width:100%;text-align:right}

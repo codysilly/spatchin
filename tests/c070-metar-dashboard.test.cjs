@@ -57,7 +57,7 @@ test('all 130 stations render in batches of at most 30 using the same shared sna
 test('METAR staleness begins at the 70-minute boundary',async()=>{
  const current=await load(['MEM'],snapshot([report('KMEM',69)]));
  assert.equal(current.state('MEM'),'current');
- assert.match(current.html(),/METAR CURRENT/);
+ assert.doesNotMatch(current.html(),/METAR CURRENT|metar-current/);
  const stale=await load(['MEM'],snapshot([report('KMEM',70)]));
  assert.equal(stale.state('MEM'),'stale');
  assert.match(stale.html(),/METAR STALE · 70\+ MIN/);
