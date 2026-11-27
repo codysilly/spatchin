@@ -1,56 +1,45 @@
 # Spatchin agent instructions
 
-Owner-approved policy, effective 2026-11-24. Applies to ChatGPT, Codex and scheduled development agents. These instructions supersede earlier routine-approval restrictions, not platform requirements or unrelated safeguards. The latest explicit owner decision governs product requirements; verified GitHub state and test/deployment evidence govern implementation; Linear governs work and acceptance tracking.
+Owner-approved 2026-11-24; Pages amendment 2026-11-26; context-efficiency revision authorized 2026-11-27 ([SPA-123](https://linear.app/codesilly/issue/SPA-123)). Applies to ChatGPT, Codex and scheduled agents. Latest explicit owner decisions govern requirements; verified GitHub/test/deployment evidence governs implementation; Linear tracks work and acceptance. Earlier routine-approval restrictions are superseded, not unrelated safeguards or platform requirements.
 
 ## Authority
 
-Level 1 — act without additional approval:
-- Implement approved features and fixes; refactor and make reversible technical decisions.
-- Create isolated branches/worktrees; commit, push, create and review PRs, resolve conflicts and merge validated PRs under the gates below.
-- Run safe tests, builds and integration checks; install ordinary trusted dependencies.
-- Update documentation, create/prioritize/update/close Linear issues, coordinate agents and reconcile records.
-- Report routine work in development summaries.
+**Level 1 — act and summarize:** Approved features/fixes, refactoring, reversible decisions, isolated branches/worktrees, commits/pushes/PRs/reviews/conflict resolution and gated merges; safe tests/builds/integration checks; ordinary trusted dependencies; documentation, Linear issue management, agent coordination and reconciliation.
 
-Level 2 — act and report material changes:
-- Significant architecture decisions, major dependency upgrades, database schema development/testing with synthetic data, safe backup changes, development workflows and automation within existing authority, significant plan departures, security vulnerabilities and substantial technical debt.
-- Notification is not a request for permission.
+**Level 2 — act and report:** Significant architecture, major dependency upgrades, synthetic schema development/testing, safe backup changes, authorized development workflows/automation, significant plan departures, vulnerabilities and substantial technical debt. Notification is not permission-seeking.
 
-Level 3 — obtain explicit owner authorization before:
-- Costs, paid APIs, subscriptions, billable infrastructure, secrets, keys, credentials or protected tokens.
-- Account login, OAuth consent, MFA, expanded permissions, access-control or security-policy changes, sensitive personal information.
-- Destructive operations, permanent deletion, irreversible migrations.
-- Production deployments or public releases except the routine automatic GitHub Pages deployment expressly authorized below; aviation-provider access, request budgets, polling frequency or provider-policy changes.
-- Major changes to purpose, branding or core design; version increments; expansion of agent authority.
+**Level 3 — explicit owner authorization first:**
+- Costs, paid APIs, subscriptions, billable infrastructure, secrets, keys, credentials, protected tokens, login, OAuth, MFA, expanded permissions, access-control/security-policy changes or sensitive personal information.
+- Destructive operations, permanent deletion or irreversible migrations.
+- Production deployment/public release (except automatic Pages below); aviation-provider access, request budgets, polling or provider-policy changes.
+- Major purpose, branding or core-design changes; version increments; expanded agent authority.
 
-Standing authority, effective 2026-11-26: The owner authorizes routine GitHub Pages deployments that automatically result from validated Spatchin PR merges within approved development scope, including PRs #93–#96. This applies to ChatGPT, Codex and scheduled development agents. No separate owner approval is required for that automatic Pages deployment. All existing merge, testing, security, trigger inspection and deployment verification gates remain in effect. Changes to production publication architecture (including Pages source, workflow permissions, environment protection and public allowlists), access controls, credentials, provider acquisition, request budgets, costs and application version still require separate applicable authorization. Other production deployments, including Cloudflare Workers, remain subject to Level 3 authorization. The SPA-105 cutover is not authorized.
+**Pages exception (2026-11-26):** Routine automatic GitHub Pages deployments resulting from validated in-scope PR merges are authorized (including PRs #93–#96). All merge, test, security, trigger inspection and deployment verification gates apply. Publication architecture (Pages source, workflow permissions, environment protection, public allowlists), access, credentials, acquisition, budgets, costs and version still require separate authorization. Other production deployments (including Cloudflare Workers) remain Level 3. SPA-105 cutover is not authorized.
 
-Do not circumvent a restriction using a different tool or environment. The authority to merge is not unrestricted authority to deploy or consume provider budgets. Keep Spatchin at v0.9 until an owner-approved version change.
+Never circumvent restrictions via another tool/environment. Merge authority is not unrestricted deployment or provider-budget authority. Keep v0.9 until owner-approved version change.
 
 ## Merge gates
 
-Before a merge, verify all applicable conditions:
-1. Approved scope and an isolated PR linked to its Linear issue.
-2. Relevant tests, repository validation and applicable production builds pass. Verify actual application integration; synthetic prototypes alone are insufficient.
-3. Applicable functional or visual verification passes. Agents can verify approved behavior using accessible previews or emitted desktop/narrow screenshots; escalate changes to core design, not routine acceptance.
-4. Actual PR head matches the reviewed and tested commit; rerun affected checks after changes.
-5. Required GitHub checks pass, outstanding review findings are resolved, and mergeability is verified.
-6. Diff has no secrets, private information or unrelated changes.
-7. No Level 3 category is implicated without explicit authorization.
-8. Inspect Actions, Pages and other deployment/collector triggers. A merge must not initiate an unauthorized production deployment, provider request or billable operation. If it would, stop until authorized or a separately controlled deployment path exists.
+Before merging, verify ALL applicable gates:
+1. Approved scope; isolated PR linked to Linear.
+2. Relevant tests, repository validation and applicable production builds pass against the actual integration, not just synthetic prototypes.
+3. Applicable functional/visual checks pass (accessible previews or desktop/narrow screenshots); escalate core-design changes, not routine acceptance.
+4. Actual PR head matches reviewed/tested commit; rerun affected checks after changes.
+5. Required GitHub checks pass; reviews resolved; mergeability verified.
+6. Diff contains no secrets, private information or unrelated changes.
+7. Every implicated Level 3 operation is explicitly authorized.
+8. Inspect Actions, Pages, collector and other triggers; stop if a merge would initiate unauthorized deployment, provider requests or billable operations, unless authorized or separately controlled.
 
-Prefer squash for focused changes. Pin the expected head when supported. Never bypass branch protection or required checks. Never push feature changes directly to main. Verify the merge result, reconcile Linear, and continue eligible work. Verify the resulting Pages deployment when triggered. A merge does not establish deployment or operational acceptance.
+Prefer squash for focused changes; pin expected head when supported. Never bypass protections/checks or push features directly to main. Verify merge and resulting Pages deployment when triggered, reconcile Linear and continue eligible work. Merge, deployment and operational acceptance are distinct.
 
-## Engineering and coordination
+## Engineering and context efficiency
 
-Prioritize the shortest working path to the approved MVP. Do not expand scope without a demonstrated need. Inspect repository instructions, local changes, branch ownership, operating system, runtime, permissions and exact commit. Preserve unrelated changes, untracked files, archived branches and ledgers. Coordinate concurrent agents; finish existing work before creating another branch or issue. Use one focused issue where possible.
-
-Repository map: root HTML, JavaScript, CSS, `assets/`, and `data/` form the published application; `scripts/` contains routine collectors and maintenance code, while `scripts/notam/` is offline NOTAM/NMS research; `tests/` contains offline and browser regressions; `workers/` contains scheduler packages; `docs/` contains product, data, infrastructure, and governance references; `preview/`, `staging/`, and the legacy `dashboard/` copy are excluded from Pages. See [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [docs/README.md](docs/README.md) for the maintained detail. New top-level paths require a justified purpose.
-
-Test platform-dependent behavior on its target OS. Linux or mocked tests do not establish Windows compatibility. Review paths, locking, atomic replacement, permissions, subprocesses and environment-variable inheritance. Do not require WSL, Docker, new machines or paid infrastructure as automatic workarounds. Never weaken meaningful tests to make them pass. If execution is unavailable, record NOT RUN and the actual limitation. Use an existing authorized executor when verified; do not provision or expand access.
-
-When the same external obstacle prevents meaningful progress for two consecutive development cycles, record both dates, evidence, unfinished work and the revisit trigger. Preserve the branch/PR and truthful issue status. Switch to an existing eligible unblocked issue. Revisit only on new evidence of resolution; do not repeat unchanged investigations.
-
-Attach test claims to the exact commit, environment, commands and scope. Distinguish direct inspection from owner or other-agent reports; disclose failures/skips/untested paths. Never infer quota, credential readiness, deployment, coverage or successful tests from missing logs or a clean tree. Correct mistakes and their practical consequences. Handoffs identify goal, repository/worktree, known commit, authorized actions, required validation and expected result; do not request sensitive captures or secrets. Prefer one useful copyable handoff over repeated owner relay.
+- Use the shortest path to the approved MVP; justify scope expansion and new top-level paths. Inspect instructions, local changes, branch ownership, OS/runtime, permissions and exact commit; coordinate agents, finish existing work first, preserve unrelated changes, untracked files, archived branches and ledgers. Prefer one focused issue.
+- Read relevant repository map and procedures in [README.md](README.md), [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/README.md](docs/README.md) before relevant work. Root HTML/JS/CSS, assets and data form the published app; scripts/notam is offline research; workers contains schedulers; preview, staging and legacy dashboard are excluded from Pages.
+- Test platform-dependent behavior on target OS; Linux/mocks do not establish Windows compatibility. Review paths, locking, atomic replacement, permissions, subprocesses and environment inheritance. Do not default to WSL, Docker, new machines or paid infrastructure. Use verified existing authorized executors; do not provision or expand access.
+- Search specific symbols and read relevant excerpts, not entire repos or historical logs. Retain verbose output outside chat and inspect relevant sections. Give subagents only required context; avoid duplicate work and redundant checks. Keep updates concise. Never weaken meaningful tests, security, correctness, coverage or verification to save usage.
+- Attach claims to exact commit, environment, commands and scope; separate direct inspection from owner/agent reports. Mark unavailable execution NOT RUN with cause; disclose failures/skips/untested paths. Never infer quota, credentials, deployment, coverage or test success from absent logs or a clean tree. Correct errors and consequences.
+- Handoffs state goal, repo/worktree, commit, authorized actions, validation and expected result; no sensitive captures/secrets. Prefer one copyable handoff over repeated relay.
 
 ## Aviation and security safeguards
 
@@ -61,10 +50,12 @@ Attach test claims to the exact commit, environment, commands and scope. Disting
 - Keep all runway ends visible, including closures and effective times when verified. Preserve approved calculations, wind thresholds, airport behavior (approved C070 catalog, maximum 30 selections, removable MEM default) and provenance. Use UTC for aviation timestamps, distinguish effective/retrieval/check times, and use America/Chicago with date for owner coordination. Distinguish synthetic data from observations. Spatchin is supplementary, not an operational authority.
 - Keep public holding page and private dashboard separation. Do not publish private previews or modify deployment/security settings without authorization. Follow source attribution, legal notices and publication review requirements.
 
-## Project management and scheduled work
+## Coordination and governance
 
-Use GitHub, Linear and dated owner decisions as described above. Preserve completed history; do not delete issues. Keep descriptions and acceptance criteria aligned with current approved behavior and evidence. Distinguish preparation, implementation, validation, merge, deployment and publication. Close issues only when their actual acceptance criteria are met. Record material changes, test results, limitations and next action concisely.
+Preserve Linear history; never delete issues. Keep acceptance criteria current and close only against actual evidence. Distinguish preparation, implementation, validation, merge, deployment and publication; report material changes, results, limitations and next action.
 
-The development/reconciliation task retains its existing cadence and reporting, including twice-daily audits, daily digest and two-cycle blocker failover. Audit-only repair does not grant unchecked code changes or merges; use the development merge gates. The separate METAR validation task remains strictly read-only: no provider requests, workflow dispatch, code/settings changes or Linear modifications.
+After two consecutive cycles blocked by the same external obstacle, record both dates, evidence, unfinished work and revisit trigger; preserve branch/PR and truthful issue status. Switch to existing eligible unblocked work. Revisit only with new resolution evidence.
 
-This policy supplements Spatchin-AI-Working-Rules-v1; all unrelated rules remain applicable. Keep current project-source and repository copies aligned. Record substantive policy changes with date and owner authority. Do not expand authority without owner authorization.
+Keep scheduled development/reconciliation cadence/reporting (twice-daily audits, daily digest, two-cycle failover). Audit-only repairs do not authorize unchecked code or merges. Separate METAR validation is read-only: no provider requests, dispatch, code/settings changes or Linear changes.
+
+Spatchin-AI-Working-Rules-v1 and unrelated rules remain applicable. Align project-source/repository copies; record substantive policy changes with date and owner authority. Never expand authority without owner authorization. SPA-123 governance PR requires owner review before merge.
