@@ -7,14 +7,12 @@ const SPATCHIN_SYNTHETIC_PREVIEW=preview;
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const approvedCatalog=typeof AirportCatalog==='undefined'?Object.keys({MEM:1,ORD:1,LAX:1,JFK:1}):AirportCatalog;
 const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}}:AirportMetadata;
-// Previously verified chart metadata, preserved from a986cedf13bcde536987848b16bf91d2d1213eff.
-// This is a fixed chart link, not a current-cycle lookup or the NASR bearing source.
-const verifiedDiagrams={MEM:{url:'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF',effective_date:'2026-10-29',valid_through:'2026-11-26'}};
+// Historical chart sources are shown only for chart-derived runway bearings.
 let diagramIndex=null;
 function diagramHeader(code){
  const search=currentDiagramMarkup(diagramIndex,code,airportInfo[code]?.icao,esc)||diagramSearchMarkup(airportInfo[code]?.icao,esc);
  const metadata=runwayData?.airport_metadata?.[code];
- const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
+ const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:null;
  if(!diagram||!/^https:\/\/aeronav\.faa\.gov\/d-tpp\/[0-9]{4}\/[A-Za-z0-9_-]+\.pdf$/i.test(diagram.url||''))return search;
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
  return search+`<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}; historical source, check current FAA edition" aria-label="Airport diagram for ${esc(code)}; historical source; opens in a new tab"><span class="diagram-link-text">Historical diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
