@@ -316,6 +316,7 @@ def reconcile_delta(
     *,
     requested_since_utc,
     received_utc,
+    request_started_utc=None,
     registry=None,
     max_records=MAX_RECORDS,
     max_bytes=MAX_CANDIDATE_BYTES,
@@ -337,7 +338,8 @@ def reconcile_delta(
     _, codes, _ = _registry_indexes(registry)
     requested = instant(requested_since_utc)
     received = instant(received_utc)
-    if requested > received:
+    request_started = instant(request_started_utc or received_utc)
+    if requested > request_started or request_started > received:
         raise CandidateError("INVALID_CANDIDATE")
     if received - requested > timedelta(hours=24):
         raise CandidateError("DELTA_GAP")
@@ -430,7 +432,12 @@ def reconcile_delta(
     result["delta_candidate"] = {
         "requested_since_utc": stamp(requested),
         "received_utc": stamp(received),
-        "proposed_replay_cursor_utc": stamp(received.replace(microsecond=0) - timedelta(seconds=1)),
+        # Advance from the acquisition request start, not response receipt.  The
+        # one-second overlap is a client replay guard, not a provider-cutoff claim.
+        "request_started_utc": stamp(request_started),
+        "proposed_replay_cursor_utc": stamp(
+            request_started.replace(microsecond=0) - timedelta(seconds=1)
+        ),
         "audit": audit,
     }
     if result["baseline_established"]:

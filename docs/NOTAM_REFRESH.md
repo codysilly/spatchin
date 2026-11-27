@@ -2,6 +2,14 @@
 
 ## SPA-18 production-state engine (implemented; live execution disabled)
 
+The disabled publication interface is `scripts/notam/nms_publication.py`. It
+projects an accepted private candidate across exactly the 130 reviewed C070
+airports, converts provider representations to the browser contract without
+normalizing their text, excludes private evidence, verifies a byte count and
+SHA-256 manifest, rejects older retrieval times, and atomically retains the
+last-good public file. It contains no CLI, network, credential, Git, scheduler,
+or provider code; activation remains a separate production authorization.
+
 `scripts/notam/nms_engine.py` now provides the single guarded acceptance path for
 an Initial Load baseline and recurring global deltas. It has no HTTP client,
 credential lookup, retry loop, scheduler, or public writer. Offline validation

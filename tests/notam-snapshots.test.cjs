@@ -42,3 +42,8 @@ test('timeout releases single-flight, aborts transport, and ignores a late respo
  await store.refresh();assert.equal(signal.aborted,true);assert.equal(store.read().refreshing,false);assert.equal(store.read().snapshot,null);assert.match(store.read().error,/timed out/);
  finish(ok(fixture()));await Promise.resolve();await Promise.resolve();assert.equal(store.read().snapshot,null);
 });
+test('automatic refresh uses the same-origin reader only and can be stopped',async()=>{
+ let callback,cleared=false,calls=0;
+ const store=snapshots.create({...config,fetchFn:async()=>{calls++;return ok(fixture());},setIntervalFn:(fn,ms)=>{callback=fn;assert.equal(ms,120000);return 7;},clearIntervalFn:id=>{assert.equal(id,7);cleared=true;}});
+ store.start();store.start();assert.equal(calls,0);await callback();assert.equal(calls,1);store.stop();assert.equal(cleared,true);
+});
