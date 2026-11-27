@@ -13,6 +13,7 @@ import subprocess
 import sys
 from uuid import uuid4
 import zlib
+from urllib.parse import parse_qs, urlsplit
 
 if __name__ == "__main__":
     sys.dont_write_bytecode = True
@@ -20,13 +21,14 @@ if __name__ == "__main__":
 from c070_notam_partition import load_versioned_registry
 from capture_global_delta import MAX_RESPONSE_BYTES, STORAGE_REQUIRED_BYTES, TIMEOUT_SECONDS
 from capture_storage import StorageError
-from nms_baseline_candidate import CandidateError
+from import_nms_history import HistoryImportError, strict_json
+from nms_baseline_candidate import CandidateError, production_state_values, reconcile_delta
 from nms_engine import accepted_candidate, collect_engine
 from nms_http import HTTPAdapter
 from nms_pages_delivery import MAX_PUBLIC_BYTES, PUBLIC_URL, REMOTE, PagesDelivery, sha256, verify
 from nms_publication import PublicationError, build_candidate, retrieval_evidence
 from nms_refresh import Store, encode
-from nms_refresh_contract import RefreshError, auth_request, instant, stamp
+from nms_refresh_contract import RefreshError, auth_request, delta_request, instant, stamp
 from promote_nms_baseline import ACCOUNTED_STATUSES
 
 
@@ -269,6 +271,207 @@ class Operations:
                 return approval
 
             return self._collect(credentials=credentials, transport=transport, guard=guard)
+
+    def _retained_delta(self, db, state, attempt, response_sha, watermark):
+        rows = self._attempts(db)
+        enforce(
+            sum(row[0] == attempt for row in rows) == 1
+            and all(row[4] in ACCOUNTED_STATUSES for row in rows),
+            "RECOVERY_ATTEMPT_MISMATCH",
+        )
+        row = next(row for row in rows if row[0] == attempt)
+        _, kind, reserved, accounted, status, error = row
+        enforce(
+            (kind, status, error) == ("delta", "FAILED_ACCOUNTED", "CONFLICT"),
+            "RECOVERY_ATTEMPT_MISMATCH",
+        )
+        calls = db.execute(
+            "SELECT stage,at FROM calls WHERE attempt=? ORDER BY stage", (attempt,)
+        ).fetchall()
+        responses = db.execute(
+            "SELECT stage,at,typeof(body),length(body) FROM responses WHERE attempt=?", (attempt,)
+        ).fetchall()
+        enforce(
+            [stage for stage, _ in calls] == ["auth", "delta"]
+            and len(responses) == 1
+            and responses[0][0] == "delta"
+            and responses[0][2] == "blob"
+            and 0 < responses[0][3] <= MAX_RESPONSE_BYTES,
+            "RECOVERY_RESPONSE_MISMATCH",
+        )
+        _, received, _, size = responses[0]
+        (body,) = db.execute(
+            "SELECT body FROM responses WHERE attempt=? AND stage='delta'", (attempt,)
+        ).fetchone()
+        approved(response_sha, sha256(body))
+        auth, started = (instant(at) for _, at in calls)
+        lower = instant(watermark)
+        enforce(
+            lower.microsecond == 0
+            and lower
+            < instant(reserved)
+            <= auth
+            <= started
+            <= instant(received)
+            <= instant(accounted)
+            <= self.clock(),
+            "RECOVERY_REQUEST_TIMING_MISMATCH",
+        )
+        request = delta_request(watermark, started)
+        wire_lower = parse_qs(urlsplit(request.url).query)["lastUpdatedDate"][0]
+        enforce(instant(wire_lower) == lower, "RECOVERY_REQUEST_TIMING_MISMATCH")
+        evidence = {
+            "store_account_sha256": self.scope,
+            "attempt": attempt,
+            "attempt_reserved_utc": reserved,
+            "auth_reserved_utc": stamp(auth),
+            "delta_reserved_utc": stamp(started),
+            "requested_since_utc": wire_lower,
+            "received_utc": received,
+            "accounted_utc": accounted,
+            "response_sha256": response_sha,
+            "response_bytes": size,
+        }
+        receipt = state.get("retained_delta_recovery")
+        if receipt is not None and receipt["attempt"] == attempt:
+            enforce(
+                all(receipt[key] == value for key, value in evidence.items()),
+                "RECOVERY_EVIDENCE_CHANGED",
+            )
+            return receipt, None
+        enforce(
+            state["active"] is None
+            and state["recovery"] == "CONFLICT"
+            and state.get("production_active_attempt") is None
+            and state.get("production_active_approval") is None
+            and instant(state["watermark"]) == lower
+            and all(other[0] == attempt or instant(other[3]) < instant(reserved) for other in rows),
+            "RECOVERY_BASELINE_OR_HOLD_CHANGED",
+        )
+        counts = {name: state[f"{name}_count"] for name in ("attempt", "call", "response")}
+        evidence.update(
+            ledger_counts=counts,
+            ledger_sha256=digest([rows, counts, state["history_complete_through"]]),
+            accepted_state_sha256=sha256(state["production_candidate_b64"].encode()),
+            accepted_snapshot_sha256=sha256(state["published_b64"].encode()),
+        )
+        return evidence, body
+
+    def _review_retained_delta(self, attempt, response_sha, watermark, preserve_pair):
+        with self.store.review_connect() as db:
+            db.execute("BEGIN")
+            state = self.store.load(db)
+            # Keep validation errors outside Store's connection error mapping.
+            try:
+                evidence, body = self._retained_delta(db, state, attempt, response_sha, watermark)
+            except (PublicationError, RefreshError) as error:
+                result = error
+            else:
+                result = None
+        if result is not None:
+            raise result
+        if body is None:
+            enforce(
+                evidence["preserve_unresolved_pair_sha256"] == preserve_pair,
+                "RECOVERY_EVIDENCE_CHANGED",
+            )
+            return {**evidence, "status": "ALREADY_RECOVERED"}, None
+        enforce(self.state() == EMPTY, "PRODUCTION_PUBLICATION_ALREADY_STARTED")
+        prior = accepted_candidate(state)
+        enforce(
+            instant(retrieval_evidence(prior)) <= instant(evidence["attempt_reserved_utc"]),
+            "RECOVERY_REQUEST_TIMING_MISMATCH",
+        )
+        previous_delta = prior.get("delta_candidate")
+        if previous_delta is not None:
+            enforce(
+                instant(previous_delta["proposed_replay_cursor_utc"]) == instant(watermark),
+                "RECOVERY_BASELINE_OR_HOLD_CHANGED",
+            )
+        try:
+            payload = strict_json(body)
+        except HistoryImportError:
+            raise PublicationError("RECOVERY_RESPONSE_MISMATCH") from None
+        try:
+            candidate = reconcile_delta(
+                prior,
+                payload,
+                requested_since_utc=evidence["requested_since_utc"],
+                received_utc=evidence["received_utc"],
+                request_started_utc=evidence["delta_reserved_utc"],
+                preserve_unresolved_pair=preserve_pair,
+            )
+        except CandidateError as error:
+            if preserve_pair is None and error.unresolved_pair_sha256 is not None:
+                return {
+                    **evidence,
+                    "status": "OWNER_DECISION_REQUIRED",
+                    "error": str(error),
+                    "unresolved_pair_sha256": error.unresolved_pair_sha256,
+                }, None
+            raise
+        enforce(instant(candidate["watermark"]) > instant(watermark), "RECOVERY_CURSOR_INVALID")
+        snapshot, manifest, _ = self._project(candidate, None)
+        enforce(len(snapshot["airports"]) == 130, "INVALID_C070_REGISTRY")
+        values, _ = production_state_values(candidate, generated_utc=evidence["received_utc"])
+        binding = {
+            "operation": "REPROCESS_RETAINED_NMS_DELTA_V1",
+            **evidence,
+            "preserve_unresolved_pair_sha256": preserve_pair,
+            "candidate_sha256": sha256(values["production_candidate_b64"].encode()),
+            "private_snapshot_sha256": sha256(values["published_b64"].encode()),
+            "watermark": candidate["watermark"],
+            "lookback_expires_utc": stamp(instant(candidate["watermark"]) + LOOKBACK),
+            "catalog_records": len(candidate["catalog"]),
+            "audit": candidate["delta_candidate"]["audit"],
+            "manifest": manifest,
+        }
+        return {**binding, "approval_sha256": digest(binding), "status": "REVIEW_ONLY"}, values
+
+    def review_retained_delta(self, attempt, response_sha, watermark, preserve_pair=None):
+        review, _ = self._review_retained_delta(attempt, response_sha, watermark, preserve_pair)
+        return review
+
+    def recover_retained_delta(self, attempt, response_sha, watermark, preserve_pair, approval):
+        review, values = self._review_retained_delta(
+            attempt, response_sha, watermark, preserve_pair
+        )
+        enforce(review["status"] != "OWNER_DECISION_REQUIRED", "OWNER_DECISION_REQUIRED")
+        approved(approval, review["approval_sha256"])
+        if values is None:
+            return review
+        receipt = {key: value for key, value in review.items() if key != "status"}
+        result = None
+        with self.lock(), self.store.connect() as db:
+            try:
+                with self.store.transaction(db):
+                    state = self.store.load(db)
+                    evidence, body = self._retained_delta(
+                        db, state, attempt, response_sha, watermark
+                    )
+                    if body is None:
+                        approved(approval, evidence["approval_sha256"])
+                        return {**evidence, "status": "ALREADY_RECOVERED"}
+                    enforce(self.state() == EMPTY, "PRODUCTION_PUBLICATION_ALREADY_STARTED")
+                    enforce(
+                        all(review[key] == value for key, value in evidence.items()),
+                        "RECOVERY_EVIDENCE_CHANGED",
+                    )
+                    state.update(values)
+                    state["recovery"] = None
+                    state["retained_delta_recovery"] = receipt
+                    state["last_production_delta"] = {
+                        "attempt": attempt,
+                        "approval_sha256": approval,
+                        "watermark": receipt["watermark"],
+                        "mode": "RETAINED_RESPONSE_RECOVERY",
+                    }
+                    self.store.save(db, state)
+            except (PublicationError, RefreshError) as error:
+                result = error
+        if result is not None:
+            raise result
+        return {**receipt, "status": "ACCEPTED_PRIVATE_NOT_PUBLISHED"}
 
     def _publication(self, freshness=None):
         state, _ = self._ledger()
@@ -626,6 +829,8 @@ def main():
             "status",
             "review-delta",
             "catch-up",
+            "review-retained-delta",
+            "recover-retained-delta",
             "review-publication",
             "stage-review",
             "serve-review",
@@ -641,10 +846,15 @@ def main():
             "runtime-ready",
         )
     }
-    for name in ("review-delta", "catch-up"):
+    for name in ("review-delta", "catch-up", "review-retained-delta", "recover-retained-delta"):
         sub[name].add_argument("--expect-watermark", required=True)
+    for name in ("review-retained-delta", "recover-retained-delta"):
+        sub[name].add_argument("--attempt", required=True)
+        sub[name].add_argument("--response-sha256", required=True)
+        sub[name].add_argument("--preserve-unresolved-pair")
     for name in (
         "catch-up",
+        "recover-retained-delta",
         "publish-initial",
         "cycle",
         "recover-publication",
@@ -722,6 +932,17 @@ def main():
             result["provider_environment_present"] = True
         elif command == "review_delta":
             result = operations.review_delta(args.expect_watermark)
+        elif command in ("review_retained_delta", "recover_retained_delta"):
+            evidence = (
+                args.attempt,
+                args.response_sha256,
+                args.expect_watermark,
+                args.preserve_unresolved_pair,
+            )
+            if command == "review_retained_delta":
+                result = operations.review_retained_delta(*evidence)
+            else:
+                result = operations.recover_retained_delta(*evidence, args.approve)
         elif command == "stage_review":
             result = operations.stage_review(args.sha256)
         elif command == "serve_review":

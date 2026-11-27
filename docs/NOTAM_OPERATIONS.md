@@ -45,6 +45,35 @@ if ($LASTEXITCODE -ne 0) { throw 'Catch-up failed. Review status.' }
 
 Expected result is `ACCEPTED_PRIVATE_NOT_PUBLISHED` and an advanced watermark. Check account counts and the last accepted delta. Transport failures remain accounted. A request may have reached the provider even if the client received no response.
 
+### Review and recover a retained conflict offline
+
+Use this path for the last failed supervised delta when its hold is `CONFLICT`, the exact response is retained, and initial publication has yet to start. Keep collectors paused. The failed attempt stays `FAILED_ACCOUNTED`. The original data-call reservation and the accepted cursor determine the wire lower bound and next cursor. Older ledgers record the reservation and accepted cursor without separately recording the wire URL or the response digest. Obtain the expected SHA-256 directly from the retained blob during diagnosis and compare it in the review. The digest identifies the locally retained bytes.
+
+```powershell
+$Evidence = @('--attempt', (Read-Host 'Reviewed attempt ID'), '--response-sha256',
+    (Read-Host 'Reviewed retained response SHA-256'), '--expect-watermark',
+    (Read-Host 'Reviewed accepted watermark UTC'))
+$Decision = & $Python @Nms review-retained-delta @Evidence | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw 'Retained response review failed' }
+$Decision | ConvertTo-Json -Depth 8
+```
+
+`OWNER_DECISION_REQUIRED` identifies an exact pair of different GeoJSON features at the same revision time and with no C070 association. When the proposed treatment is to preserve both originals privately without choosing an authoritative variant, add the reviewed pair digest and re-run the review. Other unresolved errors stop recovery.
+
+```powershell
+$Evidence += @('--preserve-unresolved-pair', $Decision.unresolved_pair_sha256)
+$Recovery = & $Python @Nms review-retained-delta @Evidence | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0 -or $Recovery.status -ne 'REVIEW_ONLY') { throw 'Recovery candidate unavailable' }
+$Recovery | ConvertTo-Json -Depth 8
+$ApprovedRecovery = Read-Host 'Owner-approved retained response recovery SHA-256'
+if ($ApprovedRecovery -cne $Recovery.approval_sha256) { throw 'Digest differs from reviewed operation' }
+& $Python @Nms recover-retained-delta @Evidence --approve $ApprovedRecovery
+if ($LASTEXITCODE -ne 0) { throw 'Recovery failed. Review status.' }
+& $Python @Nms status
+```
+
+If execution was interrupted, the same command and approval either complete the transaction or report `ALREADY_RECOVERED`. Follow the SQLite journal procedure in section 9 if a hot journal blocks read-only status. Check the original response retrieval time, the recovered watermark and revised lookback deadline, and the unchanged accounting before continuing with section 4. Offline acceptance and publication require distinct approvals.
+
 ## 4. Review the exact publication candidate
 
 ```powershell

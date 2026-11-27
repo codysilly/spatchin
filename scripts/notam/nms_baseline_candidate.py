@@ -43,8 +43,9 @@ class CandidateError(Exception):
         )
     )
 
-    def __init__(self, code):
+    def __init__(self, code, *, unresolved_pair_sha256=None):
         super().__init__(code if code in self.CODES else "LOCAL_FAILURE")
+        self.unresolved_pair_sha256 = unresolved_pair_sha256
 
 
 def _one(values):
@@ -319,6 +320,7 @@ def reconcile_delta(
     registry=None,
     max_records=MAX_RECORDS,
     max_bytes=MAX_CANDIDATE_BYTES,
+    preserve_unresolved_pair=None,
 ):
     """Reconcile a global GeoJSON delta without deleting absent records."""
     if (
@@ -352,6 +354,9 @@ def reconcile_delta(
         identity = unresolved.get("source_identity") if isinstance(unresolved, dict) else None
         if isinstance(identity, str):
             unresolved_by_identity.setdefault(identity, []).append(unresolved)
+    baseline_unresolved = {
+        identity: versions[-1] for identity, versions in unresolved_by_identity.items()
+    }
     audit = {
         "received": len(features),
         "inserted": 0,
@@ -363,6 +368,7 @@ def reconcile_delta(
         "missing_prior_records_preserved": 0,
     }
     touched = set()
+    preserved_pair = False
     for feature in features:
         try:
             record = source_record(feature)
@@ -421,7 +427,25 @@ def reconcile_delta(
                         ):
                             audit["replayed"] += 1
                             continue
-                        raise CandidateError("CONFLICTING_UPDATE")
+                        pair_sha = None
+                        if (
+                            previous is baseline_unresolved.get(identity)
+                            and previous["format"] == "NMS_GEOJSON_DELTA"
+                            and previous["association_status"] == association_status == "unresolved"
+                            and previous["airport_associations"] == airports == []
+                        ):
+                            pair_sha = hashlib.sha256(
+                                encode([previous["original_feature"], feature])
+                            ).hexdigest()
+                            # Retain the second original separately. Neither variant becomes
+                            # the current revision for the catalog or the unresolved index.
+                            if not preserved_pair and pair_sha == preserve_unresolved_pair:
+                                result.setdefault("unresolved_revision_conflicts", []).append(
+                                    {"pair_sha256": pair_sha, "incoming": current}
+                                )
+                                preserved_pair = True
+                                continue
+                        raise CandidateError("CONFLICTING_UPDATE", unresolved_pair_sha256=pair_sha)
                 result["unresolved_records"].append(current)
                 unresolved_by_identity.setdefault(identity, []).append(current)
                 audit["unresolved"] += 1
@@ -455,6 +479,10 @@ def reconcile_delta(
         prior["current"] = current
         audit["updated"] += 1
         touched.add(identity)
+    if preserve_unresolved_pair is not None:
+        if not preserved_pair:
+            raise CandidateError("CONFLICTING_UPDATE")
+        audit["unresolved_revision_conflicts_preserved"] = 1
     audit["missing_prior_records_preserved"] = len(set(catalog) - touched)
     result["delta_candidate"] = {
         "requested_since_utc": stamp(requested),
@@ -632,6 +660,20 @@ def publication_snapshot(candidate, *, generated_utc, registry=None):
     }
 
 
+def production_state_values(candidate, *, generated_utc):
+    if candidate.get("baseline_established") is not True or candidate.get("watermark") is None:
+        raise CandidateError("VALIDATION_REQUIRED")
+    snapshot = publication_snapshot(candidate, generated_utc=generated_utc)
+    return {
+        "baseline": True,
+        "watermark": candidate["watermark"],
+        "catalog": candidate["catalog"],
+        "published_b64": base64.b64encode(encode(snapshot)).decode(),
+        "production_candidate_b64": base64.b64encode(encode(candidate)).decode(),
+        "publication_candidate_status": "ACCEPTED_PRIVATE_NOT_PUBLISHED",
+    }, len(snapshot["airports"])
+
+
 def accept_production_candidate(
     store, candidate, *, generated_utc, before_accept=None, attempt=None, validate_state=None
 ):
@@ -639,14 +681,10 @@ def accept_production_candidate(
 
     The optional state guard runs under the write lock before any ledger update.
     """
-    if candidate.get("baseline_established") is not True or candidate.get("watermark") is None:
-        raise CandidateError("VALIDATION_REQUIRED")
-    snapshot = publication_snapshot(candidate, generated_utc=generated_utc)
-    candidate_body = encode(candidate)
-    snapshot_body = encode(snapshot)
+    values, airports = production_state_values(candidate, generated_utc=generated_utc)
     if before_accept is not None:
         try:
-            before_accept(snapshot_body)
+            before_accept(base64.b64decode(values["published_b64"]))
         except Exception:
             raise CandidateError("LOCAL_FAILURE") from None
     with store.connect() as db, store.transaction(db):
@@ -655,16 +693,7 @@ def accept_production_candidate(
             raise CandidateError("STORE_STATE_INVALID")
         if validate_state is not None:
             validate_state(db, state)
-        state.update(
-            {
-                "baseline": True,
-                "watermark": candidate["watermark"],
-                "catalog": copy.deepcopy(candidate["catalog"]),
-                "published_b64": base64.b64encode(snapshot_body).decode(),
-                "production_candidate_b64": base64.b64encode(candidate_body).decode(),
-                "publication_candidate_status": "ACCEPTED_PRIVATE_NOT_PUBLISHED",
-            }
-        )
+        state.update(values)
         if attempt is not None:
             row = db.execute("SELECT status FROM attempts WHERE id=?", (attempt,)).fetchone()
             if row is None or row[0] not in ("RESERVED", "IO_RESERVED"):
@@ -683,7 +712,7 @@ def accept_production_candidate(
         "baseline_established": True,
         "watermark": candidate["watermark"],
         "catalog_records": len(candidate["catalog"]),
-        "airports": len(snapshot["airports"]),
+        "airports": airports,
     }
 
 
