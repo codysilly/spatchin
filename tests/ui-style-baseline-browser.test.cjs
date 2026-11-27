@@ -155,13 +155,52 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.match(await page.locator('#iata').getAttribute('aria-label'),/Add airport/);
   mkdirSync('screenshots',{recursive:true});
   await page.screenshot({path:'screenshots/compact-header-'+width+'.png'});
-  const placeholderFit=await page.locator('#iata').evaluate(el=>{
-   const style=getComputedStyle(el),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-   ctx.font=style.font;
-   const text=ctx.measureText(el.placeholder.toUpperCase()).width;
-   return {available:el.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-26,text,width:style.width,font:style.font};
-  });
-  assert.ok(placeholderFit.available>=placeholderFit.text,JSON.stringify(placeholderFit));
+  // Chromium exposes the actual native placeholder layout through its user-agent shadow tree.
+  // Measure that box rather than estimating browser-specific datalist decoration widths.
+  const cdp=await context.newCDPSession(page);
+  const placeholderMetrics=async()=>{
+   const {root}=await cdp.send('DOM.getDocument',{depth:0});
+   const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:root.nodeId,selector:'#iata'});
+   const {node}=await cdp.send('DOM.describeNode',{nodeId,depth:-1,pierce:true});
+   const findPlaceholder=n=>{
+    const attrs=n.attributes||[];
+    const id=attrs.indexOf('id');
+    if(id>=0&&attrs[id+1]==='placeholder')return n;
+    for(const child of [...(n.children||[]),...(n.shadowRoots||[])]){
+     const found=findPlaceholder(child);if(found)return found;
+    }
+    return null;
+   };
+   const placeholder=findPlaceholder(node);
+   assert.ok(placeholder,'Chromium native placeholder is present');
+   const {object}=await cdp.send('DOM.resolveNode',{backendNodeId:placeholder.backendNodeId});
+   try{
+    const {result,exceptionDetails}=await cdp.send('Runtime.callFunctionOn',{
+     objectId:object.objectId,returnByValue:true,
+     functionDeclaration:`function(){
+      const range=document.createRange();range.selectNodeContents(this);
+      return {text:this.textContent,required:range.getBoundingClientRect().width,available:this.getBoundingClientRect().width,client:this.clientWidth,scroll:this.scrollWidth};
+     }`
+    });
+    assert.ok(!exceptionDetails,JSON.stringify(exceptionDetails));
+    return result.value;
+   }finally{await cdp.send('Runtime.releaseObject',{objectId:object.objectId});}
+  };
+  const fits=m=>m.required>0&&m.required<=m.available+.5&&m.scroll<=m.client+1;
+  try{
+   const fit=await placeholderMetrics();
+   assert.equal(fit.text,await page.locator('#iata').getAttribute('placeholder'));
+   assert.ok(fits(fit),JSON.stringify(fit));
+   if(width===1440){
+    // Negative control: prove the check rejects a genuinely clipped native placeholder.
+    const input=page.locator('#iata');
+    const oldStyle=await input.getAttribute('style');
+    await input.evaluate(el=>{el.style.setProperty('width','80px','important');el.style.setProperty('min-width','80px','important');el.style.setProperty('max-width','80px','important');});
+    try{const clipped=await placeholderMetrics();assert.ok(clipped.required>0&&!fits(clipped),JSON.stringify(clipped));}
+    finally{await input.evaluate((el,style)=>style===null?el.removeAttribute('style'):el.setAttribute('style',style),oldStyle);}
+    assert.ok(fits(await placeholderMetrics()),'restored placeholder fits');
+   }
+  }finally{await cdp.detach();}
   const scanFit=await page.locator('#scan-toggle').evaluate(el=>({overflow:el.scrollWidth-el.clientWidth,countWidth:el.querySelector('#scan-keyword-count').clientWidth}));
   assert.ok(scanFit.overflow<=1&&scanFit.countWidth>0,JSON.stringify(scanFit));
   const hit=await page.locator('[data-airport="MEM"] .airport-head').evaluate(head=>{
