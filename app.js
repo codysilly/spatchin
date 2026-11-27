@@ -1,13 +1,6 @@
 'use strict';
-import {currentDiagramMarkup} from './airport-diagrams.js';
+import {currentDiagramMarkup,diagramSearchMarkup} from './airport-diagrams.js';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
-// User-initiated FAA search, not evidence of an available/current PDF.
-export function diagramSearchMarkup(icao,esc){
- if(typeof icao!=='string'||!(/^[A-Z0-9]{4}$/).test(icao))return '';
- const url='https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/dtpp/search/?ident='+encodeURIComponent(icao);
- const label='Find FAA diagram for '+icao+'; select current edition and search for '+icao+'; opens in a new tab';
- return `<div class="airport-diagram"><a href="${esc(url)}" target="_blank" rel="noopener" title="${esc(label)}" aria-label="${esc(label)}"><span class="diagram-link-text">Find FAA diagram </span><span aria-hidden="true">↗</span></a></div>`;
-}
 // Explicit dependencies keep browser state inside one dashboard instance.
 export function mountDashboard({AirportCatalog,AirportMetadata,NotamReader,NotamSnapshots,preview,enableForecast=false}={}){
 const SPATCHIN_SYNTHETIC_PREVIEW=preview;
