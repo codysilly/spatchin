@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T12:48:35.148635Z",
+  "updated_utc": "2026-11-27T12:58:35.008736Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -729,8 +729,8 @@
     },
     {
       "icaoId": "KBOI",
-      "rawTAF": "TAF KBOI 271241Z 2713/2812 VRB05KT 6SM BR VCSH OVC035 TEMPO 2713/2715 5SM -RA BR SCT025 OVC030 FM271800 VRB05KT P6SM -SHRA SCT025 OVC035 FM280300 13007KT 6SM -SHRA SCT020 OVC030 WS020/26035KT FM280700 30012G22KT P6SM VCSH BKN050",
-      "issueTime": "2026-11-27T12:41:00.000Z",
+      "rawTAF": "TAF KBOI 271253Z 2713/2812 VRB05KT 6SM -RA BR OVC035 TEMPO 2713/2715 5SM -RA BR OVC025 FM271800 VRB05KT P6SM -SHRA SCT025 OVC035 FM280200 14006KT 5SM -SHRA BR SCT015 OVC025 WS020/26035KT FM280700 30012G22KT P6SM VCSH BKN050",
+      "issueTime": "2026-11-27T12:53:00.000Z",
       "validTimeFrom": 1795784400,
       "validTimeTo": 1795867200,
       "fcsts": [
@@ -756,7 +756,7 @@
         },
         {
           "timeFrom": 1795802400,
-          "timeTo": 1795834800,
+          "timeTo": 1795831200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
@@ -765,13 +765,13 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795834800,
+          "timeFrom": 1795831200,
           "timeTo": 1795849200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 130,
-          "wspd": 7,
+          "wdir": 140,
+          "wspd": 6,
           "wgst": null
         },
         {
@@ -5777,35 +5777,35 @@
     },
     {
       "icaoId": "KSKA",
-      "rawTAF": "TAF KSKA 270300Z 2703/2809 20010G15KT 9999 SCT060 BKN080 620806 QNH3006INS BECMG 2712/2713 22009KT 9999 SCT080 BKN100 QNH3011INS BECMG 2722/2723 22006KT 9999 BKN020 BKN040 620609 QNH3000INS TX07/2722Z TN04/2716Z",
-      "issueTime": "2026-11-27T03:00:00.000Z",
-      "validTimeFrom": 1795748400,
-      "validTimeTo": 1795856400,
+      "rawTAF": "TAF KSKA 271100Z 2711/2817 22009KT 9999 FEW020 BKN100 QNH3003INS BECMG 2723/2724 24006KT 9999 SCT020 BKN040 620609 QNH2999INS BECMG 2811/2812 22006KT 0800 FG OVC002 QNH3012INS TX07/2722Z TN04/2716Z",
+      "issueTime": "2026-11-27T11:00:00.000Z",
+      "validTimeFrom": 1795777200,
+      "validTimeTo": 1795885200,
       "fcsts": [
         {
-          "timeFrom": 1795748400,
-          "timeTo": 1795780800,
+          "timeFrom": 1795777200,
+          "timeTo": 1795820400,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 200,
-          "wspd": 10,
-          "wgst": 15
-        },
-        {
-          "timeFrom": 1795780800,
-          "timeTo": 1795816800,
-          "timeBec": 1795784400,
-          "fcstChange": "BECMG",
           "probability": null,
           "wdir": 220,
           "wspd": 9,
           "wgst": null
         },
         {
-          "timeFrom": 1795816800,
-          "timeTo": 1795856400,
-          "timeBec": 1795820400,
+          "timeFrom": 1795820400,
+          "timeTo": 1795863600,
+          "timeBec": 1795824000,
+          "fcstChange": "BECMG",
+          "probability": null,
+          "wdir": 240,
+          "wspd": 6,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795863600,
+          "timeTo": 1795885200,
+          "timeBec": 1795867200,
           "fcstChange": "BECMG",
           "probability": null,
           "wdir": 220,
