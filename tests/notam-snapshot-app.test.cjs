@@ -66,7 +66,7 @@ test('published MEM NASR inventory preserves every source bearing and provenance
  assert.equal((html.match(/<td>[^<]*<\/td>/g)||[]).length,16);
  assert.equal(app.run('runwayData.effective_date'),runways.effective_date);
  assert.equal(app.run('runwayData.source_url'),runways.source_url);
- assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/00253AD.PDF/);
+ assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/Find FAA diagram/);assert.doesNotMatch(html,/00253AD.PDF/);
  assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
  assert.match(app.run('diagramHeader("ORD")'),/Find FAA diagram/);
