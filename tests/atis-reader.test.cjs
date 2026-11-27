@@ -28,9 +28,9 @@ function render(reports,retrieved=stamp(1),configured=['KMEM']){
 
 test('fresh arrival cannot conceal stale departure and the inverse is independent',()=>{
  let html=render([arrival(5),departure(60)]);
- assert.match(html,/LANDING · CURRENT/);assert.match(html,/DEPARTING · STALE/);
+ assert.match(html,/LANDING<\/div>/);assert.match(html,/DEPARTING · STALE/);
  html=render([arrival(60),departure(5)]);
- assert.match(html,/LANDING · STALE/);assert.match(html,/DEPARTING · CURRENT/);
+ assert.match(html,/LANDING · STALE/);assert.match(html,/DEPARTING<\/div>/);
 });
 
 test('both stale, missing sides, and stale retrieval are distinguished',()=>{
@@ -77,12 +77,12 @@ test('newer report without a runway clause supersedes older runway text',()=>{
  let html=render([combined(10),vagueArr]);
  assert.match(html,/LANDING · UNAVAILABLE/);
  assert.doesNotMatch(html,/class="atis-value">18R/);
- assert.match(html,/DEPARTING · CURRENT/);assert.match(html,/>36L</);
+ assert.match(html,/DEPARTING<\/div>/);assert.match(html,/>36L</);
  assert.match(html,/RAW COMBINED/);
  html=render([combined(10),vagueDep]);
  assert.match(html,/DEPARTING · UNAVAILABLE/);
  assert.doesNotMatch(html,/class="atis-value">36L/);
- assert.match(html,/LANDING · CURRENT/);
+ assert.match(html,/LANDING<\/div>/);
  const vagueCombined=report('combined',1,'N','1211','NO EXPLICIT RUNWAY CONFIGURATION');
  html=render([arrival(5),departure(5),vagueCombined]);
  assert.match(html,/LANDING · UNAVAILABLE/);assert.match(html,/DEPARTING · UNAVAILABLE/);
@@ -97,8 +97,8 @@ test('source times require explicit timezone and valid calendar values',()=>{
  }
  const offset=stamp(5).replace(/Z$/,'+00:00');
  const html=render([{...arrival(5),updatedAt:offset}]);
- assert.match(html,/LANDING · CURRENT/);
- assert.match(render([{...arrival(5),updatedAt:stamp(5).replace(/Z$/,'1234Z')}]),/LANDING · CURRENT/);
+ assert.match(html,/LANDING<\/div>/);
+ assert.match(render([{...arrival(5),updatedAt:stamp(5).replace(/Z$/,'1234Z')}]),/LANDING<\/div>/);
 });
 
 test('timezone-less snapshot retrieval cannot mark report current',()=>{
@@ -126,10 +126,10 @@ test('legacy or malformed coverage is unknown, not excluded',()=>{
   assert.doesNotMatch(html,/NOT CONFIGURED/);
  }
  const html=render([arrival(5)],stamp(1),null);
- assert.match(html,/LANDING · CURRENT/);
+ assert.match(html,/LANDING<\/div>/);
  assert.match(html,/ATIS collection coverage is unknown/);
  const inconsistent=render([arrival(5)],stamp(1),['KORD']);
- assert.match(inconsistent,/LANDING · CURRENT/);
+ assert.match(inconsistent,/LANDING<\/div>/);
  assert.doesNotMatch(inconsistent,/NOT CONFIGURED/);
 });
 
@@ -154,14 +154,14 @@ test('a delisted station retains raw text without claiming current runway use',(
  assert.match(html,/NOT CONFIGURED/);
  assert.match(html,/Retained historical reports/);
  assert.match(html,/RAW ARRIVAL/);
- assert.doesNotMatch(html,/class="atis-value">09|LANDING · CURRENT/);
+ assert.doesNotMatch(html,/class="atis-value">09|LANDING<\/div>/);
 });
 
 test('MEM explicit in-use approach and simultaneous departure clauses are extracted independently',()=>{
  const text='SYNTHETIC ATIS. ILS APCH IN USE RY 36L, 36R. SIMUL DEPS IN USE RY 36L 36C 36R. NOTICE TO AIRMEN. RY 36C ALS OTS. RWY 18R ALIGNMENT INDICATOR LIGHTS OTS. RWY 27 CONDITION CODES 5 5 5.';
  const html=render([report('combined',5,'S','1954',text)]);
- assert.match(html,/LANDING · CURRENT<\/div><div class="atis-value">36L · 36R<\/div>/);
- assert.match(html,/DEPARTING · CURRENT<\/div><div class="atis-value">36L · 36C · 36R<\/div>/);
+ assert.match(html,/LANDING<\/div><div class="atis-value">36L · 36R<\/div>/);
+ assert.match(html,/DEPARTING<\/div><div class="atis-value">36L · 36C · 36R<\/div>/);
  assert.match(html,/RWY 27 CONDITION CODES 5 5 5/);
  const stale=render([report('combined',60,'S','1954',text)]);
  assert.match(stale,/LANDING · STALE<\/div><div class="atis-value">36L · 36R/);
@@ -170,8 +170,8 @@ test('MEM explicit in-use approach and simultaneous departure clauses are extrac
 
 test('in-use extraction accepts explicit runway-list variants and rejects unrelated or ambiguous clauses',()=>{
  const valid=render([report('combined',5,'T','2000','ILS APCH IN USE RWYS 9L AND 09R. SIMUL DEPS IN USE RWY 18, 18R, AND 18L.')]);
- assert.match(valid,/LANDING · CURRENT<\/div><div class="atis-value">09L · 09R/);
- assert.match(valid,/DEPARTING · CURRENT<\/div><div class="atis-value">18 · 18R · 18L/);
+ assert.match(valid,/LANDING<\/div><div class="atis-value">09L · 09R/);
+ assert.match(valid,/DEPARTING<\/div><div class="atis-value">18 · 18R · 18L/);
  for(const text of ['ILS APCH IN USE RY 36L CLOSED. SIMUL DEPS IN USE RY 36R NOT AUTHORIZED.',
   'NO ILS APCH IN USE RY 36L. NO SIMUL DEPS IN USE RY 36R.',
   'ILS APCH IN USE RY 37. SIMUL DEPS IN USE RY 00.',

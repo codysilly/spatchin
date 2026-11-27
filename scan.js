@@ -85,7 +85,11 @@ function startScan() {
       matches = [];
       const keywords = terms();
       const activeKeywords = settings.enabled ? keywords.length : 0;
-      ui['keyword-count'].textContent = `${activeKeywords} active keyword${activeKeywords === 1 ? '' : 's'}`;
+      const suffix = document.createElement('span');
+      suffix.className = 'scan-keyword-label';
+      suffix.textContent = ` active keyword${activeKeywords === 1 ? '' : 's'}`;
+      ui['keyword-count'].replaceChildren(document.createTextNode(String(activeKeywords)), suffix);
+      ui['keyword-count'].title = ui['keyword-count'].textContent;
       ui.legend.replaceChildren(...keywords.map(({term, color}) => {
         const chip = document.createElement('span');
         chip.className = 'scan-chip'; paint(chip, color);
