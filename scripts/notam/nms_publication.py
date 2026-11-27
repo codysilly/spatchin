@@ -78,9 +78,7 @@ def _display_value(value):
     """Project a source scalar without choosing among ambiguous source values."""
     if value is None or isinstance(value, str):
         return value
-    if isinstance(value, list) and len(value) <= 1 and all(
-        isinstance(item, str) for item in value
-    ):
+    if isinstance(value, list) and len(value) <= 1 and all(isinstance(item, str) for item in value):
         return value[0] if value else None
     raise PublicationError("AMBIGUOUS_DISPLAY_FIELD")
 
@@ -147,9 +145,7 @@ def project(candidate, registry, *, generated_utc):
         notice["formatted_texts"] = _representations(current.get("representations", []))
         notice["classifications"] = copy.deepcopy(current.get("classifications", []))
         notice["provider_lifecycle"] = {
-            key: _display_value(record[key])
-            for key in ("type", "cancelationDate")
-            if key in record
+            key: _display_value(record[key]) for key in ("type", "cancelationDate") if key in record
         }
         notice["warnings"] = ["Lifecycle and operational applicability are not inferred."]
         if not any(item["type"] == "LOCAL_FORMAT" for item in notice["formatted_texts"]):

@@ -287,9 +287,7 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(replay["delta_candidate"]["audit"]["replayed"], 1)
         self.assertEqual(len(replay["unresolved_records"]), len(first["unresolved_records"]))
 
-        stale_payload = envelope(
-            [feature("NEW", "UNLISTED", updated="2026-11-16T12:00:00Z")]
-        )
+        stale_payload = envelope([feature("NEW", "UNLISTED", updated="2026-11-16T12:00:00Z")])
         stale = reconcile_delta(
             first,
             stale_payload,

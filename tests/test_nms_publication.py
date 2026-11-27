@@ -16,10 +16,20 @@ class PublicationTests(unittest.TestCase):
 
     def candidate(self):
         current = {
-            "notam": {"id": "N-1", "text": "RWY 18L\r\nEXACT", "classification": "DOMESTIC", "type": "N"},
-            "representations": [{"type": ["LOCAL_FORMAT"], "simpleText": ["LINE 1\r\nLINE 2"]}, {"type": "ICAO", "formattedText": "ICAO TEXT"}],
-            "classifications": ["DOMESTIC"], "airport_associations": ["KMEM", "KORD"],
-            "original_feature": {"private": True}, "received_utc": "private",
+            "notam": {
+                "id": "N-1",
+                "text": "RWY 18L\r\nEXACT",
+                "classification": "DOMESTIC",
+                "type": "N",
+            },
+            "representations": [
+                {"type": ["LOCAL_FORMAT"], "simpleText": ["LINE 1\r\nLINE 2"]},
+                {"type": "ICAO", "formattedText": "ICAO TEXT"},
+            ],
+            "classifications": ["DOMESTIC"],
+            "airport_associations": ["KMEM", "KORD"],
+            "original_feature": {"private": True},
+            "received_utc": "private",
         }
         return {
             "baseline_established": True,
@@ -29,9 +39,14 @@ class PublicationTests(unittest.TestCase):
         }
 
     def test_projection_has_all_airports_exact_text_and_no_private_fields(self):
-        snapshot, manifest, body = build_candidate(self.candidate(), self.registry(), generated_utc="2026-11-27T12:01:00Z")
+        snapshot, manifest, body = build_candidate(
+            self.candidate(), self.registry(), generated_utc="2026-11-27T12:01:00Z"
+        )
         self.assertEqual(len(snapshot["airports"]), 130)
-        self.assertEqual(snapshot["airports"]["KMEM"]["notices"][0]["formatted_texts"][0]["text"], "LINE 1\r\nLINE 2")
+        self.assertEqual(
+            snapshot["airports"]["KMEM"]["notices"][0]["formatted_texts"][0]["text"],
+            "LINE 1\r\nLINE 2",
+        )
         self.assertEqual(len(snapshot["airports"]["KORD"]["notices"]), 1)
         self.assertEqual(snapshot["airports"]["KATL"]["completeness"], "UNKNOWN")
         self.assertEqual(snapshot["retrieved_utc"], "2026-11-27T11:58:00Z")
@@ -62,31 +77,42 @@ class PublicationTests(unittest.TestCase):
 
         current["notam"]["text"].append("CONFLICTING VALUE")
         with self.assertRaisesRegex(PublicationError, "AMBIGUOUS_DISPLAY_FIELD"):
-            build_candidate(
-                candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z"
-            )
+            build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z")
 
     def test_atomic_publication_rejects_old_and_retains_on_interruption(self):
         with tempfile.TemporaryDirectory() as directory:
-            target, state = Path(directory)/"notams.json", Path(directory)/"state.json"
-            _, manifest, body = build_candidate(self.candidate(), self.registry(), generated_utc="2026-11-27T12:01:00Z")
+            target, state = Path(directory) / "notams.json", Path(directory) / "state.json"
+            _, manifest, body = build_candidate(
+                self.candidate(), self.registry(), generated_utc="2026-11-27T12:01:00Z"
+            )
             publish_atomic(body, manifest, target, state)
             retained = target.read_bytes()
-            old = copy.deepcopy(manifest); old["retrieved_utc"] = "2026-11-27T11:00:00Z"
+            old = copy.deepcopy(manifest)
+            old["retrieved_utc"] = "2026-11-27T11:00:00Z"
             with self.assertRaisesRegex(PublicationError, "OLDER"):
                 publish_atomic(body, old, target, state)
             with self.assertRaises(RuntimeError):
-                publish_atomic(body, manifest, target, state, before_replace=lambda: (_ for _ in ()).throw(RuntimeError("stop")))
+                publish_atomic(
+                    body,
+                    manifest,
+                    target,
+                    state,
+                    before_replace=lambda: (_ for _ in ()).throw(RuntimeError("stop")),
+                )
             self.assertEqual(target.read_bytes(), retained)
 
     def test_interruption_between_snapshot_and_manifest_is_recovered(self):
         with tempfile.TemporaryDirectory() as directory:
-            target, state = Path(directory)/"notams.json", Path(directory)/"state.json"
+            target, state = Path(directory) / "notams.json", Path(directory) / "state.json"
             candidate = self.candidate()
-            _, first_manifest, first_body = build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z")
+            _, first_manifest, first_body = build_candidate(
+                candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z"
+            )
             publish_atomic(first_body, first_manifest, target, state)
             candidate["delta_candidate"] = {"received_utc": "2026-11-27T12:02:00Z"}
-            _, next_manifest, next_body = build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:03:00Z")
+            _, next_manifest, next_body = build_candidate(
+                candidate, self.registry(), generated_utc="2026-11-27T12:03:00Z"
+            )
             with self.assertRaises(RuntimeError):
                 publish_atomic(
                     next_body,
@@ -107,4 +133,5 @@ class PublicationTests(unittest.TestCase):
             build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z")
 
 
-if __name__ == "__main__": unittest.main()
+if __name__ == "__main__":
+    unittest.main()

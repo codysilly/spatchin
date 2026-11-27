@@ -417,9 +417,7 @@ def reconcile_delta(
                             and previous.get("original_feature") == feature
                         ) or (
                             previous["format"] == "AIXM_5_1_INITIAL_LOAD"
-                            and _same_logical_notice(
-                                previous, record, airports, association_status
-                            )
+                            and _same_logical_notice(previous, record, airports, association_status)
                         ):
                             audit["replayed"] += 1
                             continue
