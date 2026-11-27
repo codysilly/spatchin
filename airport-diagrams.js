@@ -16,3 +16,11 @@ export function currentDiagramMarkup(index, code, icao, esc, now=Date.now()){
  const dates='FAA d-TPP cycle '+diagram.cycle+'; effective '+diagram.effective_from_utc+' until '+diagram.effective_to_utc+'; check FAA for corrections';
  return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; ${esc(dates)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span></a></div>`;
 }
+
+// User-initiated FAA search, not evidence of an available/current PDF.
+export function diagramSearchMarkup(icao,esc){
+ if(typeof icao!=='string'||!(/^[A-Z0-9]{4}$/).test(icao))return '';
+ const url='https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/dtpp/search/?ident='+encodeURIComponent(icao);
+ const label='Find FAA diagram for '+icao+'; select current edition and search for '+icao+'; opens in a new tab';
+ return `<div class="airport-diagram"><a href="${esc(url)}" target="_blank" rel="noopener" title="${esc(label)}" aria-label="${esc(label)}"><span class="diagram-link-text">Find FAA diagram </span><span aria-hidden="true">↗</span></a></div>`;
+}
