@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T01:08:35.194649Z",
+  "updated_utc": "2026-11-27T01:38:34.475852Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -927,33 +927,33 @@
     },
     {
       "icaoId": "KBTV",
-      "rawTAF": "TAF KBTV 262320Z 2700/2724 01005KT P6SM OVC150 FM270200 02006KT P6SM -RA OVC060 PROB30 2702/2704 -FZRA FM270400 02008KT 5SM -RA BR OVC040 WS020/12030KT TEMPO 2704/2707 3SM -RA BR OVC020 FM270900 01007KT 4SM BR VCSH OVC012 FM272200 VRB04KT 4SM -SHRA BR OVC010",
-      "issueTime": "2026-11-26T23:20:00.000Z",
-      "validTimeFrom": 1795737600,
+      "rawTAF": "TAF KBTV 270130Z 2702/2724 12008KT P6SM OVC080 FM270230 04008KT P6SM -RA OVC060 PROB30 2703/2704 -FZRA FM270400 02008KT 5SM -RA BR OVC035 WS020/12030KT TEMPO 2704/2707 3SM -RA BR OVC020 FM270900 01007KT 4SM BR VCSH OVC012 FM272200 VRB04KT 4SM -SHRA BR OVC010",
+      "issueTime": "2026-11-27T01:30:00.000Z",
+      "validTimeFrom": 1795744800,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795744800,
+          "timeFrom": 1795744800,
+          "timeTo": 1795746600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 10,
-          "wspd": 5,
+          "wdir": 120,
+          "wspd": 8,
           "wgst": null
         },
         {
-          "timeFrom": 1795744800,
+          "timeFrom": 1795746600,
           "timeTo": 1795752000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
-          "wdir": 20,
-          "wspd": 6,
+          "wdir": 40,
+          "wspd": 8,
           "wgst": null
         },
         {
-          "timeFrom": 1795744800,
+          "timeFrom": 1795748400,
           "timeTo": 1795752000,
           "timeBec": null,
           "fcstChange": "PROB",
