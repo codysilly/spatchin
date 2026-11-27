@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T15:08:33.739626Z",
+  "updated_utc": "2026-11-27T15:18:32.692749Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -4355,30 +4355,20 @@
     },
     {
       "icaoId": "KORF",
-      "rawTAF": "TAF KORF 271123Z 2712/2812 21017G26KT P6SM OVC035 TEMPO 2714/2717 BKN025 FM272000 24015G25KT P6SM SCT200",
-      "issueTime": "2026-11-27T11:23:00.000Z",
-      "validTimeFrom": 1795780800,
+      "rawTAF": "TAF KORF 271506Z 2715/2812 21022G35KT P6SM OVC035 FM272000 24015G25KT P6SM SCT200",
+      "issueTime": "2026-11-27T15:06:00.000Z",
+      "validTimeFrom": 1795791600,
       "validTimeTo": 1795867200,
       "fcsts": [
         {
-          "timeFrom": 1795780800,
+          "timeFrom": 1795791600,
           "timeTo": 1795809600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 210,
-          "wspd": 17,
-          "wgst": 26
-        },
-        {
-          "timeFrom": 1795788000,
-          "timeTo": 1795798800,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
+          "wspd": 22,
+          "wgst": 35
         },
         {
           "timeFrom": 1795809600,
@@ -4934,13 +4924,13 @@
     },
     {
       "icaoId": "KRIC",
-      "rawTAF": "TAF KRIC 271123Z 2712/2812 21015G25KT P6SM BKN035 TEMPO 2713/2716 BKN025 FM272300 24012G21KT P6SM SCT200",
-      "issueTime": "2026-11-27T11:23:00.000Z",
-      "validTimeFrom": 1795780800,
+      "rawTAF": "TAF KRIC 271508Z 2715/2812 21015G25KT P6SM BKN035 FM272300 24012G21KT P6SM SCT200",
+      "issueTime": "2026-11-27T15:08:00.000Z",
+      "validTimeFrom": 1795791600,
       "validTimeTo": 1795867200,
       "fcsts": [
         {
-          "timeFrom": 1795780800,
+          "timeFrom": 1795791600,
           "timeTo": 1795820400,
           "timeBec": null,
           "fcstChange": null,
@@ -4948,16 +4938,6 @@
           "wdir": 210,
           "wspd": 15,
           "wgst": 25
-        },
-        {
-          "timeFrom": 1795784400,
-          "timeTo": 1795795200,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
         },
         {
           "timeFrom": 1795820400,
