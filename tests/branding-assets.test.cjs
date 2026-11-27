@@ -1,7 +1,7 @@
 'use strict';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { readFileSync, existsSync } = require('node:fs');
+const { readFileSync, existsSync, readdirSync } = require('node:fs');
 const { inflateSync } = require('node:zlib');
 
 const svg = readFileSync('assets/branding/paperplane-cyan-magenta-fade.svg', 'utf8');
@@ -138,13 +138,22 @@ test('only the new paperplane files remain in the branding directory', () => {
     'paperplane-32.png',
     'paperplane-180.png',
   ];
-  const { readdirSync } = require('node:fs');
   assert.deepEqual(readdirSync('assets/branding').sort(), expected.sort());
-  for (const old of ['logo-cyan-magenta.svg', 'spatchin-logo-source.png', ...[16, 32, 64, 128, 180].map((n) => 'logo-' + n + '.png')])
-    assert.equal(existsSync('assets/branding/' + old), false, 'legacy asset must be retired: ' + old);
+  const legacy = [
+    'logo-cyan-magenta.svg',
+    'spatchin-logo-source.png',
+    ...[16, 32, 64, 128, 180].map((n) => 'logo-' + n + '.png'),
+  ];
+  for (const old of legacy) {
+    assert.equal(
+      existsSync('assets/branding/' + old),
+      false,
+      'legacy asset must be retired: ' + old,
+    );
+  }
   for (const page of ['index.html', 'dashboard/index.html']) {
     const markup = readFileSync(page, 'utf8');
-    assert.doesNotMatch(markup, /assets\\/branding\\/logo-/);
-    assert.match(markup, /paperplane-cyan-magenta-fade\\.svg/);
+    assert.ok(!markup.includes('assets/branding/logo-'), page);
+    assert.ok(markup.includes('paperplane-cyan-magenta-fade.svg'), page);
   }
 });
