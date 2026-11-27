@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T21:58:33.640208Z",
+  "updated_utc": "2026-11-27T22:18:36.732595Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -1278,20 +1278,20 @@
     },
     {
       "icaoId": "KCLT",
-      "rawTAF": "TAF KCLT 271954Z 2720/2824 24016G25KT P6SM SCT035 SCT060 FM280100 25010KT P6SM FEW250",
-      "issueTime": "2026-11-27T19:54:00.000Z",
-      "validTimeFrom": 1795809600,
+      "rawTAF": "TAF KCLT 272216Z 2722/2824 24011G21KT P6SM FEW035 SCT060 FM280100 25010KT P6SM FEW250",
+      "issueTime": "2026-11-27T22:16:00.000Z",
+      "validTimeFrom": 1795816800,
       "validTimeTo": 1795910400,
       "fcsts": [
         {
-          "timeFrom": 1795809600,
+          "timeFrom": 1795816800,
           "timeTo": 1795827600,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 240,
-          "wspd": 16,
-          "wgst": 25
+          "wspd": 11,
+          "wgst": 21
         },
         {
           "timeFrom": 1795827600,
@@ -3745,33 +3745,23 @@
     },
     {
       "icaoId": "KMKE",
-      "rawTAF": "TAF KMKE 272100Z 2721/2824 32012G20KT P6SM BKN150 FM272300 28007KT P6SM BKN250 FM281600 25012KT P6SM FEW250",
-      "issueTime": "2026-11-27T21:00:00.000Z",
-      "validTimeFrom": 1795813200,
+      "rawTAF": "TAF KMKE 272207Z 2722/2824 28007KT P6SM BKN250 FM281500 25012KT P6SM FEW250",
+      "issueTime": "2026-11-27T22:07:00.000Z",
+      "validTimeFrom": 1795816800,
       "validTimeTo": 1795910400,
       "fcsts": [
         {
-          "timeFrom": 1795813200,
-          "timeTo": 1795820400,
+          "timeFrom": 1795816800,
+          "timeTo": 1795878000,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 320,
-          "wspd": 12,
-          "wgst": 20
-        },
-        {
-          "timeFrom": 1795820400,
-          "timeTo": 1795881600,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 280,
           "wspd": 7,
           "wgst": null
         },
         {
-          "timeFrom": 1795881600,
+          "timeFrom": 1795878000,
           "timeTo": 1795910400,
           "timeBec": null,
           "fcstChange": "FM",
