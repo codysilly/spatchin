@@ -114,7 +114,7 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.equal(ui.topPadding,'9px');
   const g=ui.geometry;
   assert.ok(g.codeGap>=8&&g.codeGap<=10,JSON.stringify(g));
-  assert.ok(Math.abs(g.bottomGap)<=2.1,JSON.stringify(g));
+  assert.ok(Math.abs(g.bottomGap-5)<=.1,JSON.stringify(g));
   assert.ok(g.nameGap>=3.9&&g.nameGap<=6,JSON.stringify(g));
   assert.ok(g.metarGap>=7.9&&g.metarGap<=10,JSON.stringify(g));
   assert.ok(g.rowHeight<30,JSON.stringify(g));
@@ -153,6 +153,13 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.equal(await name.getAttribute('aria-expanded'),'false');
   assert.equal(await page.locator('label[for="iata"]').count(),0);
   assert.match(await page.locator('#iata').getAttribute('aria-label'),/Add airport/);
+  const placeholderFit=await page.locator('#iata').evaluate(el=>{
+   const style=getComputedStyle(el),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+   ctx.font=style.font;
+   const text=ctx.measureText(el.placeholder.toUpperCase()).width;
+   return {available:el.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-26,text};
+  });
+  assert.ok(placeholderFit.available>=placeholderFit.text,JSON.stringify(placeholderFit));
   const hit=await page.locator('[data-airport="MEM"] .airport-head').evaluate(head=>{
    const els=[...head.querySelectorAll('.airport-grip,.airport-remove,.airport-diagram a,.name,.icao,.category-tag')];
    const boxes=els.map(el=>({className:el.className,rect:el.getBoundingClientRect()}));

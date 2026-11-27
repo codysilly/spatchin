@@ -56,7 +56,7 @@ main{--card-gap:16px;max-width:none;width:100%;padding:14px 28px 36px;display:fl
 }
 .dashboard-controls .toolbar{flex:0 0 auto;width:auto;margin:0;padding:0;min-height:44px}
 .dashboard-controls #add-form{width:auto;margin:0;padding:0;gap:6px;min-height:44px}
-.dashboard-controls #iata{flex:none;width:calc(14ch + 20px);min-width:0;height:44px;padding:0 9px}
+.dashboard-controls #iata{flex:none;width:calc(14ch + 48px);min-width:0;height:44px;padding:0 9px}
 .dashboard-controls #add-form button{flex:none;height:44px;min-width:44px;padding:0 8px}
 
 .scan-toggle{font:400 14px/1.25 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
@@ -243,7 +243,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 .airport-grip:hover,.airport-remove:hover{background:#292c2e;border-color:var(--line);color:var(--text)}
 .airport-remove{font:400 30px/1 var(--font-ui,"Overpass",sans-serif);cursor:pointer}
 .icao{font:700 24px/.95 var(--font-data,"Inconsolata",monospace);letter-spacing:-.045em;white-space:nowrap;flex:none}
-.category-tag{align-self:flex-end;margin:0 0 2px;padding:1px 2px;font:800 8px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
+.category-tag{align-self:flex-end;margin:0 0 5px;padding:1px 2px;font:800 8px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
 .category-unavailable{font-size:8px;font-weight:700}
 .airport-head .airport-diagram{
   position:static;flex:0 1 auto;max-width:76px;width:auto;
@@ -305,7 +305,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 }
 @media(max-width:340px){
   .dashboard-controls #scan-toggle{padding:0 4px;gap:3px}
-  .dashboard-controls #iata{padding:0 5px;width:calc(14ch + 12px)}
+  .dashboard-controls #iata{padding:0 5px;width:calc(14ch + 42px)}
 }
 
 /* Keep the full UTC clock readable at very narrow widths. */
