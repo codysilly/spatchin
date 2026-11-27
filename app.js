@@ -1,5 +1,12 @@
 'use strict';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
+// User-initiated FAA search, not evidence of an available/current PDF.
+export function diagramSearchMarkup(icao,esc){
+ if(typeof icao!=='string'||!(/^[A-Z0-9]{4}$/).test(icao))return '';
+ const url='https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/dtpp/search/?ident='+encodeURIComponent(icao);
+ const label='Find FAA diagram for '+icao+'; select current edition and search for '+icao+'; opens in a new tab';
+ return `<div class="airport-diagram"><a href="${esc(url)}" target="_blank" rel="noopener" title="${esc(label)}" aria-label="${esc(label)}"><span class="diagram-link-text">Find FAA diagram </span><span aria-hidden="true">↗</span></a></div>`;
+}
 // Explicit dependencies keep browser state inside one dashboard instance.
 export function mountDashboard({AirportCatalog,AirportMetadata,NotamReader,NotamSnapshots,preview,enableForecast=false}={}){
 const SPATCHIN_SYNTHETIC_PREVIEW=preview;
@@ -10,11 +17,12 @@ const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’H
 // This is a fixed chart link, not a current-cycle lookup or the NASR bearing source.
 const verifiedDiagrams={MEM:{url:'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF',effective_date:'2026-10-29',valid_through:'2026-11-26'}};
 function diagramHeader(code){
+ const search=diagramSearchMarkup(airportInfo[code]?.icao,esc);
  const metadata=runwayData?.airport_metadata?.[code];
  const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
- if(!diagram||!/^https:\/\/[^/?#]+\/[^?#]*\.pdf(?:[?#].*)?$/i.test(diagram.url||''))return '';
+ if(!diagram||!/^https:\/\/aeronav\.faa\.gov\/d-tpp\/[0-9]{4}\/[A-Za-z0-9_-]+\.pdf$/i.test(diagram.url||''))return search;
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
- return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
+ return search+`<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}; historical source, check current FAA edition" aria-label="Airport diagram for ${esc(code)}; historical source; opens in a new tab"><span class="diagram-link-text">Historical diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
 }
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
