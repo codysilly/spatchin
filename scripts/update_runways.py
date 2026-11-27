@@ -26,6 +26,10 @@ else:
 AIRPORTS = frozenset(load_c070_stations())  # Verified IATA IDs, not K+IATA guesses.
 LEGACY_COUNTS = {'ORD': 16, 'LAX': 8, 'JFK': 8, 'MEM': 8}
 END_ID = re.compile(r'(?:0[1-9]|[12][0-9]|3[0-6])[LRC]?\Z')
+# FAA AMR data dictionary: H-number identifiers are helipads.
+HELIPAD_ID = re.compile(r'H[1-9][0-9]*\Z')
+# ORD A30-10X: alternate ILS for physical runway 10R, not another runway.
+# https://airnav.com/airport/ORD
 BASE = date(2026, 10, 1)  # Known FAA NASR effective cycle
 OUT = Path('data/runways.json')
 
@@ -83,6 +87,7 @@ def generate(archive, url, cycle):
 
     invalid = {}
     rejected_samples = {}
+    excluded = {code: [] for code in AIRPORTS}
 
     def record_rejection(code, category, runway_end='', runway_pair='', raw_heading=''):
         # FAA runway identifiers are public, but keep production failure logs bounded.
@@ -129,6 +134,18 @@ def generate(archive, url, cycle):
         rid = (row.get('RWY_END_ID') or '').strip().upper()
         pair = (row.get('RWY_ID') or '').strip().upper()
         raw = (row.get('TRUE_ALIGNMENT') or '').strip()
+        # Only exclude documented, single-record non-runway identifiers.
+        # Unknown or paired identifiers remain subject to fail-closed validation.
+        auxiliary_reason = None
+        if pair == rid and not raw:
+            if HELIPAD_ID.fullmatch(rid):
+                auxiliary_reason = 'helipad'
+            elif code == 'ORD' and rid == '10X':
+                auxiliary_reason = 'alternate_ils_for_10R'
+        if auxiliary_reason and rid not in seen[code]:
+            seen[code].add(rid)
+            excluded[code].append({'id': rid, 'reason': auxiliary_reason})
+            continue
         rejection = None
         if not END_ID.fullmatch(rid):
             rejection = 'invalid_runway_end_id'
@@ -173,6 +190,8 @@ def generate(archive, url, cycle):
                     break
         if reason:
             coverage[code] = {'status': 'unavailable', 'reason': reason}
+            if excluded[code]:
+                coverage[code]['excluded_non_runway_records'] = sorted(excluded[code], key=lambda item: item['id'])
             continue
         ends.sort(key=lambda e: (int(e['id'][:2]), e['id']))
         airports[code] = ends
@@ -181,6 +200,8 @@ def generate(archive, url, cycle):
             'runway_ends': len(ends),
             'missing_true_alignments': sum(e['true_heading'] is None for e in ends),
         }
+        if excluded[code]:
+            coverage[code]['excluded_non_runway_records'] = sorted(excluded[code], key=lambda item: item['id'])
 
     # Preserve the four already verified airports; refuse an update that loses them.
     for code in LEGACY_COUNTS:
@@ -243,6 +264,9 @@ def main():
                            if item['status'] != 'available']
             if unavailable:
                 print('Runway data unavailable for: ' + ', '.join(unavailable))
+            for code, item in data['airport_coverage'].items():
+                if item.get('excluded_non_runway_records'):
+                    print(f'{code}: excluded non-runway records: {json.dumps(item["excluded_non_runway_records"], sort_keys=True)}')
             return
         except (OSError, ValueError, TypeError, zipfile.BadZipFile) as exc:
             failures.append(f'{cycle}: {exc}')
