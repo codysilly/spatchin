@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish FAA NASR runway ends for C070 airports, without inferred bearings."""
+"""Publish verified FAA NASR runway inventories and nominal magnetic headings."""
 import csv
 import io
 import json
@@ -15,13 +15,16 @@ from pathlib import Path
 
 if __package__:
     from .c070_station_registry import load_c070_stations
+    from .nasr_runway_inventory import generate_inventory
 else:
     try:
         from scripts.c070_station_registry import load_c070_stations
+        from scripts.nasr_runway_inventory import generate_inventory
     except ModuleNotFoundError as exc:
         if exc.name != 'scripts':
             raise
         from c070_station_registry import load_c070_stations
+        from nasr_runway_inventory import generate_inventory
 
 AIRPORTS = frozenset(load_c070_stations())  # Verified IATA IDs, not K+IATA guesses.
 LEGACY_COUNTS = {'ORD': 16, 'LAX': 8, 'JFK': 8, 'MEM': 8}
@@ -69,6 +72,7 @@ def get_table(archive, filename):
 
 
 def generate(archive, url, cycle):
+    # Legacy true-alignment contract retained for historical offline regressions only.
     # FAA location identifiers are not reliable facility joins on their own.
     # Map verified C070 ICAOs to unique NASR SITE_NO values in APT_BASE,
     # then read only the runway ends belonging to those exact facilities.
@@ -254,12 +258,14 @@ def main():
         try:
             archive, url = fetch_archive(cycle)
             with archive:
-                data = generate(archive, url, cycle)
+                data = generate_inventory(archive, url, cycle, load_c070_stations())
+            for code, count in LEGACY_COUNTS.items():
+                if len(data['airports'][code]) != count:
+                    raise ValueError(f'{code}: legacy inventory count changed; review before publication')
             publish(data)
             available = len(data['airports'])
-            missing_headings = sum(item['missing_true_alignments'] for item in
-                                   data['airport_coverage'].values() if item['status'] == 'available')
-            print(f'FAA NASR cycle {cycle}: {available}/{len(AIRPORTS)} C070 airports have verified runway inventories; {missing_headings} ends lack true alignments')
+            total_ends = sum(len(items) for items in data['airports'].values())
+            print(f'FAA NASR cycle {cycle}: {available}/{len(AIRPORTS)} C070 airports have verified runway inventories; {total_ends} physical runway ends')
             unavailable = [code for code, item in data['airport_coverage'].items()
                            if item['status'] != 'available']
             if unavailable:

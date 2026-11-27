@@ -1,217 +1,5185 @@
 {
-  "source": "FAA NASR 28-Day Subscription \u2014 APT_RWY_END.csv",
-  "source_url": "https://nfdc.faa.gov/webContent/28DaySub/extra/29_Oct_2026_APT_CSV.zip",
-  "effective_date": "2026-10-29",
-  "generated_utc": "2026-11-19T20:47:46.831271+00:00",
-  "heading_reference": "TRUE",
+  "generated_utc": "2026-11-27T12:11:15.642467+00:00",
+  "source": "FAA NASR 28-Day Subscription — APT_BASE.csv / APT_RWY.csv / APT_RWY_END.csv",
+  "source_url": "https://nfdc.faa.gov/webContent/28DaySub/extra/26_Nov_2026_APT_CSV.zip",
+  "effective_date": "2026-11-26",
+  "heading_reference": "MAGNETIC",
   "airports": {
-    "LAX": [
+    "ABE": [
       {
-        "id": "06L",
-        "true_heading": 83.0,
-        "pair": "06L/24R"
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
       },
       {
-        "id": "06R",
-        "true_heading": 83.0,
-        "pair": "06R/24L"
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
       },
       {
-        "id": "07L",
-        "true_heading": 83.0,
-        "pair": "07L/25R"
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
       },
       {
-        "id": "07R",
-        "true_heading": 83.0,
-        "pair": "07R/25L"
-      },
-      {
-        "id": "24L",
-        "true_heading": 263.0,
-        "pair": "06R/24L"
-      },
-      {
-        "id": "24R",
-        "true_heading": 263.0,
-        "pair": "06L/24R"
-      },
-      {
-        "id": "25L",
-        "true_heading": 263.0,
-        "pair": "07R/25L"
-      },
-      {
-        "id": "25R",
-        "true_heading": 263.0,
-        "pair": "07L/25R"
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
       }
     ],
-    "MEM": [
+    "ABQ": [
       {
-        "id": "09",
-        "true_heading": 92.0,
-        "pair": "09/27"
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
       },
       {
-        "id": "18C",
-        "true_heading": 179.0,
-        "pair": "18C/36C"
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
       },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "AFW": [
+      {
+        "id": "16L",
+        "magnetic_heading": 160,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "16R",
+        "magnetic_heading": 160,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34L",
+        "magnetic_heading": 340,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34R",
+        "magnetic_heading": 340,
+        "pair": "16L/34R"
+      }
+    ],
+    "ALB": [
+      {
+        "id": "01",
+        "magnetic_heading": 10,
+        "pair": "01/19"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "19",
+        "magnetic_heading": 190,
+        "pair": "01/19"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "ATL": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "09L",
+        "magnetic_heading": 90,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "09R",
+        "magnetic_heading": 90,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "27L",
+        "magnetic_heading": 270,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "27R",
+        "magnetic_heading": 270,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "ATW": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "AUS": [
       {
         "id": "18L",
-        "true_heading": 179.0,
+        "magnetic_heading": 180,
         "pair": "18L/36R"
       },
       {
         "id": "18R",
-        "true_heading": 179.0,
+        "magnetic_heading": 180,
         "pair": "18R/36L"
       },
       {
-        "id": "27",
-        "true_heading": 272.0,
-        "pair": "09/27"
-      },
-      {
-        "id": "36C",
-        "true_heading": 359.0,
-        "pair": "18C/36C"
-      },
-      {
         "id": "36L",
-        "true_heading": 359.0,
+        "magnetic_heading": 0,
         "pair": "18R/36L"
       },
       {
         "id": "36R",
-        "true_heading": 359.0,
+        "magnetic_heading": 0,
         "pair": "18L/36R"
+      }
+    ],
+    "BDL": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "BFI": [
+      {
+        "id": "14L",
+        "magnetic_heading": 140,
+        "pair": "14L/32R"
+      },
+      {
+        "id": "14R",
+        "magnetic_heading": 140,
+        "pair": "14R/32L"
+      },
+      {
+        "id": "32L",
+        "magnetic_heading": 320,
+        "pair": "14R/32L"
+      },
+      {
+        "id": "32R",
+        "magnetic_heading": 320,
+        "pair": "14L/32R"
+      }
+    ],
+    "BFM": [
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "BGR": [
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "BHM": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "BIL": [
+      {
+        "id": "07",
+        "magnetic_heading": 70,
+        "pair": "07/25"
+      },
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "25",
+        "magnetic_heading": 250,
+        "pair": "07/25"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      }
+    ],
+    "BMI": [
+      {
+        "id": "02",
+        "magnetic_heading": 20,
+        "pair": "02/20"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "20",
+        "magnetic_heading": 200,
+        "pair": "02/20"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "BNA": [
+      {
+        "id": "02C",
+        "magnetic_heading": 20,
+        "pair": "02C/20C"
+      },
+      {
+        "id": "02L",
+        "magnetic_heading": 20,
+        "pair": "02L/20R"
+      },
+      {
+        "id": "02R",
+        "magnetic_heading": 20,
+        "pair": "02R/20L"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "20C",
+        "magnetic_heading": 200,
+        "pair": "02C/20C"
+      },
+      {
+        "id": "20L",
+        "magnetic_heading": 200,
+        "pair": "02R/20L"
+      },
+      {
+        "id": "20R",
+        "magnetic_heading": 200,
+        "pair": "02L/20R"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "BOI": [
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      }
+    ],
+    "BOS": [
+      {
+        "id": "04L",
+        "magnetic_heading": 40,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "04R",
+        "magnetic_heading": 40,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "15L",
+        "magnetic_heading": 150,
+        "pair": "15L/33R"
+      },
+      {
+        "id": "15R",
+        "magnetic_heading": 150,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "22L",
+        "magnetic_heading": 220,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "22R",
+        "magnetic_heading": 220,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      },
+      {
+        "id": "33L",
+        "magnetic_heading": 330,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "33R",
+        "magnetic_heading": 330,
+        "pair": "15L/33R"
+      }
+    ],
+    "BTV": [
+      {
+        "id": "01",
+        "magnetic_heading": 10,
+        "pair": "01/19"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "19",
+        "magnetic_heading": 190,
+        "pair": "01/19"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "BUF": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "BUR": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "BWI": [
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "15L",
+        "magnetic_heading": 150,
+        "pair": "15L/33R"
+      },
+      {
+        "id": "15R",
+        "magnetic_heading": 150,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      },
+      {
+        "id": "33L",
+        "magnetic_heading": 330,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "33R",
+        "magnetic_heading": 330,
+        "pair": "15L/33R"
+      }
+    ],
+    "CAE": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "CHA": [
+      {
+        "id": "02",
+        "magnetic_heading": 20,
+        "pair": "02/20"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "20",
+        "magnetic_heading": 200,
+        "pair": "02/20"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "CHS": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "CID": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "CLE": [
+      {
+        "id": "06L",
+        "magnetic_heading": 60,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "06R",
+        "magnetic_heading": 60,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "24L",
+        "magnetic_heading": 240,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "24R",
+        "magnetic_heading": 240,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "CLT": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "COS": [
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "CPR": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      }
+    ],
+    "CRP": [
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "CVG": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "18C",
+        "magnetic_heading": 180,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "36C",
+        "magnetic_heading": 0,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "DAY": [
+      {
+        "id": "06L",
+        "magnetic_heading": 60,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "06R",
+        "magnetic_heading": 60,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "24L",
+        "magnetic_heading": 240,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "24R",
+        "magnetic_heading": 240,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "DEN": [
+      {
+        "id": "07",
+        "magnetic_heading": 70,
+        "pair": "07/25"
+      },
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "16L",
+        "magnetic_heading": 160,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "16R",
+        "magnetic_heading": 160,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "25",
+        "magnetic_heading": 250,
+        "pair": "07/25"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "34L",
+        "magnetic_heading": 340,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34R",
+        "magnetic_heading": 340,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "DFW": [
+      {
+        "id": "13L",
+        "magnetic_heading": 130,
+        "pair": "13L/31R"
+      },
+      {
+        "id": "13R",
+        "magnetic_heading": 130,
+        "pair": "13R/31L"
+      },
+      {
+        "id": "17C",
+        "magnetic_heading": 170,
+        "pair": "17C/35C"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "31L",
+        "magnetic_heading": 310,
+        "pair": "13R/31L"
+      },
+      {
+        "id": "31R",
+        "magnetic_heading": 310,
+        "pair": "13L/31R"
+      },
+      {
+        "id": "35C",
+        "magnetic_heading": 350,
+        "pair": "17C/35C"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "DJT": [
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "DLH": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      }
+    ],
+    "DSM": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "DTW": [
+      {
+        "id": "03L",
+        "magnetic_heading": 30,
+        "pair": "03L/21R"
+      },
+      {
+        "id": "03R",
+        "magnetic_heading": 30,
+        "pair": "03R/21L"
+      },
+      {
+        "id": "04L",
+        "magnetic_heading": 40,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "04R",
+        "magnetic_heading": 40,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "09L",
+        "magnetic_heading": 90,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "09R",
+        "magnetic_heading": 90,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "21L",
+        "magnetic_heading": 210,
+        "pair": "03R/21L"
+      },
+      {
+        "id": "21R",
+        "magnetic_heading": 210,
+        "pair": "03L/21R"
+      },
+      {
+        "id": "22L",
+        "magnetic_heading": 220,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "22R",
+        "magnetic_heading": 220,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "27L",
+        "magnetic_heading": 270,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "27R",
+        "magnetic_heading": 270,
+        "pair": "09L/27R"
+      }
+    ],
+    "ELP": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      }
+    ],
+    "EWR": [
+      {
+        "id": "04L",
+        "magnetic_heading": 40,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "04R",
+        "magnetic_heading": 40,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "22L",
+        "magnetic_heading": 220,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "22R",
+        "magnetic_heading": 220,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "FAR": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "FAT": [
+      {
+        "id": "11L",
+        "magnetic_heading": 110,
+        "pair": "11L/29R"
+      },
+      {
+        "id": "11R",
+        "magnetic_heading": 110,
+        "pair": "11R/29L"
+      },
+      {
+        "id": "29L",
+        "magnetic_heading": 290,
+        "pair": "11R/29L"
+      },
+      {
+        "id": "29R",
+        "magnetic_heading": 290,
+        "pair": "11L/29R"
+      }
+    ],
+    "FLL": [
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      }
+    ],
+    "FNT": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "FSD": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "FWA": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "GEG": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      }
+    ],
+    "GFK": [
+      {
+        "id": "09L",
+        "magnetic_heading": 90,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "09R",
+        "magnetic_heading": 90,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "27L",
+        "magnetic_heading": 270,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "27R",
+        "magnetic_heading": 270,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "GJT": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "GRR": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "GSO": [
+      {
+        "id": "05L",
+        "magnetic_heading": 50,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "05R",
+        "magnetic_heading": 50,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "23L",
+        "magnetic_heading": 230,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23R",
+        "magnetic_heading": 230,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "GSP": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      }
+    ],
+    "GTF": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "HLN": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "HRL": [
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "HTS": [
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "IAD": [
+      {
+        "id": "01C",
+        "magnetic_heading": 10,
+        "pair": "01C/19C"
+      },
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "19C",
+        "magnetic_heading": 190,
+        "pair": "01C/19C"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "IAH": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "15L",
+        "magnetic_heading": 150,
+        "pair": "15L/33R"
+      },
+      {
+        "id": "15R",
+        "magnetic_heading": 150,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "33L",
+        "magnetic_heading": 330,
+        "pair": "15R/33L"
+      },
+      {
+        "id": "33R",
+        "magnetic_heading": 330,
+        "pair": "15L/33R"
+      }
+    ],
+    "ICT": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "IDA": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "IND": [
+      {
+        "id": "05L",
+        "magnetic_heading": 50,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "05R",
+        "magnetic_heading": 50,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "23L",
+        "magnetic_heading": 230,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23R",
+        "magnetic_heading": 230,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "IWA": [
+      {
+        "id": "12C",
+        "magnetic_heading": 120,
+        "pair": "12C/30C"
+      },
+      {
+        "id": "12L",
+        "magnetic_heading": 120,
+        "pair": "12L/30R"
+      },
+      {
+        "id": "12R",
+        "magnetic_heading": 120,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30C",
+        "magnetic_heading": 300,
+        "pair": "12C/30C"
+      },
+      {
+        "id": "30L",
+        "magnetic_heading": 300,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30R",
+        "magnetic_heading": 300,
+        "pair": "12L/30R"
+      }
+    ],
+    "JAX": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
       }
     ],
     "JFK": [
       {
         "id": "04L",
-        "true_heading": 31.0,
+        "magnetic_heading": 40,
         "pair": "04L/22R"
       },
       {
         "id": "04R",
-        "true_heading": 31.0,
+        "magnetic_heading": 40,
         "pair": "04R/22L"
       },
       {
         "id": "13L",
-        "true_heading": 121.0,
+        "magnetic_heading": 130,
         "pair": "13L/31R"
       },
       {
         "id": "13R",
-        "true_heading": 121.0,
+        "magnetic_heading": 130,
         "pair": "13R/31L"
       },
       {
         "id": "22L",
-        "true_heading": 211.0,
+        "magnetic_heading": 220,
         "pair": "04R/22L"
       },
       {
         "id": "22R",
-        "true_heading": 211.0,
+        "magnetic_heading": 220,
         "pair": "04L/22R"
       },
       {
         "id": "31L",
-        "true_heading": 301.0,
+        "magnetic_heading": 310,
         "pair": "13R/31L"
       },
       {
         "id": "31R",
-        "true_heading": 301.0,
+        "magnetic_heading": 310,
         "pair": "13L/31R"
+      }
+    ],
+    "LAS": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      }
+    ],
+    "LAX": [
+      {
+        "id": "06L",
+        "magnetic_heading": 60,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "06R",
+        "magnetic_heading": 60,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "07L",
+        "magnetic_heading": 70,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "07R",
+        "magnetic_heading": 70,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "24L",
+        "magnetic_heading": 240,
+        "pair": "06R/24L"
+      },
+      {
+        "id": "24R",
+        "magnetic_heading": 240,
+        "pair": "06L/24R"
+      },
+      {
+        "id": "25L",
+        "magnetic_heading": 250,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "25R",
+        "magnetic_heading": 250,
+        "pair": "07L/25R"
+      }
+    ],
+    "LBB": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "LCK": [
+      {
+        "id": "05L",
+        "magnetic_heading": 50,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "05R",
+        "magnetic_heading": 50,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23L",
+        "magnetic_heading": 230,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23R",
+        "magnetic_heading": 230,
+        "pair": "05L/23R"
+      }
+    ],
+    "LFT": [
+      {
+        "id": "04L",
+        "magnetic_heading": 40,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "04R",
+        "magnetic_heading": 40,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "22L",
+        "magnetic_heading": 220,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "22R",
+        "magnetic_heading": 220,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "LGB": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "LIT": [
+      {
+        "id": "04L",
+        "magnetic_heading": 40,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "04R",
+        "magnetic_heading": 40,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "22L",
+        "magnetic_heading": 220,
+        "pair": "04R/22L"
+      },
+      {
+        "id": "22R",
+        "magnetic_heading": 220,
+        "pair": "04L/22R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "LRD": [
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "LSV": [
+      {
+        "id": "03L",
+        "magnetic_heading": 30,
+        "pair": "03L/21R"
+      },
+      {
+        "id": "03R",
+        "magnetic_heading": 30,
+        "pair": "03R/21L"
+      },
+      {
+        "id": "21L",
+        "magnetic_heading": 210,
+        "pair": "03R/21L"
+      },
+      {
+        "id": "21R",
+        "magnetic_heading": 210,
+        "pair": "03L/21R"
+      }
+    ],
+    "MCI": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      }
+    ],
+    "MCO": [
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "MDT": [
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "MEM": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "18C",
+        "magnetic_heading": 180,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "36C",
+        "magnetic_heading": 0,
+        "pair": "18C/36C"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "MHT": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "MIA": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "MKE": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "07L",
+        "magnetic_heading": 70,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "07R",
+        "magnetic_heading": 70,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "25L",
+        "magnetic_heading": 250,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "25R",
+        "magnetic_heading": 250,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "MSN": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "MSO": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "MSP": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "12L",
+        "magnetic_heading": 120,
+        "pair": "12L/30R"
+      },
+      {
+        "id": "12R",
+        "magnetic_heading": 120,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "30L",
+        "magnetic_heading": 300,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30R",
+        "magnetic_heading": 300,
+        "pair": "12L/30R"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "MSY": [
+      {
+        "id": "02",
+        "magnetic_heading": 20,
+        "pair": "02/20"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "20",
+        "magnetic_heading": 200,
+        "pair": "02/20"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      }
+    ],
+    "NQA": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      }
+    ],
+    "OAK": [
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "OKC": [
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "OMA": [
+      {
+        "id": "14L",
+        "magnetic_heading": 140,
+        "pair": "14L/32R"
+      },
+      {
+        "id": "14R",
+        "magnetic_heading": 140,
+        "pair": "14R/32L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "32L",
+        "magnetic_heading": 320,
+        "pair": "14R/32L"
+      },
+      {
+        "id": "32R",
+        "magnetic_heading": 320,
+        "pair": "14L/32R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "ONT": [
+      {
+        "id": "08L",
+        "magnetic_heading": 80,
+        "pair": "08L/26R"
+      },
+      {
+        "id": "08R",
+        "magnetic_heading": 80,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26L",
+        "magnetic_heading": 260,
+        "pair": "08R/26L"
+      },
+      {
+        "id": "26R",
+        "magnetic_heading": 260,
+        "pair": "08L/26R"
       }
     ],
     "ORD": [
       {
         "id": "04L",
-        "true_heading": 39.0,
+        "magnetic_heading": 40,
         "pair": "04L/22R"
       },
       {
         "id": "04R",
-        "true_heading": 42.0,
+        "magnetic_heading": 40,
         "pair": "04R/22L"
       },
       {
         "id": "09C",
-        "true_heading": 90.0,
+        "magnetic_heading": 90,
         "pair": "09C/27C"
       },
       {
         "id": "09L",
-        "true_heading": 90.0,
+        "magnetic_heading": 90,
         "pair": "09L/27R"
       },
       {
         "id": "09R",
-        "true_heading": 90.0,
+        "magnetic_heading": 90,
         "pair": "09R/27L"
       },
       {
         "id": "10C",
-        "true_heading": 90.0,
+        "magnetic_heading": 100,
         "pair": "10C/28C"
       },
       {
         "id": "10L",
-        "true_heading": 90.0,
+        "magnetic_heading": 100,
         "pair": "10L/28R"
       },
       {
         "id": "10R",
-        "true_heading": 90.0,
+        "magnetic_heading": 100,
         "pair": "10R/28L"
       },
       {
         "id": "22L",
-        "true_heading": 222.0,
+        "magnetic_heading": 220,
         "pair": "04R/22L"
       },
       {
         "id": "22R",
-        "true_heading": 219.0,
+        "magnetic_heading": 220,
         "pair": "04L/22R"
       },
       {
         "id": "27C",
-        "true_heading": 270.0,
+        "magnetic_heading": 270,
         "pair": "09C/27C"
       },
       {
         "id": "27L",
-        "true_heading": 270.0,
+        "magnetic_heading": 270,
         "pair": "09R/27L"
       },
       {
         "id": "27R",
-        "true_heading": 270.0,
+        "magnetic_heading": 270,
         "pair": "09L/27R"
       },
       {
         "id": "28C",
-        "true_heading": 270.0,
+        "magnetic_heading": 280,
         "pair": "10C/28C"
       },
       {
         "id": "28L",
-        "true_heading": 270.0,
+        "magnetic_heading": 280,
         "pair": "10R/28L"
       },
       {
         "id": "28R",
-        "true_heading": 270.0,
+        "magnetic_heading": 280,
         "pair": "10L/28R"
       }
+    ],
+    "ORF": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      }
+    ],
+    "PAE": [
+      {
+        "id": "16L",
+        "magnetic_heading": 160,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "16R",
+        "magnetic_heading": 160,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34L",
+        "magnetic_heading": 340,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34R",
+        "magnetic_heading": 340,
+        "pair": "16L/34R"
+      }
+    ],
+    "PDX": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      }
+    ],
+    "PHL": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "09L",
+        "magnetic_heading": 90,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "09R",
+        "magnetic_heading": 90,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "27L",
+        "magnetic_heading": 270,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "27R",
+        "magnetic_heading": 270,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "PHX": [
+      {
+        "id": "07L",
+        "magnetic_heading": 70,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "07R",
+        "magnetic_heading": 70,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "25L",
+        "magnetic_heading": 250,
+        "pair": "07R/25L"
+      },
+      {
+        "id": "25R",
+        "magnetic_heading": 250,
+        "pair": "07L/25R"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      }
+    ],
+    "PIT": [
+      {
+        "id": "10C",
+        "magnetic_heading": 100,
+        "pair": "10C/28C"
+      },
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "28C",
+        "magnetic_heading": 280,
+        "pair": "10C/28C"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "PSM": [
+      {
+        "id": "16",
+        "magnetic_heading": 160,
+        "pair": "16/34"
+      },
+      {
+        "id": "34",
+        "magnetic_heading": 340,
+        "pair": "16/34"
+      }
+    ],
+    "PVD": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "16",
+        "magnetic_heading": 160,
+        "pair": "16/34"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      },
+      {
+        "id": "34",
+        "magnetic_heading": 340,
+        "pair": "16/34"
+      }
+    ],
+    "PWM": [
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "RDU": [
+      {
+        "id": "05L",
+        "magnetic_heading": 50,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "05R",
+        "magnetic_heading": 50,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "23L",
+        "magnetic_heading": 230,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23R",
+        "magnetic_heading": 230,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "RFD": [
+      {
+        "id": "01",
+        "magnetic_heading": 10,
+        "pair": "01/19"
+      },
+      {
+        "id": "07",
+        "magnetic_heading": 70,
+        "pair": "07/25"
+      },
+      {
+        "id": "19",
+        "magnetic_heading": 190,
+        "pair": "01/19"
+      },
+      {
+        "id": "25",
+        "magnetic_heading": 250,
+        "pair": "07/25"
+      }
+    ],
+    "RIC": [
+      {
+        "id": "02",
+        "magnetic_heading": 20,
+        "pair": "02/20"
+      },
+      {
+        "id": "16",
+        "magnetic_heading": 160,
+        "pair": "16/34"
+      },
+      {
+        "id": "20",
+        "magnetic_heading": 200,
+        "pair": "02/20"
+      },
+      {
+        "id": "34",
+        "magnetic_heading": 340,
+        "pair": "16/34"
+      }
+    ],
+    "RNO": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "ROA": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "16",
+        "magnetic_heading": 160,
+        "pair": "16/34"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "34",
+        "magnetic_heading": 340,
+        "pair": "16/34"
+      }
+    ],
+    "ROC": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "07",
+        "magnetic_heading": 70,
+        "pair": "07/25"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "25",
+        "magnetic_heading": 250,
+        "pair": "07/25"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "RST": [
+      {
+        "id": "03",
+        "magnetic_heading": 30,
+        "pair": "03/21"
+      },
+      {
+        "id": "13",
+        "magnetic_heading": 130,
+        "pair": "13/31"
+      },
+      {
+        "id": "21",
+        "magnetic_heading": 210,
+        "pair": "03/21"
+      },
+      {
+        "id": "31",
+        "magnetic_heading": 310,
+        "pair": "13/31"
+      }
+    ],
+    "RSW": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      }
+    ],
+    "SAN": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      }
+    ],
+    "SAT": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "13L",
+        "magnetic_heading": 130,
+        "pair": "13L/31R"
+      },
+      {
+        "id": "13R",
+        "magnetic_heading": 130,
+        "pair": "13R/31L"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "31L",
+        "magnetic_heading": 310,
+        "pair": "13R/31L"
+      },
+      {
+        "id": "31R",
+        "magnetic_heading": 310,
+        "pair": "13L/31R"
+      }
+    ],
+    "SAV": [
+      {
+        "id": "01",
+        "magnetic_heading": 10,
+        "pair": "01/19"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "19",
+        "magnetic_heading": 190,
+        "pair": "01/19"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "SBD": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      }
+    ],
+    "SBN": [
+      {
+        "id": "09L",
+        "magnetic_heading": 90,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "09R",
+        "magnetic_heading": 90,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "27L",
+        "magnetic_heading": 270,
+        "pair": "09R/27L"
+      },
+      {
+        "id": "27R",
+        "magnetic_heading": 270,
+        "pair": "09L/27R"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "SDF": [
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "SEA": [
+      {
+        "id": "16C",
+        "magnetic_heading": 160,
+        "pair": "16C/34C"
+      },
+      {
+        "id": "16L",
+        "magnetic_heading": 160,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "16R",
+        "magnetic_heading": 160,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34C",
+        "magnetic_heading": 340,
+        "pair": "16C/34C"
+      },
+      {
+        "id": "34L",
+        "magnetic_heading": 340,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34R",
+        "magnetic_heading": 340,
+        "pair": "16L/34R"
+      }
+    ],
+    "SFO": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "10L",
+        "magnetic_heading": 100,
+        "pair": "10L/28R"
+      },
+      {
+        "id": "10R",
+        "magnetic_heading": 100,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "28L",
+        "magnetic_heading": 280,
+        "pair": "10R/28L"
+      },
+      {
+        "id": "28R",
+        "magnetic_heading": 280,
+        "pair": "10L/28R"
+      }
+    ],
+    "SGF": [
+      {
+        "id": "02",
+        "magnetic_heading": 20,
+        "pair": "02/20"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "20",
+        "magnetic_heading": 200,
+        "pair": "02/20"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "SHV": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      }
+    ],
+    "SJC": [
+      {
+        "id": "12L",
+        "magnetic_heading": 120,
+        "pair": "12L/30R"
+      },
+      {
+        "id": "12R",
+        "magnetic_heading": 120,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30L",
+        "magnetic_heading": 300,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30R",
+        "magnetic_heading": 300,
+        "pair": "12L/30R"
+      }
+    ],
+    "SKA": [
+      {
+        "id": "05",
+        "magnetic_heading": 50,
+        "pair": "05/23"
+      },
+      {
+        "id": "23",
+        "magnetic_heading": 230,
+        "pair": "05/23"
+      }
+    ],
+    "SLC": [
+      {
+        "id": "14",
+        "magnetic_heading": 140,
+        "pair": "14/32"
+      },
+      {
+        "id": "16L",
+        "magnetic_heading": 160,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "16R",
+        "magnetic_heading": 160,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "17",
+        "magnetic_heading": 170,
+        "pair": "17/35"
+      },
+      {
+        "id": "32",
+        "magnetic_heading": 320,
+        "pair": "14/32"
+      },
+      {
+        "id": "34L",
+        "magnetic_heading": 340,
+        "pair": "16R/34L"
+      },
+      {
+        "id": "34R",
+        "magnetic_heading": 340,
+        "pair": "16L/34R"
+      },
+      {
+        "id": "35",
+        "magnetic_heading": 350,
+        "pair": "17/35"
+      }
+    ],
+    "SMF": [
+      {
+        "id": "17L",
+        "magnetic_heading": 170,
+        "pair": "17L/35R"
+      },
+      {
+        "id": "17R",
+        "magnetic_heading": 170,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35L",
+        "magnetic_heading": 350,
+        "pair": "17R/35L"
+      },
+      {
+        "id": "35R",
+        "magnetic_heading": 350,
+        "pair": "17L/35R"
+      }
+    ],
+    "SNA": [
+      {
+        "id": "02L",
+        "magnetic_heading": 20,
+        "pair": "02L/20R"
+      },
+      {
+        "id": "02R",
+        "magnetic_heading": 20,
+        "pair": "02R/20L"
+      },
+      {
+        "id": "20L",
+        "magnetic_heading": 200,
+        "pair": "02R/20L"
+      },
+      {
+        "id": "20R",
+        "magnetic_heading": 200,
+        "pair": "02L/20R"
+      }
+    ],
+    "STL": [
+      {
+        "id": "06",
+        "magnetic_heading": 60,
+        "pair": "06/24"
+      },
+      {
+        "id": "11",
+        "magnetic_heading": 110,
+        "pair": "11/29"
+      },
+      {
+        "id": "12L",
+        "magnetic_heading": 120,
+        "pair": "12L/30R"
+      },
+      {
+        "id": "12R",
+        "magnetic_heading": 120,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "24",
+        "magnetic_heading": 240,
+        "pair": "06/24"
+      },
+      {
+        "id": "29",
+        "magnetic_heading": 290,
+        "pair": "11/29"
+      },
+      {
+        "id": "30L",
+        "magnetic_heading": 300,
+        "pair": "12R/30L"
+      },
+      {
+        "id": "30R",
+        "magnetic_heading": 300,
+        "pair": "12L/30R"
+      }
+    ],
+    "SWF": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "16",
+        "magnetic_heading": 160,
+        "pair": "16/34"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "34",
+        "magnetic_heading": 340,
+        "pair": "16/34"
+      }
+    ],
+    "SYR": [
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "15",
+        "magnetic_heading": 150,
+        "pair": "15/33"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      },
+      {
+        "id": "33",
+        "magnetic_heading": 330,
+        "pair": "15/33"
+      }
+    ],
+    "TLH": [
+      {
+        "id": "09",
+        "magnetic_heading": 90,
+        "pair": "09/27"
+      },
+      {
+        "id": "18",
+        "magnetic_heading": 180,
+        "pair": "18/36"
+      },
+      {
+        "id": "27",
+        "magnetic_heading": 270,
+        "pair": "09/27"
+      },
+      {
+        "id": "36",
+        "magnetic_heading": 0,
+        "pair": "18/36"
+      }
+    ],
+    "TPA": [
+      {
+        "id": "01L",
+        "magnetic_heading": 10,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "01R",
+        "magnetic_heading": 10,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "10",
+        "magnetic_heading": 100,
+        "pair": "10/28"
+      },
+      {
+        "id": "19L",
+        "magnetic_heading": 190,
+        "pair": "01R/19L"
+      },
+      {
+        "id": "19R",
+        "magnetic_heading": 190,
+        "pair": "01L/19R"
+      },
+      {
+        "id": "28",
+        "magnetic_heading": 280,
+        "pair": "10/28"
+      }
+    ],
+    "TUL": [
+      {
+        "id": "08",
+        "magnetic_heading": 80,
+        "pair": "08/26"
+      },
+      {
+        "id": "18L",
+        "magnetic_heading": 180,
+        "pair": "18L/36R"
+      },
+      {
+        "id": "18R",
+        "magnetic_heading": 180,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "26",
+        "magnetic_heading": 260,
+        "pair": "08/26"
+      },
+      {
+        "id": "36L",
+        "magnetic_heading": 0,
+        "pair": "18R/36L"
+      },
+      {
+        "id": "36R",
+        "magnetic_heading": 0,
+        "pair": "18L/36R"
+      }
+    ],
+    "TUS": [
+      {
+        "id": "04",
+        "magnetic_heading": 40,
+        "pair": "04/22"
+      },
+      {
+        "id": "12",
+        "magnetic_heading": 120,
+        "pair": "12/30"
+      },
+      {
+        "id": "22",
+        "magnetic_heading": 220,
+        "pair": "04/22"
+      },
+      {
+        "id": "30",
+        "magnetic_heading": 300,
+        "pair": "12/30"
+      }
+    ],
+    "TYS": [
+      {
+        "id": "05L",
+        "magnetic_heading": 50,
+        "pair": "05L/23R"
+      },
+      {
+        "id": "05R",
+        "magnetic_heading": 50,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23L",
+        "magnetic_heading": 230,
+        "pair": "05R/23L"
+      },
+      {
+        "id": "23R",
+        "magnetic_heading": 230,
+        "pair": "05L/23R"
+      }
     ]
+  },
+  "airport_coverage": {
+    "ABE": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "ABQ": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "AFW": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "ALB": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "ATL": {
+      "status": "available",
+      "runway_ends": 10
+    },
+    "ATW": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "AUS": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        },
+        {
+          "id": "H2",
+          "reason": "helipad"
+        },
+        {
+          "id": "H3",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "BDL": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BFI": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BFM": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BGR": {
+      "status": "available",
+      "runway_ends": 2,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "BHM": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BIL": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "BMI": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BNA": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "BOI": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "BOS": {
+      "status": "available",
+      "runway_ends": 12
+    },
+    "BTV": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BUF": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BUR": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "BWI": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "CAE": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "CHA": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "CHS": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "CID": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "CLE": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "CLT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "COS": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "CPR": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "CRP": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "CVG": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "DAY": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "DEN": {
+      "status": "available",
+      "runway_ends": 12
+    },
+    "DFW": {
+      "status": "available",
+      "runway_ends": 14
+    },
+    "DJT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "DLH": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "DSM": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "DTW": {
+      "status": "available",
+      "runway_ends": 12,
+      "excluded_non_runway_records": [
+        {
+          "id": "04X/22X",
+          "reason": "alternate_approach_system"
+        }
+      ]
+    },
+    "ELP": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "EWR": {
+      "status": "available",
+      "runway_ends": 6,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "FAR": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "FAT": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "FLL": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "FNT": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "FSD": {
+      "status": "available",
+      "runway_ends": 6,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "FWA": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "GEG": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "GFK": {
+      "status": "available",
+      "runway_ends": 8,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        },
+        {
+          "id": "H10",
+          "reason": "helipad"
+        },
+        {
+          "id": "H11",
+          "reason": "helipad"
+        },
+        {
+          "id": "H12",
+          "reason": "helipad"
+        },
+        {
+          "id": "H2",
+          "reason": "helipad"
+        },
+        {
+          "id": "H3",
+          "reason": "helipad"
+        },
+        {
+          "id": "H4",
+          "reason": "helipad"
+        },
+        {
+          "id": "H5",
+          "reason": "helipad"
+        },
+        {
+          "id": "H6",
+          "reason": "helipad"
+        },
+        {
+          "id": "H7",
+          "reason": "helipad"
+        },
+        {
+          "id": "H8",
+          "reason": "helipad"
+        },
+        {
+          "id": "H9",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "GJT": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "GRR": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "GSO": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "GSP": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "GTF": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "HLN": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "HRL": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "HTS": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "IAD": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "IAH": {
+      "status": "available",
+      "runway_ends": 10
+    },
+    "ICT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "IDA": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "IND": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "IWA": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "JAX": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "JFK": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "LAS": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "LAX": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "LBB": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "LCK": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "LFT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "LGB": {
+      "status": "available",
+      "runway_ends": 6,
+      "excluded_non_runway_records": [
+        {
+          "id": "H2",
+          "reason": "helipad"
+        },
+        {
+          "id": "H3",
+          "reason": "helipad"
+        },
+        {
+          "id": "H4",
+          "reason": "helipad"
+        },
+        {
+          "id": "H5",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "LIT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "LRD": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "LSV": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "MCI": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "MCO": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "MDT": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "MEM": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "MHT": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "MIA": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "MKE": {
+      "status": "available",
+      "runway_ends": 10
+    },
+    "MSN": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "MSO": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "MSP": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "MSY": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        },
+        {
+          "id": "H2",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "NQA": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "OAK": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "OKC": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "OMA": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "ONT": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "ORD": {
+      "status": "available",
+      "runway_ends": 16,
+      "excluded_non_runway_records": [
+        {
+          "id": "10X",
+          "reason": "alternate_approach_system"
+        },
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "ORF": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "PAE": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "PDX": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "PHL": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "PHX": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "PIT": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "PSM": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "PVD": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "PWM": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "RDU": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "RFD": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "RIC": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "RNO": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "ROA": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "ROC": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "RST": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "RSW": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "SAN": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "SAT": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "SAV": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "SBD": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "SBN": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "SDF": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "SEA": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "SFO": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "SGF": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "SHV": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "SJC": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "SKA": {
+      "status": "available",
+      "runway_ends": 2
+    },
+    "SLC": {
+      "status": "available",
+      "runway_ends": 8,
+      "excluded_non_runway_records": [
+        {
+          "id": "HB",
+          "reason": "helipad"
+        },
+        {
+          "id": "HF",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "SMF": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "SNA": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "20X",
+          "reason": "alternate_approach_system"
+        }
+      ]
+    },
+    "STL": {
+      "status": "available",
+      "runway_ends": 8
+    },
+    "SWF": {
+      "status": "available",
+      "runway_ends": 4,
+      "excluded_non_runway_records": [
+        {
+          "id": "H1",
+          "reason": "helipad"
+        }
+      ]
+    },
+    "SYR": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "TLH": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "TPA": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "TUL": {
+      "status": "available",
+      "runway_ends": 6
+    },
+    "TUS": {
+      "status": "available",
+      "runway_ends": 4
+    },
+    "TYS": {
+      "status": "available",
+      "runway_ends": 4
+    }
+  },
+  "airport_metadata": {
+    "ABE": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -12,
+      "magnetic_variation_year": 2005
+    },
+    "ABQ": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 11,
+      "magnetic_variation_year": 1995
+    },
+    "AFW": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2015
+    },
+    "ALB": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -13,
+      "magnetic_variation_year": 1980
+    },
+    "ATL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2015
+    },
+    "ATW": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -2,
+      "magnetic_variation_year": 1995
+    },
+    "AUS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2020
+    },
+    "BDL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -14,
+      "magnetic_variation_year": 1980
+    },
+    "BFI": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 15,
+      "magnetic_variation_year": 2020
+    },
+    "BFM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2005
+    },
+    "BGR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -16,
+      "magnetic_variation_year": 2020
+    },
+    "BHM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2010
+    },
+    "BIL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 10,
+      "magnetic_variation_year": 2020
+    },
+    "BMI": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2015
+    },
+    "BNA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2010
+    },
+    "BOI": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "BOS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -15,
+      "magnetic_variation_year": 2020
+    },
+    "BTV": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -15,
+      "magnetic_variation_year": 2005
+    },
+    "BUF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -11,
+      "magnetic_variation_year": 2015
+    },
+    "BUR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2020
+    },
+    "BWI": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -11,
+      "magnetic_variation_year": 2000
+    },
+    "CAE": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -7,
+      "magnetic_variation_year": 2020
+    },
+    "CHA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2020
+    },
+    "CHS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -7,
+      "magnetic_variation_year": 2010
+    },
+    "CID": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 2,
+      "magnetic_variation_year": 1985
+    },
+    "CLE": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -8,
+      "magnetic_variation_year": 2020
+    },
+    "CLT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -7,
+      "magnetic_variation_year": 2000
+    },
+    "COS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 8,
+      "magnetic_variation_year": 2020
+    },
+    "CPR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 1990
+    },
+    "CRP": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2015
+    },
+    "CVG": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2025
+    },
+    "DAY": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2020
+    },
+    "DEN": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 8,
+      "magnetic_variation_year": 2015
+    },
+    "DFW": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2015
+    },
+    "DJT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2010
+    },
+    "DLH": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2020
+    },
+    "DSM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 1,
+      "magnetic_variation_year": 2020
+    },
+    "DTW": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -7,
+      "magnetic_variation_year": 2020
+    },
+    "ELP": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 8,
+      "magnetic_variation_year": 2015
+    },
+    "EWR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -13,
+      "magnetic_variation_year": 1985
+    },
+    "FAR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2005
+    },
+    "FAT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "FLL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2015
+    },
+    "FNT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2000
+    },
+    "FSD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 5,
+      "magnetic_variation_year": 2000
+    },
+    "FWA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2020
+    },
+    "GEG": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 14,
+      "magnetic_variation_year": 2020
+    },
+    "GFK": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 6,
+      "magnetic_variation_year": 1985
+    },
+    "GJT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 9,
+      "magnetic_variation_year": 2025
+    },
+    "GRR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2020
+    },
+    "GSO": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -8,
+      "magnetic_variation_year": 2010
+    },
+    "GSP": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2010
+    },
+    "GTF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "HLN": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2025
+    },
+    "HRL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 3,
+      "magnetic_variation_year": 2025
+    },
+    "HTS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 1995
+    },
+    "IAD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -10,
+      "magnetic_variation_year": 2000
+    },
+    "IAH": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 3,
+      "magnetic_variation_year": 2015
+    },
+    "ICT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2015
+    },
+    "IDA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2020
+    },
+    "IND": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2015
+    },
+    "IWA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 1980
+    },
+    "JAX": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2010
+    },
+    "JFK": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -13,
+      "magnetic_variation_year": 2020
+    },
+    "LAS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 11,
+      "magnetic_variation_year": 2020
+    },
+    "LAX": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2020
+    },
+    "LBB": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 6,
+      "magnetic_variation_year": 2020
+    },
+    "LCK": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -7,
+      "magnetic_variation_year": 2010
+    },
+    "LFT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 3,
+      "magnetic_variation_year": 1990
+    },
+    "LGB": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 14,
+      "magnetic_variation_year": 1980
+    },
+    "LIT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 0,
+      "magnetic_variation_year": 2020
+    },
+    "LRD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 5,
+      "magnetic_variation_year": 2020
+    },
+    "LSV": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2015
+    },
+    "MCI": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 2,
+      "magnetic_variation_year": 2015
+    },
+    "MCO": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2015
+    },
+    "MDT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -11,
+      "magnetic_variation_year": 2005
+    },
+    "MEM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2020
+    },
+    "MHT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -15,
+      "magnetic_variation_year": 2020
+    },
+    "MIA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2000
+    },
+    "MKE": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -4,
+      "magnetic_variation_year": 2020
+    },
+    "MSN": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2020
+    },
+    "MSO": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "MSP": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 0,
+      "magnetic_variation_year": 2015
+    },
+    "MSY": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2020
+    },
+    "NQA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 0,
+      "magnetic_variation_year": 2000
+    },
+    "OAK": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 14,
+      "magnetic_variation_year": 2015
+    },
+    "OKC": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2020
+    },
+    "OMA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 2,
+      "magnetic_variation_year": 2020
+    },
+    "ONT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2020
+    },
+    "ORD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2010
+    },
+    "ORF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -9,
+      "magnetic_variation_year": 1985
+    },
+    "PAE": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 16,
+      "magnetic_variation_year": 2020
+    },
+    "PDX": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 16,
+      "magnetic_variation_year": 2010
+    },
+    "PHL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -12,
+      "magnetic_variation_year": 2020
+    },
+    "PHX": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2000
+    },
+    "PIT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -9,
+      "magnetic_variation_year": 2020
+    },
+    "PSM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -16,
+      "magnetic_variation_year": 2005
+    },
+    "PVD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -15,
+      "magnetic_variation_year": 1985
+    },
+    "PWM": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -15,
+      "magnetic_variation_year": 2020
+    },
+    "RDU": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -9,
+      "magnetic_variation_year": 2020
+    },
+    "RFD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -3,
+      "magnetic_variation_year": 2020
+    },
+    "RIC": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -10,
+      "magnetic_variation_year": 2020
+    },
+    "RNO": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "ROA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -8,
+      "magnetic_variation_year": 2010
+    },
+    "ROC": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -12,
+      "magnetic_variation_year": 2015
+    },
+    "RST": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2025
+    },
+    "RSW": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -4,
+      "magnetic_variation_year": 2000
+    },
+    "SAN": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 11,
+      "magnetic_variation_year": 2020
+    },
+    "SAT": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 4,
+      "magnetic_variation_year": 2020
+    },
+    "SAV": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2005
+    },
+    "SBD": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2005
+    },
+    "SBN": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2025
+    },
+    "SDF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2020
+    },
+    "SEA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 16,
+      "magnetic_variation_year": 2020
+    },
+    "SFO": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 14,
+      "magnetic_variation_year": 2015
+    },
+    "SGF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 3,
+      "magnetic_variation_year": 2000
+    },
+    "SHV": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 2,
+      "magnetic_variation_year": 2020
+    },
+    "SJC": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "SKA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 16,
+      "magnetic_variation_year": 2010
+    },
+    "SLC": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 11,
+      "magnetic_variation_year": 2020
+    },
+    "SMF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 13,
+      "magnetic_variation_year": 2020
+    },
+    "SNA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 12,
+      "magnetic_variation_year": 2015
+    },
+    "STL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -1,
+      "magnetic_variation_year": 2020
+    },
+    "SWF": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -14,
+      "magnetic_variation_year": 1995
+    },
+    "SYR": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -13,
+      "magnetic_variation_year": 2000
+    },
+    "TLH": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2020
+    },
+    "TPA": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -5,
+      "magnetic_variation_year": 2010
+    },
+    "TUL": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 3,
+      "magnetic_variation_year": 2020
+    },
+    "TUS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": 9,
+      "magnetic_variation_year": 2025
+    },
+    "TYS": {
+      "heading_method": "runway-designation-magnetic",
+      "magnetic_variation_deg": -6,
+      "magnetic_variation_year": 2015
+    }
   }
 }

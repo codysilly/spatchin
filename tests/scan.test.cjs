@@ -52,7 +52,7 @@ beforeEach(async () => {
     [...document.querySelectorAll('.airport .metar-raw')].length===3 &&
     [...document.querySelectorAll('.airport .metar-raw')].every(el=>el.textContent.includes('SYNTHETIC SCAN TEST')) &&
     document.querySelectorAll('.airport .metar-status').length===0 &&
-    document.querySelector('.rw-table td[title]')?.title.startsWith('FAA NASR true alignment') &&
+    document.querySelector('.rw-table td[title]')?.title.startsWith('Approximate magnetic runway heading') &&
     document.querySelector('[data-airport="ORD"] .atis-raw'));
   await page.waitForLoadState('networkidle');
 });
@@ -81,9 +81,9 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   assert.equal(await page.locator('[data-airport="MEM"] .metar-panel a.report-source').getAttribute('href'),'https://aviationweather.gov/data/metar/?ids=KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
-  // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
-  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .rw-table td[title]')?.title.startsWith('FAA NASR true alignment'));
-  assert.ok((await page.locator('[data-airport="MEM"] .rw-table > tbody > tr.runway-row td:first-child').evaluateAll(cells=>cells.map(cell=>cell.title))).every(title=>title.startsWith('FAA NASR true alignment:')));
+  // SCAN must preserve the published magnetic runway headings and provenance.
+  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .rw-table td[title]')?.title.startsWith('Approximate magnetic runway heading'));
+  assert.ok((await page.locator('[data-airport="MEM"] .rw-table > tbody > tr.runway-row td:first-child').evaluateAll(cells=>cells.map(cell=>cell.title))).every(title=>title.startsWith('Approximate magnetic runway heading:')));
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').allTextContents(),['09','18C','18L','18R','27','36C','36L','36R']);
   assert.deepEqual(await page.locator('.rw-table > tbody > tr.runway-row > td:nth-child(2), .rw-table > tbody > tr.runway-row > td:nth-child(3)').allTextContents(),Array(16).fill('—'));
   const chart=page.locator('[data-airport="MEM"] .airport-diagram a');
@@ -184,7 +184,7 @@ test('safe DOM highlighting preserves links, listeners, inputs and editable cont
   await search('');await count(0);assert.match(await page.locator('#fixture p').textContent(),/^<img/);
 });
 test('airport, METAR, ATIS and runway behavior survives highlights and data refresh',async()=>{
-  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('FAA NASR true alignment'));
+  await page.waitForFunction(()=>document.querySelectorAll('.atis-raw').length>0 && document.querySelector('.rw-table td[title]').title.startsWith('Approximate magnetic runway heading'));
   const dashboard = () => page.locator('#cards').evaluate(el=>({
     text:el.textContent,
     runways:[...el.querySelectorAll('.rw-table > tbody > tr.runway-row')].map(row=>[...row.cells].map(cell=>({text:cell.textContent,title:cell.title})))

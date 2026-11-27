@@ -44,10 +44,15 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   assert.equal(await page.locator('[data-airport="MEM"] .category-tag').innerText(),'VFR');
   assert.equal(await page.locator('.flight-strip,.flight-segment').count(),0);
   assert.match(await page.locator('[data-airport="MEM"] .metar-status').innerText(),/STALE/);
+  const published=JSON.parse(readFileSync('data/runways.json','utf8'));
   for(const code of ['IND','OAK']){
    assert.equal(await page.locator('[data-airport="'+code+'"] .category-tag').innerText(),'NO DATA');
    assert.equal(await page.locator('[data-airport="'+code+'"] .flight-strip').count(),0);
-   assert.match(await page.locator('[data-airport="'+code+'"] .empty').innerText(),/Runway data pending/);
+   const card=page.locator('[data-airport="'+code+'"]');
+   await card.locator('.runway-row').first().waitFor();
+   assert.deepEqual(await card.locator('.runway-row td:first-child').allTextContents(),published.airports[code].map(end=>end.id));
+   assert.equal(await card.locator('.empty').count(),0);
+   assert.deepEqual(await card.locator('.runway-row > td:nth-child(2), .runway-row > td:nth-child(3)').allTextContents(),Array(published.airports[code].length*2).fill('—'));
   }
   const dom=await page.evaluate(()=>{
    const s=el=>getComputedStyle(document.querySelector(el));
