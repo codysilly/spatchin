@@ -13,7 +13,7 @@ test('synthetic data is rejected in production, accepted only by an explicit pre
 });
 test('startup refresh uses the fixed same-origin snapshot with redirects disabled and single-flight',async()=>{
  let finish,calls=0;const events=[];
- const store=snapshots.create({...config,onChange:s=>events.push(s),fetchFn:(url,options)=>{calls++;assert.equal(url,'https://example.test/spatchin/data/notams.json');assert.equal(options.cache,'no-store');assert.equal(options.redirect,'error');return new Promise(r=>finish=r);}});
+ const store=snapshots.create({...config,onChange:s=>events.push(s),fetchFn:(url,options)=>{calls++;assert.equal(url,'https://example.test/spatchin/data/notams.json');assert.equal(options.cache,'no-cache');assert.equal(options.redirect,'error');return new Promise(r=>finish=r);}});
  const first=store.refresh(),second=store.refresh();assert.equal(first,second);assert.equal(store.read().refreshing,true);
  await Promise.resolve();finish(ok(fixture()));await first;
  assert.equal(calls,1);assert.equal(events.length,2);assert.equal(store.read().error,null);assert.equal(store.read().snapshot.airports.KMEM.notices.length,2);

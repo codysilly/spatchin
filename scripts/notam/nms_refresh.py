@@ -221,7 +221,7 @@ class Store:
         with self.review_connect() as db:
             return base64.b64decode(self.load(db)["published_b64"], validate=True)
 
-    def reserve(self, db, mode, now):
+    def reserve(self, db, mode, now, *, validate_state=None, production=False):
         if mode not in ("bulk", "delta"):
             raise RefreshError("INVALID_REQUEST")
         with self.transaction(db):
@@ -234,6 +234,7 @@ class Store:
                 if not state["baseline"] or state["watermark"] is None:
                     raise RefreshError("BASELINE_REQUIRED")
                 delta_request(state["watermark"], now)
+            approval = validate_state(db, state, now) if validate_state is not None else None
             rows = db.execute("SELECT kind,reserved,last_io FROM attempts").fetchall()
             for kind, reserved, last_io in rows:
                 if kind not in ("bulk", "delta", "other-data"):
@@ -251,6 +252,9 @@ class Store:
                 "INSERT INTO attempts VALUES (?,?,?,?,?,NULL)", (attempt, mode, at, at, "RESERVED")
             )
             state["active"] = attempt
+            if production:
+                state["production_active_attempt"] = attempt
+                state["production_active_approval"] = approval
             state["attempt_count"] += 1
             self.save(db, state)
         # Commit completed before auth/data I/O. A restart now finds a durable
@@ -445,6 +449,8 @@ class Store:
                 raise RefreshError("RECOVERY_REQUIRED")
             # Prior accepted catalog, publication bytes and watermark stay intact.
             state["active"] = None
+            state.pop("production_active_attempt", None)
+            state.pop("production_active_approval", None)
             if code in ("DELTA_GAP", "CONFLICT", "CLOCK_ROLLBACK", "BASELINE_CUTOVER_REQUIRED"):
                 state["recovery"] = code
             self.save(db, state)

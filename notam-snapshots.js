@@ -7,6 +7,8 @@ export const NotamSnapshots = (() => {
   if(data.synthetic!==undefined&&typeof data.synthetic!=='boolean')throw Error('Invalid synthetic marker');
   if(data.synthetic===true&&!allowSynthetic)throw Error('Synthetic NOTAM snapshot rejected outside preview');
   if(typeof data.retrieved_utc!=='string'||!/(?:Z|[+-]\d{2}:\d{2})$/.test(data.retrieved_utc)||!Number.isFinite(Date.parse(data.retrieved_utc)))throw Error('Invalid NOTAM retrieval timestamp');
+  const publication=data.publication;
+  if(publication?.freshness_policy==='AGE_LIMIT'&&(!Number.isInteger(publication.stale_after_hours)||publication.stale_after_hours<1||publication.stale_after_hours>24))throw Error('Invalid NOTAM freshness policy');
   for(const [code,entry] of Object.entries(data.airports)){
    if(!/^[A-Z0-9]{3,4}$/.test(code)||!object(entry)||!Array.isArray(entry.notices))throw Error('Invalid NOTAM airport collection');
    for(const field of ['warning','completeness'])if(entry[field]!==undefined&&typeof entry[field]!=='string')throw Error('Invalid NOTAM collection metadata');
@@ -37,11 +39,18 @@ export const NotamSnapshots = (() => {
     const controller=new AbortController();let timer;
     try{
      const work=(async()=>{
-      const response=await fetchFn(url.href,{cache:'no-store',credentials:'same-origin',redirect:'error',signal:controller.signal});
+      const response=await fetchFn(url.href,{cache:'no-cache',credentials:'same-origin',redirect:'error',signal:controller.signal});
       if(!response.ok)throw Error(`NOTAM snapshot refresh failed (HTTP ${response.status})`);
       const data=validate(await response.json(),{allowSynthetic});
       if(Date.parse(data.retrieved_utc)>now())throw Error('Future NOTAM snapshot rejected; retrieval time unverified');
-      if(state.snapshot&&Date.parse(data.retrieved_utc)<Date.parse(state.snapshot.retrieved_utc))throw Error('Older NOTAM snapshot rejected');
+      if(state.snapshot){
+       const age=Date.parse(data.retrieved_utc)-Date.parse(state.snapshot.retrieved_utc);
+       if(age<0)throw Error('Older NOTAM snapshot rejected');
+       if(age===0){
+        if(JSON.stringify(data)!==JSON.stringify(state.snapshot))throw Error('Conflicting NOTAM snapshot rejected');
+        return state.snapshot;
+       }
+      }
       return data;
      })();
      const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('NOTAM snapshot refresh timed out'));},timeoutMs);});
@@ -50,7 +59,7 @@ export const NotamSnapshots = (() => {
      state.error=null;
     }catch(error){
      // Fixed local diagnostics only; never expose server bodies or arbitrary URLs.
-     state.error=/^(NOTAM snapshot refresh failed \(HTTP \d{3}\)|Invalid NOTAM .+|Invalid synthetic marker|Synthetic NOTAM snapshot rejected outside preview|Older NOTAM snapshot rejected|Future NOTAM snapshot rejected; retrieval time unverified|NOTAM snapshot refresh timed out)$/.test(error?.message||'')?error.message:'NOTAM snapshot refresh failed';
+     state.error=/^(NOTAM snapshot refresh failed \(HTTP \d{3}\)|Invalid NOTAM .+|Invalid synthetic marker|Synthetic NOTAM snapshot rejected outside preview|Older NOTAM snapshot rejected|Conflicting NOTAM snapshot rejected|Future NOTAM snapshot rejected; retrieval time unverified|NOTAM snapshot refresh timed out)$/.test(error?.message||'')?error.message:'NOTAM snapshot refresh failed';
     }finally{clearTimeout(timer);state.refreshing=false;pending=null;notify();}
     return read();
    });

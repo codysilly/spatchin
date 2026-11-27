@@ -16,6 +16,7 @@ Repository policy and contributor entry points remain at the root: [`README.md`]
 - [ATIS coverage](ATIS_COVERAGE.md)
 - [C070 runways](C070_RUNWAYS.md)
 - [NOTAM snapshots](NOTAM_SNAPSHOTS.md), [adapter](NOTAM_ADAPTER.md), [review](NOTAM_REVIEW.md), [refresh](NOTAM_REFRESH.md), [MEM capture](MEM_CAPTURE.md), and [publication conditions](NOTAM_PUBLICATION_CONDITIONS.md)
+- [Production NOTAM operator runbook](NOTAM_OPERATIONS.md)
 - [METAR watchdog](METAR_WATCHDOG.md)
 
 ## Infrastructure and governance

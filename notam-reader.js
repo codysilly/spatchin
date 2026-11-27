@@ -4,7 +4,7 @@ export const NotamReader = (() => {
  // Character references avoid HTML's CR/CRLF normalization of source text.
  const esc=s=>String(s??'Not supplied').replace(/[&<>"'\r]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','\r':'&#13;'}[c]));
  let snapshot=null, error=null;
- const opened=new Set(),scrollPositions=new Map(); let focus=null;
+ const opened=new Set(),openedAirports=new Set(),scrollPositions=new Map(); let focus=null;
  function references(text, inventory){
   const found=[]; const known=new Set(inventory);
   const pattern=/\bRWYS?\s+((?:3[0-6]|[12][0-9]|0?[1-9])[LRC]?(?:(?:\s*[/,]\s*|\s+AND\s+)(?:RWYS?\s+)?(?:3[0-6]|[12][0-9]|0?[1-9])[LRC]?)*)\b/gi;
@@ -32,11 +32,18 @@ export const NotamReader = (() => {
  function airportRecords(code){return (snapshot?.airports?.[code]?.notices||[]).map((n,i)=>({...n,key:`${code}-${i}`})).sort(compare);}
  function verifiedZero(code){const e=snapshot?.airports?.[code];return Boolean(e&&e.notices.length===0&&e.completeness==='VERIFIED'&&e.zero_verified===true&&typeof e.verification_reference==='string'&&e.verification_reference.trim());}
  function availability(code){const e=snapshot?.airports?.[code];return !e?'Unavailable — no accepted airport snapshot':verifiedZero(code)?'Explicitly verified zero airport notices; not an operational status':'Coverage UNKNOWN — snapshot references only';}
- function summary(code){
+ function freshness(retrieved,now){
+  const policy=snapshot?.publication,limit=policy?.stale_after_hours;
+  if(policy?.freshness_policy!=='AGE_LIMIT'||!Number.isInteger(limit)||!Number.isFinite(retrieved)||retrieved>now)return 'UNKNOWN';
+  return now-retrieved>=limit*3600000?'STALE':'Within snapshot age limit';
+ }
+ function summary(code,now=Date.now()){
   const entry=snapshot?.airports?.[code],stamp=Date.parse(snapshot?.retrieved_utc);
   const retrieved=Number.isFinite(stamp)?new Date(stamp).toISOString().slice(0,16).replace('T',' ')+' UTC':'Unavailable';
   const all=entry?airportRecords(code):[];
-  return `<section id="coverage-${esc(code)}" class="notam-summary" aria-label="${esc(code)} NOTAM coverage"><strong>${!entry?'NOTAM data unavailable':'NOTAM snapshot'}</strong>${entry?`<p>Retrieved: ${esc(retrieved)}</p>`:''}${snapshot?.synthetic?'<p>SYNTHETIC — NO LIVE DATA</p>':''}${error?`<p role="status">${esc(error)}</p>${entry?'<p>Showing retained snapshot after reader error.</p>':''}`:''}${entry?`<details class="airport-notam-list" id="airport-notams-${esc(code)}"><summary>All airport snapshot notices (${all.length})</summary>${all.length?list(all):'<p>No notices in this airport snapshot.</p>'}</details>`:''}</section>`;
+  const source=snapshot?.publication?.source;
+  const status=entry&&!snapshot?.synthetic?`<p>${esc(availability(code))}</p><p>Freshness: ${esc(freshness(stamp,now))}</p>`:'';
+  return `<section id="coverage-${esc(code)}" class="notam-summary" aria-label="${esc(code)} NOTAM coverage"><strong>${!entry?'NOTAM data unavailable':'NOTAM snapshot'}</strong>${entry?`<p>Retrieved: ${esc(retrieved)}</p>${source?`<p>Source: ${esc(source)}</p>`:''}${status}`:''}${snapshot?.synthetic?'<p>SYNTHETIC — NO LIVE DATA</p>':''}${error?`<p role="status">${esc(error)}</p>${entry?'<p>Showing retained snapshot after reader error.</p>':''}`:''}${entry?`<details class="airport-notam-list" id="airport-notams-${esc(code)}"><summary id="airport-notam-toggle-${esc(code)}">All airport snapshot notices (${all.length})</summary>${all.length?list(all):'<p>No notices in this airport snapshot.</p>'}</details>`:''}</section>`;
  }
  function cell(code,id,inventory){const n=records(code,inventory).filter(n=>n.references.some(r=>r.id===id)).length;return `<td class="unknown"><button id="toggle-${esc(code)}-${esc(id)}" type="button" data-reader-open="${esc(code)}-${esc(id)}" aria-label="NOTAMs (${n}) for runway ${esc(id)} at ${esc(code)}" aria-describedby="coverage-${esc(code)}" aria-expanded="false" aria-controls="reader-${esc(code)}-${esc(id)}">NOTAMs (${n})</button><small class="reader-note">${esc(!snapshot?.airports?.[code]?'Unavailable':n?'Literal matches':verifiedZero(code)?'Verified zero':'No literal matches')}</small></td>`;}
  function localTexts(n){return (Array.isArray(n.formatted_texts)?n.formatted_texts:[]).filter(t=>t?.type==='LOCAL_FORMAT'&&typeof t.text==='string').map(t=>t.text);}
@@ -44,7 +51,8 @@ export const NotamReader = (() => {
  function row(code,id,inventory){const items=records(code,inventory).filter(n=>n.references.some(r=>r.id===id));return `<tr id="reader-${esc(code)}-${esc(id)}" class="notam-detail-row" data-reader-inline hidden><td colspan="4"><section id="scroll-${esc(code)}-${esc(id)}" class="inline-reader" data-reader-scroll tabindex="0" role="region" aria-label="${esc(code)} runway ${esc(id)} source notices" aria-describedby="coverage-${esc(code)}"><div class="reader-scroll-title" data-scan-ignore>${esc(code)} / Runway ${esc(id)} source notices</div>${items.length?list(items):`<p>${!snapshot?.airports?.[code]?'NOTAM data unavailable.':verifiedZero(code)?'Verified zero notices in this airport snapshot.':'No literal references in this snapshot.'}</p>`}</section></td></tr>`;}
  function before(){
   if(typeof document==='undefined'||!document.querySelectorAll)return;
-  opened.clear();
+  opened.clear();openedAirports.clear();
+  document.querySelectorAll('.airport-notam-list[open]').forEach(el=>openedAirports.add(el.id));
   document.querySelectorAll('[data-reader-inline]').forEach(el=>{if(!el.hidden)opened.add(el.id);});
   document.querySelectorAll('[data-reader-scroll]').forEach(el=>{if(!el.closest('[data-reader-inline]')?.hidden)scrollPositions.set(el.id,el.scrollTop);});
   const active=document.activeElement;
@@ -52,6 +60,7 @@ export const NotamReader = (() => {
  }
  function after(){
   if(typeof document==='undefined'||!document.querySelectorAll)return;
+  openedAirports.forEach(id=>{const details=document.getElementById(id);if(details)details.open=true;});
   document.querySelectorAll('[data-reader-inline]').forEach(el=>{el.hidden=!opened.has(el.id);});
   document.querySelectorAll('[data-reader-scroll]').forEach(el=>{if(!el.closest('[data-reader-inline]')?.hidden)el.scrollTop=scrollPositions.get(el.id)||0;});
   document.querySelectorAll('[data-reader-open]').forEach(b=>{
