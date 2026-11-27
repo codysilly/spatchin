@@ -3,7 +3,7 @@ const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
 const {pythonCommand}=require('./python-launcher.cjs');
-const {mkdirSync}=require('node:fs');
+const {mkdirSync,readFileSync}=require('node:fs');
 const {chromium}=require('playwright');
 
 const base='http://127.0.0.1:8784';
@@ -187,5 +187,47 @@ for(const width of [1440,390])test('ATIS coverage states render at '+width+'px',
   assert.deepEqual(errors,[]);
   mkdirSync('screenshots',{recursive:true});
   await page.screenshot({path:'screenshots/atis-coverage-'+width+'.png',fullPage:true});
+ }finally{await context.close();}
+});
+
+for(const width of [1440,390])test('current diagram links on the production root at '+width+'px',async()=>{
+ const index=JSON.parse(readFileSync('data/airport-diagrams.json','utf8'));
+ const context=await browser.newContext({viewport:{width,height:1000}});
+ const page=await context.newPage(),errors=[],external=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await context.route('**/*',route=>{
+  const url=new URL(route.request().url());
+  if(url.origin===base)return route.continue();
+  if(/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname))return route.abort();
+  external.push(url.href);return route.abort();
+ });
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM","ORD","LAX","JFK"]'));
+ await page.clock.setFixedTime(new Date(index.effective_from_utc));
+ try{
+  await page.goto(base+'/');
+  for(const code of ['MEM','ORD','LAX','JFK']){
+   const expected='https://aeronav.faa.gov/d-tpp/'+index.cycle+'/'+index.airports[code].pdf_name;
+   const card=page.locator('[data-airport="'+code+'"]');
+   const link=card.locator('a[href="'+expected+'"]');
+   await link.waitFor({state:'visible'});
+   assert.equal(await link.count(),1);
+   assert.equal(await link.getAttribute('target'),'_blank');
+   assert.match(await link.getAttribute('title'),/FAA d-TPP cycle/);
+   const geometry=await link.evaluate(el=>{
+    const rect=el.getBoundingClientRect(),head=el.closest('.airport-head').getBoundingClientRect();
+    const code=el.closest('.airport-head').querySelector('.icao').getBoundingClientRect();
+    return {inside:rect.left>=head.left-1&&rect.right<=head.right+1,
+     overlap:rect.left<code.right&&code.left<rect.right&&rect.top<code.bottom&&code.top<rect.bottom};
+   });
+   assert.equal(geometry.inside,true,code);assert.equal(geometry.overlap,false,code);
+  }
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+  mkdirSync('screenshots',{recursive:true});
+  await page.screenshot({path:'screenshots/airport-diagrams-'+width+'.png',fullPage:true});
+  await page.clock.setFixedTime(new Date(index.effective_to_utc));
+  await page.reload();
+  await page.locator('[data-airport="ORD"] a[aria-label^="Find FAA diagram"]').waitFor({state:'visible'});
+  assert.equal(await page.locator('[data-airport="ORD"] a[href$=".PDF"]').count(),0);
+  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
 });

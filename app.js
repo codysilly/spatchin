@@ -1,4 +1,5 @@
 'use strict';
+import {currentDiagramMarkup,diagramSearchMarkup} from './airport-diagrams.js';
 // Spatchin v0.9. METARs loaded from GitHub Pages same-origin JSON. Not for operational dispatch use.
 // Explicit dependencies keep browser state inside one dashboard instance.
 export function mountDashboard({AirportCatalog,AirportMetadata,NotamReader,NotamSnapshots,preview,enableForecast=false}={}){
@@ -6,15 +7,15 @@ const SPATCHIN_SYNTHETIC_PREVIEW=preview;
 const runwayPairs={ORD:['04L/22R','04R/22L','09L/27R','09R/27L','09C/27C','10L/28R','10C/28C','10R/28L'],LAX:['06L/24R','06R/24L','07L/25R','07R/25L'],JFK:['04L/22R','04R/22L','13L/31R','13R/31L']};
 const approvedCatalog=typeof AirportCatalog==='undefined'?Object.keys({MEM:1,ORD:1,LAX:1,JFK:1}):AirportCatalog;
 const airportInfo=typeof AirportMetadata==='undefined'?{ORD:{name:'Chicago O’Hare',icao:'KORD'},LAX:{name:'Los Angeles International',icao:'KLAX'},JFK:{name:'John F. Kennedy International',icao:'KJFK'},MEM:{name:'Memphis International Airport',icao:'KMEM'}}:AirportMetadata;
-// Previously verified chart metadata, preserved from a986cedf13bcde536987848b16bf91d2d1213eff.
-// This is a fixed chart link, not a current-cycle lookup or the NASR bearing source.
-const verifiedDiagrams={MEM:{url:'https://aeronav.faa.gov/d-tpp/2611/00253AD.PDF',effective_date:'2026-10-29',valid_through:'2026-11-26'}};
+// Historical chart sources are shown only for chart-derived runway bearings.
+let diagramIndex=null;
 function diagramHeader(code){
+ const search=currentDiagramMarkup(diagramIndex,code,airportInfo[code]?.icao,esc)||diagramSearchMarkup(airportInfo[code]?.icao,esc);
  const metadata=runwayData?.airport_metadata?.[code];
- const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:verifiedDiagrams[code];
- if(!diagram||!/^https:\/\/[^/?#]+\/[^?#]*\.pdf(?:[?#].*)?$/i.test(diagram.url||''))return '';
+ const diagram=metadata?.heading_method==='chart-derived-approximate'?{...metadata,url:metadata.source_url}:null;
+ if(!diagram||!/^https:\/\/aeronav\.faa\.gov\/d-tpp\/[0-9]{4}\/[A-Za-z0-9_-]+\.pdf$/i.test(diagram.url||''))return search;
  const dates=`Chart effective ${diagram.effective_date||'not supplied'}${diagram.valid_through?' through '+diagram.valid_through:''}`;
- return `<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}" aria-label="Airport diagram for ${esc(code)}; opens in a new tab"><span class="diagram-link-text">Airport diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
+ return search+`<div class="airport-diagram"><a href="${esc(diagram.url)}" target="_blank" rel="noopener" title="${esc(dates)}; historical source, check current FAA edition" aria-label="Airport diagram for ${esc(code)}; historical source; opens in a new tab"><span class="diagram-link-text">Historical diagram </span><span aria-hidden="true">↗</span><span class="sr-only"> (${esc(dates)})</span></a></div>`;
 }
 let runwayData=null;
 const reader=typeof NotamReader==='undefined'?null:NotamReader;
@@ -501,6 +502,16 @@ const PublishedSnapshots=(()=>{
  }
  return {metars,atis,runways,tafs};
 })();
+async function refreshDiagrams(){
+ if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
+ try{
+  const response=await fetch('./data/airport-diagrams.json',{cache:'no-store'});
+  if(!response.ok)throw new Error(`HTTP ${response.status}`);
+  const data=await response.json();
+  if(data?.schema_version!==1||!data.airports)throw new Error('Invalid diagram index');
+  diagramIndex=data;render();
+ }catch(e){console.info('FAA diagram index unavailable; check current edition at FAA:',e.message);}
+}
 async function refreshRunways(){
  if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined')return;
  try{
@@ -530,8 +541,8 @@ async function refreshTafs(){
 }
 function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}
 function startDashboard(){
- clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshAtis();refreshTafs();notamSnapshots?.refresh();
- setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
+ clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshDiagrams();refreshAtis();refreshTafs();notamSnapshots?.refresh();
+ setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshDiagrams,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
 }
 async function loadForecastModules(){
  const [reader,timeline]=await Promise.allSettled([import('./taf-reader.js'),import('./taf-timeline.js')]);

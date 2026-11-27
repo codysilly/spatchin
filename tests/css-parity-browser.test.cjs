@@ -2,6 +2,9 @@
 // Preserve SPA-68's historical zero-difference proof, independently of later features.
 // Preserve the SPA-96 proof and compare this worktree with the pre-SPA-106 main.
 // Each comparison uses identical pinned data on both sides.
+// SPA-115 intentionally changes the diagram header. For the CSS-only comparison,
+// use the pinned diagram renderer on the current side; all other app code and CSS
+// remain current. Real diagram UI is exercised by the production-root browser tests.
 // No external provider or font requests are allowed.
 const {test,before,after}=require('node:test');
 const assert=require('node:assert/strict');
@@ -49,7 +52,22 @@ async function launch(width,revision,dataRevision,pagePath='/'){
   if(u.origin!==origin)return route.abort();
   const file=u.pathname==='/'?'index.html':u.pathname.slice(1);
   const sha=file.startsWith('data/')?dataRevision:revision;
-  if(!sha)return route.continue();
+  if(!sha){
+   if(file==='app.js'&&dataRevision===currentBaseline){
+    const {readFileSync}=require('node:fs');
+    const extract=source=>{
+     const start=source.indexOf('function diagramHeader(code){'),end=source.indexOf('\nlet runwayData=null;',start);
+     assert.ok(start>=0&&end>start,'diagram renderer boundary');
+     return {start,end};
+    };
+    const current=readFileSync('app.js','utf8'),old=blob(currentBaseline,'app.js').toString('utf8');
+    const a=extract(current),z=extract(old);
+    const oldData=old.match(/^const verifiedDiagrams=.*;$/m);
+    assert.ok(oldData,'pinned historical diagram metadata');
+    return route.fulfill({status:200,contentType:'text/javascript',body:current.slice(0,a.start)+oldData[0]+'\n'+old.slice(z.start,z.end)+current.slice(a.end)});
+   }
+   return route.continue();
+  }
   if(!paths(sha).has(file))return route.fulfill({status:404,body:''});
   return route.fulfill({status:200,contentType:mime[file.split('.').at(-1)]||'application/octet-stream',body:(()=>{
     const original=blob(sha,file);

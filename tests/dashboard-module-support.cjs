@@ -15,6 +15,8 @@ function instrument(source,insertion){
 function mountInVM(context,dependencies=[]){
  // Execute the exported factory in the existing VM realm with the original DOM,
  // clock, transport and storage stubs. Load only the requested module dependencies.
+ // Load the real diagram module in the same realm as the instrumented factory.
+ vm.runInContext(read('airport-diagrams.js').replace(/^export function /gm,'function '),context,{filename:'airport-diagrams.js'});
  const bindings=[];
  for(const [file,names] of dependencies){
   const source=read(file);
