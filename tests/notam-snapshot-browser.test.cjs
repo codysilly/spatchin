@@ -27,7 +27,8 @@ for(const width of [1440,390])test(`same-origin snapshot flow, retained failures
  });
  await context.route('**/data/metars.json?*',route=>route.fulfill({json:{updated_utc:new Date().toISOString(),metars:[]}}));
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
- runways.airports.MEM=inventory.map((id,i)=>({id,true_heading:i*40,pair:inventory[i-i%2]+'/'+inventory[i-i%2+1]}));
+ // Keep the actual magnetic snapshot and independently verify the eight MEM ends.
+ assert.deepEqual(runways.airports.MEM.map(end=>end.id).sort(),[...inventory].sort());
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:runways}));
  page.on('pageerror',e=>errors.push(e.message));
  try{
@@ -72,8 +73,9 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
   // Bearing tooltips apply to computed components; supply wind only in this test.
   await page.evaluate(()=>{metars.MEM.wind={direction:100,speed:10};render();});
   for(const end of runways.airports.MEM){
-   assert.equal(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').filter({hasText:new RegExp(`^${end.id}$`)}).getAttribute('title'),`FAA NASR true alignment: ${end.true_heading}°`);
+   assert.equal(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').filter({hasText:new RegExp(`^${end.id}$`)}).getAttribute('title'),`Approximate magnetic runway heading: ${end.magnetic_heading}°`);
   }
+  assert.match(await page.locator('.runways').innerText(),/Approx. wind components/);
   assert.equal(await page.locator('.runways .sub').count(),0);
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);
   assert.equal(await page.evaluate(()=>runwayData.source_url),runways.source_url);
