@@ -34,9 +34,18 @@ header{background:var(--bg);border-bottom:1px solid var(--line);padding:1px 28px
 .brand-wordmark{font-family:var(--font-data,"Inconsolata",monospace);font-size:inherit;font-weight:700;letter-spacing:.13em;color:var(--text)}
 .brand h1 .version{font:400 10px/1 var(--font-data,"Inconsolata",monospace);margin-left:0;letter-spacing:0;color:var(--muted)}
 .clock{font:400 13px/1.2 var(--font-data,"Inconsolata",monospace);white-space:nowrap;color:var(--text)}
-main{max-width:none;width:100%;padding:14px 28px 36px}
-.dashboard-controls{gap:16px;margin:0 0 40px;align-items:flex-start}
-.dashboard-controls .scan-toolbar{padding:10px 16px;min-height:42px;border:1px solid var(--line);background:transparent}
+main{--card-gap:16px;max-width:none;width:100%;padding:14px 28px 36px;display:flex;flex-direction:column;gap:var(--card-gap)}
+.dashboard-controls{display:flex;flex-direction:row;gap:8px;margin:0;align-items:flex-start;min-width:0}
+.dashboard-controls .scan-toolbar{flex:1 1 0;min-width:0;width:auto;margin:0;padding:0;gap:0;min-height:44px;border:0;background:transparent}
+.dashboard-controls #scan-toggle{height:44px;min-height:44px;gap:8px;padding:0 10px;border:1px solid var(--line);min-width:0}
+#scan-toggle svg,.scan-title,#scan-indicator{flex:none}
+#scan-keyword-count{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dashboard-controls .scan-panel{border:1px solid var(--line);border-top:0;margin:0;padding:8px 10px;min-width:0}
+.dashboard-controls .toolbar{flex:0 0 auto;width:auto;margin:0;padding:0;min-height:44px}
+.dashboard-controls #add-form{width:auto;margin:0;padding:0;gap:6px;min-height:44px}
+.dashboard-controls #iata{flex:none;width:calc(14ch + 20px);min-width:0;height:44px;padding:0 9px}
+.dashboard-controls #add-form button{flex:none;height:44px;min-width:44px;padding:0 8px}
+
 .scan-toggle{font:400 14px/1.25 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
 .scan-toggle svg{width:17px;height:17px}
 .scan-title{font-size:14px;font-weight:800;letter-spacing:.16em;color:var(--amber)}
@@ -45,16 +54,13 @@ main{max-width:none;width:100%;padding:14px 28px 36px}
 .scan-toolbar #scan-terms{max-width:460px}
 .scan-toolbar button:not(.scan-toggle){background:var(--panel2);border:1px solid var(--blue);color:var(--blue)}
 .scan-toolbar button:disabled{border-color:var(--line)}
-.dashboard-controls .toolbar{min-height:42px}
-.dashboard-controls form{min-height:42px;gap:12px;flex-wrap:nowrap}
 .dashboard-controls label{color:var(--text);font-size:14px;white-space:nowrap}
 input,select{background:var(--panel2);border:1px solid var(--line);color:var(--text);font-family:var(--font-data,"Inconsolata",monospace);font-size:14px;padding:8px 10px}
 input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-#iata{width:190px;height:36px}
 button{background:transparent;border:1px solid var(--blue);color:var(--blue);padding:6px 13px;font:600 13px/1.2 var(--font-ui,"Overpass",sans-serif)}
 button:hover{background:#243034}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
-.airport{min-width:0;overflow:hidden;background:var(--bg);border:1px solid var(--line);padding:20px 22px 22px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--card-gap);align-items:start;margin:0}
+.airport{min-width:0;overflow:hidden;background:var(--bg);border:1px solid var(--line);padding:9px 22px 22px}
 .airport-head{border:0;}
 .airport-head>div:first-child{min-width:0;flex:none}
 .icao{font:800 clamp(70px,7.4vw,96px)/.95 var(--font-ui,"Overpass",sans-serif);color:var(--text);}
@@ -147,7 +153,6 @@ button:hover{background:#243034}
 footer{border-color:var(--line);color:var(--muted)}
 @media(max-width:1120px){
   .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .dashboard-controls{gap:12px}
 .icao{font-size:clamp(64px,7.6vw,90px)}
   .category-tag{font-size:18px}
 }
@@ -157,15 +162,12 @@ footer{border-color:var(--line);color:var(--muted)}
   .brand h1{font-size:14px}
   .brand h1 .version{font-size:10px}
   .clock{font-size:13px}
-  main{padding:12px 14px 28px}
-  .dashboard-controls{flex-direction:column;gap:8px;margin-bottom:22px}
-  .dashboard-controls .scan-toolbar{width:100%;padding:10px 12px}
-  .dashboard-controls .toolbar{width:100%}
-  .dashboard-controls form{width:100%;gap:8px;justify-content:flex-end}
-  #iata{width:auto;flex:1;min-width:85px}
-  .cards{grid-template-columns:minmax(0,1fr);gap:14px}
-  .airport{padding:16px}
-  .airport-head{padding-bottom:20px}
+  main{--card-gap:14px;padding:12px 14px 28px}
+  .dashboard-controls{gap:6px}
+  .dashboard-controls #scan-toggle{gap:4px;padding:0 6px}
+  .dashboard-controls #add-form{gap:4px}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .airport{padding:9px 16px 16px}
 
   .category-tag{font-size:17px;padding:3px 7px 2px}
   .airport-diagram{width:80px;top:2px;font-size:12px}
@@ -191,7 +193,7 @@ footer{border-color:var(--line);color:var(--muted)}
   .brand-wordmark{letter-spacing:.07em}
   .brand h1 .version{font-size:10px}
   .clock{font-size:12px}
-  .airport{padding:12px}
+  .airport{padding:9px 12px 12px}
 
 
   .airport-diagram{width:68px}
@@ -210,9 +212,12 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 
 
 /* SPA-65: compact two-row card header and raw-METAR-first presentation. */
-.airport-head{padding:0 0 13px;min-height:0;display:block;position:static}
-.airport-top-row{display:flex;align-items:center;gap:6px;min-width:0}
-.airport-head-spacer{flex:1 1 auto;min-width:0}
+.airport-head{padding:0 0 8px;min-height:0;display:grid;grid-template-columns:44px minmax(0,1fr) auto;grid-template-rows:min-content min-content;gap:4px 6px;align-items:start;position:relative}
+.airport-top-row{grid-column:2;grid-row:1;display:flex;align-items:flex-end;gap:8px;min-width:0;padding:0}
+.airport-head .airport-grip{grid-column:1;grid-row:1 / span 2;align-self:start;margin-bottom:-4px}
+.airport-actions{grid-column:3;grid-row:1 / span 2;display:flex;align-items:start;gap:0;min-width:0;margin-bottom:-4px}
+.airport-actions .airport-remove{flex:none}
+
 .airport-grip,.airport-remove{
   flex:0 0 44px;width:44px;height:44px;min-width:44px;min-height:44px;
   display:inline-flex;align-items:center;justify-content:center;
@@ -225,17 +230,21 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 .airport-grip:hover,.airport-remove:hover{background:#292c2e;border-color:var(--line);color:var(--text)}
 .airport-remove{font:400 30px/1 var(--font-ui,"Overpass",sans-serif);cursor:pointer}
 .icao{font:700 24px/.95 var(--font-data,"Inconsolata",monospace);letter-spacing:-.045em;white-space:nowrap;flex:none}
-.category-tag{align-self:center;margin:0 0 0 4px;padding:1px 2px;font:800 8px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
+.category-tag{align-self:flex-end;margin:0 0 2px;padding:1px 2px;font:800 8px/1.1 var(--font-ui,"Overpass",sans-serif);letter-spacing:.05em}
 .category-unavailable{font-size:8px;font-weight:700}
 .airport-head .airport-diagram{
-  position:static;flex:0 1 106px;max-width:106px;width:auto;
+  position:static;flex:0 1 auto;max-width:76px;width:auto;
   padding:0;text-align:right;font:600 12px/1.18 var(--font-ui,"Overpass",sans-serif);
 }
-.airport-head .airport-diagram a{display:inline;text-decoration:underline}
+.airport-head .airport-diagram a{display:flex;align-items:center;justify-content:flex-end;min-width:44px;min-height:44px;text-decoration:underline;gap:3px}
 .airport-head .name{
-  margin:2px 0 0 50px;color:var(--muted);
-  font:500 20px/1.25 var(--font-ui,"Overpass",sans-serif);overflow-wrap:anywhere;
+  grid-column:2;grid-row:2;display:block;min-width:0;width:100%;margin:0;padding:0;border:0;background:transparent;color:var(--muted);text-align:left;
+  font:500 12px/1.15 var(--font-ui,"Overpass",sans-serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
+.airport-head .name:hover{color:var(--text)}
+.airport-head .name[aria-expanded="true"]{white-space:normal;overflow-wrap:anywhere}
+.airport-actions:has(.airport-diagram + .airport-diagram) .diagram-link-text{display:none}
+
 .metar-panel,.taf,.atis{
   display:block;border:1px solid var(--line);background:var(--panel2);
   margin:0 0 10px;padding:12px 14px;min-width:0;
@@ -267,21 +276,22 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 .airport.is-dragging{opacity:.65}
 .airport.is-drop-target{outline:2px solid var(--blue);outline-offset:-2px}
 @media(max-width:1300px){
-  .airport-top-row{gap:4px}
-  .airport-head .airport-diagram{flex-basis:76px;max-width:76px;font-size:11px}
+  .airport-head .airport-diagram{font-size:11px}
 }
 @media(max-width:760px){
-  .airport-head{padding:0 0 12px}
-  .airport-head .name{margin-left:48px;font-size:20px}
+  .airport-head{column-gap:4px}
   .metar-panel,.taf,.atis{padding:10px 12px}
 }
 @media(max-width:600px){
   .airport-head .airport-diagram{flex:0 0 auto;max-width:none}
   .airport-head .diagram-link-text{display:none}
-  .airport-top-row{gap:4px}
+  .dashboard-controls #scan-toggle .scan-title{font-size:12px;letter-spacing:.08em}
+  .dashboard-controls #scan-toggle svg{width:14px;height:14px}
+  .scan-keyword-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
-@media(max-width:400px){
-  .airport-head .name{margin-left:48px;font-size:20px}
+@media(max-width:340px){
+  .dashboard-controls #scan-toggle{padding:0 4px;gap:3px}
+  .dashboard-controls #iata{padding:0 5px;width:calc(14ch + 12px)}
 }
 
 /* Keep the full UTC clock readable at very narrow widths. */

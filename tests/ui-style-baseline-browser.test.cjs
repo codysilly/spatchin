@@ -60,6 +60,10 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
     mainSide:prop('main','paddingLeft'),
     cardSide:prop('.airport','paddingLeft'),
     controlMargin:prop('.dashboard-controls','marginBottom'),
+    topPadding:prop('.airport','paddingTop'),
+    nameLine:prop('.airport-head .name','lineHeight'),
+    geometry:(()=>{const code=rect('.icao'),badge=rect('.category-tag'),name=rect('.name'),row=rect('.airport-top-row'),head=rect('.airport-head'),metar=rect('.metar-panel'),scan=rect('#scan-toggle'),add=rect('#add-form button'),input=rect('#iata'),controls=rect('.dashboard-controls'),cards=rect('.cards');return {codeGap:badge.left-code.right,bottomGap:code.bottom-badge.bottom,nameGap:name.top-code.bottom,metarGap:metar.top-name.bottom,rowHeight:row.height,headTop:head.top,gripBottom:rect('.airport-grip').bottom,removeBottom:rect('.airport-remove').bottom,metarTop:metar.top,scanHeight:scan.height,addHeight:add.height,inputHeight:input.height,scanTop:scan.top,addTop:add.top,inputTop:input.top,controlGap:cards.top-controls.bottom,scanRight:scan.right,inputLeft:input.left};})(),
+    nameOverflow:prop('.name','textOverflow'),nameWhitespace:prop('.name','whiteSpace'),
     icaoFont:prop('.icao','fontFamily'),
     icaoSize:parseFloat(prop('.icao','fontSize')),
     nameSize:parseFloat(prop('.airport-head .name','fontSize')),
@@ -105,13 +109,25 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.equal(ui.cardGap,width>760?'16px':'14px');
   assert.equal(ui.mainSide,width>760?'28px':'14px');
   assert.equal(ui.cardSide,width>760?'22px':width>400?'16px':'12px');
-  assert.equal(ui.controlMargin,width>760?'40px':'22px');
+  assert.equal(ui.controlMargin,'0px');
+  assert.equal(ui.topPadding,'9px');
+  const g=ui.geometry;
+  assert.ok(g.codeGap>=8&&g.codeGap<=10,JSON.stringify(g));
+  assert.ok(Math.abs(g.bottomGap)<=2.1,JSON.stringify(g));
+  assert.ok(g.nameGap>=3.9&&g.nameGap<=6,JSON.stringify(g));
+  assert.ok(g.metarGap>=7.9&&g.metarGap<=10,JSON.stringify(g));
+  assert.ok(g.rowHeight<30,JSON.stringify(g));
+  assert.ok(g.gripBottom<=g.metarTop&&g.removeBottom<=g.metarTop,JSON.stringify(g));
+  assert.deepEqual([g.scanHeight,g.addHeight,g.inputHeight],[44,44,44]);
+  assert.equal(g.scanTop,g.addTop);assert.equal(g.inputTop,g.addTop);assert.ok(g.scanRight<=g.inputLeft);
+  assert.equal(g.controlGap,parseFloat(ui.cardGap));
+  assert.equal(ui.nameWhitespace,'nowrap');assert.equal(ui.nameOverflow,'ellipsis');
   assert.match(ui.icaoFont,/Inconsolata/);
   assert.match(ui.metarFont,/Inconsolata/);
   assert.match(ui.bodyFont,/Overpass/);
   assert.equal(ui.icaoSize,24);
-  assert.equal(ui.nameSize,20);
-  assert.equal(ui.categorySize,'8px');assert.equal(ui.categoryMargin,'4px');
+  assert.equal(ui.nameSize,12);assert.ok(Math.abs(parseFloat(ui.nameLine)/12-1.15)<.01);
+  assert.equal(ui.categorySize,'8px');assert.equal(ui.categoryMargin,'0px');
   assert.deepEqual(ui.panelStyles[1],ui.panelStyles[0]);assert.deepEqual(ui.panelStyles[2],ui.panelStyles[0]);
   for(const [i,style] of ui.atisStyles.entries()){assert.equal(style.size,'15px');assert.equal(style.line,'19.5px');assert.equal(style.weight,i===3?'700':'400');assert.match(style.font,/Inconsolata/);}
   assert.equal(ui.nameColor,'rgb(163, 166, 168)');
@@ -131,6 +147,14 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
    assert.ok(ui.headerPositions.clockTop>=ui.headerPositions.brandBottom-1,'UTC clock wraps below logo on very narrow screens');
    assert.ok(ui.headerPositions.clockRight<=width-5,'UTC clock remains within page');
   }
+  const name=page.locator('[data-airport="MEM"] .name');
+  assert.equal(await name.getAttribute('title'),await name.textContent());
+  assert.equal(await name.getAttribute('aria-expanded'),'false');
+  assert.equal(await page.locator('label[for="iata"]').count(),0);
+  assert.match(await page.locator('#iata').getAttribute('aria-label'),/Add airport/);
+  await name.focus();await name.press('Enter');assert.equal(await name.getAttribute('aria-expanded'),'true');
+  assert.equal(await name.evaluate(el=>getComputedStyle(el).whiteSpace),'normal');
+  await name.press('Space');assert.equal(await name.getAttribute('aria-expanded'),'false');
   assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });

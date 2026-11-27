@@ -186,9 +186,9 @@ for(const width of [1440,390])test('ATIS coverage states render at '+width+'px',
  }}));
  try{
   await page.goto(base+'/dashboard/');
-  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .atis-label')?.textContent.includes('CURRENT'));
+  await page.waitForFunction(()=>document.querySelector('[data-airport="MEM"] .atis-label')?.textContent==='LANDING');
   const label=(code,index)=>page.locator('[data-airport="'+code+'"] .atis-label').nth(index).innerText();
-  assert.match(await label('MEM',0),/CURRENT/);
+  assert.equal(await label('MEM',0),'LANDING');
   assert.match(await label('MEM',1),/UNAVAILABLE/);
   assert.match(await label('ORD',0),/UNAVAILABLE/);
   assert.match(await label('ABE',0),/NOT CONFIGURED/);
@@ -261,6 +261,7 @@ for(const width of [1440,390])test('uniform linked weather panels at '+width+'px
   const mem=page.locator('[data-airport="MEM"]');
   await mem.locator('.metar-raw a').waitFor();await mem.locator('.taf-raw a').waitFor();
   await page.waitForFunction(()=>document.querySelector('.atis-value')?.textContent==='36C');
+  assert.deepEqual(await mem.locator('.atis-label').allTextContents(),['LANDING','DEPARTING']);
   assert.equal(await mem.locator('.metar-raw').textContent(),raw);
   assert.deepEqual((await mem.locator('.taf-raw').textContent()).split(/\s+/),taf.split(/\s+/));
   assert.equal(await mem.locator('.metar-raw a').textContent(),'SPECI KMEM');

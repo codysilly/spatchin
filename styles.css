@@ -118,3 +118,12 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;}input,se
 .weather-row,.taf{display:block}
 .report-source{font:inherit;color:var(--blue);text-decoration:underline}
 .report-fallback{margin-top:4px}
+
+/* Airport header structure shared by the standalone snapshot preview. */
+.airport-head{display:grid;grid-template-columns:44px minmax(0,1fr) auto;grid-template-rows:min-content min-content;gap:4px 6px;align-items:start;min-height:0}
+.airport-head .airport-grip{grid-column:1;grid-row:1 / span 2;width:44px;height:44px;padding:0}
+.airport-top-row{grid-column:2;grid-row:1;display:flex;align-items:flex-end;gap:8px;min-width:0}
+.airport-actions{grid-column:3;grid-row:1 / span 2;display:flex;align-items:start;gap:0;min-width:0}
+.airport-actions .airport-remove{width:44px;height:44px;padding:0}
+.airport-head .name{grid-column:2;grid-row:2;display:block;min-width:0;width:100%;border:0;margin:0;padding:0;background:transparent;text-align:left;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;line-height:1.15}
+.airport-head .name[aria-expanded="true"]{white-space:normal;overflow-wrap:anywhere}
