@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T22:28:34.540156Z",
+  "updated_utc": "2026-11-27T23:08:35.955408Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -3004,38 +3004,18 @@
     },
     {
       "icaoId": "KIND",
-      "rawTAF": "TAF KIND 272040Z 2721/2824 27015G24KT P6SM FEW009 OVC015 TEMPO 2721/2723 3SM -SHRA BR BKN010 FM272300 26011KT P6SM BKN040 FM280400 25010KT P6SM SCT040 BKN250",
-      "issueTime": "2026-11-27T20:40:00.000Z",
-      "validTimeFrom": 1795813200,
+      "rawTAF": "TAF KIND 272258Z 2723/2824 27011KT P6SM FEW012 SCT040 BKN100 FM280400 25010KT P6SM SCT040 BKN250",
+      "issueTime": "2026-11-27T22:58:00.000Z",
+      "validTimeFrom": 1795820400,
       "validTimeTo": 1795910400,
       "fcsts": [
-        {
-          "timeFrom": 1795813200,
-          "timeTo": 1795820400,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 270,
-          "wspd": 15,
-          "wgst": 24
-        },
-        {
-          "timeFrom": 1795813200,
-          "timeTo": 1795820400,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
         {
           "timeFrom": 1795820400,
           "timeTo": 1795838400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
-          "wdir": 260,
+          "wdir": 270,
           "wspd": 11,
           "wgst": null
         },
