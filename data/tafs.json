@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T02:08:40.148883Z",
+  "updated_utc": "2026-11-27T02:18:39.634572Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2163,29 +2163,19 @@
     },
     {
       "icaoId": "KFAT",
-      "rawTAF": "TAF KFAT 270028Z 2700/2724 VRB03KT 2SM BR OVC003 FM270300 00000KT 1/4SM FG VV002 FM272100 VRB03KT 3SM BR SCT250",
-      "issueTime": "2026-11-27T00:28:00.000Z",
-      "validTimeFrom": 1795737600,
+      "rawTAF": "TAF KFAT 270210Z 2702/2724 VRB03KT 1/4SM FG VV002 FM272100 VRB03KT 3SM BR SCT250",
+      "issueTime": "2026-11-27T02:10:00.000Z",
+      "validTimeFrom": 1795744800,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795737600,
-          "timeTo": 1795748400,
+          "timeFrom": 1795744800,
+          "timeTo": 1795813200,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": "VRB",
           "wspd": 3,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795748400,
-          "timeTo": 1795813200,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 0,
-          "wspd": 0,
           "wgst": null
         },
         {
@@ -3604,20 +3594,20 @@
     },
     {
       "icaoId": "KLIT",
-      "rawTAF": "TAF KLIT 262322Z 2700/2724 33012G25KT P6SM OVC040 FM270300 28012KT P6SM SCT100 BKN250 FM271400 28010KT P6SM SCT060 BKN250",
-      "issueTime": "2026-11-26T23:22:00.000Z",
-      "validTimeFrom": 1795737600,
+      "rawTAF": "TAF KLIT 270215Z 2702/2724 31013KT P6SM SCT070 BKN090 OVC100 FM270300 28012KT P6SM SCT100 BKN250 FM271400 28010KT P6SM SCT060 BKN250",
+      "issueTime": "2026-11-27T02:15:00.000Z",
+      "validTimeFrom": 1795744800,
       "validTimeTo": 1795824000,
       "fcsts": [
         {
-          "timeFrom": 1795737600,
+          "timeFrom": 1795744800,
           "timeTo": 1795748400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 330,
-          "wspd": 12,
-          "wgst": 25
+          "wdir": 310,
+          "wspd": 13,
+          "wgst": null
         },
         {
           "timeFrom": 1795748400,
