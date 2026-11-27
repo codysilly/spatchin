@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T12:30:39.815872Z",
+  "updated_utc": "2026-11-27T12:40:38.386206Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1640,43 +1640,39 @@
     },
     {
       "icaoId": "KGSO",
-      "receiptTime": "2026-11-27T12:22:08.180Z",
-      "obsTime": 1795781940,
-      "reportTime": "2026-11-27T12:19:00.000Z",
+      "receiptTime": "2026-11-27T12:38:23.719Z",
+      "obsTime": 1795782840,
+      "reportTime": "2026-11-27T12:34:00.000Z",
       "temp": 3.9,
       "dewp": -0.6,
       "wdir": 240,
-      "wspd": 14,
-      "wgst": 25,
+      "wspd": 10,
+      "wgst": 24,
       "visib": "10+",
-      "altim": 1006.2,
+      "altim": 1006.5,
       "qcField": 4,
       "metarType": "SPECI",
-      "rawOb": "SPECI KGSO 271219Z 24014G25KT 10SM SCT026 BKN038 BKN060 BKN250 04/M01 A2971 RMK AO2 T00391006",
+      "rawOb": "SPECI KGSO 271234Z 24010G24KT 10SM BKN025 BKN038 OVC060 04/M01 A2972 RMK AO2 T00391006",
       "lat": 36.0969,
       "lon": -79.9432,
       "elev": 275,
       "name": "Greensboro Intl, NC, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
-          "cover": "SCT",
-          "base": 2600
+          "cover": "BKN",
+          "base": 2500
         },
         {
           "cover": "BKN",
           "base": 3800
         },
         {
-          "cover": "BKN",
+          "cover": "OVC",
           "base": 6000
-        },
-        {
-          "cover": "BKN",
-          "base": 25000
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KGSP",
@@ -2686,9 +2682,9 @@
     },
     {
       "icaoId": "KNQA",
-      "receiptTime": "2026-11-27T12:18:11.426Z",
-      "obsTime": 1795781700,
-      "reportTime": "2026-11-27T12:15:00.000Z",
+      "receiptTime": "2026-11-27T12:38:25.944Z",
+      "obsTime": 1795782900,
+      "reportTime": "2026-11-27T12:35:00.000Z",
       "temp": 2,
       "dewp": 0,
       "wdir": 250,
@@ -2697,7 +2693,7 @@
       "altim": 1014.6,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KNQA 271215Z AUTO 25006KT 10SM CLR 02/00 A2996 RMK A01",
+      "rawOb": "METAR KNQA 271235Z AUTO 25006KT 10SM CLR 02/M00 A2996 RMK A01",
       "lat": 35.3619,
       "lon": -89.8612,
       "elev": 90,
@@ -3360,26 +3356,20 @@
     },
     {
       "icaoId": "KROC",
-      "receiptTime": "2026-11-27T11:58:06.746Z",
-      "obsTime": 1795780440,
-      "reportTime": "2026-11-27T12:00:00.000Z",
+      "receiptTime": "2026-11-27T12:34:06.543Z",
+      "obsTime": 1795782660,
+      "reportTime": "2026-11-27T12:31:00.000Z",
       "temp": 5.6,
       "dewp": 5,
-      "wdir": 100,
-      "wspd": 7,
-      "visib": 4,
+      "wdir": 110,
+      "wspd": 5,
+      "visib": 2.5,
       "altim": 995.3,
-      "slp": 996,
       "qcField": 4,
       "wxString": "-RA BR",
-      "presTend": -2.5,
-      "maxT": 5.6,
-      "minT": 4.4,
-      "precip": 0.04,
-      "pcp6hr": 0.07,
-      "pcp24hr": 1.27,
-      "metarType": "METAR",
-      "rawOb": "METAR KROC 271154Z 10007KT 4SM -RA BR OVC005 06/05 A2939 RMK AO2 DZE05RAB05 SLP960 P0004 60007 70127 T00560050 10056 20044 56025",
+      "precip": 0.01,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KROC 271231Z 11005KT 2 1/2SM -RA BR OVC004 06/05 A2939 RMK AO2 P0001 T00560050",
       "lat": 43.1172,
       "lon": -77.6754,
       "elev": 166,
@@ -3388,10 +3378,10 @@
       "clouds": [
         {
           "cover": "OVC",
-          "base": 500
+          "base": 400
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "LIFR"
     },
     {
       "icaoId": "KRST",
