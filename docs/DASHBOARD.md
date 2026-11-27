@@ -130,3 +130,7 @@ Current raw-NOTAM population across the 130-airport catalog still needs a trustw
 `https://www.spatchin.com/` publicly serves the v0.9 WIP dashboard, with the banner **“WORK IN PROGRESS. Under development and not yet validated.”** The retired holding page is gone. The public root loads the existing root scripts, styles and `data/` snapshots directly without an extra `<base>` element. The historic `dashboard/index.html` copy remains for local tests but is excluded from GitHub Pages, as are synthetic preview and private staging source files. No login is required for the public homepage. The separately deployed Cloudflare `dev.spatchin.com` Worker and Access applications must be retired through Cloudflare, without weakening their authentication while they remain active.
 
 No change to aviation data, acquisition cadence, evidence/NOTAM safeguards or the v0.9 version accompanied this public UI change.
+
+## SPA-116 compact UI first pass
+
+METAR and TAF raw text use 15 px Inconsolata, weight 400, line-height 1.3. The ordinary current METAR status is omitted; stale/unavailable/retained-data warnings and the existing threshold remain. ATIS omits the routine unofficial label and arrow glyphs while retaining noncurrent statuses, source links and expanded source warnings. Sources is closed by default and retains five separate entries: ATIS, METAR, TAF, UTC forecast selector and NOTAM reader.

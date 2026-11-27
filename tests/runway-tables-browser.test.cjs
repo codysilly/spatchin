@@ -19,7 +19,8 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
   await page.fill('#iata','IND');await page.locator('#add-form button').click();assert.deepEqual(await page.evaluate(()=>airports),['MEM','IND']);
   assert.equal(await page.evaluate(()=>icao('IND')),'KIND');
   const ind=page.locator('[data-airport="IND"]');
-  await ind.locator('.metar-current').waitFor();
+  await ind.locator('.metar-raw').filter({hasText:'KIND SYNTHETIC OFFLINE METAR'}).waitFor();
+  assert.equal(await ind.locator('.metar-status').count(),0);
   assert.match(await ind.locator('.name').innerText(),/INDIANAPOLIS/);
   assert.match(await ind.locator('.metar-raw').innerText(),/KIND SYNTHETIC OFFLINE METAR/);
   assert.match(await ind.locator('.weather-badge').getAttribute('href'),/ids=KIND$/);

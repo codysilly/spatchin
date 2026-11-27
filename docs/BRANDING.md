@@ -1,15 +1,15 @@
 # Spatchin branding
 
-**Approved 19 November 2026; audited 20 November 2026.**
+**Geometry approved 19 November 2026; solid fill and compact header approved 27 November 2026 (SPA-116).**
 
 ## Canonical airplane mark
 
 The master asset is `assets/branding/logo-cyan-magenta.svg`. Do not replace its geometry with a different paper airplane.
 
-- Sharp corners, thin strokes represented by the transparent cutouts and filled outline of the approved vector.
+- Sharp corners and the original silhouette and fold geometry. The body has a solid gradient fill; the original outline overlays it as dark translucent fold detail.
 - Tail-to-nose gradient **cyan → blue/violet → magenta**, running diagonally from the lower-left folded tail to the upper-right nose. This is **not** a left-to-right horizontal fade.
 - Stops in the current SVG: `#04e3ed` (0), `#31bafc` (0.24), `#8979fe` (0.52), `#c837f2` (0.73), `#f312d9` (1).
-- The header displays the SVG at **60 × 60 px desktop**, **52 × 52 px ≤760 px viewport**, and **46 × 46 px ≤400 px viewport**. Responsive values are in `charcoal-dashboard.css`.
+- The header displays the SVG at **18 × 18 px** at all viewport widths. Responsive values are in `charcoal-dashboard.css`.
 - The same vector is linked as the SVG favicon. PNG sizes **16, 32, 64, 128, 180** in `assets/branding/` are raster derivatives, not independent artwork. The 16px/32px PNGs are browser fallbacks; 180px is the Apple touch icon.
 
 Run `python scripts/render-brand-icons.py` after an approved SVG change to regenerate all PNG derivatives. The local script requires **CairoSVG** and **Pillow** (developer-only dependencies; no runtime package or provider request). Commit the SVG and raster derivatives together.

@@ -95,7 +95,7 @@ jobs:
           npm run lint
       - name: Fetch pinned browser parity revisions
         run: |
-          git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c 7a33c2f7ac021cb77b3e118d33a777297c76c868 defc13157003499d36c0223eff4729e0410ab23e 0c72c300182ff7185da8654300d765e16f2dc83c
+          git fetch --no-tags --depth=1 origin 5120d81945787a5c80da738bf5e086a4105e0a1c 7a33c2f7ac021cb77b3e118d33a777297c76c868 defc13157003499d36c0223eff4729e0410ab23e 0c72c300182ff7185da8654300d765e16f2dc83c bb9cf20b102706577beac211c80335065b297350
       - name: Run complete offline browser suite
         run: |
           export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium || true)"

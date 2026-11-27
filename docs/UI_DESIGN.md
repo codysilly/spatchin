@@ -1,8 +1,8 @@
 # Spatchin UI design baseline
 
-**Audited 20 November 2026 against GitHub `main` at `023ecaeed3c7384abde782343e60363445e51f71`.**
+**SPA-116: compact UI first pass, owner approved 27 November 2026.**
 
-This is the **current** dashboard appearance contract, not a new mockup. The latest functional UI redesign is [SPA-65 / PR #50](https://github.com/codysilly/spatchin/pull/50), merged as `79259221a774436c2a6bae0e8112a1f97eb2aa64`. It supersedes conflicting details in [SPA-63 / PR #39](https://github.com/codysilly/spatchin/pull/39): the airport code is now compact; the four-segment flight-category strip is gone; the remove control is in the header; raw METAR is an inset panel. Later merges through the audit baseline updated aviation feeds/workflows and branding, **not** this dashboard layout.
+This is the **current** dashboard appearance contract, not a new mockup. The previous functional UI redesign was [SPA-65 / PR #50](https://github.com/codysilly/spatchin/pull/50), merged as `79259221a774436c2a6bae0e8112a1f97eb2aa64`. It supersedes conflicting details in [SPA-63 / PR #39](https://github.com/codysilly/spatchin/pull/39): the airport code is now compact; the four-segment flight-category strip is gone; the remove control is in the header; raw METAR is an inset panel. SPA-116 supersedes the earlier header, airport identifier, report typography, freshness labels, ATIS labels and Sources presentation.
 
 ## Source of truth and precedence
 
@@ -38,10 +38,10 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 
 - **Overpass** (400, 600, 700, 800): headings, airport names, interface labels, controls.
 - **Inconsolata** (400, 700): SPATCHIN wordmark, IATA airport code, coded METAR/TAF/ATIS, numeric weather, runway rows and UTC timestamps. Local fallback stacks are defined in `--font-ui` and `--font-data`.
-- Wordmark: see `BRANDING.md` (desktop tracking `0.0325em`; compact mobile `0.0175em`). The logo is **60 px desktop, 52 px ≤760px, 46 px ≤400px**.
-- Airport IATA: **60 px**, weight 700, tracking `-0.045em` on desktop; **56 px ≤1300px**, **54 px ≤760px**, **48 px ≤400px**.
+- Wordmark: see `BRANDING.md` (desktop tracking `0.0325em`; compact mobile `0.0175em`). The logo is **18 px** at all widths; the desktop header targets 22 px.
+- Airport IATA: **20 px**, weight 700, tracking `-0.045em` at all widths.
 - Airport name: **18 px** muted (17 px ≤400px); baseline aligned under the IATA after the handle.
-- Raw METAR: **21 px**, line-height **1.6**, preserved whitespace; **20 px ≤400px**. Never reformat or decode the original report merely for style.
+- Raw METAR: **15 px**, weight 400, line-height **1.3**, preserved whitespace. Raw TAF uses the same typography. Never reformat or decode the original report merely for style.
 - Runway data values: Inconsolata, generally **16 px** (15 px ≤760px); table column labels are small bold Overpass.
 
 ## Geometry, lines and spacing
@@ -78,3 +78,7 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 The public root (`/`) once again serves the **working v0.9 dashboard**, not a holding page. At the top of the page, a prominent charcoal/amber banner reads exactly **“WORK IN PROGRESS. Under development and not yet validated.”** The same warning remains in `dashboard/index.html` for legacy offline tests. The primary public document is now `index.html`, with root-relative static asset resolution and no `<base href="../">` override. It loads `styles.css` followed by `charcoal-dashboard.css`.
 
 Jekyll continues to exclude the legacy duplicate `dashboard/`, synthetic `preview/`, and retired private staging source `staging/`. No private login or Cloudflare Access check is required to view the public homepage. The old `dev.spatchin.com` Cloudflare resources are an external account cleanup task, not part of the GitHub Pages serving path. Keep aviation warnings, source links, data acquisition and version safeguards unchanged.
+
+## SPA-116 compact display
+
+The application header uses an 18 px solid gradient airplane, 14 px wordmark and 13 px UTC clock (12 px at narrow widths). The WIP banner is unchanged. Current METAR reports omit the routine status label; stale, unavailable and failed-refresh warnings remain. ATIS landing/departing labels omit arrows and the routine unofficial label; noncurrent warnings and source disclosure remain. Sources is a native details disclosure, closed by default, with five entries in owner-specified order. Preserve the distinction between forecast and observed winds in their controls and labels; retain heading-source warnings in their original context.

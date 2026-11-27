@@ -48,7 +48,10 @@ beforeEach(async () => {
   await page.evaluate(()=>localStorage.setItem('spatchin-airports',JSON.stringify(['ORD','LAX','JFK'])));
   await page.reload();await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===32 &&
-    document.querySelectorAll('.metar-current').length===3 &&
+    document.querySelectorAll('.airport .category-vfr').length===3 &&
+    [...document.querySelectorAll('.airport .metar-raw')].length===3 &&
+    [...document.querySelectorAll('.airport .metar-raw')].every(el=>el.textContent.includes('SYNTHETIC SCAN TEST')) &&
+    document.querySelectorAll('.airport .metar-status').length===0 &&
     document.querySelector('.rw-table td[title]')?.title.startsWith('FAA NASR true alignment') &&
     document.querySelector('[data-airport="ORD"] .atis-raw'));
   await page.waitForLoadState('networkidle');
@@ -117,11 +120,11 @@ test('KMEM observation loads through refresh and renders on the MEM card',async(
   assert.equal(await card.count(),1);
   assert.equal(await card.locator('.icao').textContent(),'MEM');
   assert.equal(await card.locator('.name').textContent(),'FREDERICK W SMITH INTL/MEMPHIS');
-  assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');
+  assert.equal(await card.locator('.metar-status').count(),0);
   assert.match(await card.locator('.metar-raw').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
   assert.equal(await card.locator('a.weather-badge').getAttribute('href'),
     'https://aviationweather.gov/data/metar/?ids=KMEM');
-  fail=true;await page.evaluate(()=>refresh());assert.equal(await card.locator('.metar-status').textContent(),'METAR CURRENT');assert.equal(await card.locator('.metar-raw').textContent(),raw);assert.match(await card.locator('.metar-retained').textContent(),/refresh failed.*retained/i);
+  fail=true;await page.evaluate(()=>refresh());assert.equal(await card.locator('.metar-status').count(),0);assert.equal(await card.locator('.metar-raw').textContent(),raw);assert.match(await card.locator('.metar-retained').textContent(),/refresh failed.*retained/i);
   await page.route('**/data/atis.json?*',route=>route.fulfill({json:{retrieved_utc:new Date().toISOString(),configured_airports:['KMEM'],airports:{}}}));
   await page.evaluate(()=>refreshAtis());
   assert.equal(await card.locator('.atis-provider').textContent(),'atis.info · UNAVAILABLE');

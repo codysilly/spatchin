@@ -11,6 +11,7 @@ const spec = readFileSync('docs/BRANDING.md', 'utf8');
 
 test('approved vector and wordmark remain the single canonical brand', () => {
   assert.match(svg, /id="tailToNose"/);
+  assert.match(svg, /<path fill="url\(#tailToNose\)" d="M 1192 151/);
   assert.match(svg, /x1="356" y1="1039" x2="1179" y2="154"/);
   for (const color of ['#04e3ed', '#31bafc', '#8979fe', '#c837f2', '#f312d9'])
     assert.ok(svg.includes(color), color);
@@ -21,7 +22,7 @@ test('approved vector and wordmark remain the single canonical brand', () => {
   );
   assert.match(
     html,
-    /rel="apple-touch-icon" sizes="180x180" href="assets\/branding\/logo-180\.png\?rev=20261120"/,
+    /rel="apple-touch-icon" sizes="180x180" href="assets\/branding\/logo-180\.png\?rev=20261127"/,
   );
   assert.match(
     css,

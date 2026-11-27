@@ -52,6 +52,7 @@ test('METAR becomes stale at 70 minutes, not 65', () => {
   assert.equal(vm.runInContext('METAR_STALE_MS', context), 70 * 60 * 1000);
   assert.equal(context.metarState(record('VFR', 65)), 'current');
   assert.equal(context.metarState(record('VFR', 69)), 'current');
+  assert.equal(context.metarStatus(record('VFR', 69)), '');
   assert.equal(context.metarState(record('VFR', 70)), 'stale');
   assert.match(context.metarStatus(record('VFR', 70)), /STALE · 70\+ MIN/);
 });
@@ -108,8 +109,8 @@ test('compact airport and METAR markup retain their structural and font contract
   assert.match(app, /data-airport-drag="/);
   assert.match(app, /data-remove="/);
   assert.match(app, /class="weather-row metar-panel"/);
-  assert.match(css, /\.icao\s*\{\s*font\s*:\s*700\s+60px\s*\/\s*0?\.95\s+var\(\s*--font-data/);
-  assert.match(css, /font\s*:\s*400\s+21px\s*\/\s*1\.6\s+var\(\s*--font-data/);
+  assert.match(css, /\.icao\s*\{\s*font\s*:\s*700\s+20px\s*\/\s*0?\.95\s+var\(\s*--font-data/);
+  assert.match(css, /font\s*:\s*400\s+15px\s*\/\s*1\.3\s+var\(\s*--font-data/);
   assert.match(html, /id="airport-order-status"/);
 });
 
