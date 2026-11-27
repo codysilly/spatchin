@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { AirportCatalog, AirportMetadata } from '../airport-catalog.js';
-import { diagramSearchMarkup } from '../app.js';
+import { diagramSearchMarkup } from '../airport-diagrams.js';
 
 const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;');
 
