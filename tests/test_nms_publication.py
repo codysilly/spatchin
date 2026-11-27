@@ -21,7 +21,12 @@ class PublicationTests(unittest.TestCase):
             "classifications": ["DOMESTIC"], "airport_associations": ["KMEM", "KORD"],
             "original_feature": {"private": True}, "received_utc": "private",
         }
-        return {"baseline_established": True, "watermark": "2026-11-27T12:00:00Z", "catalog": {"N-1": {"current": current}}}
+        return {
+            "baseline_established": True,
+            "watermark": "2026-11-27T12:00:00Z",
+            "capture_started_utc": "2026-11-27T11:58:00Z",
+            "catalog": {"N-1": {"current": current}},
+        }
 
     def test_projection_has_all_airports_exact_text_and_no_private_fields(self):
         snapshot, manifest, body = build_candidate(self.candidate(), self.registry(), generated_utc="2026-11-27T12:01:00Z")
@@ -29,6 +34,12 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(snapshot["airports"]["KMEM"]["notices"][0]["formatted_texts"][0]["text"], "LINE 1\r\nLINE 2")
         self.assertEqual(len(snapshot["airports"]["KORD"]["notices"]), 1)
         self.assertEqual(snapshot["airports"]["KATL"]["completeness"], "UNKNOWN")
+        self.assertEqual(snapshot["retrieved_utc"], "2026-11-27T11:58:00Z")
+        self.assertEqual(snapshot["publication"]["generated_utc"], "2026-11-27T12:01:00Z")
+        self.assertFalse(snapshot["publication"]["automatic_updates"])
+        self.assertEqual(snapshot["publication"]["source"], "NMS-API snapshot")
+        self.assertEqual(snapshot["publication"]["coverage"], "UNKNOWN")
+        self.assertEqual(snapshot["publication"]["freshness_policy"], "NOT_ESTABLISHED")
         self.assertNotIn("original_feature", body.decode())
         self.assertEqual(manifest["bytes"], len(body))
 
@@ -44,6 +55,33 @@ class PublicationTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 publish_atomic(body, manifest, target, state, before_replace=lambda: (_ for _ in ()).throw(RuntimeError("stop")))
             self.assertEqual(target.read_bytes(), retained)
+
+    def test_interruption_between_snapshot_and_manifest_is_recovered(self):
+        with tempfile.TemporaryDirectory() as directory:
+            target, state = Path(directory)/"notams.json", Path(directory)/"state.json"
+            candidate = self.candidate()
+            _, first_manifest, first_body = build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z")
+            publish_atomic(first_body, first_manifest, target, state)
+            candidate["delta_candidate"] = {"received_utc": "2026-11-27T12:02:00Z"}
+            _, next_manifest, next_body = build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:03:00Z")
+            with self.assertRaises(RuntimeError):
+                publish_atomic(
+                    next_body,
+                    next_manifest,
+                    target,
+                    state,
+                    after_snapshot_replace=lambda: (_ for _ in ()).throw(RuntimeError("stop")),
+                )
+            self.assertEqual(target.read_bytes(), next_body)
+            self.assertEqual(json.loads(state.read_text()), first_manifest)
+            publish_atomic(next_body, next_manifest, target, state)
+            self.assertEqual(json.loads(state.read_text()), next_manifest)
+
+    def test_retrieval_evidence_is_required(self):
+        candidate = self.candidate()
+        del candidate["capture_started_utc"]
+        with self.assertRaisesRegex(PublicationError, "RETRIEVAL_EVIDENCE_REQUIRED"):
+            build_candidate(candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z")
 
 
 if __name__ == "__main__": unittest.main()

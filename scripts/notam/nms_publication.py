@@ -43,6 +43,31 @@ def _digest(body):
     return hashlib.sha256(body).hexdigest()
 
 
+def _replace_file(final, data):
+    handle = tempfile.NamedTemporaryFile(dir=final.parent, delete=False)
+    temporary = Path(handle.name)
+    try:
+        handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
+        handle.close()
+        os.replace(temporary, final)
+    finally:
+        if not handle.closed:
+            handle.close()
+        temporary.unlink(missing_ok=True)
+
+
+def _retrieval_evidence(candidate):
+    """Use accepted acquisition evidence, never publication generation time."""
+    delta = candidate.get("delta_candidate")
+    value = delta.get("received_utc") if isinstance(delta, dict) else None
+    value = value or candidate.get("capture_completed_utc") or candidate.get("capture_started_utc")
+    if value is None:
+        raise PublicationError("RETRIEVAL_EVIDENCE_REQUIRED")
+    return _instant(value).isoformat().replace("+00:00", "Z")
+
+
 def _strings(value):
     if isinstance(value, str):
         return [value]
@@ -73,7 +98,8 @@ def project(candidate, registry, *, generated_utc):
         raise PublicationError("INVALID_C070_REGISTRY")
     if candidate.get("baseline_established") is not True or not candidate.get("watermark"):
         raise PublicationError("BASELINE_NOT_ACCEPTED")
-    retrieved = _instant(generated_utc).isoformat().replace("+00:00", "Z")
+    generated = _instant(generated_utc).isoformat().replace("+00:00", "Z")
+    retrieved = _retrieval_evidence(candidate)
     airports = {
         code: {
             "completeness": "UNKNOWN",
@@ -124,8 +150,9 @@ def project(candidate, registry, *, generated_utc):
         "publication": {
             "source": "NMS-API snapshot",
             "coverage": "UNKNOWN",
-            "automatic_updates": True,
+            "automatic_updates": False,
             "freshness_policy": "NOT_ESTABLISHED",
+            "generated_utc": generated,
         },
         "airports": airports,
     }
@@ -149,16 +176,29 @@ def build_candidate(candidate, registry, *, generated_utc):
     )
 
 
-def publish_atomic(body, manifest, target, state_path, *, before_replace=None):
+def publish_atomic(
+    body, manifest, target, state_path, *, before_replace=None, after_snapshot_replace=None
+):
     """Atomically retain last-good output and reject stale/digest-mismatched input."""
     target, state_path = Path(target), Path(state_path)
     if manifest.get("bytes") != len(body) or manifest.get("sha256") != _digest(body):
         raise PublicationError("MANIFEST_MISMATCH")
     incoming = _instant(manifest.get("retrieved_utc"))
+    prior = None
     if state_path.exists():
         prior = json.loads(state_path.read_text(encoding="utf-8"))
         if incoming < _instant(prior.get("retrieved_utc")):
             raise PublicationError("OLDER_SNAPSHOT_REJECTED")
+    if target.exists() and prior is not None:
+        target_digest = _digest(target.read_bytes())
+        if target_digest != prior.get("sha256"):
+            # The only automatic recovery is the known crash window where the
+            # new snapshot landed and its matching manifest did not. Unknown
+            # bytes require operator inspection and are never overwritten.
+            if target_digest != manifest.get("sha256"):
+                raise PublicationError("PUBLICATION_RECOVERY_REQUIRED")
+            _replace_file(state_path, _encoded(manifest))
+            return copy.deepcopy(manifest)
     target.parent.mkdir(parents=True, exist_ok=True)
     state_path.parent.mkdir(parents=True, exist_ok=True)
     staged = []
@@ -173,6 +213,8 @@ def publish_atomic(body, manifest, target, state_path, *, before_replace=None):
         if before_replace:
             before_replace()
         os.replace(staged[0][0], target)
+        if after_snapshot_replace:
+            after_snapshot_replace()
         os.replace(staged[1][0], state_path)
     finally:
         for temporary, _ in staged:
