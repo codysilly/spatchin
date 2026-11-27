@@ -175,7 +175,7 @@ test('airport card markup consumes explicit data and retains warnings and escapi
    metars:{MEM:{raw:'SYNTHETIC <report>',wind:{direction:180,speed:4}}},
    ends:()=>['09'],forecastModel:()=>({forecast:true,state}),metarFeedError:true,
    categoryMarkup:()=>({tag:'<span>Category test</span>'}),esc,diagramHeader:()=>'',
-   metarBadge:()=>'',metarStatus:()=>'<span>METAR TEST</span>',tafBlock:()=>'',
+   metarBadge:(_code,raw)=>({raw:esc(raw),fallback:''}),metarStatus:()=>'<span>METAR TEST</span>',tafBlock:()=>'',
    atisBlock:()=>'',reader:{summary:()=>'<p>Coverage UNKNOWN</p>',row:()=>'<tr><td>NOTAM test</td></tr>'},
    icao:()=> 'KMEM',timeControl:()=>'',
    runwayRow:(code,id,w,s)=>{if(code!=='MEM'||id!=='09'||w!==wind||s!==state)throw Error('Incorrect forecast input');return '<tr><td>09</td></tr>';},

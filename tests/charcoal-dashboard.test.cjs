@@ -109,7 +109,7 @@ test('compact airport and METAR markup retain their structural and font contract
   assert.match(app, /data-airport-drag="/);
   assert.match(app, /data-remove="/);
   assert.match(app, /class="weather-row metar-panel"/);
-  assert.match(css, /\.icao\s*\{\s*font\s*:\s*700\s+20px\s*\/\s*0?\.95\s+var\(\s*--font-data/);
+  assert.match(css, /\.icao\s*\{\s*font\s*:\s*700\s+24px\s*\/\s*0?\.95\s+var\(\s*--font-data/);
   assert.match(css, /font\s*:\s*400\s+15px\s*\/\s*1\.3\s+var\(\s*--font-data/);
   assert.match(html, /id="airport-order-status"/);
 });

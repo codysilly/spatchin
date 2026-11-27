@@ -15,7 +15,8 @@ function report(overrides = {}) {
 }
 test('valid current TAF shows unchanged raw text and source times', () => {
   const html = TafReader.render({ code: 'MEM', station: 'KMEM', report: report(), now: NOW });
-  assert.match(html, /TAF CURRENT/);
+  assert.doesNotMatch(html, /TAF CURRENT|<strong>TAF<\/strong>/);
+  assert.match(html, /<a class="report-source"[^>]*>TAF KMEM<\/a>/);
   assert.match(html, /Issued 2026-11-20 06:00Z/);
   assert.match(html, /Valid 2026-11-20 07:00Z–2026-11-21 06:00Z/);
   assert.match(html, /2006\/2106 09005KT/);
@@ -57,9 +58,9 @@ test('validity end is exclusive: NO LONGER VALID starts at the exact end', () =>
   const issued = new Date(NOW - 3 * 3600000).toISOString();
   const current = report({ issueTime: issued, validTimeTo: (NOW + 1) / 1000 });
   const ended = report({ issueTime: issued, validTimeTo: NOW / 1000 });
-  assert.match(
+  assert.doesNotMatch(
     TafReader.render({ code: 'MEM', station: 'KMEM', report: current, now: NOW }),
-    /TAF CURRENT/,
+    /taf-status/,
   );
   assert.match(
     TafReader.render({ code: 'MEM', station: 'KMEM', report: ended, now: NOW }),
@@ -112,9 +113,9 @@ test('TAF is current through exactly six hours after issue and stale afterward',
   const exact = report({ issueTime: new Date(NOW - 6 * 3600000).toISOString() });
   const overdue = report({ issueTime: new Date(NOW - 6 * 3600000 - 1).toISOString() });
   for (const r of [within, exact])
-    assert.match(
+    assert.doesNotMatch(
       TafReader.render({ code: 'MEM', station: 'KMEM', report: r, now: NOW }),
-      /TAF CURRENT/,
+      /taf-status/,
     );
   assert.match(
     TafReader.render({ code: 'MEM', station: 'KMEM', report: overdue, now: NOW }),
@@ -140,7 +141,11 @@ test('TAF change groups start on indented lines without changing any tokens', ()
     report: report({ rawTAF: raw }),
     now: NOW,
   });
-  assert.ok(html.includes('<pre class="taf-raw">' + formatted + '</pre>'));
+  assert.ok(
+    html
+      .replace(/<a[^>]*>|<\/a>/g, '')
+      .includes('<pre class="taf-raw" data-scan-flow>' + formatted + '</pre>'),
+  );
   assert.ok(!html.includes('TAF KMEM 250244Z 2503/2606 02009KT P6SM BKN040 PROB30'));
 });
 test('BECMG, BCMG, TEMPO, and PROB groups break at token boundaries', () => {

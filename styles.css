@@ -113,3 +113,8 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;}input,se
  .time-control select,.notam-transport button,.expand,.toolbar input,.toolbar button,.scan-navigation button,#scan-toggle,[data-remove]{min-height:44px;font-size:13px}
  .notam-summary{line-height:1.5;padding:10px}.notam-summary p{margin-top:7px}
 }
+
+/* Shared report-link structure for the standalone snapshot preview. */
+.weather-row,.taf{display:block}
+.report-source{font:inherit;color:var(--blue);text-decoration:underline}
+.report-fallback{margin-top:4px}

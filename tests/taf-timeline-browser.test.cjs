@@ -96,7 +96,7 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
    report.issueTime=new Date(Date.now()-6*3600000+60000).toISOString();
    render();
   });
-  assert.match(await mem.locator('.taf-status').innerText(),/TAF CURRENT/);
+  assert.equal(await mem.locator('.taf-status').count(),0);
   assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),2);
   // Expired validity is not a stale issue: keep raw text, show red and disable projections.
   await page.evaluate(()=>{

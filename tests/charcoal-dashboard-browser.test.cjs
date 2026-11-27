@@ -65,7 +65,7 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   assert.equal(dom.background,'rgb(27, 29, 31)');
   assert.equal(dom.borderRadius,'0px');
   assert.equal(dom.grid,width===1440?3:1);
-  assert.equal(dom.codeSize,20,'compact monospace code');
+  assert.equal(dom.codeSize,24,'compact monospace code');
   assert.match(dom.font,/Inconsolata/);
   assert.ok(dom.overflow<=1,'horizontal overflow '+dom.overflow+' at '+width+'px');
   assert.equal(dom.codeDiagramOverlap,false,'airport diagram overlaps code');
@@ -240,6 +240,45 @@ for(const width of [1440,390])test('current diagram links on the production root
   await page.reload();
   await page.locator('[data-airport="ORD"] a[aria-label^="Find FAA diagram"]').waitFor({state:'visible'});
   assert.equal(await page.locator('[data-airport="ORD"] a[href$=".PDF"]').count(),0);
+  assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
+ }finally{await context.close();}
+});
+
+for(const width of [1440,390])test('uniform linked weather panels at '+width+'px',async()=>{
+ const context=await browser.newContext({viewport:{width,height:1000}}),page=await context.newPage(),errors=[],external=[];
+ const now=new Date(),stamp=now.toISOString(),seconds=Math.floor(now.getTime()/1000);
+ const raw='SPECI KMEM 270805Z 27008KT 10SM FEW033 OVC041 04/01 A2995 RMK AO2 SYNTHETIC';
+ const taf='TAF KMEM 270520Z 2706/2812 29011G18KT P6SM VCSH BKN015 OVC025 FM271000 28010G18KT P6SM SCT025 BKN050';
+ await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(/fonts\.(googleapis|gstatic)\.com/.test(r.request().url()))return r.abort();external.push(r.request().url());return r.abort();});
+ page.on('pageerror',e=>errors.push(e.message));
+ await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM"]'));
+ await context.route('**/data/metars.json?*',r=>r.fulfill({json:{updated_utc:stamp,metars:[{icaoId:'KMEM',obsTime:seconds,wdir:270,wspd:8,fltCat:'VFR',rawOb:raw}]}}));
+ await context.route('**/data/tafs.json?*',r=>r.fulfill({json:{updated_utc:stamp,tafs:[{icaoId:'KMEM',issueTime:new Date(now.getTime()-3600000).toISOString(),validTimeFrom:seconds-1800,validTimeTo:seconds+36000,rawTAF:taf}]}}));
+ await context.route('**/data/atis.json?*',r=>r.fulfill({json:{retrieved_utc:stamp,configured_airports:['KMEM'],airports:{KMEM:[{type:'combined',code:'R',time:'0754',updatedAt:stamp,datis:'SYNTHETIC LANDING RWY 36C. DEP EXP RWYS 36L 36C 36R.'}]}}}));
+ await context.route('**/data/notams.json*',r=>r.fulfill({json:{retrieved_utc:stamp,airports:{KMEM:{completeness:'UNKNOWN',notices:[]}}}}));
+ try{
+  await page.goto(base+'/dashboard/');
+  const mem=page.locator('[data-airport="MEM"]');
+  await mem.locator('.metar-raw a').waitFor();await mem.locator('.taf-raw a').waitFor();
+  await page.waitForFunction(()=>document.querySelector('.atis-value')?.textContent==='36C');
+  assert.equal(await mem.locator('.metar-raw').textContent(),raw);
+  assert.deepEqual((await mem.locator('.taf-raw').textContent()).split(/\s+/),taf.split(/\s+/));
+  assert.equal(await mem.locator('.metar-raw a').textContent(),'SPECI KMEM');
+  assert.equal(await mem.locator('.taf-raw a').textContent(),'TAF KMEM');
+  assert.equal(await mem.locator('.weather-source,.weather-badge,.taf>strong,.metar-status,.taf-status,.report-fallback').count(),0);
+  await page.locator('#scan-toggle').click();
+  await page.locator('#scan-terms').fill('KMEM 270805Z, KMEM 270520Z');
+  assert.equal(await page.locator('#scan-count').textContent(),'0 / 2 matches');
+  await page.locator('#scan-next').click();
+  assert.equal((await mem.locator('.metar-raw mark.scan-current').allTextContents()).join(''),'KMEM 270805Z');
+  await page.locator('#scan-next').click();
+  assert.equal((await mem.locator('.taf-raw mark.scan-current').allTextContents()).join(''),'KMEM 270520Z');
+  await page.locator('#scan-terms').fill('');await page.locator('#scan-toggle').click();
+  assert.equal(await mem.locator('.metar-raw a').textContent(),'SPECI KMEM');
+  assert.equal(await mem.locator('.taf-raw a').textContent(),'TAF KMEM');
+  await page.evaluate(()=>{scrollTo(0,0);const banner=document.createElement('div');banner.className='synthetic-banner';banner.textContent='SYNTHETIC VISUAL TEST — NOT LIVE AVIATION DATA';document.querySelector('header').after(banner);});
+  mkdirSync('screenshots',{recursive:true});
+  await page.screenshot({path:'screenshots/weather-panels-'+width+'.png'});
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
  }finally{await context.close();}
 });

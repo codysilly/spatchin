@@ -69,6 +69,9 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
     metarSize:parseFloat(prop('.metar-raw','fontSize')),
     metarLine:parseFloat(prop('.metar-raw','lineHeight')),
     metarSide:prop('.metar-panel','paddingLeft'),
+    categorySize:prop('.category-tag','fontSize'),categoryMargin:prop('.category-tag','marginLeft'),
+    panelStyles:['.metar-panel','.taf','.atis'].map(sel=>({width:rect(sel).width,padding:prop(sel,'padding'),border:prop(sel,'border'),background:prop(sel,'backgroundColor'),margin:prop(sel,'margin')})),
+    atisStyles:['.atis-top h3','.atis-meta','.atis-label','.atis-value','.atis-full summary'].map(sel=>({size:prop(sel,'fontSize'),line:prop(sel,'lineHeight'),weight:prop(sel,'fontWeight'),font:prop(sel,'fontFamily')})),
     headerHeight:rect('header').height,
     logoSize:rect('.brand-logo').height,
     tafSize:document.querySelector('.taf-raw')?parseFloat(prop('.taf-raw','fontSize')):null,
@@ -106,8 +109,11 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.match(ui.icaoFont,/Inconsolata/);
   assert.match(ui.metarFont,/Inconsolata/);
   assert.match(ui.bodyFont,/Overpass/);
-  assert.equal(ui.icaoSize,20);
-  assert.equal(ui.nameSize,width>400?18:17);
+  assert.equal(ui.icaoSize,24);
+  assert.equal(ui.nameSize,20);
+  assert.equal(ui.categorySize,'8px');assert.equal(ui.categoryMargin,'4px');
+  assert.deepEqual(ui.panelStyles[1],ui.panelStyles[0]);assert.deepEqual(ui.panelStyles[2],ui.panelStyles[0]);
+  for(const [i,style] of ui.atisStyles.entries()){assert.equal(style.size,'15px');assert.equal(style.line,'19.5px');assert.equal(style.weight,i===3?'700':'400');assert.match(style.font,/Inconsolata/);}
   assert.equal(ui.nameColor,'rgb(163, 166, 168)');
   assert.equal(ui.metarSize,15);
   assert.ok(Math.abs(ui.metarLine/ui.metarSize-1.3)<.01);

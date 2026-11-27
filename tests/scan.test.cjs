@@ -78,7 +78,7 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
   await page.reload();await page.waitForFunction(()=>typeof render==='function');
   await page.waitForFunction(()=>!loading && metars.MEM?.error==='No valid METAR returned');
   assert.deepEqual(await page.locator('.icao').allTextContents(),['MEM']);
-  assert.equal(await page.locator('[data-airport="MEM"] a.weather-badge').getAttribute('href'),'https://aviationweather.gov/data/metar/?ids=KMEM');
+  assert.equal(await page.locator('[data-airport="MEM"] .metar-panel a.report-source').getAttribute('href'),'https://aviationweather.gov/data/metar/?ids=KMEM');
   assert.equal(await page.locator('.metar-status').textContent(),'METAR UNAVAILABLE');
   await page.waitForFunction(()=>document.querySelectorAll('.rw-table > tbody > tr.runway-row').length===8);
   // Published MEM now uses NASR; SCAN must preserve its bearing/provenance labels.
@@ -98,7 +98,7 @@ test('fresh storage uses MEM only without writing preferences or changing SCAN',
 
 test('KMEM observation loads through refresh and renders on the MEM card',async()=>{
   const observed = Math.floor(Date.now()/1000);
-  const raw = 'KMEM OFFLINE TEST OBSERVATION';
+  const raw = 'SPECI KMEM OFFLINE TEST OBSERVATION';
   let requests = 0, fail = false;
   // Test-only response: never written to published data or obtained from a provider.
   await page.route('**/data/metars.json?*',route=>{
@@ -122,8 +122,16 @@ test('KMEM observation loads through refresh and renders on the MEM card',async(
   assert.equal(await card.locator('.name').textContent(),'FREDERICK W SMITH INTL/MEMPHIS');
   assert.equal(await card.locator('.metar-status').count(),0);
   assert.match(await card.locator('.metar-raw').textContent(),/KMEM OFFLINE TEST OBSERVATION/);
-  assert.equal(await card.locator('a.weather-badge').getAttribute('href'),
+  assert.equal(await card.locator('.metar-panel a.report-source').getAttribute('href'),
     'https://aviationweather.gov/data/metar/?ids=KMEM');
+  assert.equal(await card.locator('.metar-raw a.report-source').textContent(),'SPECI KMEM');
+  await search('KMEM OFFLINE TEST');
+  assert.equal(await page.locator('#scan-count').textContent(),'0 / 1 matches');
+  await page.locator('#scan-next').click();
+  assert.equal((await card.locator('.metar-raw mark.scan-current').allTextContents()).join(''),'KMEM OFFLINE TEST');
+  assert.equal(await card.locator('.metar-raw').textContent(),raw);
+  await search('');
+  assert.equal(await card.locator('.metar-raw a.report-source').textContent(),'SPECI KMEM');
   fail=true;await page.evaluate(()=>refresh());assert.equal(await card.locator('.metar-status').count(),0);assert.equal(await card.locator('.metar-raw').textContent(),raw);assert.match(await card.locator('.metar-retained').textContent(),/refresh failed.*retained/i);
   await page.route('**/data/atis.json?*',route=>route.fulfill({json:{retrieved_utc:new Date().toISOString(),configured_airports:['KMEM'],airports:{}}}));
   await page.evaluate(()=>refreshAtis());

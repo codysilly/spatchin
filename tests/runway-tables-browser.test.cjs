@@ -23,7 +23,7 @@ test('catalog additions enforce 30 total; removable MEM and deliberate empty sta
   assert.equal(await ind.locator('.metar-status').count(),0);
   assert.match(await ind.locator('.name').innerText(),/INDIANAPOLIS/);
   assert.match(await ind.locator('.metar-raw').innerText(),/KIND SYNTHETIC OFFLINE METAR/);
-  assert.match(await ind.locator('.weather-badge').getAttribute('href'),/ids=KIND$/);
+  assert.match(await ind.locator('.metar-panel .report-source').getAttribute('href'),/ids=KIND$/);
   assert.match(await ind.locator('.empty').innerText(),/Runway data pending/);
   await page.evaluate(()=>{airports=AirportCatalog.slice(0,30);render();});
   await page.fill('#iata','MEM');await page.locator('#add-form button').click();assert.match(dialogs.pop(),/Maximum 30/);

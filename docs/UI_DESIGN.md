@@ -39,8 +39,8 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 - **Overpass** (400, 600, 700, 800): headings, airport names, interface labels, controls.
 - **Inconsolata** (400, 700): SPATCHIN wordmark, IATA airport code, coded METAR/TAF/ATIS, numeric weather, runway rows and UTC timestamps. Local fallback stacks are defined in `--font-ui` and `--font-data`.
 - Wordmark: see `BRANDING.md` (desktop tracking `0.0325em`; compact mobile `0.0175em`). The logo is **18 px** at all widths; the desktop header targets 22 px.
-- Airport IATA: **20 px**, weight 700, tracking `-0.045em` at all widths.
-- Airport name: **18 px** muted (17 px ≤400px); baseline aligned under the IATA after the handle.
+- Airport IATA: **24 px**, weight 700, tracking `-0.045em` at all widths.
+- Airport name: **20 px** muted at all widths; baseline aligned under the IATA after the handle.
 - Raw METAR: **15 px**, weight 400, line-height **1.3**, preserved whitespace. Raw TAF uses the same typography. Never reformat or decode the original report merely for style.
 - Runway data values: Inconsolata, generally **16 px** (15 px ≤760px); table column labels are small bold Overpass.
 
@@ -54,9 +54,9 @@ These colors are CSS custom properties at the top of `charcoal-dashboard.css`: `
 - Card padding: **20 px top, 22 px sides/bottom** desktop; **16 px ≤760px**, **12 px ≤400px**.
 - Dashboard controls-to-cards separation: **40 px** desktop; **22 px ≤760px**.
 - Airport header row: **six-dot grip** (44×44 px), code, single flight-category badge, flexible spacer, verified airport-diagram link if known, **× remove button** (44×44 px). Second row is the airport name, indented 50 px (48 px on mobile). No four-segment flight-category bar.
-- Bordered METAR hero immediately below header: inset background, **12 px top / 14 px sides / 14 px bottom** padding on desktop; **10 / 12 / 13 px** ≤760px. Small muted source label with the raw text below.
+- METAR, TAF and ATIS use equal-width bordered inset panels: **12 px vertical / 14 px horizontal** padding on desktop; **10 / 12 px** ≤760px. Raw METAR and TAF start without standalone labels, with source links on their original opening station text.
 - Compact runway rows: **7 px vertical cell padding** and 1 px dividers. The inline NOTAM reader and snapshot warning remain associated with their airport; no inference of operational runway availability.
-- Section rhythm is intentionally uneven: TAF-to-ATIS spacing about **26 px**, ATIS bottom margin **30 px**, NOTAM summary bottom **18 px**. Avoid replacing this with uniform padding.
+- Weather panel spacing is **10 px** between panels. NOTAM summary spacing is unchanged.
 
 ## UI behavior that styling changes must preserve
 
@@ -82,3 +82,7 @@ Jekyll continues to exclude the legacy duplicate `dashboard/`, synthetic `previe
 ## SPA-116 compact display
 
 The application header uses an 18 px solid gradient airplane, 14 px wordmark and 13 px UTC clock (12 px at narrow widths). The WIP banner is unchanged. Current METAR reports omit the routine status label; stale, unavailable and failed-refresh warnings remain. ATIS landing/departing labels omit arrows and the routine unofficial label; noncurrent warnings and source disclosure remain. Sources is a native details disclosure, closed by default, with five entries in owner-specified order. Preserve the distinction between forecast and observed winds in their controls and labels; retain heading-source warnings in their original context.
+
+## SPA-117 second UI pass
+
+Flight-category text is 8 px with 1 px vertical and 2 px horizontal padding and 4 px additional left separation. ATIS uses 15 px Inconsolata, weight 400 except runway values (700), line-height 1.3. Current TAF status is silent; all noncurrent warnings and source times remain. Links preserve original display tokens, and SCAN treats linked prefixes plus the remainder of a report as one logical text stream. When a verified station has no recognizable report prefix, retain an explicit source link. The existing logo is unchanged pending original artwork.
