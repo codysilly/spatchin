@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "source": "FAA d-TPP master XML (owner-supplied copy)",
+  "source_url": "https://aeronav.faa.gov/d-tpp/2612/xml_data/d-tpp_Metafile.xml",
+  "xml_sha256": "0f0f97a668b19826d8f69f4bb88996455f51f0d0682534823168fbffa2793d61",
+  "cycle": "2612",
+  "effective_from_utc": "2026-11-26T09:01:00Z",
+  "effective_to_utc": "2026-12-24T09:01:00Z",
+  "airports": {
+    "ABE": {
+      "icao": "KABE",
+      "pdf_name": "00015AD.PDF"
+    },
+    "ABQ": {
+      "icao": "KABQ",
+      "pdf_name": "00012AD.PDF"
+    },
+    "AFW": {
+      "icao": "KAFW",
+      "pdf_name": "06918AD.PDF"
+    },
+    "ALB": {
+      "icao": "KALB",
+      "pdf_name": "00010AD.PDF"
+    },
+    "ATL": {
+      "icao": "KATL",
+      "pdf_name": "00026AD.PDF"
+    },
+    "ATW": {
+      "icao": "KATW",
+      "pdf_name": "05216AD.PDF"
+    },
+    "AUS": {
+      "icao": "KAUS",
+      "pdf_name": "00556AD.PDF"
+    },
+    "BDL": {
+      "icao": "KBDL",
+      "pdf_name": "00460AD.PDF"
+    },
+    "BFI": {
+      "icao": "KBFI",
+      "pdf_name": "00384AD.PDF"
+    },
+    "BFM": {
+      "icao": "KBFM",
+      "pdf_name": "00268AD.PDF"
+    },
+    "BGR": {
+      "icao": "KBGR",
+      "pdf_name": "00039AD.PDF"
+    },
+    "BHM": {
+      "icao": "KBHM",
+      "pdf_name": "00050AD.PDF"
+    },
+    "BIL": {
+      "icao": "KBIL",
+      "pdf_name": "00048AD.PDF"
+    },
+    "BMI": {
+      "icao": "KBMI",
+      "pdf_name": "05058AD.PDF"
+    },
+    "BNA": {
+      "icao": "KBNA",
+      "pdf_name": "00282AD.PDF"
+    },
+    "BOI": {
+      "icao": "KBOI",
+      "pdf_name": "00057AD.PDF"
+    },
+    "BOS": {
+      "icao": "KBOS",
+      "pdf_name": "00058AD.PDF"
+    },
+    "BTV": {
+      "icao": "KBTV",
+      "pdf_name": "00070AD.PDF"
+    },
+    "BUF": {
+      "icao": "KBUF",
+      "pdf_name": "00065AD.PDF"
+    },
+    "BUR": {
+      "icao": "KBUR",
+      "pdf_name": "00067AD.PDF"
+    },
+    "BWI": {
+      "icao": "KBWI",
+      "pdf_name": "00804AD.PDF"
+    },
+    "CAE": {
+      "icao": "KCAE",
+      "pdf_name": "00089AD.PDF"
+    },
+    "CHA": {
+      "icao": "KCHA",
+      "pdf_name": "00079AD.PDF"
+    },
+    "CHS": {
+      "icao": "KCHS",
+      "pdf_name": "00076AD.PDF"
+    },
+    "CID": {
+      "icao": "KCID",
+      "pdf_name": "00250AD.PDF"
+    },
+    "CLE": {
+      "icao": "KCLE",
+      "pdf_name": "00084AD.PDF"
+    },
+    "CLT": {
+      "icao": "KCLT",
+      "pdf_name": "00078AD.PDF"
+    },
+    "COS": {
+      "icao": "KCOS",
+      "pdf_name": "00087AD.PDF"
+    },
+    "CPR": {
+      "icao": "KCPR",
+      "pdf_name": "00072AD.PDF"
+    },
+    "CRP": {
+      "icao": "KCRP",
+      "pdf_name": "05032AD.PDF"
+    },
+    "CVG": {
+      "icao": "KCVG",
+      "pdf_name": "00655AD.PDF"
+    },
+    "DAY": {
+      "icao": "KDAY",
+      "pdf_name": "00107AD.PDF"
+    },
+    "DEN": {
+      "icao": "KDEN",
+      "pdf_name": "09077AD.PDF"
+    },
+    "DFW": {
+      "icao": "KDFW",
+      "pdf_name": "06039AD.PDF"
+    },
+    "DJT": {
+      "icao": "KDJT",
+      "pdf_name": "00449AD.PDF"
+    },
+    "DLH": {
+      "icao": "KDLH",
+      "pdf_name": "00125AD.PDF"
+    },
+    "DSM": {
+      "icao": "KDSM",
+      "pdf_name": "00117AD.PDF"
+    },
+    "DTW": {
+      "icao": "KDTW",
+      "pdf_name": "00119AD.PDF"
+    },
+    "ELP": {
+      "icao": "KELP",
+      "pdf_name": "00134AD.PDF"
+    },
+    "EWR": {
+      "icao": "KEWR",
+      "pdf_name": "00285AD.PDF"
+    },
+    "FAR": {
+      "icao": "KFAR",
+      "pdf_name": "00144AD.PDF"
+    },
+    "FAT": {
+      "icao": "KFAT",
+      "pdf_name": "00162AD.PDF"
+    },
+    "FLL": {
+      "icao": "KFLL",
+      "pdf_name": "00744AD.PDF"
+    },
+    "FNT": {
+      "icao": "KFNT",
+      "pdf_name": "00618AD.PDF"
+    },
+    "FSD": {
+      "icao": "KFSD",
+      "pdf_name": "00396AD.PDF"
+    },
+    "FWA": {
+      "icao": "KFWA",
+      "pdf_name": "00156AD.PDF"
+    },
+    "GEG": {
+      "icao": "KGEG",
+      "pdf_name": "00403AD.PDF"
+    },
+    "GFK": {
+      "icao": "KGFK",
+      "pdf_name": "05187AD.PDF"
+    },
+    "GJT": {
+      "icao": "KGJT",
+      "pdf_name": "00634AD.PDF"
+    },
+    "GRR": {
+      "icao": "KGRR",
+      "pdf_name": "05184AD.PDF"
+    },
+    "GSO": {
+      "icao": "KGSO",
+      "pdf_name": "00178AD.PDF"
+    },
+    "GSP": {
+      "icao": "KGSP",
+      "pdf_name": "05124AD.PDF"
+    },
+    "GTF": {
+      "icao": "KGTF",
+      "pdf_name": "00177AD.PDF"
+    },
+    "HLN": {
+      "icao": "KHLN",
+      "pdf_name": "00192AD.PDF"
+    },
+    "HRL": {
+      "icao": "KHRL",
+      "pdf_name": "00827AD.PDF"
+    },
+    "HTS": {
+      "icao": "KHTS",
+      "pdf_name": "00532AD.PDF"
+    },
+    "IAD": {
+      "icao": "KIAD",
+      "pdf_name": "05100AD.PDF"
+    },
+    "IAH": {
+      "icao": "KIAH",
+      "pdf_name": "05461AD.PDF"
+    },
+    "ICT": {
+      "icao": "KICT",
+      "pdf_name": "00987AD.PDF"
+    },
+    "IDA": {
+      "icao": "KIDA",
+      "pdf_name": "00590AD.PDF"
+    },
+    "IND": {
+      "icao": "KIND",
+      "pdf_name": "00203AD.PDF"
+    },
+    "IWA": {
+      "icao": "KIWA",
+      "pdf_name": "00074AD.PDF"
+    },
+    "JAX": {
+      "icao": "KJAX",
+      "pdf_name": "05570AD.PDF"
+    },
+    "JFK": {
+      "icao": "KJFK",
+      "pdf_name": "00610AD.PDF"
+    },
+    "LAS": {
+      "icao": "KLAS",
+      "pdf_name": "00662AD.PDF"
+    },
+    "LAX": {
+      "icao": "KLAX",
+      "pdf_name": "00237AD.PDF"
+    },
+    "LBB": {
+      "icao": "KLBB",
+      "pdf_name": "00241AD.PDF"
+    },
+    "LCK": {
+      "icao": "KLCK",
+      "pdf_name": "06846AD.PDF"
+    },
+    "LFT": {
+      "icao": "KLFT",
+      "pdf_name": "00865AD.PDF"
+    },
+    "LGB": {
+      "icao": "KLGB",
+      "pdf_name": "00236AD.PDF"
+    },
+    "LIT": {
+      "icao": "KLIT",
+      "pdf_name": "00233AD.PDF"
+    },
+    "LRD": {
+      "icao": "KLRD",
+      "pdf_name": "00226AD.PDF"
+    },
+    "LSV": {
+      "icao": "KLSV",
+      "pdf_name": "00227AD.PDF"
+    },
+    "MCI": {
+      "icao": "KMCI",
+      "pdf_name": "00780AD.PDF"
+    },
+    "MCO": {
+      "icao": "KMCO",
+      "pdf_name": "00571AD.PDF"
+    },
+    "MDT": {
+      "icao": "KMDT",
+      "pdf_name": "00188AD.PDF"
+    },
+    "MEM": {
+      "icao": "KMEM",
+      "pdf_name": "00253AD.PDF"
+    },
+    "MHT": {
+      "icao": "KMHT",
+      "pdf_name": "00246AD.PDF"
+    },
+    "MIA": {
+      "icao": "KMIA",
+      "pdf_name": "00257AD.PDF"
+    },
+    "MKE": {
+      "icao": "KMKE",
+      "pdf_name": "00262AD.PDF"
+    },
+    "MSN": {
+      "icao": "KMSN",
+      "pdf_name": "00245AD.PDF"
+    },
+    "MSO": {
+      "icao": "KMSO",
+      "pdf_name": "00266AD.PDF"
+    },
+    "MSP": {
+      "icao": "KMSP",
+      "pdf_name": "00264AD.PDF"
+    },
+    "MSY": {
+      "icao": "KMSY",
+      "pdf_name": "00609AD.PDF"
+    },
+    "NQA": {
+      "icao": "KNQA",
+      "pdf_name": "00910AD.PDF"
+    },
+    "OAK": {
+      "icao": "KOAK",
+      "pdf_name": "00294AD.PDF"
+    },
+    "OKC": {
+      "icao": "KOKC",
+      "pdf_name": "00301AD.PDF"
+    },
+    "OMA": {
+      "icao": "KOMA",
+      "pdf_name": "00304AD.PDF"
+    },
+    "ONT": {
+      "icao": "KONT",
+      "pdf_name": "00965AD.PDF"
+    },
+    "ORD": {
+      "icao": "KORD",
+      "pdf_name": "00166AD.PDF"
+    },
+    "ORF": {
+      "icao": "KORF",
+      "pdf_name": "00291AD.PDF"
+    },
+    "PAE": {
+      "icao": "KPAE",
+      "pdf_name": "00142AD.PDF"
+    },
+    "PDX": {
+      "icao": "KPDX",
+      "pdf_name": "00330AD.PDF"
+    },
+    "PHL": {
+      "icao": "KPHL",
+      "pdf_name": "00320AD.PDF"
+    },
+    "PHX": {
+      "icao": "KPHX",
+      "pdf_name": "00322AD.PDF"
+    },
+    "PIT": {
+      "icao": "KPIT",
+      "pdf_name": "00570AD.PDF"
+    },
+    "PSM": {
+      "icao": "KPSM",
+      "pdf_name": "00678AD.PDF"
+    },
+    "PVD": {
+      "icao": "KPVD",
+      "pdf_name": "00333AD.PDF"
+    },
+    "PWM": {
+      "icao": "KPWM",
+      "pdf_name": "00329AD.PDF"
+    },
+    "RDU": {
+      "icao": "KRDU",
+      "pdf_name": "00516AD.PDF"
+    },
+    "RFD": {
+      "icao": "KRFD",
+      "pdf_name": "00954AD.PDF"
+    },
+    "RIC": {
+      "icao": "KRIC",
+      "pdf_name": "00347AD.PDF"
+    },
+    "RNO": {
+      "icao": "KRNO",
+      "pdf_name": "00346AD.PDF"
+    },
+    "ROA": {
+      "icao": "KROA",
+      "pdf_name": "00349AD.PDF"
+    },
+    "ROC": {
+      "icao": "KROC",
+      "pdf_name": "00351AD.PDF"
+    },
+    "RST": {
+      "icao": "KRST",
+      "pdf_name": "05041AD.PDF"
+    },
+    "RSW": {
+      "icao": "KRSW",
+      "pdf_name": "06757AD.PDF"
+    },
+    "SAN": {
+      "icao": "KSAN",
+      "pdf_name": "00373AD.PDF"
+    },
+    "SAT": {
+      "icao": "KSAT",
+      "pdf_name": "00369AD.PDF"
+    },
+    "SAV": {
+      "icao": "KSAV",
+      "pdf_name": "00380AD.PDF"
+    },
+    "SBD": {
+      "icao": "KSBD",
+      "pdf_name": "00547AD.PDF"
+    },
+    "SBN": {
+      "icao": "KSBN",
+      "pdf_name": "00399AD.PDF"
+    },
+    "SDF": {
+      "icao": "KSDF",
+      "pdf_name": "00239AD.PDF"
+    },
+    "SEA": {
+      "icao": "KSEA",
+      "pdf_name": "00582AD.PDF"
+    },
+    "SFO": {
+      "icao": "KSFO",
+      "pdf_name": "00375AD.PDF"
+    },
+    "SGF": {
+      "icao": "KSGF",
+      "pdf_name": "00604AD.PDF"
+    },
+    "SHV": {
+      "icao": "KSHV",
+      "pdf_name": "00884AD.PDF"
+    },
+    "SJC": {
+      "icao": "KSJC",
+      "pdf_name": "00693AD.PDF"
+    },
+    "SKA": {
+      "icao": "KSKA",
+      "pdf_name": "00553AD.PDF"
+    },
+    "SLC": {
+      "icao": "KSLC",
+      "pdf_name": "00365AD.PDF"
+    },
+    "SMF": {
+      "icao": "KSMF",
+      "pdf_name": "05490AD.PDF"
+    },
+    "SNA": {
+      "icao": "KSNA",
+      "pdf_name": "00377AD.PDF"
+    },
+    "STL": {
+      "icao": "KSTL",
+      "pdf_name": "00360AD.PDF"
+    },
+    "SWF": {
+      "icao": "KSWF",
+      "pdf_name": "00450AD.PDF"
+    },
+    "SYR": {
+      "icao": "KSYR",
+      "pdf_name": "00411AD.PDF"
+    },
+    "TLH": {
+      "icao": "KTLH",
+      "pdf_name": "05048AD.PDF"
+    },
+    "TPA": {
+      "icao": "KTPA",
+      "pdf_name": "00416AD.PDF"
+    },
+    "TUL": {
+      "icao": "KTUL",
+      "pdf_name": "00432AD.PDF"
+    },
+    "TUS": {
+      "icao": "KTUS",
+      "pdf_name": "00430AD.PDF"
+    },
+    "TYS": {
+      "icao": "KTYS",
+      "pdf_name": "00218AD.PDF"
+    }
+  }
+}
