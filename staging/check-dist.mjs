@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 const dir=join(dirname(fileURLToPath(import.meta.url)),'dist');
 const allowed=new Set([
  'index.html','styles.css','charcoal-dashboard.css','app.js','airport-catalog.js',
- 'notam-reader.js','notam-snapshots.js','taf-reader.js','taf-timeline.js','scan.js','assets/branding/logo-cyan-magenta.svg',
- ...[16,32,64,128,180].map(n=>'assets/branding/logo-'+n+'.png')
+ 'notam-reader.js','notam-snapshots.js','taf-reader.js','taf-timeline.js','scan.js','assets/branding/paperplane-cyan-magenta-fade.svg',
+ ...[16,32,180].map(n=>'assets/branding/paperplane-'+n+'.png')
 ]);
 async function list(path='',out=[]){
  for(const entry of await readdir(join(dir,path),{withFileTypes:true})){

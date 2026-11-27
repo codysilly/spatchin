@@ -11,8 +11,14 @@ const hash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');
 before(async()=>{server=spawn(pythonCommand(),['-B','-m','http.server','8771','--bind','127.0.0.1'],{stdio:'ignore'});for(let i=0;i<50;i++){try{if((await fetch(base)).ok)break;}catch{}await new Promise(r=>setTimeout(r,100));}browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH,headless:true});});
 after(async()=>{await browser?.close();server?.kill();});
 test('version-controlled originals match owner-approved fingerprints',()=>{
- assert.equal(hash('assets/branding/spatchin-logo-source.png'),'ad5e051cfbfc48cfd5faf7c7c4f5048adb683039c9a8319a60840fc485a00144');
- assert.equal(hash('docs/reference/dashboard-reference.png'),'8380cbe3c991e1af1259294fffc2ab90bd538d6be74a1f798b47a5e3d9ca4c09');
+ const fingerprints={
+  'assets/branding/paperplane-cyan-magenta-fade.svg':'f5aab414e02934a4613bfa8b10b0a7ba4fec69960d47c39e62a1862299a6b280',
+  'assets/branding/paperplane-16.png':'ef8659dea2200f0cca551d169c924270d823e4155df0831856999ab3c4a3f728',
+  'assets/branding/paperplane-32.png':'c3defbde544113e08c10a28e30207e95bea5166d1c39ad824ea4ee049d4ec626',
+  'assets/branding/paperplane-180.png':'6577fd568e0c381f4e081b6b0053549bba36597c6d666d3a1ed2171d8be14f56',
+  'docs/reference/dashboard-reference.png':'8380cbe3c991e1af1259294fffc2ab90bd538d6be74a1f798b47a5e3d9ca4c09'
+ };
+ for(const [path,digest] of Object.entries(fingerprints))assert.equal(hash(path),digest,path);
 });
 async function localPage(width){const context=await browser.newContext({viewport:{width,height:1200}}),page=await context.newPage(),external=[],errors=[];
  await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(r.request().url()===offlineFont)return r.fulfill({status:200,contentType:'text/css',body:''});external.push(r.request().url());return r.abort();});page.on('pageerror',e=>errors.push(e.message));return {context,page,external,errors};}

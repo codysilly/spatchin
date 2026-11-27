@@ -12,7 +12,7 @@ test('public homepage is the real v0.9 dashboard, not the former holding page',(
  assert.ok(root.includes('<div class="wip-banner" role="note">'+warning+'</div>'));
  assert.doesNotMatch(root,/Not cleared for takeoff|holding-banner|splash\.css/);
  assert.doesNotMatch(root,/<base href=/);
- for(const resource of ['styles.css','charcoal-dashboard.css','app.js','scan.js','assets/branding/logo-cyan-magenta.svg'])assert.ok(root.includes('"'+resource+'"'),'missing '+resource);
+ for(const resource of ['styles.css','charcoal-dashboard.css','app.js','scan.js','assets/branding/paperplane-cyan-magenta-fade.svg'])assert.ok(root.includes('"'+resource+'"'),'missing '+resource);
  for(const control of ['id="cards"','id="scan-toggle"','id="scan-terms"','id="iata"'])assert.ok(root.includes(control),'missing '+control);
  assert.match(root,/https:\/\/aviationweather\.gov\//);
  assert.match(root,/<script type="module" src="app\.js" data-forecast="true">/);
