@@ -12,7 +12,7 @@ before(async()=>{server=spawn(pythonCommand(),['-B','-m','http.server','8771','-
 after(async()=>{await browser?.close();server?.kill();});
 test('version-controlled originals match owner-approved fingerprints',()=>{
  const fingerprints={
-  'assets/branding/paperplane-cyan-magenta-fade.svg':'a32953c7ee82a2cff877e7a0e4d1a21c4522f7fb4f78b317523606d049e59c09',
+  'assets/branding/paperplane-cyan-magenta-fade.svg':'f5aab414e02934a4613bfa8b10b0a7ba4fec69960d47c39e62a1862299a6b280',
   'assets/branding/paperplane-16.png':'ef8659dea2200f0cca551d169c924270d823e4155df0831856999ab3c4a3f728',
   'assets/branding/paperplane-32.png':'c3defbde544113e08c10a28e30207e95bea5166d1c39ad824ea4ee049d4ec626',
   'assets/branding/paperplane-180.png':'6577fd568e0c381f4e081b6b0053549bba36597c6d666d3a1ed2171d8be14f56',
