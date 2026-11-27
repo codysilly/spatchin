@@ -141,7 +141,11 @@ test('TAF change groups start on indented lines without changing any tokens', ()
     report: report({ rawTAF: raw }),
     now: NOW,
   });
-  assert.ok(html.replace(/<a[^>]*>|<\/a>/g, '').includes('<pre class="taf-raw" data-scan-flow>' + formatted + '</pre>'));
+  assert.ok(
+    html
+      .replace(/<a[^>]*>|<\/a>/g, '')
+      .includes('<pre class="taf-raw" data-scan-flow>' + formatted + '</pre>'),
+  );
   assert.ok(!html.includes('TAF KMEM 250244Z 2503/2606 02009KT P6SM BKN040 PROB30'));
 });
 test('BECMG, BCMG, TEMPO, and PROB groups break at token boundaries', () => {

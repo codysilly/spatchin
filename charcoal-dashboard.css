@@ -264,7 +264,6 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 .atis-box{min-height:0;padding:6px 8px}
 .atis-value{margin-top:4px}
 .atis-full{margin-top:8px}
-.atis-full summary{min-height:0}
 .airport.is-dragging{opacity:.65}
 .airport.is-drop-target{outline:2px solid var(--blue);outline-offset:-2px}
 @media(max-width:1300px){

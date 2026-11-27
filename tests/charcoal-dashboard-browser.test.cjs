@@ -276,7 +276,7 @@ for(const width of [1440,390])test('uniform linked weather panels at '+width+'px
   await page.locator('#scan-terms').fill('');await page.locator('#scan-toggle').click();
   assert.equal(await mem.locator('.metar-raw a').textContent(),'SPECI KMEM');
   assert.equal(await mem.locator('.taf-raw a').textContent(),'TAF KMEM');
-  await page.evaluate(()=>scrollTo(0,0));
+  await page.evaluate(()=>{scrollTo(0,0);const banner=document.createElement('div');banner.className='synthetic-banner';banner.textContent='SYNTHETIC VISUAL TEST — NOT LIVE AVIATION DATA';document.querySelector('header').after(banner);});
   mkdirSync('screenshots',{recursive:true});
   await page.screenshot({path:'screenshots/weather-panels-'+width+'.png'});
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
