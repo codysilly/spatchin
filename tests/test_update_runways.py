@@ -269,5 +269,61 @@ class NasrC070RunwayTests(unittest.TestCase):
                          [date(2026, 10, 29), date(2026, 10, 1)])
 
 
+class MagneticInventoryTests(unittest.TestCase):
+    def fixture(self, *, unknown=False, missing_end=False, missing_variation=False):
+        cycle = '2026/11/26'
+        stations = {'ORD': 'KORD', 'DTW': 'KDTW', 'SNA': 'KSNA', 'SLC': 'KSLC'}
+        bases, pairs, ends = [], [], []
+        for code, icao in stations.items():
+            common = {'EFF_DATE': cycle, 'SITE_NO': code, 'ARPT_ID': code}
+            bases.append({**common, 'ICAO_ID': icao, 'MAG_VARN': '' if missing_variation else '7',
+                          'MAG_HEMIS': 'W', 'MAG_VARN_YEAR': '2020'})
+            records = [('09/27', '5000', 'CONC', '')]
+            records += {'ORD': [('10X', '0', '', 'ILS/DME')],
+                        'DTW': [('04X/22X', '0', '', 'ILS/DME')],
+                        'SNA': [('20X', '0', '', 'LDA/DME')],
+                        'SLC': [('HB', '60', 'ASPH', ''), ('HF', '43', 'ASPH', '')]}[code]
+            if unknown and code == 'ORD':
+                records.append(('11X', '0', '', 'ILS/DME'))
+            for pair, length, surface, ils in records:
+                pairs.append({**common, 'RWY_ID': pair, 'RWY_LEN': length, 'SURFACE_TYPE_CODE': surface})
+                for end in pair.split('/'):
+                    if missing_end and code == 'ORD' and end == '27':
+                        continue
+                    ends.append({**common, 'RWY_ID': pair, 'RWY_END_ID': end, 'ILS_TYPE': ils})
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, 'w') as z:
+            for name, rows in [('APT_BASE.csv', bases), ('APT_RWY.csv', pairs),
+                               ('APT_RWY_END.csv', ends)]:
+                write_csv(z, name, rows, list(rows[0]))
+        buf.seek(0)
+        with zipfile.ZipFile(buf) as z:
+            return update_runways.generate_inventory(z, 'https://example.invalid/synthetic.zip',
+                                                     date(2026, 11, 26), stations)
+
+    def test_physical_runways_and_documented_auxiliary_records(self):
+        data = self.fixture()
+        self.assertEqual(data['heading_reference'], 'MAGNETIC')
+        self.assertEqual(len(data['airports']), 4)
+        for items in data['airports'].values():
+            self.assertEqual(items, [{'id': '09', 'magnetic_heading': 90, 'pair': '09/27'},
+                                     {'id': '27', 'magnetic_heading': 270, 'pair': '09/27'}])
+        self.assertEqual(data['airport_metadata']['ORD']['magnetic_variation_deg'], -7)
+        self.assertEqual(data['airport_metadata']['ORD']['magnetic_variation_year'], 2020)
+        self.assertEqual(len(data['airport_coverage']['SLC']['excluded_non_runway_records']), 2)
+        self.assertEqual(data['airport_coverage']['DTW']['excluded_non_runway_records'][0]['id'], '04X/22X')
+
+    def test_unknown_records_and_missing_physical_ends_fail_closed(self):
+        with self.assertRaisesRegex(ValueError, 'unclassified runway record 11X'):
+            self.fixture(unknown=True)
+        with self.assertRaisesRegex(ValueError, 'incomplete or conflicting ends'):
+            self.fixture(missing_end=True)
+
+    def test_missing_variation_does_not_remove_runways(self):
+        data = self.fixture(missing_variation=True)
+        self.assertIsNone(data['airport_metadata']['ORD']['magnetic_variation_deg'])
+        self.assertEqual(len(data['airports']['ORD']), 2)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -7,6 +7,7 @@ on:
       - 'scripts/update_metar.py'
       - 'scripts/update_taf.py'
       - 'scripts/update_runways.py'
+      - 'scripts/nasr_runway_inventory.py'
       - 'tests/test_update_runways.py'
       - 'tests/test_update_taf.py'
       - 'tests/test_c070_station_registry.py'

@@ -241,3 +241,27 @@ test('invalid METAR publication and missing ATIS fields fail before state assign
  }
  assert.equal(app.run('atisData'),null);
 });
+
+test('magnetic snapshot accepts all 130 actual inventories and uses east/west variation',async()=>{
+ const app=await load([],snapshot([]));
+ const data=JSON.parse(source('data/runways.json'));
+ const validate=value=>app.run('PublishedSnapshots.runways('+JSON.stringify(value)+',approvedCatalog)');
+ assert.equal(data.heading_reference,'MAGNETIC');
+ assert.equal(Object.keys(data.airports).length,130);
+ if(data.effective_date==='2026-11-26')assert.equal(Object.values(data.airports).flat().length,714);
+ validate(data);
+ app.run('runwayData='+JSON.stringify(data));
+ if(data.effective_date==='2026-11-26'){
+  assert.equal(app.run('runwayHeading("MEM","09")'),89);
+  assert.equal(app.run('runwayHeading("LAX","06L")'),72);
+  assert.equal(app.run('runwayHeading("MEM","36R")'),359);
+ }
+ assert.match(app.run('runwayBasis("MEM")'),/Approx. wind components/);
+ assert.match(app.run('runwayRow("MEM","09",{direction:89,speed:12})'),/Approximate magnetic runway heading: 90°/);
+ const wrong=JSON.parse(JSON.stringify(data));wrong.airports.MEM[0].magnetic_heading=360;
+ assert.throws(()=>validate(wrong),/Invalid MEM runway end/);
+ const missing=JSON.parse(JSON.stringify(data));missing.airport_metadata.MEM.magnetic_variation_deg=null;missing.airport_metadata.MEM.magnetic_variation_year=null;
+ validate(missing);app.run('runwayData='+JSON.stringify(missing));
+ assert.equal(app.run('runwayHeading("MEM","09")'),null);
+ assert.match(app.run('runwayBasis("MEM")'),/magnetic variation missing/);
+});
