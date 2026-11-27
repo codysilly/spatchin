@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T19:58:34.826288Z",
+  "updated_utc": "2026-11-27T20:08:35.202239Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2593,24 +2593,24 @@
     },
     {
       "icaoId": "KGSP",
-      "rawTAF": "TAF KGSP 271732Z 2718/2818 24019G28KT P6SM SCT030 TEMPO 2718/2720 BKN030 FM272100 24017G26KT P6SM FEW030 BKN040 FM280000 24015G23KT P6SM FEW250 FM280900 25005KT P6SM SKC",
-      "issueTime": "2026-11-27T17:32:00.000Z",
-      "validTimeFrom": 1795802400,
+      "rawTAF": "TAF KGSP 272006Z 2720/2818 24019G26KT P6SM SCT030 TEMPO 2720/2722 BKN030 FM272200 24017G25KT P6SM SCT035 FM280100 24015G23KT P6SM FEW250 FM280900 25005KT P6SM SKC",
+      "issueTime": "2026-11-27T20:06:00.000Z",
+      "validTimeFrom": 1795809600,
       "validTimeTo": 1795888800,
       "fcsts": [
         {
-          "timeFrom": 1795802400,
-          "timeTo": 1795813200,
+          "timeFrom": 1795809600,
+          "timeTo": 1795816800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 240,
           "wspd": 19,
-          "wgst": 28
+          "wgst": 26
         },
         {
-          "timeFrom": 1795802400,
-          "timeTo": 1795809600,
+          "timeFrom": 1795809600,
+          "timeTo": 1795816800,
           "timeBec": null,
           "fcstChange": "TEMPO",
           "probability": null,
@@ -2619,17 +2619,17 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795813200,
-          "timeTo": 1795824000,
+          "timeFrom": 1795816800,
+          "timeTo": 1795827600,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 240,
           "wspd": 17,
-          "wgst": 26
+          "wgst": 25
         },
         {
-          "timeFrom": 1795824000,
+          "timeFrom": 1795827600,
           "timeTo": 1795856400,
           "timeBec": null,
           "fcstChange": "FM",
@@ -5752,33 +5752,23 @@
     },
     {
       "icaoId": "KSWF",
-      "rawTAF": "TAF KSWF 271835Z 2719/2824 20010G17KT P6SM SCT025 OVC040 FM272100 23011G20KT 5SM -SHRA BR OVC025 FM272300 26011G18KT P6SM BKN030 OVC040 FM280600 26008KT P6SM OVC025 FM281400 27012G20KT P6SM OVC025 AMD NOT SKED",
-      "issueTime": "2026-11-27T18:35:00.000Z",
-      "validTimeFrom": 1795806000,
+      "rawTAF": "TAF KSWF 271959Z 2720/2824 23011G20KT 6SM -RA BR BKN025 FM272200 26011G18KT P6SM BKN030 OVC040 FM280600 26008KT P6SM OVC025 FM281400 27012G20KT P6SM OVC025 AMD NOT SKED",
+      "issueTime": "2026-11-27T19:59:00.000Z",
+      "validTimeFrom": 1795809600,
       "validTimeTo": 1795910400,
       "fcsts": [
         {
-          "timeFrom": 1795806000,
-          "timeTo": 1795813200,
+          "timeFrom": 1795809600,
+          "timeTo": 1795816800,
           "timeBec": null,
           "fcstChange": null,
-          "probability": null,
-          "wdir": 200,
-          "wspd": 10,
-          "wgst": 17
-        },
-        {
-          "timeFrom": 1795813200,
-          "timeTo": 1795820400,
-          "timeBec": null,
-          "fcstChange": "FM",
           "probability": null,
           "wdir": 230,
           "wspd": 11,
           "wgst": 20
         },
         {
-          "timeFrom": 1795820400,
+          "timeFrom": 1795816800,
           "timeTo": 1795845600,
           "timeBec": null,
           "fcstChange": "FM",
