@@ -262,6 +262,41 @@ class CandidateTests(unittest.TestCase):
         self.assertEqual(result["delta_candidate"]["audit"]["stale_ignored"], 1)
         self.assertEqual(result["catalog"]["ID-1"]["current"]["notam"]["text"], ["ORIGINAL NOTICE"])
 
+    def test_unresolved_delta_replay_is_idempotent_and_stale_is_retained(self):
+        baseline = promote_baseline(
+            build_initial_candidate(
+                [initial("UNRESOLVED", status="unresolved")],
+                capture_started_utc="2026-11-16T12:54:55Z",
+            ),
+            gates={name: True for name in REQUIRED_ACTIVATION_GATES},
+            accepted_utc="2026-11-16T12:55:00Z",
+        )
+        payload = envelope([feature("NEW", "UNLISTED")])
+        first = reconcile_delta(
+            baseline,
+            payload,
+            requested_since_utc=baseline["watermark"],
+            received_utc="2026-11-16T13:00:00Z",
+        )
+        replay = reconcile_delta(
+            first,
+            payload,
+            requested_since_utc=baseline["watermark"],
+            received_utc="2026-11-16T13:00:00Z",
+        )
+        self.assertEqual(replay["delta_candidate"]["audit"]["replayed"], 1)
+        self.assertEqual(len(replay["unresolved_records"]), len(first["unresolved_records"]))
+
+        stale_payload = envelope([feature("NEW", "UNLISTED", updated="2026-11-16T12:00:00Z")])
+        stale = reconcile_delta(
+            first,
+            stale_payload,
+            requested_since_utc=baseline["watermark"],
+            received_utc="2026-11-16T13:01:00Z",
+        )
+        self.assertEqual(stale["delta_candidate"]["audit"]["stale_ignored"], 1)
+        self.assertEqual(len(stale["unresolved_records"]), len(first["unresolved_records"]))
+
     def test_same_timestamp_cross_format_replay_requires_all_shared_evidence(self):
         cases = []
         cross_airport = feature(airport="KORD")
