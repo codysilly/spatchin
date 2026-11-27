@@ -249,7 +249,7 @@ for(const width of [1440,390])test('uniform linked weather panels at '+width+'px
  const now=new Date(),stamp=now.toISOString(),seconds=Math.floor(now.getTime()/1000);
  const raw='SPECI KMEM 270805Z 27008KT 10SM FEW033 OVC041 04/01 A2995 RMK AO2 SYNTHETIC';
  const taf='TAF KMEM 270520Z 2706/2812 29011G18KT P6SM VCSH BKN015 OVC025 FM271000 28010G18KT P6SM SCT025 BKN050';
- await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(/fonts\\.(googleapis|gstatic)\\.com/.test(r.request().url()))return r.abort();external.push(r.request().url());return r.abort();});
+ await context.route('**/*',r=>{if(new URL(r.request().url()).origin===base)return r.continue();if(/fonts\.(googleapis|gstatic)\.com/.test(r.request().url()))return r.abort();external.push(r.request().url());return r.abort();});
  page.on('pageerror',e=>errors.push(e.message));
  await context.addInitScript(()=>localStorage.setItem('spatchin-airports','["MEM"]'));
  await context.route('**/data/metars.json?*',r=>r.fulfill({json:{updated_utc:stamp,metars:[{icaoId:'KMEM',obsTime:seconds,wdir:270,wspd:8,fltCat:'VFR',rawOb:raw}]}}));
@@ -262,7 +262,7 @@ for(const width of [1440,390])test('uniform linked weather panels at '+width+'px
   await mem.locator('.metar-raw a').waitFor();await mem.locator('.taf-raw a').waitFor();
   await page.waitForFunction(()=>document.querySelector('.atis-value')?.textContent==='36C');
   assert.equal(await mem.locator('.metar-raw').textContent(),raw);
-  assert.deepEqual((await mem.locator('.taf-raw').textContent()).split(/\\s+/),taf.split(/\\s+/));
+  assert.deepEqual((await mem.locator('.taf-raw').textContent()).split(/\s+/),taf.split(/\s+/));
   assert.equal(await mem.locator('.metar-raw a').textContent(),'SPECI KMEM');
   assert.equal(await mem.locator('.taf-raw a').textContent(),'TAF KMEM');
   assert.equal(await mem.locator('.weather-source,.weather-badge,.taf>strong,.metar-status,.taf-status,.report-fallback').count(),0);
