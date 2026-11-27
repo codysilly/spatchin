@@ -9,6 +9,12 @@ normalizing their text, excludes private evidence, verifies a byte count and
 SHA-256 manifest, rejects older retrieval times, and atomically retains the
 last-good public file. It contains no CLI, network, credential, Git, scheduler,
 or provider code; activation remains a separate production authorization.
+The projected retrieval timestamp comes from accepted acquisition evidence
+(the latest accepted delta receipt, otherwise the Initial Load capture), never
+from publication time. Publication generation time is separate metadata,
+automatic updates remain false, and restart recovery can finish only the exact
+known snapshot/manifest pair after interruption between their replacements;
+unknown mismatches fail closed for operator review.
 
 `scripts/notam/nms_engine.py` now provides the single guarded acceptance path for
 an Initial Load baseline and recurring global deltas. It has no HTTP client,
