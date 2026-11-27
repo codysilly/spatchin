@@ -56,8 +56,8 @@ main{--card-gap:16px;max-width:none;width:100%;padding:14px 28px 36px;display:fl
 }
 .dashboard-controls .toolbar{flex:0 0 auto;width:auto;margin:0;padding:0;min-height:44px}
 .dashboard-controls #add-form{flex:none;width:max-content;max-width:none;margin:0;padding:0;gap:6px;min-height:44px}
-/* Prevent inherited percentage max-width and form shrink-to-fit from clipping the datalist placeholder. */
-.dashboard-controls #iata{--iata-width:calc(15ch + 48px);flex:none;width:var(--iata-width);min-width:var(--iata-width);max-width:none;height:44px;padding:0 9px}
+/* Reserve all 15 placeholder characters, even when fallback-font ch metrics understate their width. */
+.dashboard-controls #iata{--iata-width:calc(max(15ch, 9em) + 48px);flex:none;width:var(--iata-width);min-width:var(--iata-width);max-width:none;height:44px;padding:0 9px}
 .dashboard-controls #add-form button{flex:none;height:44px;min-width:44px;padding:0 8px}
 
 .scan-toggle{font:400 14px/1.25 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
@@ -305,8 +305,8 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
   .scan-keyword-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 }
 @media(max-width:340px){
-  .dashboard-controls #scan-toggle{padding:0 4px;gap:3px}
-  .dashboard-controls #iata{padding:0 5px;font-size:12px;--iata-width:calc(15ch + 42px)}
+  .dashboard-controls #scan-toggle{padding:0 4px;gap:2px}
+  .dashboard-controls #iata{padding:0 5px;font-size:12px;--iata-width:calc(max(15ch, 9em) + 42px)}
 }
 
 /* Keep the full UTC clock readable at very narrow widths. */

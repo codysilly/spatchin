@@ -153,13 +153,17 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   assert.equal(await name.getAttribute('aria-expanded'),'false');
   assert.equal(await page.locator('label[for="iata"]').count(),0);
   assert.match(await page.locator('#iata').getAttribute('aria-label'),/Add airport/);
+  mkdirSync('screenshots',{recursive:true});
+  await page.screenshot({path:'screenshots/compact-header-'+width+'.png'});
   const placeholderFit=await page.locator('#iata').evaluate(el=>{
    const style=getComputedStyle(el),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
    ctx.font=style.font;
    const text=ctx.measureText(el.placeholder.toUpperCase()).width;
-   return {available:el.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-26,text};
+   return {available:el.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-26,text,width:style.width,font:style.font};
   });
   assert.ok(placeholderFit.available>=placeholderFit.text,JSON.stringify(placeholderFit));
+  const scanFit=await page.locator('#scan-toggle').evaluate(el=>({overflow:el.scrollWidth-el.clientWidth,countWidth:el.querySelector('#scan-keyword-count').clientWidth}));
+  assert.ok(scanFit.overflow<=1&&scanFit.countWidth>0,JSON.stringify(scanFit));
   const hit=await page.locator('[data-airport="MEM"] .airport-head').evaluate(head=>{
    const els=[...head.querySelectorAll('.airport-grip,.airport-remove,.airport-diagram a,.name,.icao,.category-tag')];
    const boxes=els.map(el=>({className:el.className,rect:el.getBoundingClientRect()}));
@@ -167,8 +171,6 @@ for(const width of [1440,1120,760,390,320])test('SPA-65 computed UI contract at 
   });
   assert.deepEqual(hit,[]);
   if(width===320)assert.equal(await name.evaluate(el=>el.scrollWidth>el.clientWidth),true);
-  mkdirSync('screenshots',{recursive:true});
-  await page.screenshot({path:'screenshots/compact-header-'+width+'.png'});
   await name.focus();await name.press('Enter');assert.equal(await name.getAttribute('aria-expanded'),'true');
   assert.equal(await name.evaluate(el=>getComputedStyle(el).whiteSpace),'normal');
   await name.press('Space');assert.equal(await name.getAttribute('aria-expanded'),'false');
