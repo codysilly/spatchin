@@ -1,10 +1,12 @@
 # Local published NOTAM snapshot loading
 
-The dashboard loads only `./data/notams.json` on its own origin, once at startup.
+The dashboard loads only `./data/notams.json` on its own origin at startup and
+every two minutes using the existing dashboard snapshot-check cadence.
 “Reload NOTAM snapshot” reads that same published file. It never runs an updater,
 contacts NMS, authenticates, follows redirects, or schedules collection. Concurrent
 reloads share one in-flight request. Clock updates, airport changes, SCAN and
-ordinary rerenders do not trigger another NOTAM fetch. Existing aviation-feed
+ordinary rerenders do not trigger another NOTAM fetch. Failed checks retain the
+last accepted snapshot and the automatic check continues. Existing aviation-feed
 schedules are unchanged.
 
 A separately reviewed, fixed production snapshot is now published at `data/notams.json`. As inspected on 2026-11-20, it contains 38 KMEM notices, `completeness: UNKNOWN`, retrieval timestamp `2026-11-15T10:39:04.087408+00:00`, and `automatic_updates: false`. Its existence is not proof of live FAA collection or 130-airport data coverage. A missing file still produces NOTAM data unavailable. Production rejects explicitly synthetic snapshots. A local synthetic transport and inventory

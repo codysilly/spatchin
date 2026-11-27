@@ -572,7 +572,7 @@ async function refreshTafs(){
 }
 function clock(){document.getElementById('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z';}
 function startDashboard(){
- clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshDiagrams();refreshAtis();refreshTafs();notamSnapshots?.refresh();
+ clock();setInterval(clock,1000);render();refresh();refreshRunways();refreshDiagrams();refreshAtis();refreshTafs();notamSnapshots?.refresh();notamSnapshots?.start();
  setInterval(refresh,120000);setInterval(render,30000);setInterval(refreshRunways,3600000);setInterval(refreshDiagrams,3600000);setInterval(refreshAtis,120000);setInterval(refreshTafs,120000);
 }
 async function loadForecastModules(){

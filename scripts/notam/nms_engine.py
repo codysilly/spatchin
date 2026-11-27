@@ -55,6 +55,7 @@ def execute_offline_cycle(
     capture_started_utc=None,
     activation_gates=None,
     delta_payload=None,
+    delta_started_utc=None,
     before_accept=None,
 ):
     """Execute one complete synthetic/input-injected acceptance cycle.
@@ -90,6 +91,7 @@ def execute_offline_cycle(
             delta_payload,
             requested_since_utc=prior["watermark"],
             received_utc=accepted_utc,
+            request_started_utc=delta_started_utc or accepted_utc,
         )
     else:
         raise CandidateError("INVALID_CANDIDATE")
@@ -217,6 +219,7 @@ def collect_engine(
                         payload,
                         requested_since_utc=prior["watermark"],
                         received_utc=stamp(clock()),
+                        request_started_utc=stamp(started),
                     )
                 except RefreshError:
                     raise

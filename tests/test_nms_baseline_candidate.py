@@ -392,8 +392,9 @@ class CandidateTests(unittest.TestCase):
             envelope([feature("NEW", "KORD")]),
             requested_since_utc=active["watermark"],
             received_utc="2026-11-16T13:00:00Z",
+            request_started_utc="2026-11-16T12:58:07.900000Z",
         )
-        self.assertEqual(updated["watermark"], "2026-11-16T12:59:59+00:00")
+        self.assertEqual(updated["watermark"], "2026-11-16T12:58:06+00:00")
         snapshot = publication_snapshot(updated, generated_utc="2026-11-16T13:00:00Z")
         self.assertEqual(len(snapshot["airports"]), 130)
         self.assertIn("KMEM", snapshot["airports"])

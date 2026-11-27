@@ -1,4 +1,4 @@
-/* Same-origin published snapshots only. No provider access or automatic polling. */
+/* Same-origin published snapshots only. No provider access. */
 'use strict';
 export const NotamSnapshots = (() => {
  const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
@@ -23,11 +23,11 @@ export const NotamSnapshots = (() => {
   }
   return data;
  }
- function create({fetchFn,baseURL,now=Date.now,onChange=()=>{},timeoutMs=15000,allowSynthetic=false}){
+ function create({fetchFn,baseURL,now=Date.now,onChange=()=>{},timeoutMs=15000,allowSynthetic=false,refreshIntervalMs=120000,setIntervalFn=globalThis.setInterval,clearIntervalFn=globalThis.clearInterval}){
   const base=new URL(baseURL),url=new URL('./data/notams.json',base);
   if(!['http:','https:'].includes(base.protocol)||url.origin!==base.origin)throw Error('Same-origin HTTP snapshot required');
   const state={snapshot:null,refreshing:false,error:null,attempted_utc:null,checked_utc:null};
-  let pending=null;
+  let pending=null,pollTimer=null;
   const read=()=>({...state});
   const notify=()=>onChange(read());
   function refresh(){
@@ -56,7 +56,20 @@ export const NotamSnapshots = (() => {
    });
    notify();return pending;
   }
-  return {refresh,read};
+  function start(){
+   if(pollTimer!==null)return;
+   if(!Number.isInteger(refreshIntervalMs)||refreshIntervalMs<30000)throw Error('Invalid NOTAM refresh interval');
+   if(typeof setIntervalFn!=='function')throw Error('NOTAM automatic refresh unavailable');
+   pollTimer=setIntervalFn(()=>{refresh();},refreshIntervalMs);
+  }
+  function stop(){if(pollTimer!==null){if(typeof clearIntervalFn==='function')clearIntervalFn(pollTimer);pollTimer=null;}}
+  return {refresh,read,start,stop};
  }
  return {validate,create};
 })();
+
+// Node 22 CommonJS-to-ESM interop exposes named module exports. Keep the
+// namespace export used by browsers while retaining the validator entry point
+// used by offline Python/Node publication checks.
+export const validate = (...args) => NotamSnapshots.validate(...args);
+export const create = (...args) => NotamSnapshots.create(...args);
