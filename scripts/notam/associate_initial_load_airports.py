@@ -15,6 +15,7 @@ import argparse
 from collections import Counter
 from dataclasses import dataclass, field
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -573,6 +574,35 @@ def associate_evidence(
         "private_access_verified": True,
         "unchanged_during_inspection": True,
     }
+    report["container"] = {
+        "gzip_members": 1,
+        "compressed_bytes": compressed,
+        "decompressed_bytes": decompressed,
+        "crc_and_size_validated": True,
+        "trailing_bytes": 0,
+    }
+    return report
+
+
+def associate_bytes(body, *, registry=None, limits=InspectionLimits(), record_sink=None):
+    """Decode one bounded in-memory Initial Load response into a supplied sink.
+
+    This is the production decoder seam used after the collector has already
+    persisted the exact response bytes.  It performs no I/O or publication and
+    returns only aggregate validation information.
+    """
+    limits.validate()
+    if not isinstance(body, bytes) or not body or len(body) > limits.compressed_bytes:
+        raise InspectionError("COMPRESSED_SIZE_LIMIT")
+    registry = load_versioned_registry() if registry is None else load_registry(registry)
+    parser = _AssociationParser(registry, limits, record_sink=record_sink)
+    try:
+        compressed, decompressed = _stream_gzip(io.BytesIO(body), parser, limits)
+    except InspectionError:
+        raise
+    except Exception:
+        raise InspectionError("MALFORMED_STREAM") from None
+    report = parser.report()
     report["container"] = {
         "gzip_members": 1,
         "compressed_bytes": compressed,

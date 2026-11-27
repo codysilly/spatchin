@@ -1,5 +1,15 @@
 # Offline NOTAM reader adapter
 
+## SPA-18 private production handoff
+
+The production-state engine emits a private Task-2 snapshot with all 130 C070
+ICAO keys. Each notice preserves original notice fields, classifications, source
+identity, retrieval time, and provider representation objects. A representation
+is displayed as `LOCAL_FORMAT` only when the provider supplied that exact type;
+ICAO, formatted-only, unknown, and absent representations retain their identity.
+The handoff does not infer lifecycle, runway closure, operational validity, or
+airport coverage. It is not written to `data/notams.json` by the engine.
+
 This is a local-file adapter, not production acquisition or a feed loader. Neither
 production index.html nor the synthetic preview runs it. Do not publish a capture
 or its normalized output without reviewing its preserved metadata. The output

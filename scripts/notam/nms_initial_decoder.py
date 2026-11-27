@@ -213,6 +213,23 @@ def decode_initial(body, stage):
     raise RefreshError("BASELINE_CUTOVER_REQUIRED")
 
 
+def decode_initial_candidate(body, stage, *, capture_started_utc, registry=None):
+    """Decode a bounded gzip Initial Load into a non-activated C070 candidate."""
+    if stage != "initial-aixm-soap":
+        raise InitialDecodeError("INITIAL_UNSUPPORTED_FORMAT")
+    from associate_initial_load_airports import associate_bytes
+    from nms_baseline_candidate import InitialCandidateSink
+
+    sink = InitialCandidateSink(
+        capture_started_utc=capture_started_utc,
+        registry=registry,
+    )
+    report = associate_bytes(body, registry=registry, record_sink=sink)
+    candidate = sink.finish()
+    candidate["initial_load_validation"] = report
+    return candidate
+
+
 def assemble_synthetic(inspected, *, payload, coverage_since):
     """Explicit test seam; never derives records or continuity from XML fields."""
     if not isinstance(inspected, InspectedInitial) or not isinstance(payload, dict):
