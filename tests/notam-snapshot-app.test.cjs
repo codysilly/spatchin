@@ -2,12 +2,13 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');
 const vm=require('node:vm');const {readFileSync}=require('node:fs');const {join}=require('node:path');
 const {mountInVM}=require('./dashboard-module-support.cjs');
-function load({notams,runways}={}){
+function load({notams,runways,diagrams}={}){
  const calls=[],elements=new Map(),pending=[];
  const ctx=vm.createContext({URL,AbortController,setTimeout,clearTimeout,console:{info(){},error(){}},setInterval(){},localStorage:{getItem(){return null},setItem(){throw Error('No preferences should be written')}},
   document:{baseURI:'http://local.test/spatchin/index.html',querySelectorAll:()=>[],getElementById:id=>{if(!elements.has(id))elements.set(id,{addEventListener(){},innerHTML:'',textContent:''});return elements.get(id);}},
   fetch:(url,options)=>{calls.push(url);const path=new URL(url,'http://local.test/spatchin/').pathname;
    if(path.endsWith('/notams.json'))return Promise.resolve(notams||{ok:false,status:404});
+   if(path.endsWith('/airport-diagrams.json')&&diagrams)return Promise.resolve({ok:true,json:async()=>diagrams});
    if(path.endsWith('/runways.json')&&runways)return Promise.resolve({ok:true,json:async()=>runways});
    return new Promise(resolve=>pending.push(resolve));
   }});
@@ -68,13 +69,14 @@ test('published MEM NASR inventory preserves every source bearing and provenance
  assert.ok(!html.includes('Chart-derived'));assert.match(html,/class="airport-diagram"/);assert.match(html,/00253AD.PDF/);
  assert.equal((app.elements.get('cards').innerHTML.match(/data-reader-open=/g)||[]).length,8);
  assert.equal(app.run('runwayBearingLabel("ORD")'),'FAA NASR true alignment');
- assert.equal(app.run('diagramHeader("ORD")'),'');
+ assert.match(app.run('diagramHeader("ORD")'),/Find FAA diagram/);
+ assert.doesNotMatch(app.run('diagramHeader("ORD")'),/\.PDF/i);
  assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
 });
 
 test('synthetic legacy chart metadata is labelled approximate and a later NASR snapshot replaces it',async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
- runways.airport_metadata={MEM:{heading_method:'chart-derived-approximate',source_url:'https://example.invalid/SYNTHETIC-diagram.pdf',effective_date:'2020-01-01',valid_through:'2020-01-29'}};
+ runways.airport_metadata={MEM:{heading_method:'chart-derived-approximate',source_url:'https://aeronav.faa.gov/d-tpp/2001/SYNTHETIC-diagram.pdf',effective_date:'2020-01-01',valid_through:'2020-01-29'}};
  const app=load({runways});await tick();
  assert.equal(app.run('runwayBearingLabel("MEM")'),'Chart-derived approximate true bearing');
  const html=app.elements.get('cards').innerHTML;
@@ -84,4 +86,21 @@ test('synthetic legacy chart metadata is labelled approximate and a later NASR s
  app.run('delete runwayData.airport_metadata;render()');
  assert.equal(app.run('runwayBearingLabel("MEM")'),'FAA NASR true alignment');
  assert.ok(!app.elements.get('cards').innerHTML.includes('Chart-derived'));
+});
+
+test('published diagram index integrates with airport cards without changing runway bearings',async()=>{
+ const diagrams=JSON.parse(readFileSync(join(__dirname,'../data/airport-diagrams.json'),'utf8'));
+ const app=load({diagrams});await tick();
+ app.run('Date.now=()=>Date.parse(diagramIndex.effective_from_utc)');
+ app.run('airports=["MEM","ORD","LAX","JFK"];render()');
+ const html=app.elements.get('cards').innerHTML;
+ for(const code of ['MEM','ORD','LAX','JFK']){
+  const url='https://aeronav.faa.gov/d-tpp/'+diagrams.cycle+'/'+diagrams.airports[code].pdf_name;
+  assert.ok(html.includes(url),code);
+ }
+ assert.equal(app.calls.filter(u=>u.includes('airport-diagrams.json')).length,1);
+ assert.ok(app.calls.every(u=>new URL(u,'http://local.test').hostname==='local.test'));
+ app.run('Date.now=()=>Date.parse(diagramIndex.effective_to_utc);render()');
+ assert.match(app.run('diagramHeader("ORD")'),/Find FAA diagram/);
+ assert.doesNotMatch(app.run('diagramHeader("ORD")'),/\.PDF/i);
 });
