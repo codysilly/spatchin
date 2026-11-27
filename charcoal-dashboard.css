@@ -56,7 +56,7 @@ main{--card-gap:16px;max-width:none;width:100%;padding:14px 28px 36px;display:fl
 }
 .dashboard-controls .toolbar{flex:0 0 auto;width:auto;margin:0;padding:0;min-height:44px}
 .dashboard-controls #add-form{width:auto;margin:0;padding:0;gap:6px;min-height:44px}
-.dashboard-controls #iata{flex:none;width:calc(14ch + 48px);min-width:0;height:44px;padding:0 9px}
+.dashboard-controls #iata{flex:none;width:calc(15ch + 48px);min-width:0;height:44px;padding:0 9px}
 .dashboard-controls #add-form button{flex:none;height:44px;min-width:44px;padding:0 8px}
 
 .scan-toggle{font:400 14px/1.25 var(--font-ui,"Overpass",sans-serif);color:var(--muted)}
@@ -305,7 +305,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 }
 @media(max-width:340px){
   .dashboard-controls #scan-toggle{padding:0 4px;gap:3px}
-  .dashboard-controls #iata{padding:0 5px;width:calc(14ch + 42px)}
+  .dashboard-controls #iata{padding:0 5px;font-size:12px;width:calc(15ch + 42px)}
 }
 
 /* Keep the full UTC clock readable at very narrow widths. */
