@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-27T00:18:32.954196Z",
+  "updated_utc": "2026-11-27T00:28:33.172439Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2143,36 +2143,16 @@
     },
     {
       "icaoId": "KFAT",
-      "rawTAF": "TAF KFAT 262224Z 2622/2718 12004KT 1SM BR OVC002 TEMPO 2622/2624 SCT005 FM270000 VRB03KT 1SM BR OVC001 FM270300 00000KT 1/4SM FG VV002",
-      "issueTime": "2026-11-26T22:24:00.000Z",
-      "validTimeFrom": 1795730400,
-      "validTimeTo": 1795802400,
+      "rawTAF": "TAF KFAT 270028Z 2700/2724 VRB03KT 2SM BR OVC003 FM270300 00000KT 1/4SM FG VV002 FM272100 VRB03KT 3SM BR SCT250",
+      "issueTime": "2026-11-27T00:28:00.000Z",
+      "validTimeFrom": 1795737600,
+      "validTimeTo": 1795824000,
       "fcsts": [
-        {
-          "timeFrom": 1795730400,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 120,
-          "wspd": 4,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795730400,
-          "timeTo": 1795737600,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
-          "wgst": null
-        },
         {
           "timeFrom": 1795737600,
           "timeTo": 1795748400,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": "VRB",
           "wspd": 3,
@@ -2180,12 +2160,22 @@
         },
         {
           "timeFrom": 1795748400,
-          "timeTo": 1795802400,
+          "timeTo": 1795813200,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
           "wdir": 0,
           "wspd": 0,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795813200,
+          "timeTo": 1795824000,
+          "timeBec": null,
+          "fcstChange": "FM",
+          "probability": null,
+          "wdir": "VRB",
+          "wspd": 3,
           "wgst": null
         }
       ]
