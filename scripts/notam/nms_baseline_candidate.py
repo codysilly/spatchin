@@ -291,8 +291,7 @@ def _same_logical_notice(initial, delta, airports, association_status):
     ):
         return False
     if (
-        initial.get("association_status") != "associated"
-        or association_status != "associated"
+        initial.get("association_status") != association_status
         or initial.get("airport_associations") != airports
     ):
         return False
@@ -348,6 +347,11 @@ def reconcile_delta(
         raise CandidateError("RECORD_LIMIT")
     result = copy.deepcopy(candidate)
     catalog = result["catalog"]
+    unresolved_by_identity = {}
+    for unresolved in result["unresolved_records"]:
+        identity = unresolved.get("source_identity") if isinstance(unresolved, dict) else None
+        if isinstance(identity, str):
+            unresolved_by_identity.setdefault(identity, []).append(unresolved)
     audit = {
         "received": len(features),
         "inserted": 0,
@@ -396,7 +400,32 @@ def reconcile_delta(
                 audit["inserted"] += 1
                 touched.add(identity)
             else:
+                prior_unresolved = unresolved_by_identity.get(identity, [])
+                if prior_unresolved:
+                    previous = prior_unresolved[-1]
+                    previous_updated = _one(previous.get("last_updated", []))
+                    if previous_updated is None:
+                        raise CandidateError("BASELINE_CUTOVER_REQUIRED")
+                    new_time = instant(record["lastUpdated"])
+                    old_time = instant(previous_updated)
+                    if new_time < old_time:
+                        audit["stale_ignored"] += 1
+                        continue
+                    if new_time == old_time:
+                        if (
+                            previous["format"] == "NMS_GEOJSON_DELTA"
+                            and previous.get("original_feature") == feature
+                        ) or (
+                            previous["format"] == "AIXM_5_1_INITIAL_LOAD"
+                            and _same_logical_notice(
+                                previous, record, airports, association_status
+                            )
+                        ):
+                            audit["replayed"] += 1
+                            continue
+                        raise CandidateError("CONFLICTING_UPDATE")
                 result["unresolved_records"].append(current)
+                unresolved_by_identity.setdefault(identity, []).append(current)
                 audit["unresolved"] += 1
             continue
         previous = prior["current"]

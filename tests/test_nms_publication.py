@@ -43,6 +43,29 @@ class PublicationTests(unittest.TestCase):
         self.assertNotIn("original_feature", body.decode())
         self.assertEqual(manifest["bytes"], len(body))
 
+    def test_projection_unwraps_initial_load_singletons_and_rejects_ambiguity(self):
+        candidate = self.candidate()
+        current = candidate["catalog"]["N-1"]["current"]
+        current["format"] = "AIXM_5_1_INITIAL_LOAD"
+        current["notam"] = {
+            "number": ["11/222"],
+            "text": ["RWY 18L\r\nEXACT"],
+            "type": ["N"],
+        }
+        snapshot, _manifest, _body = build_candidate(
+            candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z"
+        )
+        notice = snapshot["airports"]["KMEM"]["notices"][0]
+        self.assertEqual(notice["number"], "11/222")
+        self.assertEqual(notice["text"], "RWY 18L\r\nEXACT")
+        self.assertEqual(notice["provider_lifecycle"], {"type": "N"})
+
+        current["notam"]["text"].append("CONFLICTING VALUE")
+        with self.assertRaisesRegex(PublicationError, "AMBIGUOUS_DISPLAY_FIELD"):
+            build_candidate(
+                candidate, self.registry(), generated_utc="2026-11-27T12:01:00Z"
+            )
+
     def test_atomic_publication_rejects_old_and_retains_on_interruption(self):
         with tempfile.TemporaryDirectory() as directory:
             target, state = Path(directory)/"notams.json", Path(directory)/"state.json"

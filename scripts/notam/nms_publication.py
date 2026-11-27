@@ -74,6 +74,17 @@ def _strings(value):
     return value if isinstance(value, list) and all(isinstance(item, str) for item in value) else []
 
 
+def _display_value(value):
+    """Project a source scalar without choosing among ambiguous source values."""
+    if value is None or isinstance(value, str):
+        return value
+    if isinstance(value, list) and len(value) <= 1 and all(
+        isinstance(item, str) for item in value
+    ):
+        return value[0] if value else None
+    raise PublicationError("AMBIGUOUS_DISPLAY_FIELD")
+
+
 def _representations(value):
     """Convert provider representations without trimming or newline conversion."""
     output = []
@@ -114,7 +125,7 @@ def project(candidate, registry, *, generated_utc):
         if not isinstance(record, dict):
             raise PublicationError("INVALID_PRIVATE_RECORD")
         notice = {
-            key: copy.deepcopy(record.get(key))
+            key: _display_value(record.get(key))
             for key in (
                 "id",
                 "number",
@@ -136,7 +147,9 @@ def project(candidate, registry, *, generated_utc):
         notice["formatted_texts"] = _representations(current.get("representations", []))
         notice["classifications"] = copy.deepcopy(current.get("classifications", []))
         notice["provider_lifecycle"] = {
-            key: copy.deepcopy(record[key]) for key in ("type", "cancelationDate") if key in record
+            key: _display_value(record[key])
+            for key in ("type", "cancelationDate")
+            if key in record
         }
         notice["warnings"] = ["Lifecycle and operational applicability are not inferred."]
         if not any(item["type"] == "LOCAL_FORMAT" for item in notice["formatted_texts"]):
