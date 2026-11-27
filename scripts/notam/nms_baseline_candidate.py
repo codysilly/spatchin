@@ -606,7 +606,9 @@ def publication_snapshot(candidate, *, generated_utc, registry=None):
                 {
                     "representations": copy.deepcopy(current.get("representations", [])),
                     "classifications": copy.deepcopy(current.get("classifications", [])),
-                    "retrieved_utc": current.get("received_utc", generated),
+                    "retrieved_utc": current.get(
+                        "received_utc", candidate.get("capture_completed_utc", generated)
+                    ),
                     "source": "FAA NMS service response",
                     "warnings": ["Lifecycle and runway status are not inferred."],
                 }
@@ -631,9 +633,12 @@ def publication_snapshot(candidate, *, generated_utc, registry=None):
 
 
 def accept_production_candidate(
-    store, candidate, *, generated_utc, before_accept=None, attempt=None
+    store, candidate, *, generated_utc, before_accept=None, attempt=None, validate_state=None
 ):
-    """Atomically accept catalog, cursor, and private publication handoff."""
+    """Atomically accept catalog, cursor, and private publication handoff.
+
+    The optional state guard runs under the write lock before any ledger update.
+    """
     if candidate.get("baseline_established") is not True or candidate.get("watermark") is None:
         raise CandidateError("VALIDATION_REQUIRED")
     snapshot = publication_snapshot(candidate, generated_utc=generated_utc)
@@ -648,6 +653,8 @@ def accept_production_candidate(
         state = store.load(db)
         if state["recovery"] is not None or state["active"] != attempt:
             raise CandidateError("STORE_STATE_INVALID")
+        if validate_state is not None:
+            validate_state(db, state)
         state.update(
             {
                 "baseline": True,
