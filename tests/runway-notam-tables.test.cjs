@@ -39,9 +39,11 @@ test('zero verification requires explicit evidence; empty/missing/unknown are di
  assert.doesNotMatch(reader.summary('KMEM',[]),/Completeness unknown|coverage has not been established/);
  entry.notices.push({text:'record'});assert.match(reader.availability('KMEM'),/UNKNOWN/);
 });
-test('empty supplied LOCAL_FORMAT string remains empty without fallback',()=>{
+test('empty supplied LOCAL_FORMAT with usable alternate is omitted without fallback',()=>{
  reader.set({airports:{KMEM:{notices:[{text:'RWY 18R HIDDEN_CONDITION',formatted_texts:[{type:'LOCAL_FORMAT',text:''},{type:'ICAO',text:'HIDDEN_ICAO'}]}]}}});
  assert.deepEqual(reader.localTexts(reader.records('KMEM',['18R'])[0]),['']);
- assert.match(reader.row('KMEM','18R',['18R']),/<p class="reader-raw"><\/p>/);
+ assert.doesNotMatch(reader.row('KMEM','18R',['18R']),/<p class="reader-raw">/);
+ assert.match(reader.row('KMEM','18R',['18R']),/Counts include these notices/);
+ assert.match(reader.cell('KMEM','18R',['18R']),/NOTAMs \(1\)/);
  assert.doesNotMatch(reader.row('KMEM','18R',['18R']),/unavailable|HIDDEN_CONDITION|HIDDEN_ICAO/);
 });

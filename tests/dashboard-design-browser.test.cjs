@@ -1,7 +1,7 @@
 'use strict';
 const {installDashboardProbe}=require('./dashboard-module-support.cjs');
 const {test,before,after}=require('node:test'),assert=require('node:assert/strict');
-const {spawn}=require('node:child_process'),{chromium}=require('playwright');
+const {spawn,execFileSync}=require('node:child_process'),{chromium}=require('playwright');
 const {pythonCommand}=require('./python-launcher.cjs');
 const {readFileSync,mkdtempSync}=require('node:fs'),{tmpdir}=require('node:os'),{join}=require('node:path'),{createHash}=require('node:crypto');
 const longNotices=require('./fixtures/ui-long-notams.cjs');
@@ -57,8 +57,9 @@ for(const width of [1440,390])test(`actual app synthetic visual review and brand
   assert.deepEqual(external,[]);assert.deepEqual(errors,[]);
  }finally{await context.close();}
 });
-test('public MEM retains all 38 notices and 59 typed representations',async()=>{
- const {context,page,external,errors}=await localPage(1440),data=JSON.parse(readFileSync('data/notams.json','utf8'));
+test('pinned historical public MEM retains all 38 notices and 59 typed representations',async()=>{
+ const {context,page,external,errors}=await localPage(1440),data=JSON.parse(execFileSync('git',['show','e8af1958795cba63df5e57673a9746a246ce5a8d:data/notams.json'],{encoding:'utf8'}));
+ await context.route('**/data/notams.json',r=>r.fulfill({json:data}));
  try{
   await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const records=await page.evaluate(()=>NotamReader.records('KMEM',ends('MEM')).map(n=>({key:n.key,text:n.text,formatted_texts:n.formatted_texts})));
