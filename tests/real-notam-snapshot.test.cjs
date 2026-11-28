@@ -28,7 +28,7 @@ test('published KMEM snapshot retains real display data without private capture 
  assert.deepEqual(Object.fromEntries(inventory.map(id=>[id,records.filter(notice=>notice.references.some(ref=>ref.id===id)).length])),
   {'09':1,'18C':1,'18L':1,'18R':3,'27':1,'36C':1,'36L':3,'36R':5});
  const summary=reader.summary('KMEM');
- assert.match(summary,/NOTAM snapshot/);assert.match(summary,/Retrieved: 2026-11-15 10:39 UTC/);
+ assert.match(summary,/<span class="notam-title">NOTAM<\/span>/);assert.match(summary,/Retrieved: 2026-11-15 10:39 UTC/);
  assert.doesNotMatch(summary,/Completeness:|Historical snapshot|no automatic|FAA NMS/);
- assert.match(summary,/All airport snapshot notices \(38\)/);
+ assert.doesNotMatch(summary,/All airport snapshot notices/);
 });

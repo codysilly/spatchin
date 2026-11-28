@@ -71,8 +71,11 @@ test('public MEM retains all 38 notices and 59 typed representations',async()=>{
    for(const n of associated)assert.deepEqual(await page.locator(`#reader-KMEM-${id} [data-reader-key="${n.key}"] .reader-raw`).allTextContents(),n.texts);
   }
   assert.equal(await page.locator('.notam-reader,.notice-table,.notice-provenance,.inline-reader pre,.inline-reader details,[data-expand]').count(),0);
+  assert.match(await page.locator('.notam-summary').innerText(),/RETRIEVED 1039Z/);
+  assert.equal(await page.locator('.notam-metadata').isVisible(),false);
+  await page.locator('#airport-notam-toggle-KMEM').click();
   assert.match(await page.locator('.notam-summary').innerText(),/Retrieved: 2026-11-15 10:39 UTC/);
-  assert.match(await page.evaluate(()=>NotamReader.availability('KMEM')),/Coverage UNKNOWN/);assert.match(await page.locator('.notam-transport').innerText(),/Published snapshot.*No live provider request/);
+  assert.match(await page.evaluate(()=>NotamReader.availability('KMEM')),/Coverage UNKNOWN/);assert.equal(await page.locator('.notam-summary [data-notam-reload]').count(),1);assert.doesNotMatch(await page.locator('.notam-summary').innerText(),/No live provider request/);
   assert.equal(data.airports.KMEM.completeness,'UNKNOWN');assert.equal(await page.locator('#airport-notams-KMEM .reader-notice').count(),38);
   await page.locator('[data-reader-open="KMEM-36L"]').click();await page.screenshot({path:join(screenshots,'public-historical-mem-desktop.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-desktop.png'));
   await page.setViewportSize({width:390,height:1200});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(screenshots,'public-historical-mem-mobile.png'),fullPage:true});await upperCardScreenshot(page,join(screenshots,'public-historical-mem-upper-mobile.png'));

@@ -75,7 +75,26 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   assert.ok(dom.overflow<=1,'horizontal overflow '+dom.overflow+' at '+width+'px');
   assert.equal(dom.codeDiagramOverlap,false,'airport diagram overlaps code');
   const mem=page.locator('[data-airport="MEM"]');
-  assert.equal(await mem.locator('.notam-summary [data-notam-reload]').count(),1);
+  const panel=mem.locator('.notam-summary');
+  await panel.locator('.notam-title').waitFor();
+  await page.waitForFunction(()=>document.querySelector('#airport-notams-KMEM'));
+  assert.equal(await panel.locator('[data-notam-reload]').count(),1);
+  assert.equal(await panel.locator('.notam-title').textContent(),'NOTAM');
+  assert.equal(await panel.locator('.notam-metadata').isVisible(),false);
+  assert.equal(await panel.locator('details').getAttribute('open'),null);
+  const headerGeometry=await panel.evaluate(el=>{
+   const r=s=>el.querySelector(s).getBoundingClientRect();
+   const title=r('.notam-title'),meta=r('.notam-meta'),reload=r('.notam-reload');
+   return {titleSize:getComputedStyle(el.querySelector('.notam-title')).fontSize,metaSize:getComputedStyle(el.querySelector('.notam-meta')).fontSize,overlap:title.right>meta.left||meta.right>reload.left,button:reload.width};
+  });
+  assert.deepEqual(headerGeometry,{titleSize:'15px',metaSize:'15px',overlap:false,button:44});
+  mkdirSync('screenshots',{recursive:true});
+  await panel.screenshot({path:'screenshots/notam-collapsed-'+width+'.png'});
+  await panel.locator('.notam-title').click();
+  assert.equal(await panel.locator('.notam-metadata').isVisible(),true);
+  await panel.screenshot({path:'screenshots/notam-expanded-'+width+'.png'});
+  await panel.locator('.notam-title').click();
+  assert.equal(await panel.locator('.notam-metadata').isVisible(),false);
   assert.equal(await mem.locator('.airport-head [data-remove]').count(),1);
   assert.equal(await mem.locator('.airport-grip').count(),1);
   assert.equal(await mem.locator('.metar-panel').count(),1);

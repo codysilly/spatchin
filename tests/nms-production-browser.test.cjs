@@ -51,11 +51,14 @@ test('accepted and deployed synthetic NMS bytes reach the root dashboard and SCA
       try {
         await page.goto(url);
         const summary = page.locator('#coverage-KMEM');
+        await summary.locator('.notam-meta').filter({hasText:'RETRIEVED 1803Z'}).waitFor();
+        assert.match(await summary.innerText(), /STALE/);
+        assert.equal(await summary.locator('.notam-metadata').isVisible(), false);
+        await summary.locator('summary').click();
         await summary.getByText('Source: NMS-API snapshot', { exact: true }).waitFor();
         assert.match(await summary.innerText(), /Retrieved: 2026-01-02 18:03 UTC/);
         assert.match(await summary.innerText(), /Coverage UNKNOWN/);
         assert.match(await summary.innerText(), /Freshness: STALE/);
-        await summary.locator('summary').click();
         assert.match(await summary.innerText(), /LOCAL_FORMAT text unavailable/);
         const text = 'SYNTHETIC RWY 18L lighting report\r\nSECOND ORIGINAL LINE\rTHIRD';
         assert.ok((await summary.locator('.reader-raw').allTextContents()).includes(text));

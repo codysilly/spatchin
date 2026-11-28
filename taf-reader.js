@@ -32,7 +32,6 @@ export const TafReader=(()=>{
     const issued=time(report.issueTime),from=time(report.validTimeFrom),to=time(report.validTimeTo);
     return [issued,from,to].every(Number.isFinite)&&issued<=now+300000&&issued<=to&&to>from&&to-from<=72*HOUR;
   }
-  function stamp(ms){return new Date(ms).toISOString().slice(0,16).replace('T',' ')+'Z';}
   function render({code,station,report,feedError=false,now=Date.now()}){
     const source=label=>station?`<a class="report-source" href="https://aviationweather.gov/api/data/taf?ids=${encodeURIComponent(station)}&amp;format=raw" target="_blank" rel="noopener noreferrer" aria-label="TAF source for ${esc(code)} (${esc(station)}), opens in a new tab">${esc(label)}</a>`:esc(label);
     const usable=valid(report,station,now);
