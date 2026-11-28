@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T15:18:35.297925Z",
+  "updated_utc": "2026-11-28T15:38:34.185228Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2358,29 +2358,19 @@
     },
     {
       "icaoId": "KGEG",
-      "rawTAF": "TAF KGEG 281120Z 2812/2912 27006KT 1/2SM FG VV002 TEMPO 2812/2816 1SM BR OVC002 FM281800 15004KT 5SM BR OVC007 FM282000 15004KT P6SM OVC010 FM290000 08005KT P6SM SCT010 FM290400 06005KT 1/2SM FG BKN004",
-      "issueTime": "2026-11-28T11:20:00.000Z",
-      "validTimeFrom": 1795867200,
+      "rawTAF": "TAF KGEG 281535Z 2816/2912 15003KT 4SM BR OVC004 FM281800 15004KT 5SM BR OVC007 FM282000 15004KT P6SM OVC010 FM290000 08005KT P6SM SCT010 FM290400 06005KT 1/2SM FG BKN004",
+      "issueTime": "2026-11-28T15:35:00.000Z",
+      "validTimeFrom": 1795881600,
       "validTimeTo": 1795953600,
       "fcsts": [
         {
-          "timeFrom": 1795867200,
+          "timeFrom": 1795881600,
           "timeTo": 1795888800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 270,
-          "wspd": 6,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795867200,
-          "timeTo": 1795881600,
-          "timeBec": null,
-          "fcstChange": "TEMPO",
-          "probability": null,
-          "wdir": null,
-          "wspd": null,
+          "wdir": 150,
+          "wspd": 3,
           "wgst": null
         },
         {
