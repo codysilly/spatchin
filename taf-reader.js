@@ -47,7 +47,7 @@ export const TafReader=(()=>{
       const prefix=/^[A-Z]{4}$/.test(station)?formatted.match(new RegExp('^(TAF(?:\\s+(?:AMD|COR))?\\s+'+station+'|'+station+')(?=\\s|$)')):null;
       const raw=prefix?source(prefix[0])+esc(formatted.slice(prefix[0].length)):esc(formatted);
       const status=state==='TAF CURRENT'?'':`<div class="taf-status${statusClass}">${state}</div>`;
-      content=`${status}<pre class="taf-raw" data-scan-flow>${raw}</pre><div class="taf-meta">Issued ${stamp(issued)} · Valid ${stamp(from)}–${stamp(to)}</div>${feedError?'<div class="taf-retained">Snapshot refresh failed; retained previous TAF.</div>':''}${prefix?'':`<div class="report-fallback">${source('TAF source')}</div>`}`;
+      content=`${status}<pre class="taf-raw" data-scan-flow>${raw}</pre>${feedError?'<div class="taf-retained">Snapshot refresh failed; retained previous TAF.</div>':''}${prefix?'':`<div class="report-fallback">${source('TAF source')}</div>`}`;
     }
     return `<section class="taf" aria-label="${esc(code)} TAF"><div class="taf-copy">${content}</div></section>`;
   }

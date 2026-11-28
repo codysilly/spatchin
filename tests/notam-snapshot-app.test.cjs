@@ -29,7 +29,7 @@ test('dashboard startup requests one local NOTAM snapshot; ordinary rerenders ne
 });
 test('dashboard first-load failure is explicit and synthetic production data is refused',async()=>{
  for(const notams of [{ok:false,status:404},{ok:true,json:async()=>({...valid(),synthetic:true})}]){
-  const app=load({notams});await tick();assert.equal(app.run('notamTransport.snapshot'),null);assert.match(app.elements.get('cards').innerHTML,/NOTAM data unavailable/);
+  const app=load({notams});await tick();assert.equal(app.run('notamTransport.snapshot'),null);assert.match(app.elements.get('cards').innerHTML,/NOTAM data unavailable/i);
  }
 });
 test('valid optional eight-end MEM snapshot renders without wind; invalid MEM is rejected',async()=>{
@@ -75,7 +75,7 @@ test('published MEM NASR inventory preserves every nominal magnetic heading and 
  assert.match(app.run('diagramHeader("ORD")'),/Find FAA diagram/);
  assert.doesNotMatch(app.run('diagramHeader("ORD")'),/\.PDF/i);
  assert.equal(app.run('runwayBearingLabel("MEM")'),'Approximate magnetic runway heading');
- assert.match(html,/Approx. wind components/);
+ assert.doesNotMatch(html,/Approx. wind components/);
 });
 
 test('synthetic legacy chart metadata is labelled approximate and a later NASR snapshot replaces it',async()=>{

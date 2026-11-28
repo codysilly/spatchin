@@ -127,3 +127,13 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;}input,se
 .airport-actions .airport-remove{width:44px;height:44px;padding:0}
 .airport-head .name{grid-column:2;grid-row:2;display:block;min-width:0;width:100%;border:0;margin:0;padding:0;background:transparent;text-align:left;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;line-height:1.15}
 .airport-head .name[aria-expanded="true"]{white-space:normal;overflow-wrap:anywhere}
+
+/* Shared compact NOTAM disclosure structure for foundation-only previews. */
+.notam-summary{position:relative}.notam-summary .airport-notam-list{margin:0}
+.notam-summary .airport-notam-list>summary{display:block;list-style:none}
+.notam-summary .airport-notam-list>summary::-webkit-details-marker{display:none}
+.notam-heading{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.notam-summary.has-reload .notam-heading{padding-right:44px}
+.airport-notam-list .notam-title::before{content:"▸ "}.airport-notam-list[open] .notam-title::before{content:"▾ "}
+.notam-summary .notam-reload{position:absolute;right:4px;top:0;width:44px;height:44px;padding:0;border:0;background:transparent;color:var(--blue)}
+.notam-warning,.notam-format-note{display:block;color:var(--amber);font-size:12px}

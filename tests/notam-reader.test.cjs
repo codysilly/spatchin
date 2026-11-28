@@ -16,14 +16,14 @@ test('duplicates, raw times, missing text, explicit scope and unmatched notices 
  const records=reader.records('KMEM',['18L','36R']);assert.equal(records.length,4);assert.notEqual(records[0].key,records[1].key);
  assert.equal(reader.airportRecords('KMEM').length,4);
  const html=render('KMEM',['18L','36R']);
- assert.equal(records.find(n=>n.effectiveEnd).effectiveEnd,'PERM');assert.match(html,/LOCAL_FORMAT text unavailable/);assert.match(html,/NOTAM snapshot/);assert.match(html,/Retrieved: Unavailable/);assert.doesNotMatch(html,/Completeness:|Historical snapshot/);
- assert.equal(records.filter(n=>!n.references.length&&n.scope!=='airport-wide').length,2);assert.equal(records.filter(n=>n.scope==='airport-wide').length,1);assert.doesNotMatch(html,/Unmatched \/ scope|airport-wide/);assert.match(html,/All airport snapshot notices \(4\)/);
+ assert.equal(records.find(n=>n.effectiveEnd).effectiveEnd,'PERM');assert.match(html,/LOCAL_FORMAT text unavailable/);assert.match(html,/<span class="notam-title">NOTAM<\/span>/);assert.match(html,/Retrieved: Unavailable/);assert.doesNotMatch(html,/Completeness:|Historical snapshot/);
+ assert.equal(records.filter(n=>!n.references.length&&n.scope!=='airport-wide').length,2);assert.equal(records.filter(n=>n.scope==='airport-wide').length,1);assert.doesNotMatch(html,/Unmatched \/ scope|airport-wide/);assert.doesNotMatch(html,/All airport snapshot notices|Literal matches/);
  assert.match(reader.cell('KMEM','36R',['18L','36R']),/NOTAMs \(0\)/);
 });
 test('source strings are escaped; unavailable and retained-error states are explicit',()=>{
  reader.set({airports:{KMEM:{notices:[{text:'RWY 18L <img src=x onerror=alert(1)>',source:'<script>',formatted_texts:[{type:'LOCAL_FORMAT',text:'RWY 18L <img src=x onerror=alert(1)>'}]}]}}},'Refresh failed');
  const html=render('KMEM',['18L']);assert.ok(!html.includes('<img'));assert.match(html,/&lt;img/);assert.match(html,/retained snapshot/);
- reader.set(null);assert.match(render('KMEM',[]),/NOTAM data unavailable/);
+ reader.set(null);assert.match(render('KMEM',[]),/NOTAM data unavailable/i);
 });
 
 // Documentation-derived grammar; not a captured live NOTAM.
@@ -56,7 +56,7 @@ test('collection warning metadata is not displayed; reload failures remain visib
  assert.match(html,/Showing retained snapshot after reader error/);
  reader.set(null,'Reload failed');
  const missing=render('KMEM',[]);
- assert.match(missing,/NOTAM data unavailable/);
+ assert.match(missing,/NOTAM data unavailable/i);
  assert.match(missing,/Reload failed/);
 });
 
@@ -77,4 +77,21 @@ test('loader failure and recovery preserve collection warning and original snaps
  assert.ok(loaded.some(({html})=>!html.includes(warning)&&html.includes('HTTP 503')&&html.includes('Showing retained snapshot')));
  assert.ok(!states.at(-1).html.includes('HTTP 503'));
  assert.ok(!states.at(-1).html.includes('Showing retained snapshot'));
+});
+
+test('omit alternate-only notice placeholders but preserve records and runway reference counts',()=>{
+ reader.set({retrieved_utc:'2026-11-27T22:44:00Z',airports:{KMEM:{completeness:'UNKNOWN',notices:[
+  {text:'RWY 18L',formatted_texts:[{type:'ICAO',text:'RWY 18L HIDDEN'}]},
+  {text:'RWY 18L',formatted_texts:[{type:'LOCAL_FORMAT',text:'RWY 18L LOCAL'}]},
+  {text:'RWY 18L',formatted_texts:[]}
+ ]}}});
+ const html=reader.summary('KMEM');
+ assert.match(html,/RETRIEVED 2244Z/);
+ assert.match(html,/RWY 18L LOCAL/);
+ assert.doesNotMatch(html,/HIDDEN|All airport snapshot notices/);
+ assert.equal((html.match(/LOCAL_FORMAT text unavailable\./g)||[]).length,1);
+ assert.match(html,/Counts include these notices/);
+ assert.equal(reader.records('KMEM',['18L']).length,3);
+ assert.match(reader.cell('KMEM','18L',['18L']),/NOTAMs \(3\)/);
+ assert.doesNotMatch(reader.cell('KMEM','18L',['18L']),/Literal matches/);
 });

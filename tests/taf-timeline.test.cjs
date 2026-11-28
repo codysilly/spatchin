@@ -144,3 +144,46 @@ test('expired TAF is distinct from issue-age staleness and gives no wind', () =>
   assert.equal(atEnd.wind, null);
   assert.match(atEnd.notes.join(' '), /no longer valid/);
 });
+
+test('prevailing range labels follow FM changes and cross midnight without extra hourly choices', () => {
+  const start = Z('28T00:00:00');
+  const end = Z('29T06:00:00');
+  const r = {
+    issueTime: '2026-11-27T23:39:00Z',
+    validTimeFrom: start,
+    validTimeTo: end,
+    fcsts: [
+      { timeFrom: start, timeTo: end, wdir: 210, wspd: 6 },
+      period('FM', '28T09:00:00', '29T06:00:00', { wdir: 210, wspd: 8 }),
+      period('FM', '28T13:00:00', '29T06:00:00', { wdir: 210, wspd: 10, wgst: 18 }),
+      period('FM', '28T20:00:00', '29T06:00:00', { wdir: 200, wspd: 9 }),
+      period('TEMPO', '28T15:00:00', '28T17:00:00', { wdir: 180, wspd: 20 }),
+    ],
+  };
+  const ranges = T.ranges(r);
+  assert.deepEqual(ranges.map(T.rangeLabel), [
+    '28/0000–0900Z',
+    '28/0900–1300Z',
+    '28/1300–2000Z',
+    '28/2000–29/0600Z',
+  ]);
+  const now = Z('28T00:00:00') * 1000;
+  const selected = T.selectRange(r, ranges[2], now);
+  assert.equal(selected.wind.speed, 10);
+  assert.equal(selected.alternatives[0].label, 'TEMPO 28/1500–1700Z');
+  assert.equal(selected.alternatives[0].wind.speed, 20);
+  assert.equal(T.selectRange(r, ranges[3], now).wind.direction, 200);
+  assert.equal(T.selectRange(r, ranges[3], end * 1000).status, 'expired');
+});
+
+test('range boundaries preserve BECMG uncertainty and decoded gaps', () => {
+  const becoming = period('BECMG', '20T09:00:00', '20T11:00:00', { wdir: 180, wspd: 12 });
+  const r = report([base, becoming, fm]);
+  const ranges = T.ranges(r);
+  assert.equal(T.rangeLabel(ranges[1]), '20/0900–1100Z');
+  assert.equal(T.selectRange(r, ranges[1], NOW).status, 'transition');
+  assert.equal(T.selectRange(r, ranges[1], NOW).wind, null);
+  assert.equal(T.selectRange(r, ranges[2], NOW).wind.direction, 180);
+  const gap = report([{ ...base, timeTo: Z('20T09:00:00') }, fm]);
+  assert.equal(T.selectRange(gap, T.ranges(gap)[1], NOW).wind, null);
+});

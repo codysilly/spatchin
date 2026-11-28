@@ -122,8 +122,6 @@ button:hover{background:#243034}
 .atis-full summary::marker{color:var(--blue)}
 .atis-raw{font-family:var(--font-data,"Inconsolata",monospace)}
 .notam-summary{margin:0 0 18px;border:1px solid var(--line);padding:12px;background:var(--panel2);color:var(--muted);font:400 12px/1.35 var(--font-data,"Inconsolata",monospace)}
-.notam-summary>strong{font:800 12px/1.2 var(--font-ui,"Overpass",sans-serif);text-transform:uppercase;letter-spacing:.12em;color:var(--amber)}
-.notam-summary>strong::before{content:"▪";margin-right:8px}
 .notam-summary p{margin:6px 0 0;color:var(--muted)}
 .notam-summary .collection-warning{color:var(--amber)}
 .airport-notam-list{margin-top:5px}
@@ -260,7 +258,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 .airport-head .name[aria-expanded="true"]{white-space:normal;overflow-wrap:anywhere}
 .airport-actions:has(.airport-diagram + .airport-diagram) .diagram-link-text{display:none}
 
-.metar-panel,.taf,.atis{
+.metar-panel,.taf,.atis,.notam-summary{
   display:block;border:1px solid var(--line);background:var(--panel2);
   margin:0 0 10px;padding:12px 14px;min-width:0;
 }
@@ -295,7 +293,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 }
 @media(max-width:760px){
   .airport-head{column-gap:4px}
-  .metar-panel,.taf,.atis{padding:10px 12px}
+  .metar-panel,.taf,.atis,.notam-summary{padding:10px 12px}
 }
 @media(max-width:600px){
   .airport-head .airport-diagram{flex:0 0 auto;max-width:none}
@@ -343,3 +341,24 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
  .forecast-summary{font-size:12px}
  .rw-table .forecast-alt{font-size:11px}
 }
+
+/* SPA-124: shared weather panel and compact NOTAM disclosure. */
+.notam-summary{position:relative;font:400 15px/1.3 var(--font-data,"Inconsolata",monospace);color:var(--muted);overflow-wrap:anywhere}
+.notam-summary .airport-notam-list{margin:0}
+.notam-summary .airport-notam-list>summary{display:block;list-style:none;font:inherit;color:var(--text);cursor:pointer}
+.notam-summary .airport-notam-list>summary::-webkit-details-marker{display:none}
+.notam-heading{display:flex;align-items:baseline;justify-content:space-between;gap:6px;min-height:20px}
+.notam-summary.has-reload .notam-heading{padding-right:44px}
+.notam-title{font:inherit;color:var(--text)}
+.airport-notam-list .notam-title{color:var(--blue);text-decoration:underline;white-space:nowrap}
+.airport-notam-list .notam-title::before{content:"▸ ";display:inline-block;text-decoration:none;margin-right:2px}
+.airport-notam-list[open] .notam-title::before{content:"▾ "}
+.notam-meta{font:inherit;color:var(--muted);text-align:right;white-space:nowrap}
+.notam-summary .notam-warning{display:block;color:var(--amber);font-size:12px;margin:4px 0 0}
+.notam-summary .notam-warning:first-of-type{color:var(--amber)}
+.notam-summary .notam-metadata{margin-top:8px;font-size:12px}
+.notam-summary .notam-reload{position:absolute;right:7px;top:0;width:44px;height:44px;min-height:44px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:var(--blue)}
+.notam-reload[aria-disabled="true"]{opacity:.55}
+.notam-summary .reader-raw,.inline-reader .reader-raw{color:var(--text);font:400 15px/1.3 var(--font-data,"Inconsolata",monospace);margin:0 0 8px}
+.notam-summary .notam-format-note,.inline-reader .notam-format-note{font-size:12px;color:var(--amber);margin:4px 0 6px}
+@media(max-width:400px){.notam-heading{gap:4px}.notam-summary.has-reload .notam-heading{padding-right:38px}.notam-summary .notam-reload{right:2px}}

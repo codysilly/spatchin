@@ -75,7 +75,7 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
   assert.ok(dom.overflow<=1,'horizontal overflow '+dom.overflow+' at '+width+'px');
   assert.equal(dom.codeDiagramOverlap,false,'airport diagram overlaps code');
   const mem=page.locator('[data-airport="MEM"]');
-  assert.equal(await mem.locator('.airport-footer [data-notam-reload]').count(),1);
+  assert.equal(await mem.locator('.notam-summary [data-notam-reload]').count(),1);
   assert.equal(await mem.locator('.airport-head [data-remove]').count(),1);
   assert.equal(await mem.locator('.airport-grip').count(),1);
   assert.equal(await mem.locator('.metar-panel').count(),1);

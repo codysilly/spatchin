@@ -27,7 +27,9 @@ const notamSnapshots=typeof NotamSnapshots==='undefined'||(typeof SPATCHIN_SYNTH
 });
 function notamTransportBlock(code){
  if(!notamSnapshots)return '';
- return `<section class="notam-transport" aria-label="${esc(code)} NOTAM snapshot loading"><button type="button" data-notam-reload="${esc(code)}" aria-disabled="${Boolean(notamTransport?.refreshing)}">${notamTransport?.refreshing?'Loading NOTAM snapshot…':'Reload NOTAM snapshot'}</button><p>Published snapshot · No live provider request</p></section>`;
+ const busy=Boolean(notamTransport?.refreshing);
+ const label=busy?'Loading NOTAM snapshot…':'Reload NOTAM snapshot';
+ return `<button class="notam-reload" type="button" data-notam-reload="${esc(code)}" aria-label="${label}" title="${label} (published data only)" aria-disabled="${busy}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.5 8a7.5 7.5 0 0 1 12.4-2L20 9M4 15l2.1 3A7.5 7.5 0 0 0 18.5 16"/></svg></button>`;
 }
 if(typeof SPATCHIN_SYNTHETIC_PREVIEW!=='undefined'){runwayData=SPATCHIN_SYNTHETIC_PREVIEW.runways;if(!syntheticNotamTransport)reader?.set(SPATCHIN_SYNTHETIC_PREVIEW.notams);}
 let atisData=null; let atisRetrieved=null;
@@ -258,33 +260,33 @@ function forecastModel(code,m){
   Date.now()-forecastTimeline.time(report.issueTime)<=forecastTimeline.STALE_MS;
  const observed=m?.observed||'unavailable';
  const selected=observedSelection.get(code);
- const rawSelected=selected?.startsWith('taf:')?forecastTimeline?.time(selected.slice(4)):NaN;
+ const rangeMode=selected?.startsWith('taf-range:');
+ const rawSelected=rangeMode?forecastTimeline?.time(selected.slice(10)):selected?.startsWith('taf:')?forecastTimeline?.time(selected.slice(4)):NaN;
  const bounds=available?forecastTimeline.bounds(report):null;
- const forecast=Boolean(available&&selected?.startsWith('taf:')&&Number.isFinite(rawSelected)&&
-  rawSelected>=bounds.start&&rawSelected<bounds.end);
+ const ranges=available?forecastTimeline.ranges(report):[];
+ const chosenRange=ranges.find(r=>rawSelected>=r.start&&rawSelected<r.end);
+ const forecast=Boolean(available&&chosenRange&&(!rangeMode||rawSelected===chosenRange.start));
  const initial=available?forecastTimeline.initialTime(report):NaN;
  const at=forecast?rawSelected:initial;
- const state=forecast?forecastTimeline.select(report,at):null;
- return {report,available:Boolean(available),bounds,observed,forecast,at,state};
+ const state=forecast?(rangeMode?forecastTimeline.selectRange(report,chosenRange):forecastTimeline.select(report,at)):null;
+ return {report,available:Boolean(available),bounds,observed,forecast,at,state,ranges,chosenRange,rangeMode};
 }
 function timeControl(code,m,model){
  const prefix='<div class="time-control'+(model.forecast?' forecast-active':'')+
   '"><label for="time-'+esc(code)+'">Time (UTC / Zulu)</label>'+
   '<select id="time-'+esc(code)+'" data-observed-time="'+esc(code)+'">'+
   '<option value="'+esc(model.observed)+'"'+(!model.forecast?' selected':'')+'>'+
-  (m?.observed?'Observed '+esc(utc(m.observed)):'Observation unavailable')+'</option>';
+  'Current'+'</option>';
  if(!model.available){
   return prefix+'<option disabled>Forecast unavailable</option></select></div>';
  }
  const at=Number.isFinite(model.at)?model.at:forecastTimeline.initialTime(model.report);
- const iso=new Date(at).toISOString();
  const time=esc(forecastTimeline.stamp(at));
- const chosen=esc('taf:'+iso);
  const sliderValue=forecastTimeline.stepIndex(model.report,at);
  const max=forecastTimeline.steps(model.report);
  const range=model.bounds;
- let result=prefix+'<option value="'+chosen+'"'+(model.forecast?' selected':'')+
-  '>TAF forecast '+time+'</option></select></div>';
+ let result=prefix+model.ranges.map(r=>'<option value="'+esc('taf-range:'+new Date(r.start).toISOString())+'"'+
+  (model.forecast&&model.chosenRange===r?' selected':'')+'>'+esc(forecastTimeline.rangeLabel(r))+'</option>').join('')+'</select></div>';
  result+='<div class="forecast-controls" data-forecast-controls="'+esc(code)+'">'+
   '<label for="forecast-slider-'+esc(code)+'">Forecast timeline (UTC)</label>'+
   '<input type="range" id="forecast-slider-'+esc(code)+'" data-forecast-slider="'+esc(code)+
@@ -304,11 +306,10 @@ function timeControl(code,m,model){
    state?.status==='stale'?'TAF STALE':'FORECAST WIND UNAVAILABLE';
   const wind=state?.wind?windLabel(state.wind):'Wind components unavailable';
   const notes=(state?.notes||[]).map(esc).join(' · ');
-  const bearing=runwayBasis(code)||(runwayData?.airports?.[code]?'Published runway true bearings':
-   'Runway-number headings are approximate');
+  const bearing=runwayBasis(code).startsWith('Wind components unavailable')?runwayBasis(code):'';
   result+='<div class="forecast-summary" role="status"><strong>'+resultLabel+
-   ' · '+time+'</strong><div>'+esc(wind)+(notes?' · '+notes:'')+
-   '</div><div>'+esc(bearing)+' · Issued '+esc(forecastTimeline.stamp(forecastTimeline.time(model.report.issueTime)))+
+   ' · '+(model.rangeMode?esc(forecastTimeline.rangeLabel(model.chosenRange)):time)+'</strong><div>'+esc(wind)+(notes?' · '+notes:'')+
+   '</div><div>'+(bearing?esc(bearing)+' · ':'')+'Issued '+esc(forecastTimeline.stamp(forecastTimeline.time(model.report.issueTime)))+
    ' · Snapshot '+esc(utc(tafData?.updated_utc))+'</div>'+
    '<div>Forecast is not an observation. TEMPO/PROB winds are alternatives, not prevailing.</div></div>';
  }
@@ -323,7 +324,7 @@ function airportCardMarkup(code,{airportCount,airportInfo,metars,ends,forecastMo
  const observation=m?.raw||m?.error||'Observation unavailable';
  const retained=metarFeedError&&m?.raw?'<span class="metar-retained">Feed refresh failed; showing retained observation.</span>':'';
  const category=categoryMarkup(m),report=metarBadge(code,observation,Boolean(m?.raw));
- return `<article class="airport" data-airport="${code}"><div class="airport-head"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airportCount<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="airport-top-row"><div class="icao">${esc(code)}</div>${category.tag}</div><div class="airport-actions">${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><button type="button" class="name" data-airport-name="${esc(code)}" id="airport-name-${esc(code)}" title="${esc(a?.name||'Airport not yet configured')}" aria-expanded="false">${esc(a?.name||'Airport not yet configured')}</button></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-copy">${metarStatus(m)}<div class="metar-raw" data-scan-flow>${report.raw}</div>${retained}${report.fallback?`<div class="report-fallback">${report.fallback}</div>`:''}</div></section>${tafBlock(code)}${atisBlock(code)}${reader?.summary(icao(code))||''}${timeControl(code,m,model)}<div class="runways">${runwayBasis(code)?`<div class="forecast-range">${esc(runwayBasis(code))}</div>`:''}${r.length?`<table class="rw-table${model.forecast?' forecast-table':''}"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAM references</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w,model.forecast?model.state:null)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div><footer class="airport-footer">${notamTransportBlock(code)}</footer></article>`;
+ return `<article class="airport" data-airport="${code}"><div class="airport-head"><button type="button" class="airport-grip" data-airport-drag="${esc(code)}" aria-label="Reorder ${esc(code)} airport: drag or use arrow keys" title="Drag to reorder; arrow keys also work" ${airportCount<2?'disabled':''}><svg viewBox="0 0 16 24" width="16" height="24" aria-hidden="true" focusable="false" fill="currentColor"><circle cx="4" cy="5" r="1.8"/><circle cx="12" cy="5" r="1.8"/><circle cx="4" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="4" cy="19" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button><div class="airport-top-row"><div class="icao">${esc(code)}</div>${category.tag}</div><div class="airport-actions">${diagramHeader(code)}<button type="button" class="airport-remove" data-remove="${esc(code)}" aria-label="Remove ${esc(code)} airport" title="Remove airport">×</button></div><button type="button" class="name" data-airport-name="${esc(code)}" id="airport-name-${esc(code)}" title="${esc(a?.name||'Airport not yet configured')}" aria-expanded="false">${esc(a?.name||'Airport not yet configured')}</button></div><section class="weather-row metar-panel" aria-label="${esc(code)} METAR"><div class="weather-copy">${metarStatus(m)}<div class="metar-raw" data-scan-flow>${report.raw}</div>${retained}${report.fallback?`<div class="report-fallback">${report.fallback}</div>`:''}</div></section>${tafBlock(code)}${atisBlock(code)}${reader?.summary(icao(code),Date.now(),notamTransportBlock(code))||''}${timeControl(code,m,model)}<div class="runways">${runwayBasis(code).startsWith('Wind components unavailable')?`<div class="forecast-range">${esc(runwayBasis(code))}</div>`:''}${r.length?`<table class="rw-table${model.forecast?' forecast-table':''}"><thead><tr><th>RWY</th><th>Head/Tail</th><th>Cross</th><th>NOTAMs</th></tr></thead><tbody>${r.map(id=>runwayRow(code,id,w,model.forecast?model.state:null)+(reader?.row(icao(code),id,r)||'')).join('')}</tbody></table>`:'<div class="empty">Runway data pending.</div>'}</div></article>`;
 }
 function render(){const reloadFocus=document.activeElement?.dataset?.notamReload,active=document.activeElement,activeId=active?.id,removeFocus=active?.dataset?.remove,dragFocus=active?.dataset?.airportDrag;
  const namesOpen=new Set([...document.querySelectorAll('[data-airport-name][aria-expanded="true"]')].map(el=>el.dataset.airportName));

@@ -97,6 +97,49 @@ export const TafTimeline=(()=>{
     return {status:transition?'transition':wind?'available':'missing',wind:transition?null:wind,
       source,alternatives,notes,at,issued,validity};
   }
+  // Split only at prevailing boundaries and BECMG transitions, not at temporary
+  // alternatives. The latter are evaluated over the entire selected interval.
+  function ranges(report){
+    const validity=bounds(report);
+    if(!validity)return [];
+    const points=new Set([validity.start,validity.end]);
+    const add=ms=>{if(ms>validity.start&&ms<validity.end)points.add(ms);};
+    for(const p of periods(report)){
+      if(p.kind==='BASE'||p.kind==='FM'){add(p.start);add(p.end);}
+      if(p.kind==='BECMG'&&p.wind){add(p.start);add(p.transitionEnd);}
+    }
+    const times=[...points].sort((a,b)=>a-b);
+    return times.slice(0,-1).map((start,i)=>({start,end:times[i+1]}));
+  }
+  function rangeLabel(range){
+    const part=ms=>{const s=new Date(ms).toISOString();return {day:s.slice(0,10),label:s.slice(8,10),clock:s.slice(11,16).replace(':','')};};
+    const a=part(range.start),b=part(range.end);
+    return a.label+'/'+a.clock+'–'+(a.day===b.day?'':b.label+'/')+b.clock+'Z';
+  }
+  function selectRange(report,range,now=Date.now()){
+    if(!ranges(report).some(r=>r.start===range.start&&r.end===range.end))
+      return {status:'outside',wind:null,alternatives:[],notes:['Time outside TAF validity']};
+    const state=select(report,range.start,now);
+    if(['outside','expired','stale'].includes(state.status))return state;
+    const points=new Set([range.start]);
+    for(const p of periods(report)){
+      for(const ms of [p.start,p.end,p.transitionEnd])if(ms>range.start&&ms<range.end)points.add(ms);
+    }
+    const samples=[...points].sort((a,b)=>a-b).map(at=>select(report,at,now));
+    const alternatives=new Map(),notes=new Set();
+    for(const sample of samples){
+      for(const note of sample.notes)notes.add(note);
+      for(const alt of sample.alternatives){
+        const key=JSON.stringify(alt);
+        if(!alternatives.has(key))alternatives.set(key,{...alt,label:alt.label+' '+rangeLabel({start:Math.max(alt.from,range.start),end:Math.min(alt.to,range.end)})});
+      }
+    }
+    // A range must not claim one prevailing wind if the decoded values disagree.
+    const uniform=samples.every(s=>s.status===state.status&&JSON.stringify(s.wind)===JSON.stringify(state.wind));
+    if(!uniform)notes.add('Prevailing wind varies or is unavailable within this range; verify exact UTC time');
+    return {...state,status:uniform?state.status:samples.some(s=>s.status==='transition')?'transition':'missing',
+      wind:uniform?state.wind:null,alternatives:[...alternatives.values()],notes:[...notes]};
+  }
   function steps(report){
     const range=bounds(report);
     return range?Math.max(0,Math.floor((range.end-range.start-1)/STEP)):0;
@@ -115,5 +158,5 @@ export const TafTimeline=(()=>{
     if(!range)return NaN;
     return now>=range.start&&now<range.end?stepTime(report,stepIndex(report,now)):range.start;
   }
-  return {time,bounds,stamp,localInput,windOf,periods,select,steps,stepTime,stepIndex,initialTime,STEP,STALE_MS};
+  return {time,bounds,stamp,localInput,windOf,periods,select,ranges,rangeLabel,selectRange,steps,stepTime,stepIndex,initialTime,STEP,STALE_MS};
 })();

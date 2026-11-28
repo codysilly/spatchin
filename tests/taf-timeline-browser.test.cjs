@@ -56,18 +56,25 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
   await page.waitForFunction(()=>typeof forecastTimeline!=='undefined'&&tafData?.tafs?.[0]?.fcsts?.length===4);
   const mem=page.locator('[data-airport="MEM"]');
   assert.match(await mem.locator('.taf-raw').innerText(),/SYNTHETIC 27012KT/);
-  assert.match(await mem.locator('.taf-meta').innerText(),/Issued/);
-  assert.match(await mem.locator('.taf-meta').innerText(),/Valid/);
+  assert.equal(await mem.locator('.taf-meta').count(),0);
   assert.equal(await page.locator('[data-airport="IND"] [data-forecast-controls]').count(),0);
   assert.equal(await mem.locator('.runway-row').count(),8);
   const observed=await mem.locator('.runway-row').first().locator('td').nth(1).innerText();
-  assert.equal(await page.locator('#time-MEM option:not([disabled])').count(),2);
+  assert.equal(await page.locator('#time-MEM option:not([disabled])').count(),3);
   await page.selectOption('#time-MEM',{index:1});
   assert.equal(await mem.locator('.forecast-table').count(),1);
   assert.match(await mem.locator('.forecast-summary').innerText(),/TAF FORECAST/);
   assert.match(await mem.locator('.forecast-summary').innerText(),/270° \/ 12G18KT/);
   const projected=await mem.locator('.runway-row').first().locator('td').nth(1).innerText();
   assert.notEqual(projected,observed);
+  assert.equal(await mem.locator('#time-MEM option').first().textContent(),'Current');
+  const labels=await mem.locator('#time-MEM option').allTextContents();
+  assert.ok(labels.slice(1).every(s=>/^\d{2}\/\d{4}–(?:\d{2}\/)?\d{4}Z$/.test(s)));
+  await page.selectOption('#time-MEM',{index:2});
+  assert.match(await mem.locator('.forecast-summary').innerText(),/090° \/ 10KT/);
+  assert.match(await mem.locator('.forecast-summary').innerText(),/TEMPO/);
+  assert.match(await mem.locator('.forecast-summary').innerText(),/PROB 30%/);
+  assert.match((await mem.locator('.forecast-alt').allTextContents()).join(' '),/TEMPO \d{2}\//);
   await page.fill('#forecast-date-MEM',fmt(fmAt+5*60000));
   assert.match(await mem.locator('.forecast-summary').innerText(),/090° \/ 10KT/);
   await page.fill('#forecast-date-MEM',fmt(tempoAt+5*60000));
@@ -97,7 +104,7 @@ for(const width of [1440,390])test('forecast UTC controls, source and runway com
    render();
   });
   assert.equal(await mem.locator('.taf-status').count(),0);
-  assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),2);
+  assert.equal(await mem.locator('#time-MEM option:not([disabled])').count(),3);
   // Expired validity is not a stale issue: keep raw text, show red and disable projections.
   await page.evaluate(()=>{
    const report=tafData.tafs.find(item=>item.icaoId==='KMEM');
