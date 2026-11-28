@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T01:30:41.815861Z",
+  "updated_utc": "2026-11-28T01:40:37.272261Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -304,7 +304,7 @@
     },
     {
       "icaoId": "KBGR",
-      "receiptTime": "2026-11-28T01:29:28.763Z",
+      "receiptTime": "2026-11-28T01:30:07.232Z",
       "obsTime": 1795829220,
       "reportTime": "2026-11-28T01:27:00.000Z",
       "temp": 5.6,
@@ -2411,20 +2411,20 @@
     },
     {
       "icaoId": "KMSO",
-      "receiptTime": "2026-11-28T01:14:17.679Z",
-      "obsTime": 1795828260,
-      "reportTime": "2026-11-28T01:11:00.000Z",
+      "receiptTime": "2026-11-28T01:34:13.713Z",
+      "obsTime": 1795829460,
+      "reportTime": "2026-11-28T01:31:00.000Z",
       "temp": 3.3,
       "dewp": 2.2,
-      "wdir": 250,
-      "wspd": 4,
-      "visib": "10+",
-      "altim": 1016.7,
+      "wdir": 0,
+      "wspd": 0,
+      "visib": 9,
+      "altim": 1016.3,
       "qcField": 4,
       "wxString": "-RA",
       "precip": 0.005,
       "metarType": "SPECI",
-      "rawOb": "SPECI KMSO 280111Z 25004KT 10SM -RA FEW024 OVC033 03/02 A3002 RMK AO2 P0000 T00330022",
+      "rawOb": "SPECI KMSO 280131Z 00000KT 9SM -RA OVC026 03/02 A3001 RMK AO2 P0000 T00330022",
       "lat": 46.9208,
       "lon": -114.0938,
       "elev": 974,
@@ -2432,15 +2432,11 @@
       "cover": "OVC",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 2400
-        },
-        {
           "cover": "OVC",
-          "base": 3300
+          "base": 2600
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "MVFR"
     },
     {
       "icaoId": "KMSP",
