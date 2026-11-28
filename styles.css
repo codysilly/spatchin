@@ -130,7 +130,7 @@ form{flex-wrap:nowrap;min-height:48px}input,button,select{font:inherit;}input,se
 
 /* Shared compact NOTAM disclosure structure for foundation-only previews. */
 .notam-summary{position:relative}.notam-summary .airport-notam-list{margin:0}
-.notam-summary .airport-notam-list>summary{display:block;list-style:none}
+.notam-summary .airport-notam-list>summary{display:block;list-style:none;text-decoration:none}
 .notam-summary .airport-notam-list>summary::-webkit-details-marker{display:none}
 .notam-heading{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
 .notam-summary.has-reload .notam-heading{padding-right:44px}

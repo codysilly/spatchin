@@ -345,7 +345,7 @@ header{min-height:22px;padding-top:1px;padding-bottom:1px}
 /* SPA-124: shared weather panel and compact NOTAM disclosure. */
 .notam-summary{position:relative;font:400 15px/1.3 var(--font-data,"Inconsolata",monospace);color:var(--muted);overflow-wrap:anywhere}
 .notam-summary .airport-notam-list{margin:0}
-.notam-summary .airport-notam-list>summary{display:block;list-style:none;font:inherit;color:var(--text);cursor:pointer}
+.notam-summary .airport-notam-list>summary{display:block;list-style:none;text-decoration:none;font:inherit;color:var(--text);cursor:pointer}
 .notam-summary .airport-notam-list>summary::-webkit-details-marker{display:none}
 .notam-heading{display:flex;align-items:baseline;justify-content:space-between;gap:6px;min-height:20px}
 .notam-summary.has-reload{min-height:44px}

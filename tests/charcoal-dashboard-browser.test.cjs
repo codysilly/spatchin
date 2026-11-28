@@ -88,6 +88,9 @@ for(const width of [1440,390])test('approved charcoal layout and interactions at
    return {titleSize:getComputedStyle(el.querySelector('.notam-title')).fontSize,metaSize:getComputedStyle(el.querySelector('.notam-meta')).fontSize,overlap:title.right>meta.left||meta.right>reload.left,button:reload.width};
   });
   assert.deepEqual(headerGeometry,{titleSize:'15px',metaSize:'15px',overlap:false,button:44});
+  assert.equal(await panel.locator('summary').evaluate(el=>getComputedStyle(el).textDecorationLine),'none');
+  assert.equal(await panel.locator('.notam-title').evaluate(el=>getComputedStyle(el).textDecorationLine),'underline');
+  assert.equal(await panel.locator('.notam-meta').evaluate(el=>getComputedStyle(el).textDecorationLine),'none');
   mkdirSync('screenshots',{recursive:true});
   await panel.screenshot({path:'screenshots/notam-collapsed-'+width+'.png'});
   await panel.locator('.notam-title').click();
