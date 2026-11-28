@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T15:38:34.185228Z",
+  "updated_utc": "2026-11-28T15:58:34.873534Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -200,19 +200,19 @@
     },
     {
       "icaoId": "KATL",
-      "rawTAF": "TAF KATL 281349Z 2814/2918 26007KT P6SM FEW250 FM290100 22005KT P6SM FEW250 FM291200 19005KT P6SM FEW025 BKN050 FM291700 17010KT P6SM FEW015 BKN025 BKN040",
-      "issueTime": "2026-11-28T13:49:00.000Z",
-      "validTimeFrom": 1795874400,
+      "rawTAF": "TAF KATL 281554Z 2816/2918 28008KT P6SM FEW250 FM290100 22005KT P6SM FEW250 FM291200 19005KT P6SM FEW025 BKN050 FM291700 17010KT P6SM FEW015 BKN025 BKN040",
+      "issueTime": "2026-11-28T15:54:00.000Z",
+      "validTimeFrom": 1795881600,
       "validTimeTo": 1795975200,
       "fcsts": [
         {
-          "timeFrom": 1795874400,
+          "timeFrom": 1795881600,
           "timeTo": 1795914000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 260,
-          "wspd": 7,
+          "wdir": 280,
+          "wspd": 8,
           "wgst": null
         },
         {
@@ -1278,18 +1278,18 @@
     },
     {
       "icaoId": "KCLT",
-      "rawTAF": "TAF KCLT 281339Z 2814/2918 23008KT P6SM FEW230 FM281800 23008G16KT P6SM FEW250 FM282300 22004KT P6SM FEW200",
-      "issueTime": "2026-11-28T13:39:00.000Z",
-      "validTimeFrom": 1795874400,
+      "rawTAF": "TAF KCLT 281550Z 2816/2918 25008KT P6SM FEW230 FM281800 23008G16KT P6SM FEW250 FM282300 22004KT P6SM FEW200",
+      "issueTime": "2026-11-28T15:50:00.000Z",
+      "validTimeFrom": 1795881600,
       "validTimeTo": 1795975200,
       "fcsts": [
         {
-          "timeFrom": 1795874400,
+          "timeFrom": 1795881600,
           "timeTo": 1795888800,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
-          "wdir": 230,
+          "wdir": 250,
           "wspd": 8,
           "wgst": null
         },
