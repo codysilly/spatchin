@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T15:40:38.808311Z",
+  "updated_utc": "2026-11-28T15:50:40.203534Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1308,31 +1308,40 @@
     },
     {
       "icaoId": "KFAT",
-      "receiptTime": "2026-11-28T14:56:30.338Z",
-      "obsTime": 1795877580,
-      "reportTime": "2026-11-28T15:00:00.000Z",
+      "receiptTime": "2026-11-28T15:48:34.657Z",
+      "obsTime": 1795880700,
+      "reportTime": "2026-11-28T15:45:00.000Z",
       "temp": 9.4,
-      "dewp": 9.4,
-      "wdir": 50,
-      "wspd": 8,
-      "visib": 0.13,
-      "altim": 1019.4,
-      "slp": 1019.3,
+      "dewp": 8.3,
+      "wdir": 110,
+      "wspd": 4,
+      "visib": 0.5,
+      "altim": 1019,
       "qcField": 4,
-      "wxString": "FG",
-      "presTend": 0.6,
-      "vertVis": 2,
-      "metarType": "METAR",
-      "rawOb": "METAR KFAT 281453Z 05008KT 1/8SM R29R/1600V2600FT FG VV002 09/09 A3010 RMK AO2 SFC VIS 1/4 SLP193 T00940094 53006",
+      "wxString": "BR",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFAT 281545Z 11004KT 1/2SM R29R/6000VP6000FT BR BKN002 BKN004 BKN007 OVC250 09/08 A3009 RMK AO2 SFC VIS 3/4 VIS E AND NW 1 1/4 T00940083",
       "lat": 36.78,
       "lon": -119.7202,
       "elev": 102,
       "name": "Fresno/Yosemite Intl, CA, US",
-      "cover": "OVX",
+      "cover": "OVC",
       "clouds": [
         {
-          "cover": "OVX",
+          "cover": "BKN",
           "base": 200
+        },
+        {
+          "cover": "BKN",
+          "base": 400
+        },
+        {
+          "cover": "BKN",
+          "base": 700
+        },
+        {
+          "cover": "OVC",
+          "base": 25000
         }
       ],
       "fltCat": "LIFR"
@@ -2616,18 +2625,18 @@
     },
     {
       "icaoId": "KNQA",
-      "receiptTime": "2026-11-28T14:47:17.683Z",
-      "obsTime": 1795877400,
-      "reportTime": "2026-11-28T15:00:00.000Z",
-      "temp": 10,
-      "dewp": 3,
-      "wdir": 220,
-      "wspd": 6,
+      "receiptTime": "2026-11-28T15:46:14.460Z",
+      "obsTime": 1795881000,
+      "reportTime": "2026-11-28T16:00:00.000Z",
+      "temp": 13,
+      "dewp": 4,
+      "wdir": 240,
+      "wspd": 11,
       "visib": "10+",
       "altim": 1014,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KNQA 281450Z 22006KT 10SM CLR 10/03 A2994",
+      "rawOb": "METAR KNQA 281550Z 24011KT 10SM CLR 13/04 A2994",
       "lat": 35.3619,
       "lon": -89.8612,
       "elev": 90,
@@ -3815,32 +3824,32 @@
     },
     {
       "icaoId": "KSWF",
-      "receiptTime": "2026-11-28T15:14:29.115Z",
-      "obsTime": 1795877100,
-      "reportTime": "2026-11-28T15:00:00.000Z",
-      "temp": 7,
+      "receiptTime": "2026-11-28T15:41:40.340Z",
+      "obsTime": 1795880700,
+      "reportTime": "2026-11-28T16:00:00.000Z",
+      "temp": 8,
       "dewp": 4,
       "wdir": 270,
       "wspd": 12,
       "wgst": 17,
       "visib": "10+",
-      "altim": 1001.1,
+      "altim": 1001.4,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KSWF 281445Z 27012G17KT 10SM BKN025 BKN060 07/04 A2956",
+      "rawOb": "METAR KSWF 281545Z 27012G17KT 10SM BKN025 OVC040 08/04 A2957",
       "lat": 41.5045,
       "lon": -74.0999,
       "elev": 139,
       "name": "Newburgh/Stewart Intl, NY, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
           "cover": "BKN",
           "base": 2500
         },
         {
-          "cover": "BKN",
-          "base": 6000
+          "cover": "OVC",
+          "base": 4000
         }
       ],
       "fltCat": "MVFR"
