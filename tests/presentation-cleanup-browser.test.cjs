@@ -22,7 +22,7 @@ for(const width of [1440,390])test(`verified muted AWC source links, footer remo
   // Unknown mappings cannot be added through the catalog. Exercise the helper without creating a real airport.
   const unknown=await page.evaluate(()=>metarBadge('ZZZ','Observation unavailable',false));assert.deepEqual(unknown,{raw:'Observation unavailable',fallback:''});
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);assert.equal(await page.locator('.airport-head [data-remove]').count(),5);
-  assert.doesNotMatch(await page.locator('#cards').innerText(),/Last check:|Last successful check:|Show details|Original METAR/);assert.match(await page.locator('.notam-transport').first().innerText(),/Published snapshot · No live provider request/);
+  assert.doesNotMatch(await page.locator('#cards').innerText(),/Last check:|Last successful check:|Show details|Original METAR/);assert.equal(await page.locator('.notam-summary [data-notam-reload]').count(),5);assert.doesNotMatch(await page.locator('#cards').innerText(),/Published snapshot · No live provider request/);
   await page.locator('[data-remove="MEM"]').click();assert.equal(await page.evaluate(()=>document.activeElement.dataset.remove),'ORD');assert.equal(await page.locator('[data-airport="MEM"]').count(),0);
   await page.evaluate(()=>render());assert.equal(await page.evaluate(()=>document.activeElement.dataset.remove),'ORD');
   while(await page.locator('[data-remove]').count())await page.locator('[data-remove]').first().click();
@@ -45,7 +45,7 @@ for(const width of [1440,390])test(`LOCAL_FORMAT-only DOM and SCAN retain all un
   await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.snapshot&&ends('MEM').length===8);
   const before=await page.evaluate(()=>JSON.stringify(notamTransport.snapshot));
   const a=page.locator('[data-reader-open="KMEM-18R"]'),b=page.locator('[data-reader-open="KMEM-36L"]');assert.equal(await a.innerText(),'NOTAMs (4)');assert.match(await a.getAttribute('aria-label'),/NOTAMs \(4\).*18R.*KMEM/);
-  await a.click();await b.click();assert.equal(await page.locator('#reader-KMEM-18R .reader-notice').count(),4);assert.equal(await page.locator('#reader-KMEM-18R .local-unavailable').textContent(),'LOCAL_FORMAT text unavailable.');
+  await a.click();await b.click();assert.equal(await page.locator('#reader-KMEM-18R .reader-notice').count(),3);assert.equal(await page.locator('#reader-KMEM-18R .local-unavailable').textContent(),'LOCAL_FORMAT text unavailable.');
   const expected=['',text,'SYNTHETIC multi first','SYNTHETIC multi second'];assert.deepEqual(await page.locator('#reader-KMEM-18R .reader-raw').allTextContents(),expected);
   assert.equal(await page.locator('.inline-reader table,.inline-reader details,.inline-reader pre,.inline-reader dl,.inline-reader h4,.notam-reader,.notice-table,.notice-provenance').count(),0);
   const hidden=/RAW_CONDITION_ONLY|ICAO_ONLY|OTHER_ONLY|UNMATCHED_ONLY|HIDDEN_METADATA/;assert.doesNotMatch(await page.locator('body').textContent(),hidden);

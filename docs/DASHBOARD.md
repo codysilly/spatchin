@@ -142,3 +142,7 @@ Uniform METAR, TAF and ATIS inset panels replace the former standalone report la
 ## SPA-118 compact card and toolbar
 
 Card headers use 9 px top padding, a 4 px text-row gap and 8 px clearance before METAR. The IATA remains 24 px, flight category 8 px, and airport name 12 px with ellipsis and accessible disclosure. Controls remain 44 px with independent placement. Collapsed SCAN and airport-add controls share a row, with equal 44 px height and a compact labeled input. Current ATIS direction labels omit the routine CURRENT suffix; abnormal states remain visible.
+
+## SPA-124 fourth UI pass
+
+NOTAM text remains LOCAL_FORMAT only. If usable alternative-format text exists but no usable LOCAL_FORMAT text, the individual placeholder is omitted. The reader retains all records and reference counts, with one aggregate notice explaining omitted text. Empty/no-usable-text records retain a warning. Snapshot reload remains same-origin, not a provider request. TAF range selection evaluates existing decoded wind logic over prevailing intervals and includes overlapping TEMPO/PROB alternatives with time ranges. BECMG transitions and gaps must not show a fabricated prevailing wind; exact time selection still uses the existing instant logic. Full retrieval date and coverage/freshness provenance remain available in expanded NOTAM view.

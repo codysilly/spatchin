@@ -37,17 +37,31 @@ export const NotamReader = (() => {
   if(policy?.freshness_policy!=='AGE_LIMIT'||!Number.isInteger(limit)||!Number.isFinite(retrieved)||retrieved>now)return 'UNKNOWN';
   return now-retrieved>=limit*3600000?'STALE':'Within snapshot age limit';
  }
- function summary(code,now=Date.now()){
+ function summary(code,now=Date.now(),reload=''){
   const entry=snapshot?.airports?.[code],stamp=Date.parse(snapshot?.retrieved_utc);
-  const retrieved=Number.isFinite(stamp)?new Date(stamp).toISOString().slice(0,16).replace('T',' ')+' UTC':'Unavailable';
+  const date=Number.isFinite(stamp)?new Date(stamp).toISOString():null;
+  const retrieved=date?date.slice(0,16).replace('T',' ')+' UTC':'Unavailable';
+  const short=date?date.slice(11,16).replace(':','')+'Z':'UNAVAILABLE';
   const all=entry?airportRecords(code):[];
   const source=snapshot?.publication?.source;
-  const status=entry&&!snapshot?.synthetic?`<p>${esc(availability(code))}</p><p>Freshness: ${esc(freshness(stamp,now))}</p>`:'';
-  return `<section id="coverage-${esc(code)}" class="notam-summary" aria-label="${esc(code)} NOTAM coverage"><strong>${!entry?'NOTAM data unavailable':'NOTAM snapshot'}</strong>${entry?`<p>Retrieved: ${esc(retrieved)}</p>${source?`<p>Source: ${esc(source)}</p>`:''}${status}`:''}${snapshot?.synthetic?'<p>SYNTHETIC — NO LIVE DATA</p>':''}${error?`<p role="status">${esc(error)}</p>${entry?'<p>Showing retained snapshot after reader error.</p>':''}`:''}${entry?`<details class="airport-notam-list" id="airport-notams-${esc(code)}"><summary id="airport-notam-toggle-${esc(code)}">All airport snapshot notices (${all.length})</summary>${all.length?list(all):'<p>No notices in this airport snapshot.</p>'}</details>`:''}</section>`;
+  const age=freshness(stamp,now);
+  const status=entry&&!snapshot?.synthetic?`<p>${esc(availability(code))}</p><p>Freshness: ${esc(age)}</p>`:'';
+  const warnings=entry&&!snapshot?.synthetic?[...(!verifiedZero(code)?['Coverage UNKNOWN']:[]),...(age==='UNKNOWN'?['Freshness UNKNOWN']:age==='STALE'?['STALE']:[])]:[];
+  const header=`<span class="notam-title">NOTAM</span><span class="notam-meta">RETRIEVED ${esc(short)}</span>`;
+  const metadata=`<div class="notam-metadata"><p>Retrieved: ${esc(retrieved)}</p>${source?`<p>Source: ${esc(source)}</p>`:''}${status}</div>`;
+  return `<section id="coverage-${esc(code)}" class="notam-summary${reload?' has-reload':''}" aria-label="${esc(code)} NOTAM coverage">${entry?`<details class="airport-notam-list" id="airport-notams-${esc(code)}"><summary id="airport-notam-toggle-${esc(code)}"><span class="notam-heading">${header}</span>${warnings.length?`<span class="notam-warning">${esc(warnings.join(' · '))}</span>`:''}</summary>${metadata}${all.length?list(all):'<p>No notices in this airport snapshot.</p>'}</details>`:`<div class="notam-heading">${header}</div><p class="notam-warning">NOTAM DATA UNAVAILABLE</p>`}${reload}${snapshot?.synthetic?'<p class="notam-warning">SYNTHETIC — NO LIVE DATA</p>':''}${error?`<p class="notam-warning" role="status">${esc(error)}</p>${entry?'<p>Showing retained snapshot after reader error.</p>':''}`:''}</section>`;
  }
- function cell(code,id,inventory){const n=records(code,inventory).filter(n=>n.references.some(r=>r.id===id)).length;return `<td class="unknown"><button id="toggle-${esc(code)}-${esc(id)}" type="button" data-reader-open="${esc(code)}-${esc(id)}" aria-label="NOTAMs (${n}) for runway ${esc(id)} at ${esc(code)}" aria-describedby="coverage-${esc(code)}" aria-expanded="false" aria-controls="reader-${esc(code)}-${esc(id)}">NOTAMs (${n})</button><small class="reader-note">${esc(!snapshot?.airports?.[code]?'Unavailable':n?'Literal matches':verifiedZero(code)?'Verified zero':'No literal matches')}</small></td>`;}
+ function cell(code,id,inventory){const n=records(code,inventory).filter(n=>n.references.some(r=>r.id===id)).length;const note=!snapshot?.airports?.[code]?'Unavailable':n?'':verifiedZero(code)?'Verified zero':'No literal matches';return `<td class="unknown"><button id="toggle-${esc(code)}-${esc(id)}" type="button" data-reader-open="${esc(code)}-${esc(id)}" aria-label="NOTAMs (${n}) for runway ${esc(id)} at ${esc(code)}" aria-describedby="coverage-${esc(code)}" aria-expanded="false" aria-controls="reader-${esc(code)}-${esc(id)}">NOTAMs (${n})</button>${note?`<small class="reader-note">${esc(note)}</small>`:''}</td>`;}
  function localTexts(n){return (Array.isArray(n.formatted_texts)?n.formatted_texts:[]).filter(t=>t?.type==='LOCAL_FORMAT'&&typeof t.text==='string').map(t=>t.text);}
- function list(items){return `<div class="notice-list">${items.map(n=>{const texts=localTexts(n);return `<article class="reader-notice" data-reader-key="${esc(n.key)}">${texts.length?texts.map(text=>`<p class="reader-raw">${esc(text)}</p>`).join(''):'<p class="local-unavailable">LOCAL_FORMAT text unavailable.</p>'}</article>`;}).join('')}</div>`;}
+ function hasOtherText(n){return (Array.isArray(n.formatted_texts)?n.formatted_texts:[]).some(t=>t?.type!=='LOCAL_FORMAT'&&typeof t?.text==='string'&&t.text.trim());}
+ function list(items){
+  let omitted=0;
+  const content=items.map(n=>{const texts=localTexts(n);
+   if(!texts.some(t=>t.trim())&&hasOtherText(n)){omitted++;return '';}
+   return `<article class="reader-notice" data-reader-key="${esc(n.key)}">${texts.length?texts.map(text=>`<p class="reader-raw">${esc(text)}</p>`).join(''):''}${texts.some(t=>t.trim())?'':'<p class="local-unavailable">LOCAL_FORMAT text unavailable.</p>'}</article>`;
+  }).join('');
+  return `<div class="notice-list">${omitted?'<p class="notam-format-note">Some notices are not displayed because they have no LOCAL_FORMAT text. Counts include these notices.</p>':''}${content}</div>`;
+ }
  function row(code,id,inventory){const items=records(code,inventory).filter(n=>n.references.some(r=>r.id===id));return `<tr id="reader-${esc(code)}-${esc(id)}" class="notam-detail-row" data-reader-inline hidden><td colspan="4"><section id="scroll-${esc(code)}-${esc(id)}" class="inline-reader" data-reader-scroll tabindex="0" role="region" aria-label="${esc(code)} runway ${esc(id)} source notices" aria-describedby="coverage-${esc(code)}"><div class="reader-scroll-title" data-scan-ignore>${esc(code)} / Runway ${esc(id)} source notices</div>${items.length?list(items):`<p>${!snapshot?.airports?.[code]?'NOTAM data unavailable.':verifiedZero(code)?'Verified zero notices in this airport snapshot.':'No literal references in this snapshot.'}</p>`}</section></td></tr>`;}
  function before(){
   if(typeof document==='undefined'||!document.querySelectorAll)return;

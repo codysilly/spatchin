@@ -27,7 +27,7 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
   assert.equal(await link.getAttribute('href'),diagramURL('MEM'));
   assert.equal(await link.getAttribute('target'),'_blank');assert.equal(await link.getAttribute('rel'),'noopener');
   assert.match(await link.textContent(),/Airport diagram.*↗/);assert.ok((await link.getAttribute('title')).includes(diagramIndex.effective_from_utc));assert.ok((await link.getAttribute('title')).includes(diagramIndex.effective_to_utc));assert.equal(await page.locator('.airport-diagram small').count(),0);
-  const card=page.locator('[data-airport="MEM"]'),layout=await card.evaluate(el=>{const box=s=>el.querySelector(s).getBoundingClientRect(),code=box('.icao'),name=box('.name'),diagram=box('.airport-diagram'),raw=box('.metar-raw'),panels=['.metar-panel','.taf','.atis'].map(box),boxes=[...el.querySelectorAll('.atis-box')].map(x=>x.getBoundingClientRect());return {code,name,diagram,raw,panels,boxes,codeSize:parseFloat(getComputedStyle(el.querySelector('.icao')).fontSize),nameSize:parseFloat(getComputedStyle(el.querySelector('.name')).fontSize)};});
+  const card=page.locator('[data-airport="MEM"]'),layout=await card.evaluate(el=>{const box=s=>el.querySelector(s).getBoundingClientRect(),code=box('.icao'),name=box('.name'),diagram=box('.airport-diagram'),raw=box('.metar-raw'),panels=['.metar-panel','.taf','.atis','.notam-summary'].map(box),boxes=[...el.querySelectorAll('.atis-box')].map(x=>x.getBoundingClientRect());return {code,name,diagram,raw,panels,boxes,codeSize:parseFloat(getComputedStyle(el.querySelector('.icao')).fontSize),nameSize:parseFloat(getComputedStyle(el.querySelector('.name')).fontSize)};});
   assert.ok(layout.codeSize===24&&layout.nameSize===12);assert.ok(layout.name.top>=layout.code.bottom-1);assert.ok(layout.diagram.left>=layout.code.right||layout.diagram.top>=layout.name.bottom);
   for(const panel of layout.panels){assert.equal(panel.left,layout.panels[0].left);assert.equal(panel.width,layout.panels[0].width);}
   assert.ok(layout.raw.left>layout.panels[0].left);assert.ok(layout.panels[1].top>layout.panels[0].bottom);assert.ok(layout.panels[2].top>layout.panels[1].bottom);
@@ -39,7 +39,7 @@ for(const width of [1440,390])test(`bounded panels, lower SCAN targets, diagram 
   const unsafe=await page.evaluate(()=>{runwayData.airport_metadata={LAX:{heading_method:'chart-derived-approximate',source_url:runwayData.source_url}};const html=diagramHeader('LAX');delete runwayData.airport_metadata;return html;});
   assert.ok(unsafe.includes(diagramURL('LAX')));assert.doesNotMatch(unsafe,/nfdc\.faa\.gov/);
   assert.equal(await page.locator('.notam-summary').count(),2);assert.equal(await page.locator('.notam-reader').count(),0);
-  const summary=page.locator('#coverage-KMEM');assert.match(await summary.innerText(),/Retrieved: 2020-01-01 00:00 UTC/);assert.match(await page.evaluate(()=>NotamReader.availability('KMEM')),/Coverage UNKNOWN/);
+  const summary=page.locator('#coverage-KMEM');assert.match(await summary.innerText(),/RETRIEVED 0000Z/);assert.equal(await summary.locator('.notam-metadata').isVisible(),false);assert.match(await page.evaluate(()=>NotamReader.availability('KMEM')),/Coverage UNKNOWN/);
   assert.equal(await page.evaluate(()=>notamTransport.snapshot.airports.KMEM.warning),warning);assert.equal(await page.locator('unsafe').count(),0);
   assert.equal(await page.locator('.reader-note').filter({hasText:'UNKNOWN'}).count(),0);
   const toggle=page.locator('[data-reader-open="KMEM-36L"]'),region=page.locator('#scroll-KMEM-36L');

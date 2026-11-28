@@ -58,7 +58,7 @@ test('first-load 404 is unavailable; absent MEM inventory does not fabricate run
  await context.route('**/data/notams.json',route=>route.fulfill({status:404,body:''}));
  const legacy=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));delete legacy.airports.MEM;delete legacy.airport_metadata;
  await context.route('**/data/runways.json?*',route=>route.fulfill({json:legacy}));
- try{await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
+ try{await installDashboardProbe(page,base);await page.goto(base+'/dashboard/');await page.waitForFunction(()=>typeof render==='function');await page.waitForFunction(()=>notamTransport?.error);assert.match(await page.locator('.notam-summary').innerText(),/NOTAM data unavailable/i);assert.equal(await page.locator('.rw-table > tbody > tr.runway-row').count(),0);assert.match(await page.locator('#cards').innerText(),/Runway data pending/);}finally{await context.close();}
 });
 for(const width of [1440,390])test(`published MEM NASR inventory and source provenance at ${width}px`,async()=>{
  const runways=JSON.parse(readFileSync(join(__dirname,'../data/runways.json'),'utf8'));
@@ -75,7 +75,7 @@ for(const width of [1440,390])test(`published MEM NASR inventory and source prov
   for(const end of runways.airports.MEM){
    assert.equal(await page.locator('.rw-table > tbody > tr.runway-row td:first-child').filter({hasText:new RegExp(`^${end.id}$`)}).getAttribute('title'),`Approximate magnetic runway heading: ${end.magnetic_heading}°`);
   }
-  assert.match(await page.locator('.runways').innerText(),/Approx. wind components/);
+  assert.doesNotMatch(await page.locator('.runways').innerText(),/Approx. wind components/);
   assert.equal(await page.locator('.runways .sub').count(),0);
   assert.equal(await page.locator('[data-expand],.details,.notam-reader').count(),0);
   assert.equal(await page.evaluate(()=>runwayData.source_url),runways.source_url);

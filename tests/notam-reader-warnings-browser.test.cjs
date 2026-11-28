@@ -25,7 +25,7 @@ for(const width of [1440,390])test(`collection metadata and visible reload warni
     current=state.snapshot;NotamReader.set(state.snapshot,state.error);
     document.getElementById('reader').innerHTML=NotamReader.summary('KMEM')+'<table><tbody>'+NotamReader.row('KMEM','18L',['18L','36R'])+'</tbody></table>';
    }});
-   const inspect=()=>({visible:document.getElementById('reader').innerText,text:document.querySelector('#reader-KMEM-18L .reader-raw')?.textContent,storedWarning:current?.airports.KMEM.warning,coverage:current?.airports.KMEM.completeness,availability:NotamReader.availability('KMEM'),injected:document.querySelectorAll('unsafe').length});
+   const inspect=()=>({visible:document.getElementById('reader').innerText,metadata:document.querySelector('.notam-metadata')?.textContent,text:document.querySelector('#reader-KMEM-18L .reader-raw')?.textContent,storedWarning:current?.airports.KMEM.warning,coverage:current?.airports.KMEM.completeness,availability:NotamReader.availability('KMEM'),injected:document.querySelectorAll('unsafe').length});
    await loader.refresh();const loaded=inspect();
    failed=true;await loader.refresh();const retained=inspect();
    failed=false;await loader.refresh();const recovered=inspect();
@@ -35,7 +35,9 @@ for(const width of [1440,390])test(`collection metadata and visible reload warni
    assert.equal(stage.storedWarning,result.warning);
    assert.equal(stage.coverage,'UNKNOWN');assert.match(stage.availability,/Coverage UNKNOWN/);
    assert.ok(!stage.visible.includes(result.warning));
-   assert.ok(stage.visible.includes('Retrieved: 2020-01-01 00:00 UTC'));
+   assert.ok(stage.visible.includes('RETRIEVED 0000Z'));
+   assert.ok(!stage.visible.includes('Retrieved: 2020-01-01 00:00 UTC'));
+   assert.ok(stage.metadata.includes('Retrieved: 2020-01-01 00:00 UTC'));
    assert.equal(stage.text,result.text);
    assert.equal(stage.injected,0);
   }

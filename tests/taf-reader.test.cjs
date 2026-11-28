@@ -13,12 +13,11 @@ function report(overrides = {}) {
     ...overrides,
   };
 }
-test('valid current TAF shows unchanged raw text and source times', () => {
+test('valid current TAF shows unchanged raw text without duplicate times', () => {
   const html = TafReader.render({ code: 'MEM', station: 'KMEM', report: report(), now: NOW });
   assert.doesNotMatch(html, /TAF CURRENT|<strong>TAF<\/strong>/);
   assert.match(html, /<a class="report-source"[^>]*>TAF KMEM<\/a>/);
-  assert.match(html, /Issued 2026-11-20 06:00Z/);
-  assert.match(html, /Valid 2026-11-20 07:00Z–2026-11-21 06:00Z/);
+  assert.doesNotMatch(html, /taf-meta|Issued 2026|Valid 2026/);
   assert.match(html, /2006\/2106 09005KT/);
   assert.match(html, /ids=KMEM/);
   assert.doesNotMatch(html, /forecast wind|Headwind/);
