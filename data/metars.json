@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T02:30:41.326039Z",
+  "updated_utc": "2026-11-28T02:40:38.899594Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -223,40 +223,36 @@
     },
     {
       "icaoId": "KBFI",
-      "receiptTime": "2026-11-28T02:28:04.851Z",
-      "obsTime": 1795832640,
-      "reportTime": "2026-11-28T02:24:00.000Z",
-      "temp": 9.4,
-      "dewp": 8.3,
+      "receiptTime": "2026-11-28T02:38:38.616Z",
+      "obsTime": 1795833300,
+      "reportTime": "2026-11-28T02:35:00.000Z",
+      "temp": 8.9,
+      "dewp": 7.8,
       "wdir": 160,
       "wspd": 5,
-      "visib": 8,
-      "altim": 1019.7,
+      "visib": "10+",
+      "altim": 1019.4,
       "qcField": 6,
       "wxString": "-RA",
       "precip": 0.02,
       "metarType": "SPECI",
-      "rawOb": "SPECI KBFI 280224Z AUTO 16005KT 8SM -RA BKN007 BKN017 OVC030 09/08 A3011 RMK AO2 P0002 T00940083",
+      "rawOb": "SPECI KBFI 280235Z AUTO 16005KT 10SM -RA SCT007 BKN055 09/08 A3010 RMK AO2 P0002 T00890078",
       "lat": 47.5455,
       "lon": -122.3148,
       "elev": 7,
       "name": "Seattle/Boeing Fld, WA, US",
-      "cover": "OVC",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "BKN",
+          "cover": "SCT",
           "base": 700
         },
         {
           "cover": "BKN",
-          "base": 1700
-        },
-        {
-          "cover": "OVC",
-          "base": 3000
+          "base": 5500
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "VFR"
     },
     {
       "icaoId": "KBFM",
@@ -465,27 +461,32 @@
     },
     {
       "icaoId": "KBOS",
-      "receiptTime": "2026-11-28T02:04:05.940Z",
-      "obsTime": 1795831260,
-      "reportTime": "2026-11-28T02:01:00.000Z",
-      "temp": 9.4,
+      "receiptTime": "2026-11-28T02:38:38.540Z",
+      "obsTime": 1795833240,
+      "reportTime": "2026-11-28T02:34:00.000Z",
+      "temp": 8.9,
       "dewp": 6.7,
       "wdir": 230,
-      "wspd": 14,
+      "wspd": 16,
+      "wgst": 24,
       "visib": "10+",
       "altim": 994.7,
       "qcField": 4,
       "metarType": "SPECI",
-      "rawOb": "SPECI KBOS 280201Z 23014KT 10SM BKN029 09/07 A2937 RMK AO2 T00940067",
+      "rawOb": "SPECI KBOS 280234Z 23016G24KT 10SM BKN023 OVC031 09/07 A2937 RMK AO2 T00890067",
       "lat": 42.3606,
       "lon": -71.0097,
       "elev": 4,
       "name": "Boston/Logan Intl, MA, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
           "cover": "BKN",
-          "base": 2900
+          "base": 2300
+        },
+        {
+          "cover": "OVC",
+          "base": 3100
         }
       ],
       "fltCat": "MVFR"
@@ -2340,20 +2341,20 @@
     },
     {
       "icaoId": "KMSO",
-      "receiptTime": "2026-11-28T02:28:04.882Z",
-      "obsTime": 1795832640,
-      "reportTime": "2026-11-28T02:24:00.000Z",
-      "temp": 2.8,
-      "dewp": 2.2,
-      "wdir": 310,
+      "receiptTime": "2026-11-28T02:40:16.905Z",
+      "obsTime": 1795833360,
+      "reportTime": "2026-11-28T02:36:00.000Z",
+      "temp": 3.3,
+      "dewp": 1.7,
+      "wdir": 300,
       "wspd": 3,
-      "visib": 8,
-      "altim": 1015.7,
+      "visib": 9,
+      "altim": 1015.3,
       "qcField": 4,
       "wxString": "-RA",
       "precip": 0.02,
       "metarType": "SPECI",
-      "rawOb": "SPECI KMSO 280224Z 31003KT 8SM -RA OVC014 03/02 A2999 RMK AO2 P0002 T00280022",
+      "rawOb": "SPECI KMSO 280236Z 30003KT 9SM -RA BKN015 OVC021 03/02 A2998 RMK AO2 P0002 T00330017",
       "lat": 46.9208,
       "lon": -114.0938,
       "elev": 974,
@@ -2361,8 +2362,12 @@
       "cover": "OVC",
       "clouds": [
         {
+          "cover": "BKN",
+          "base": 1500
+        },
+        {
           "cover": "OVC",
-          "base": 1400
+          "base": 2100
         }
       ],
       "fltCat": "MVFR"
