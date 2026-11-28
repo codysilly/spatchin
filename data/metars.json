@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T07:30:39.025790Z",
+  "updated_utc": "2026-11-28T07:40:38.560348Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -141,26 +141,26 @@
     },
     {
       "icaoId": "KATW",
-      "receiptTime": "2026-11-28T07:18:20.760Z",
-      "obsTime": 1795850100,
-      "reportTime": "2026-11-28T07:15:00.000Z",
+      "receiptTime": "2026-11-28T07:38:58.606Z",
+      "obsTime": 1795851300,
+      "reportTime": "2026-11-28T07:35:00.000Z",
       "temp": 1,
-      "dewp": -4,
-      "wdir": 260,
-      "wspd": 6,
+      "dewp": -3,
+      "wdir": 230,
+      "wspd": 3,
       "visib": "10+",
       "altim": 1003.1,
       "qcField": 6,
       "metarType": "METAR",
-      "rawOb": "METAR KATW 280715Z AUTO 26006KT 10SM BKN120 01/M04 A2962 RMK AO2",
+      "rawOb": "METAR KATW 280735Z AUTO 23003KT 10SM SCT120 01/M03 A2962 RMK AO2",
       "lat": 44.2519,
       "lon": -88.526,
       "elev": 266,
       "name": "Appleton/Outagamie Cnty, WI, US",
-      "cover": "BKN",
+      "cover": "SCT",
       "clouds": [
         {
-          "cover": "BKN",
+          "cover": "SCT",
           "base": 12000
         }
       ],
@@ -2754,27 +2754,27 @@
     },
     {
       "icaoId": "KPVD",
-      "receiptTime": "2026-11-28T07:20:14.269Z",
-      "obsTime": 1795850220,
-      "reportTime": "2026-11-28T07:17:00.000Z",
+      "receiptTime": "2026-11-28T07:32:13.809Z",
+      "obsTime": 1795850880,
+      "reportTime": "2026-11-28T07:28:00.000Z",
       "temp": 7.2,
-      "dewp": 1.1,
-      "wdir": 250,
+      "dewp": 1.7,
+      "wdir": 240,
       "wspd": 7,
       "visib": "10+",
-      "altim": 997.4,
+      "altim": 997,
       "qcField": 14,
       "metarType": "SPECI",
-      "rawOb": "SPECI KPVD 280717Z AUTO 25007KT 10SM BKN029 07/01 A2945 RMK AO2 T00720011 $",
+      "rawOb": "SPECI KPVD 280728Z AUTO 24007KT 10SM OVC030 07/02 A2944 RMK AO2 T00720017 $",
       "lat": 41.7225,
       "lon": -71.4325,
       "elev": 15,
       "name": "Providence/Green Mem, RI, US",
-      "cover": "BKN",
+      "cover": "OVC",
       "clouds": [
         {
-          "cover": "BKN",
-          "base": 2900
+          "cover": "OVC",
+          "base": 3000
         }
       ],
       "fltCat": "MVFR"
@@ -3182,18 +3182,19 @@
     },
     {
       "icaoId": "KSEA",
-      "receiptTime": "2026-11-28T07:22:22.078Z",
-      "obsTime": 1795850280,
-      "reportTime": "2026-11-28T07:18:00.000Z",
+      "receiptTime": "2026-11-28T07:32:13.924Z",
+      "obsTime": 1795850880,
+      "reportTime": "2026-11-28T07:28:00.000Z",
       "temp": 7.8,
-      "dewp": 7.2,
+      "dewp": 7.8,
       "wdir": 0,
       "wspd": 0,
-      "visib": 7,
+      "visib": 6,
       "altim": 1022.4,
       "qcField": 12,
+      "wxString": "BR",
       "metarType": "SPECI",
-      "rawOb": "SPECI KSEA 280718Z 00000KT 7SM BKN005 OVC036 08/07 A3019 RMK AO2 PRESRR T00780072 $",
+      "rawOb": "SPECI KSEA 280728Z 00000KT 6SM BR BKN003 OVC036 08/08 A3019 RMK AO2 T00780078 $",
       "lat": 47.4447,
       "lon": -122.3144,
       "elev": 115,
@@ -3202,14 +3203,14 @@
       "clouds": [
         {
           "cover": "BKN",
-          "base": 500
+          "base": 300
         },
         {
           "cover": "OVC",
           "base": 3600
         }
       ],
-      "fltCat": "IFR"
+      "fltCat": "LIFR"
     },
     {
       "icaoId": "KSFO",
@@ -3465,19 +3466,18 @@
     },
     {
       "icaoId": "KSWF",
-      "receiptTime": "2026-11-28T06:11:32.916Z",
-      "obsTime": 1795848300,
-      "reportTime": "2026-11-28T07:00:00.000Z",
+      "receiptTime": "2026-11-28T07:03:36.785Z",
+      "obsTime": 1795851900,
+      "reportTime": "2026-11-28T08:00:00.000Z",
       "temp": 5,
       "dewp": 3,
-      "wdir": 250,
+      "wdir": 260,
       "wspd": 9,
-      "wgst": 14,
       "visib": "10+",
       "altim": 997.4,
       "qcField": 0,
       "metarType": "METAR",
-      "rawOb": "METAR KSWF 280645Z 25009G14KT 10SM SCT030 05/03 A2945",
+      "rawOb": "METAR KSWF 280745Z 26009KT 10SM SCT030 05/03 A2945",
       "lat": 41.5045,
       "lon": -74.0999,
       "elev": 139,
