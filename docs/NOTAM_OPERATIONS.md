@@ -119,18 +119,18 @@ Check for `PUBLIC_DIGEST_VERIFIED` and a successful Pages deployment of the repo
 
 ## 7. Authorize recurring operation
 
-Proposed provider interval and Pages publication cadence are **six elapsed hours**, with **STALE at 12 hours** from retrieval. That permits up to four delta/auth pairs and four NOTAM source commits per 24 hours at steady state. A local scheduler tick runs every 15 minutes to absorb scheduling drift. Early ticks make no provider or Pages requests. The stale label concerns snapshot age and leaves coverage UNKNOWN. Review the interval, freshness, account budgets, recurring publication, credential inheritance, runtime identity, Git auth, and local/private retention with the owner before activation.
+Set the acquisition interval and Pages publication cadence to **one elapsed hour**, with **STALE at two hours** from retrieval. At steady state, this allows up to 24 authentication and delta pairs and 24 NOTAM source commits per 24 hours, subject to the existing account-wide request ledger, three-minute provider minimum interval, and 24-hour lookback. A local scheduler tick runs every 15 minutes to absorb scheduling drift. Early ticks make no provider or Pages requests. The stale label concerns snapshot age and leaves coverage UNKNOWN. Review the interval, freshness, account budgets, recurring publication, credential inheritance, runtime identity, Git auth, and local/private retention with the owner before activation.
 
 ```powershell
 $Release = (git rev-parse HEAD).Trim()
-$Standing = & $Python @Nms review-standing --release-commit $Release --interval-hours 6 --freshness-hours 12 | ConvertFrom-Json
+$Standing = & $Python @Nms review-standing --release-commit $Release --interval-hours 1 --freshness-hours 2 | ConvertFrom-Json
 if ($LASTEXITCODE -ne 0) { throw 'Standing review failed' }
 $Standing | ConvertTo-Json -Depth 8
 ```
 
 Use a clean, pinned checkout and the same Windows identity that owns the ledger. Task Scheduler password logon can run after sign-out and reboot if this account has batch-logon rights, access to the protected NTFS store, and an authorized provider environment and Git credential helper in its noninteractive session. S4U and an interactive terminal's process-local variables cannot establish this. The assignment did not test the designated account's unattended credentials, task registration, reboot, sign-out or reconnection. Validate these in the authorized activation window. Leave the task disabled if a different principal, credential storage or permissions would be needed. Keep the pinned checkout available and obtain a new standing digest for upgrades. [Windows task logon methods](https://learn.microsoft.com/en-us/windows/win32/taskschd/principal-logontype)
 
-Each published candidate adds a potential Git revision, including when the contents are unchanged and new retrieval evidence advances. Use the candidate review's raw and compressed byte counts to estimate retention. At six hours, annual raw snapshot volume is about `1,460 × manifest.bytes`; estimate full compressed blobs with `1,460 × compressed_snapshot_bytes` and measure actual Git pack growth with `git count-objects -vH` over time. Git packing can reduce the latter. Compare with the recommended 1 GB Pages source limit, 1 GB site limit, 10 builds per hour and 100 GB per month of Pages bandwidth. Include existing weather traffic. This operator refuses snapshots beyond 50 MiB. Track disk usage as private versions and provider responses accumulate. An architecture change, history rewrite, or retention-policy change requires separate authorization. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) · [GitHub large-file guidance](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)
+Each published candidate adds a potential Git revision, including when the contents are unchanged and new retrieval evidence advances. Use the candidate review's raw and compressed byte counts to estimate retention. At one hour, annual raw snapshot volume is about `8,760 × manifest.bytes`; estimate full compressed blobs with `8,760 × compressed_snapshot_bytes` and measure actual Git pack growth with `git count-objects -vH` over time. Git packing can reduce the latter. Compare with the recommended 1 GB Pages source limit, 1 GB site limit, 10 builds per hour and 100 GB per month of Pages bandwidth. Include existing weather traffic. This operator refuses snapshots beyond 50 MiB. Track disk usage as private versions and provider responses accumulate. An architecture change, history rewrite, or retention-policy change requires separate authorization. [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) · [GitHub large-file guidance](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)
 
 ## 8. Install disabled, then activate
 
@@ -139,7 +139,7 @@ Run this section after the owner has authorized the schedule and its credential 
 ```powershell
 $ApprovedStanding = Read-Host 'Owner-approved recurring operation SHA-256'
 if ($ApprovedStanding -cne $Standing.approval_sha256) { throw 'Digest differs from reviewed operation' }
-$Config = & $Python @Nms task-config --release-commit $Release --interval-hours 6 --freshness-hours 12 --approve $ApprovedStanding | ConvertFrom-Json
+$Config = & $Python @Nms task-config --release-commit $Release --interval-hours 1 --freshness-hours 2 --approve $ApprovedStanding | ConvertFrom-Json
 if ($LASTEXITCODE -ne 0) { throw 'Task configuration failed' }
 if (Get-ScheduledTask -TaskName $Config.task_name -ErrorAction SilentlyContinue) { throw 'Task already exists' }
 $TaskAction = New-ScheduledTaskAction -Execute $Config.executable -Argument $Config.arguments -WorkingDirectory $Config.working_directory
@@ -192,4 +192,4 @@ If a hot SQLite rollback journal prevents a read-only open after a crash, confir
 
 ## 10. Operational acceptance
 
-Record the approved code commit, reservation/call outcomes, accepted watermark, contents review, exact initial manifest, successful Pages deployment, public bytes and dashboard checks. Observe a scheduled six-hour cycle through acquisition and deployment. Verify the same Windows runtime can resume across sign-out, reboot and an interrupted network connection without duplicate provider attempts or loss of accepted state. Verify the live browser's source, retrieval time, coverage, freshness and SCAN. Keep SPA-18 In Progress until these checks have actual evidence.
+Record the approved code commit, reservation/call outcomes, accepted watermark, contents review, exact initial manifest, successful Pages deployment, public bytes and dashboard checks. Observe a scheduled hourly cycle through acquisition and deployment. Verify the same Windows runtime can resume across sign-out, reboot and an interrupted network connection without duplicate provider attempts or loss of accepted state. Verify the live browser's source, retrieval time, coverage, freshness and SCAN. Keep SPA-18 In Progress until these checks have actual evidence.

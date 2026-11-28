@@ -584,7 +584,7 @@ class Operations:
 
     def standing(self, interval_hours, freshness_hours, release, anchor=None):
         enforce(
-            3 <= interval_hours <= 12
+            1 <= interval_hours <= 12
             and interval_hours < freshness_hours <= 24
             and re.fullmatch("[0-9a-f]{40}", release),
             "INVALID_STANDING_CONFIGURATION",
