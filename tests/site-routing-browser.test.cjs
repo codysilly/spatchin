@@ -48,6 +48,37 @@ for(const width of [1440,390])test('public homepage serves live WIP UI '+width+'
  }finally{await context.close();}
 });
 
+test('public dashboard leaves the sharded NOTAM reader inactive by default', async () => {
+ const context = await browser.newContext();
+ const page = await context.newPage();
+ const unexpected = [];
+ const snapshotPaths = new Set([
+  '/data/airport-diagrams.json', '/data/atis.json', '/data/metars.json',
+  '/data/notams.json', '/data/runways.json', '/data/tafs.json',
+ ]);
+ await context.route('**/*', route => {
+  const request = route.request();
+  const url = new URL(request.url());
+  const isFetch = ['fetch', 'xhr'].includes(request.resourceType());
+  if (url.pathname.startsWith('/scripts/publication/') ||
+      (isFetch && (url.origin !== origin || !snapshotPaths.has(url.pathname)))) {
+   unexpected.push(url.href);
+   return route.abort();
+  }
+  return url.origin === origin ? route.continue() : route.abort();
+ });
+ try {
+  const snapshot = page.waitForResponse(response =>
+   response.url() === origin + '/data/notams.json' && response.ok());
+  await page.goto(origin + '/');
+  await snapshot;
+  await page.waitForSelector('[data-airport="MEM"] .runway-row');
+  assert.deepEqual(unexpected, [], 'default startup should load only the regular snapshot feeds');
+ } finally {
+  await context.close();
+ }
+});
+
 test('synthetic preview loads current stylesheet without external requests',async()=>{
  const context=await browser.newContext({viewport:{width:1440,height:900}});
  const page=await context.newPage(),errors=[],external=[],missing=[];
