@@ -139,8 +139,8 @@ def offline_delivery_fixture():
     with tempfile.TemporaryDirectory() as parent, patch("nms_operations.LEGACY", SYNTHETIC_LEGACY):
         scenario = Scenario(parent)
         scenario.first_publish()
-        policy = scenario.operations.standing(6, 12, RELEASE)
-        scenario.now += timedelta(hours=6)
+        policy = scenario.operations.standing(1, 2, RELEASE)
+        scenario.now += timedelta(hours=1)
         scenario.cycle(policy, scenario.transport())
         return scenario.delivery.deployed()
 
@@ -372,10 +372,16 @@ class OperationsTests(unittest.TestCase):
         first = s.first_publish()
         s.operations.publish_initial(s.operations.review_publication()["approval_sha256"])
         self.assertEqual(s.delivery.pushes, 1)
-        policy = s.operations.standing(6, 12, RELEASE)
-        s.now += timedelta(hours=6)
-        s.delivery.race = True
+        policy = s.operations.standing(1, 2, RELEASE)
+        self.assertEqual(policy["publication_interval_hours"], 1)
+        self.assertEqual(policy["scheduler_tick_minutes"], 15)
         t = s.transport()
+        s.now += timedelta(minutes=45)
+        self.assertEqual(s.cycle(policy, t)["status"], "CADENCE_WAIT")
+        self.assertEqual(t.requests, [])
+        self.assertEqual(s.delivery.pushes, 1)
+        s.now += timedelta(minutes=15)
+        s.delivery.race = True
         with self.assertRaisesRegex(PublicationError, "GIT_DELIVERY_FAILED"):
             s.cycle(policy, t)
         self.assertEqual(
@@ -397,7 +403,7 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(s.delivery.pushes, 2)
         self.assertEqual([r.stage for r in t.requests], ["auth", "delta"])
         self.assertEqual(s.cycle(policy, t)["status"], "CADENCE_WAIT")
-        self.assertEqual(json.loads(s.delivery.deployed())["publication"]["stale_after_hours"], 12)
+        self.assertEqual(json.loads(s.delivery.deployed())["publication"]["stale_after_hours"], 2)
 
 
 if __name__ == "__main__":

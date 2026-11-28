@@ -27,6 +27,7 @@ test('accepted and deployed synthetic NMS bytes reach the root dashboard and SCA
   assert.equal((await fetch(`${origin}/data/notams.json`)).status, 404);
   assert.equal((await fetch(`${url}scripts/notam/nms_operations.py`)).status, 404);
   const deployed = await (await fetch(`${url}data/notams.json`)).json();
+  assert.equal(deployed.publication.stale_after_hours, 2);
   assert.equal(Object.keys(deployed.airports).length, 130);
   assert.equal(deployed.airports.KATL.completeness, 'UNKNOWN');
   assert.equal(deployed.airports.KATL.notices.length, 0);
@@ -51,12 +52,12 @@ test('accepted and deployed synthetic NMS bytes reach the root dashboard and SCA
       try {
         await page.goto(url);
         const summary = page.locator('#coverage-KMEM');
-        await summary.locator('.notam-meta').filter({hasText:'RETRIEVED 1803Z'}).waitFor();
+        await summary.locator('.notam-meta').filter({hasText:'RETRIEVED 1303Z'}).waitFor();
         assert.match(await summary.innerText(), /STALE/);
         assert.equal(await summary.locator('.notam-metadata').isVisible(), false);
         await summary.locator('summary').click();
         await summary.getByText('Source: NMS-API snapshot', { exact: true }).waitFor();
-        assert.match(await summary.innerText(), /Retrieved: 2026-01-02 18:03 UTC/);
+        assert.match(await summary.innerText(), /Retrieved: 2026-01-02 13:03 UTC/);
         assert.match(await summary.innerText(), /Coverage UNKNOWN/);
         assert.match(await summary.innerText(), /Freshness: STALE/);
         assert.match(await summary.innerText(), /LOCAL_FORMAT text unavailable/);
