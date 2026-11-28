@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T06:58:34.686597Z",
+  "updated_utc": "2026-11-28T07:18:35.535432Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -2318,14 +2318,14 @@
     },
     {
       "icaoId": "KGEG",
-      "rawTAF": "TAF KGEG 280521Z 2806/2906 24005KT P6SM SCT060 BKN150 FM281100 24004KT 6SM BR BKN025 FM281500 20005KT 1 1/2SM BR OVC004 FM281800 15004KT 5SM BR OVC007 FM282000 15004KT P6SM OVC015",
-      "issueTime": "2026-11-28T05:21:00.000Z",
-      "validTimeFrom": 1795845600,
+      "rawTAF": "TAF KGEG 280708Z 2807/2906 24005KT 3SM BR BKN005 FM281000 20005KT 1 1/2SM BR OVC004 FM281800 15004KT 5SM BR OVC007 FM282000 15004KT P6SM OVC015",
+      "issueTime": "2026-11-28T07:08:00.000Z",
+      "validTimeFrom": 1795849200,
       "validTimeTo": 1795932000,
       "fcsts": [
         {
-          "timeFrom": 1795845600,
-          "timeTo": 1795863600,
+          "timeFrom": 1795849200,
+          "timeTo": 1795860000,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
@@ -2334,17 +2334,7 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795863600,
-          "timeTo": 1795878000,
-          "timeBec": null,
-          "fcstChange": "FM",
-          "probability": null,
-          "wdir": 240,
-          "wspd": 4,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795878000,
+          "timeFrom": 1795860000,
           "timeTo": 1795888800,
           "timeBec": null,
           "fcstChange": "FM",
@@ -5312,13 +5302,13 @@
     },
     {
       "icaoId": "KSEA",
-      "rawTAF": "TAF KSEA 280520Z 2806/2912 00000KT 3SM BR SCT002 BKN035 TEMPO 2806/2810 1SM BR BKN002 FM281000 VRB02KT 1/4SM FG VV002 FM281500 02004KT 2SM BR BKN004 OVC010 FM282000 03005KT P6SM OVC020 FM282200 01006KT P6SM BKN050 FM290300 04007KT P6SM BKN130",
-      "issueTime": "2026-11-28T05:20:00.000Z",
-      "validTimeFrom": 1795845600,
+      "rawTAF": "TAF KSEA 280715Z 2807/2912 00000KT 6SM BR SCT005 BKN035 TEMPO 2807/2810 1SM BR BKN002 FM281000 VRB02KT 1/4SM FG VV002 FM281500 02004KT 2SM BR BKN004 OVC010 FM282000 03005KT P6SM OVC020 FM282200 01006KT P6SM BKN050 FM290300 04007KT P6SM BKN130",
+      "issueTime": "2026-11-28T07:15:00.000Z",
+      "validTimeFrom": 1795849200,
       "validTimeTo": 1795953600,
       "fcsts": [
         {
-          "timeFrom": 1795845600,
+          "timeFrom": 1795849200,
           "timeTo": 1795860000,
           "timeBec": null,
           "fcstChange": null,
@@ -5328,7 +5318,7 @@
           "wgst": null
         },
         {
-          "timeFrom": 1795845600,
+          "timeFrom": 1795849200,
           "timeTo": 1795860000,
           "timeBec": null,
           "fcstChange": "TEMPO",
@@ -5617,19 +5607,29 @@
     },
     {
       "icaoId": "KSKA",
-      "rawTAF": "TAF KSKA 280300Z 2803/2909 22006KT 9999 BKN060 620609 QNH3001INS BECMG 2814/2815 24006KT 1600 BR OVC006 620401 QNH3016INS BECMG 2816/2818 VRB06KT 4800 BR BKN010 OVC020 620401 QNH3020INS BECMG 2819/2820 VRB06KT 9999 NSW SCT010 BKN040 620402 QNH3020INS BECMG 2900/2901 05006KT 9999 SCT020 SCT080 QNH3018INS TX06/2803Z TN04/2816Z",
-      "issueTime": "2026-11-28T03:00:00.000Z",
-      "validTimeFrom": 1795834800,
+      "rawTAF": "TAF AMD KSKA 280715Z 2807/2909 22006KT 1200 BR OVC002 QNH3001INS TEMPO 2807/2811 0800 FG BECMG 2814/2815 24006KT 1600 BR OVC006 620401 QNH3016INS BECMG 2816/2818 VRB06KT 4800 BR BKN010 OVC020 620401 QNH3020INS BECMG 2819/2820 VRB06KT 9999 NSW SCT010 BKN040 620402 QNH3020INS BECMG 2900/2901 05006KT 9999 SCT020 SCT080 QNH3018INS TX06/2823Z TN04/2816Z",
+      "issueTime": "2026-11-28T07:15:00.000Z",
+      "validTimeFrom": 1795849200,
       "validTimeTo": 1795942800,
       "fcsts": [
         {
-          "timeFrom": 1795834800,
+          "timeFrom": 1795849200,
           "timeTo": 1795874400,
           "timeBec": null,
           "fcstChange": null,
           "probability": null,
           "wdir": 220,
           "wspd": 6,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795849200,
+          "timeTo": 1795863600,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         },
         {
