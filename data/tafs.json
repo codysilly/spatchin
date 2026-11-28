@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T05:48:33.086880Z",
+  "updated_utc": "2026-11-28T05:58:34.044030Z",
   "source": "https://aviationweather.gov/api/data/taf?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "tafs": [
     {
@@ -699,8 +699,8 @@
     },
     {
       "icaoId": "KBOI",
-      "rawTAF": "TAF KBOI 280531Z 2806/2906 14007KT 4SM -RA BR BKN005 OVC015 WS020/26035KT FM280900 31013G22KT P6SM FEW015 SCT035 FM281500 31007KT P6SM FEW035 FM290300 14007KT P6SM SCT200",
-      "issueTime": "2026-11-28T05:31:00.000Z",
+      "rawTAF": "TAF KBOI 280557Z 2806/2906 14007KT 4SM -RA BR BKN005 OVC015 WS020/26035KT TEMPO 2806/2809 1SM -RA FG BKN002 FM280900 31013G22KT P6SM FEW015 SCT035 FM281500 31007KT P6SM FEW035 FM290300 14007KT P6SM SCT200",
+      "issueTime": "2026-11-28T05:57:00.000Z",
       "validTimeFrom": 1795845600,
       "validTimeTo": 1795932000,
       "fcsts": [
@@ -712,6 +712,16 @@
           "probability": null,
           "wdir": 140,
           "wspd": 7,
+          "wgst": null
+        },
+        {
+          "timeFrom": 1795845600,
+          "timeTo": 1795856400,
+          "timeBec": null,
+          "fcstChange": "TEMPO",
+          "probability": null,
+          "wdir": null,
+          "wspd": null,
           "wgst": null
         },
         {
@@ -5020,26 +5030,16 @@
     },
     {
       "icaoId": "KRST",
-      "rawTAF": "TAF KRST 272335Z 2800/2824 23007KT P6SM SCT040 OVC070 FM280700 23008KT P6SM FEW250 FM281700 26009KT P6SM SCT200",
-      "issueTime": "2026-11-27T23:35:00.000Z",
-      "validTimeFrom": 1795824000,
-      "validTimeTo": 1795910400,
+      "rawTAF": "TAF KRST 280549Z 2806/2906 23008KT P6SM FEW250 FM281700 26009KT P6SM SCT200",
+      "issueTime": "2026-11-28T05:49:00.000Z",
+      "validTimeFrom": 1795845600,
+      "validTimeTo": 1795932000,
       "fcsts": [
         {
-          "timeFrom": 1795824000,
-          "timeTo": 1795849200,
-          "timeBec": null,
-          "fcstChange": null,
-          "probability": null,
-          "wdir": 230,
-          "wspd": 7,
-          "wgst": null
-        },
-        {
-          "timeFrom": 1795849200,
+          "timeFrom": 1795845600,
           "timeTo": 1795885200,
           "timeBec": null,
-          "fcstChange": "FM",
+          "fcstChange": null,
           "probability": null,
           "wdir": 230,
           "wspd": 8,
@@ -5047,7 +5047,7 @@
         },
         {
           "timeFrom": 1795885200,
-          "timeTo": 1795910400,
+          "timeTo": 1795932000,
           "timeBec": null,
           "fcstChange": "FM",
           "probability": null,
