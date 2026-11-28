@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-28T16:10:40.413898Z",
+  "updated_utc": "2026-11-28T16:20:46.129502Z",
   "source": "https://aviationweather.gov/api/data/metar?ids=KABE,KABQ,KAFW,KALB,KATL,KATW,KAUS,KBDL,KBFI,KBFM,KBGR,KBHM,KBIL,KBMI,KBNA,KBOI,KBOS,KBTV,KBUF,KBUR,KBWI,KCAE,KCHA,KCHS,KCID,KCLE,KCLT,KCOS,KCPR,KCRP,KCVG,KDAY,KDEN,KDFW,KDJT,KDLH,KDSM,KDTW,KELP,KEWR,KFAR,KFAT,KFLL,KFNT,KFSD,KFWA,KGEG,KGFK,KGJT,KGRR,KGSO,KGSP,KGTF,KHLN,KHRL,KHTS,KIAD,KIAH,KICT,KIDA,KIND,KIWA,KJAX,KJFK,KLAS,KLAX,KLBB,KLCK,KLFT,KLGB,KLIT,KLRD,KLSV,KMCI,KMCO,KMDT,KMEM,KMHT,KMIA,KMKE,KMSN,KMSO,KMSP,KMSY,KNQA,KOAK,KOKC,KOMA,KONT,KORD,KORF,KPAE,KPDX,KPHL,KPHX,KPIT,KPSM,KPVD,KPWM,KRDU,KRFD,KRIC,KRNO,KROA,KROC,KRST,KRSW,KSAN,KSAT,KSAV,KSBD,KSBN,KSDF,KSEA,KSFO,KSGF,KSHV,KSJC,KSKA,KSLC,KSMF,KSNA,KSTL,KSWF,KSYR,KTLH,KTPA,KTUL,KTUS,KTYS&format=json",
   "metars": [
     {
@@ -1254,41 +1254,29 @@
     },
     {
       "icaoId": "KFAT",
-      "receiptTime": "2026-11-28T15:56:32.328Z",
-      "obsTime": 1795881180,
-      "reportTime": "2026-11-28T16:00:00.000Z",
+      "receiptTime": "2026-11-28T16:12:06.246Z",
+      "obsTime": 1795882140,
+      "reportTime": "2026-11-28T16:09:00.000Z",
       "temp": 9.4,
-      "dewp": 8.3,
-      "wdir": 120,
-      "wspd": 3,
-      "visib": 0.5,
+      "dewp": 8.9,
+      "wdir": 170,
+      "wspd": 5,
+      "visib": 0.25,
       "altim": 1019,
-      "slp": 1018.8,
       "qcField": 4,
-      "wxString": "BR",
-      "metarType": "METAR",
-      "rawOb": "METAR KFAT 281553Z 12003KT 1/2SM R29R/2200VP6000FT BR BKN002 BKN004 BKN007 OVC250 09/08 A3009 RMK AO2 SFC VIS 3/4 SLP188 VIS SE 1/2 VIS NW 1 1/4 T00940083",
+      "wxString": "FG",
+      "vertVis": 2,
+      "metarType": "SPECI",
+      "rawOb": "SPECI KFAT 281609Z 17005KT 1/4SM R29R/1600V6000FT FG VV002 09/09 A3009 RMK AO2 VIS NW 3/4 T00940089",
       "lat": 36.78,
       "lon": -119.7202,
       "elev": 102,
       "name": "Fresno/Yosemite Intl, CA, US",
-      "cover": "OVC",
+      "cover": "OVX",
       "clouds": [
         {
-          "cover": "BKN",
+          "cover": "OVX",
           "base": 200
-        },
-        {
-          "cover": "BKN",
-          "base": 400
-        },
-        {
-          "cover": "BKN",
-          "base": 700
-        },
-        {
-          "cover": "OVC",
-          "base": 25000
         }
       ],
       "fltCat": "LIFR"
@@ -3392,36 +3380,31 @@
     },
     {
       "icaoId": "KSEA",
-      "receiptTime": "2026-11-28T15:56:25.647Z",
-      "obsTime": 1795881180,
-      "reportTime": "2026-11-28T16:00:00.000Z",
-      "temp": 5,
-      "dewp": 5,
-      "wdir": 310,
-      "wspd": 3,
-      "visib": 7,
+      "receiptTime": "2026-11-28T16:16:05.932Z",
+      "obsTime": 1795882380,
+      "reportTime": "2026-11-28T16:13:00.000Z",
+      "temp": 6.1,
+      "dewp": 5.6,
+      "wdir": 360,
+      "wspd": 6,
+      "visib": 0.25,
       "altim": 1022.4,
-      "slp": 1023.1,
       "qcField": 12,
-      "wxString": "BCFG",
-      "metarType": "METAR",
-      "rawOb": "METAR KSEA 281553Z 31003KT 7SM R16L/4500VP6000FT BCFG FEW005 SCT250 05/05 A3019 RMK AO2 SLP231 T00500050 $",
+      "wxString": "FG",
+      "metarType": "SPECI",
+      "rawOb": "SPECI KSEA 281613Z 36006KT 1/4SM R16L/P6000FT FG BKN002 06/06 A3019 RMK AO2 SFC VIS 1/2 T00610056 $",
       "lat": 47.4447,
       "lon": -122.3144,
       "elev": 115,
       "name": "Seattle-Tacoma Intl, WA, US",
-      "cover": "SCT",
+      "cover": "BKN",
       "clouds": [
         {
-          "cover": "FEW",
-          "base": 500
-        },
-        {
-          "cover": "SCT",
-          "base": 25000
+          "cover": "BKN",
+          "base": 200
         }
       ],
-      "fltCat": "VFR"
+      "fltCat": "LIFR"
     },
     {
       "icaoId": "KSFO",
